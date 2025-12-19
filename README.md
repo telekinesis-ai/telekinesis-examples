@@ -227,12 +227,13 @@ All examples include optional visualization sections that can be removed if only
 ```text
 telekinesis-examples/
 ├── examples/
-│   ├── vitreous_examples.py    # Main examples script with all example functions
-│   └── README.md               # This file
+│   └── vitreous_examples.py    # Main examples script with all example functions
 ├── telekinesis-data/           # Git submodule containing example data files
 │   ├── point_clouds/           # PLY point cloud files
 │   ├── meshes/                 # GLB mesh files
 │   └── images/                 # Image files
+├── README.md                   # This file
+├── LICENSE.txt                 # License file
 └── .gitmodules                 # Git submodule configuration
 ```
 
@@ -256,7 +257,7 @@ See LICENSE.txt for details.
 ## Support
 
 For issues and questions:
-- Create an issue in the [Telekinesis Examples GitHub]((https://github.com/telekinesis-ai/telekinesis-data.git))
+- Create an issue
 - Contact the Telekinesis development team
 
 
