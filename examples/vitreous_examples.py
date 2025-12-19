@@ -232,9 +232,42 @@ def calculate_plane_normal_example():
 	except Exception:
 		rr.spawn()
 
+	# Setup camera view
+	overview_position = np.array([100.0, -100.0, 100.0])
+	look_target = np.array([0.0, 0.0, 0.0])
+	eye_up = np.array([0.0, 0.0, 1.0])
+
+	# Add EyeControls3D with all parameters for camera movement tuning
+	eye_controls = rrb.EyeControls3D(
+		kind=rrb.Eye3DKind.Orbital,  # Camera control type: Orbital or FirstPerson
+		position=overview_position,  # Initial camera position (None = auto)
+		look_target=look_target,  # Point the camera looks at (None = auto)
+		eye_up=eye_up,  # Up direction vector (None = auto)
+		spin_speed=0.5,  # Speed of camera rotation/spin
+		speed=0.0,  # Translation speed of camera movement
+		tracking_entity=None,  # Entity to track (None = no tracking)
+	)
+
+	line_grid = rrb.LineGrid3D(
+		visible=False,  # The grid is enabled by default, but you can hide it with this property.
+	)
+
+	spatial_information = rrb.SpatialInformation(
+		show_axes=False,
+		show_bounding_box=False,
+	)
+	background = rrb.Background(color=(255, 255, 255))  # White background
+
 	# Send blueprint
 	rr.send_blueprint(rrb.Blueprint(
-		rrb.Spatial3DView(name="Plane with Normal Vector", origin="plane_visualization"),
+		rrb.Spatial3DView(
+			name="Plane with Normal Vector",
+			origin="plane_visualization",
+			background=background,
+			eye_controls=eye_controls,
+			line_grid=line_grid,
+			spatial_information=spatial_information,
+		)
 	))
 
 	# Extract plane parameters: ax + by + cz + d = 0
@@ -628,15 +661,9 @@ def convert_mesh_to_point_cloud_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	look_target = np.array([0.08670620230211261, 0.030510931062866967, -0.09899483804857363])
-	offset = np.array([99.91329379769789, 149.96948906893712, 100.09899483804857])
-	camera_eye_position = look_target + offset
+	overview_position = np.array([399.73988139, 599.90846721, 400.29698451])	
+	look_target = np.array([0.0867062, 0.03051093, -0.09899484])
 	eye_up = np.array([0.0, 0.0, 1.0])
-	zoom_out_factor = 4
-
-	vec = camera_eye_position - look_target
-	dir_vec = vec / np.linalg.norm(vec)
-	overview_position = look_target + dir_vec * (np.linalg.norm(vec) * zoom_out_factor)
 
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
@@ -1988,7 +2015,7 @@ def filter_point_cloud_using_plane_splitting_example():
 
 	# Execute operation
 	filtered_point_cloud = vitreous.filter_point_cloud_using_plane_splitting(
-		keep_positive_side=True,
+		keep_positive_side=False,
 		point_cloud=point_cloud,
 		plane_coefficients=[0, 0, 1, -547],
 	)
@@ -2004,30 +2031,63 @@ def filter_point_cloud_using_plane_splitting_example():
 	except Exception:
 		rr.spawn()
 
-	# Setup additional rerun settings
-	line_grid = rrb.LineGrid3D(visible=False)
+	# Setup camera view
+	overview_position = np.array([ 433.57570131, -301.27080108, -26.4841608 ])
+	look_target = np.array([ 10.9282587, -9.28041238, 493.51069811])
+	eye_up = np.array([ 0.04087094, 0.0086678, -0.99912684])
+	
+
+	# Add EyeControls3D with all parameters for camera movement tuning
+	eye_controls = rrb.EyeControls3D(
+		kind=rrb.Eye3DKind.Orbital,  # Camera control type: Orbital or FirstPerson
+		position=overview_position,  # Initial camera position (None = auto)
+		look_target=look_target,  # Point the camera looks at (None = auto)
+		eye_up=eye_up,  # Up direction vector (None = auto)
+		spin_speed=0.5,  # Speed of camera rotation/spin
+		speed=0.0,  # Translation speed of camera movement
+		tracking_entity=None,  # Entity to track (None = no tracking)
+	)
+
+	line_grid = rrb.LineGrid3D(
+		visible=False,  # The grid is enabled by default, but you can hide it with this property.
+	)
+
 	spatial_information = rrb.SpatialInformation(
 		show_axes=False,
 		show_bounding_box=False,
 	)
-	background = rrb.Background(color=(255, 255, 255))
+	background = rrb.Background(color=(255, 255, 255))  # White background
 
-	# Setup camera view
-	look_target = np.array([10.928258702124491, -9.280412379284869, 493.51069810734896])
-	offset = np.array([500.43928350426836, -132.2169471347786, -480.0830664379545])
-	camera_eye_position = look_target + offset
-	eye_up = np.array([0.03905324461567187, 0.006429765891357218, -0.9992164441178752])
+	# Set the blueprint panel for 3D point cloud visualization (input left, output right, vertical)
+	rr.send_blueprint(rrb.Blueprint(
+		rrb.Horizontal(
+			rrb.Spatial3DView(
+				name="Input Point Cloud",
+				origin="input_point_cloud",
+				background=background,
+				eye_controls=eye_controls,
+				line_grid=line_grid,
+				spatial_information=spatial_information,
+			),
+			rrb.Spatial3DView(
+				name="Output Point Cloud",
+				origin="output_point_cloud",
+				background=background,
+				eye_controls=eye_controls,
+				line_grid=line_grid,
+				spatial_information=spatial_information,
+			),
+		)
+	))
 
-	eye_controls = rrb.EyeControls3D(
-		kind=rrb.Eye3DKind.Orbital,
-		position=camera_eye_position,
-		look_target=look_target,
-		eye_up=eye_up,
-		spin_speed=0.5, 
-		speed=0.0,  
-		tracking_entity=None,  
+	# Log the input point cloud
+	rr.log("input_point_cloud", rr.Points3D(positions=point_cloud.positions,
+			   colors=point_cloud.colors))
 
-	)
+	# Log the output point cloud
+	rr.log("output_point_cloud", rr.Points3D(positions=filtered_point_cloud.positions,
+			   colors=filtered_point_cloud.colors))
+
 
 
 def filter_point_cloud_using_radius_outlier_removal_example():
@@ -2336,9 +2396,11 @@ def filter_point_cloud_using_viewpoint_visibility_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	overview_position = np.array([100, -500, 250.0])
+	overview_position = np.array([-180., -600.,  660.])
 	look_target = np.array([0., 0., 0.])
 	eye_up = np.array([0., 0., 1.])
+	camera_eye_position = np.array([ 100., -500.,  250.])
+
 
 	# EyeControls:
 	# - overview_eye_controls for View 1 & 3 (zoomed out)
@@ -2354,7 +2416,7 @@ def filter_point_cloud_using_viewpoint_visibility_example():
 
 	camera_eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
-		position=overview_position,
+		position=camera_eye_position,
 		look_target=look_target,
 		eye_up=eye_up,
 		spin_speed=0.0,
@@ -2369,7 +2431,7 @@ def filter_point_cloud_using_viewpoint_visibility_example():
 					name="Input (Centered) – Overview (zoomed out)",
 					origin="input_point_cloud",
 					background=background,
-					eye_controls=camera_eye_controls,
+					eye_controls=overview_eye_controls,
 					line_grid=line_grid,
 					spatial_information=spatial_information,
 				),
@@ -2385,7 +2447,7 @@ def filter_point_cloud_using_viewpoint_visibility_example():
 					name="Filtered (Centered) – Overview (zoomed out)",
 					origin="output_point_cloud",
 					background=background,
-					eye_controls=camera_eye_controls,
+					eye_controls=overview_eye_controls,
 					line_grid=line_grid,
 					spatial_information=spatial_information,
 				),
@@ -2464,9 +2526,9 @@ def filter_point_cloud_using_voxel_downsampling_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	overview_position = np.array([0.01798786, -0.1938991, 0.48053457])
-	look_target = np.array([0.01602358, -0.131963, 0.66461711])
-	eye_up = np.array([0., 0.8, -0.6])
+	overview_position = np.array([-0.17948, -0.00342, 0.57515])
+	eye_up = np.array([-0.0003322,-0.0688132,-0.1021320])
+	look_target = np.array([ 0.01602358, -0.131963, 0.66461711])
 
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
@@ -2656,16 +2718,9 @@ def subtract_point_clouds_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
+	overview_position = np.array([ 100, 1500, 2000])
 	look_target = np.array([100, 0, 0])
-	offset = np.array([0.0, 150.0, 200.0])
-	camera_eye_position = look_target + offset
-	eye_up = np.array([0.0, 0.0, 1.0])
-	look_target = [100, 0, 0]
-	zoom_out_factor = 10
-
-	vec = camera_eye_position - look_target
-	dir_vec = vec / np.linalg.norm(vec)
-	overview_position = look_target + dir_vec * (np.linalg.norm(vec) * zoom_out_factor)
+	eye_up = np.array([0, 0, 1])		
 
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
@@ -3266,16 +3321,10 @@ def reconstruct_mesh_using_convex_hull_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	look_target = np.array([-0.0007480896814801301, -0.00017694868037873947, 0.06533939420168008])
-	offset = np.array([0.1431982364518114, -0.007435637521927663, 0.15607460400219597])
-	camera_eye_position = look_target + offset
-	eye_up = np.array([0.5181035277056806, -0.8545437583115796, -0.036382684200725636])
-	zoom_out_factor = 2
-
-	vec = camera_eye_position - look_target
-	dir_vec = vec / np.linalg.norm(vec)
-	overview_position = look_target + dir_vec * (np.linalg.norm(vec) * zoom_out_factor)
-
+	overview_position = np.array([0.28564838, -0.01504822, 0.3774886])
+	look_target = np.array([-0.00074809, -0.00017695, 0.06533939])
+	eye_up = np.array([0.51810353, -0.85454376, -0.03638268])
+	
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
 		position=overview_position,
@@ -3364,16 +3413,10 @@ def reconstruct_mesh_using_poisson_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	look_target = np.array([-0.18742625171499017, 0.00011380453432235013, 8.55789070127426e-05])
-	offset = np.array([0.3001245906351528, -0.2984173793020396, -0.07186921049564646])
-	camera_eye_position = look_target + offset
-	eye_up = np.array([0.0006837715295567754, -0.9723082452673518, -0.2337011096285566])
-	zoom_out_factor = 2
-
-	vec = camera_eye_position - look_target
-	dir_vec = vec / np.linalg.norm(vec)
-	overview_position = look_target + dir_vec * (np.linalg.norm(vec) * zoom_out_factor)
-
+	overview_position = np.array([0.41282293, -0.59672095, -0.14365284])
+	look_target = np.array([-0.18742625, 0.00011380, 0.00008558])
+	eye_up = np.array([0.00068377, -0.97230825, -0.23370111])
+	
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
 		position=overview_position,
@@ -3617,14 +3660,13 @@ def register_point_clouds_using_fast_global_registration_example():
 	target_point_cloud = io.load_point_cloud(filepath=target_filepath)
 	logger.success(f"Loaded source point cloud with {len(source_point_cloud.positions)} points")
 	logger.success(f"Loaded target point cloud with {len(target_point_cloud.positions)} points")
-
 	# Execute operation
 	transformation_matrix = vitreous.register_point_clouds_using_fast_global_registration(
-		normal_radius=0.02,
-		normal_max_neighbors=20,
-		feature_radius=0.05,
-		feature_max_neighbors=30,
-		max_correspondence_distance=0.015,
+		normal_radius=3.7,
+		normal_max_neighbors=30,
+		feature_radius=11.1,
+		feature_max_neighbors=100,
+		max_correspondence_distance=7.4,
 		source_point_cloud=source_point_cloud,
 		target_point_cloud=target_point_cloud,
 		initial_transformation_matrix=np.eye(4),
@@ -3649,15 +3691,9 @@ def register_point_clouds_using_fast_global_registration_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	look_target = np.array([0.00032920947519606545, -0.000529476746455524, 0.06306978755275303])
-	offset = np.array([0.1538893433972759, 0.1538893433972759, 0.1538893433972759])
-	camera_eye_position = look_target + offset
-	eye_up = np.array([0.0, 1.0, 0.0])
-	zoom_out_factor = 2
-
-	vec = camera_eye_position - look_target
-	dir_vec = vec / np.linalg.norm(vec)
-	overview_position = look_target + dir_vec * (np.linalg.norm(vec) * zoom_out_factor)
+	overview_position = np.array([ 698.15760912,  661.15992967, 1449.5778867 ])
+	look_target = np.array([-42.9321127,  -79.92979215, 708.48816487])
+	eye_up = np.array([0., 1., 0.])
 
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
@@ -3729,8 +3765,8 @@ def register_point_clouds_using_point_to_plane_icp_example():
 	# ===================== Operation ==========================================
 
 	# Load point clouds
-	source_filepath = str(DATA_DIR / "point_clouds" / "weld_clamp_cluster_0_centroid_registered.ply")
-	target_filepath = str(DATA_DIR / "point_clouds" / "weld_clamp_model_centered.ply")
+	source_filepath = str(DATA_DIR / "point_clouds" / "weld_clamp_model_shifted.ply")
+	target_filepath = str(DATA_DIR / "point_clouds" / "weld_clamp_cluster_0_centroid_registered.ply")
 	source_point_cloud = io.load_point_cloud(filepath=source_filepath)
 	target_point_cloud = io.load_point_cloud(filepath=target_filepath)
 	logger.success(f"Loaded source point cloud with {len(source_point_cloud.positions)} points")
@@ -3738,13 +3774,13 @@ def register_point_clouds_using_point_to_plane_icp_example():
 
 	# Execute operation
 	transformation_matrix = vitreous.register_point_clouds_using_point_to_plane_icp(
-		max_iterations=50,
-		max_correspondence_distance=0.05,
-		normal_max_neighbors=30,
-		normal_search_radius=0.001,
+		max_iterations=500,
+		max_correspondence_distance=30,
+		normal_max_neighbors=20,
+		normal_search_radius=2,
 		use_robust_kernel=False,
 		loss_type="tukey_loss",
-		noise_standard_deviation=0.001,
+		noise_standard_deviation=10,
 		source_point_cloud=source_point_cloud,
 		target_point_cloud=target_point_cloud,
 		initial_transformation_matrix=np.eye(4),
@@ -3849,8 +3885,8 @@ def register_point_clouds_using_point_to_point_icp_example():
 	# ===================== Operation ==========================================
 
 	# Load point clouds
-	source_filepath = str(DATA_DIR / "point_clouds" / "gusset_0_preprocessed.ply")
-	target_filepath = str(DATA_DIR / "point_clouds" / "gusset_0_icp_alignment.ply")
+	source_filepath = str(DATA_DIR / "point_clouds" / "gusset_0_icp_alignment.ply")
+	target_filepath = str(DATA_DIR / "point_clouds" / "gusset_0_preprocessed.ply")
 	source_point_cloud = io.load_point_cloud(filepath=source_filepath)
 	target_point_cloud = io.load_point_cloud(filepath=target_filepath)
 	logger.success(f"Loaded source point cloud with {len(source_point_cloud.positions)} points")
@@ -3861,6 +3897,7 @@ def register_point_clouds_using_point_to_point_icp_example():
 		max_iterations=500,
 		max_correspondence_distance=10,
 		estimate_scaling=False,
+        min_fitness_score=0.0001,
 		source_point_cloud=source_point_cloud,
 		target_point_cloud=target_point_cloud,
 		initial_transformation_matrix=np.eye(4),
@@ -3885,10 +3922,10 @@ def register_point_clouds_using_point_to_point_icp_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	overview_position = np.array([ 141.36766041,  230.084104,   -188.49101382])
-	look_target = np.array([ 17.26467918, -10.168208,   676.98202765])
-	eye_up = np.array([ 0.,  0., -1.])
-
+	overview_position = np.array([  7.0678873,  -29.92979215, 758.48816487])
+	look_target = np.array([ -42.9321127, -79.92979215, 708.48816487])
+	eye_up = np.array([ 0.,  1., 0.])
+ 
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
 		position=overview_position,
@@ -3958,8 +3995,8 @@ def register_point_clouds_using_rotation_sampler_icp_example():
 	# ===================== Operation ==========================================
 
 	# Load point clouds
-	source_filepath = str(DATA_DIR / "point_clouds" / "zivid_bottle_segmented.ply")
-	target_filepath = str(DATA_DIR / "point_clouds" / "zivid_bottle_cylinder_centered.ply")
+	source_filepath = str(DATA_DIR / "point_clouds" / "zivid_bottle_cylinder_centered.ply")
+	target_filepath = str(DATA_DIR / "point_clouds" / "zivid_bottle_segmented.ply")
 	source_point_cloud = io.load_point_cloud(filepath=source_filepath)
 	target_point_cloud = io.load_point_cloud(filepath=target_filepath)
 	logger.success(f"Loaded source point cloud with {len(source_point_cloud.positions)} points")
@@ -3967,19 +4004,19 @@ def register_point_clouds_using_rotation_sampler_icp_example():
 
 	# Execute operation
 	transformation_matrix = vitreous.register_point_clouds_using_rotation_sampler_icp(
-		x_step_size_deg=20,
-		y_step_size_deg=20,
-		z_step_size_deg=20,
+		x_step_size_deg=30,
+		y_step_size_deg=10,
+		z_step_size_deg=30,
 		x_min_deg=0,
 		x_max_deg=180,
 		y_min_deg=0,
 		y_max_deg=180,
 		z_min_deg=0,
 		z_max_deg=180,
-		early_stop_fitness_score=0.5,
-		min_fitness_score=0.9,
-		max_iterations=50,
-		max_correspondence_distance=0.02,
+		early_stop_fitness_score=0.9,
+		min_fitness_score=0.2,
+		max_iterations=100,
+		max_correspondence_distance=2,
 		estimate_scaling=False,
 		source_point_cloud=source_point_cloud,
 		target_point_cloud=target_point_cloud,
@@ -4005,15 +4042,9 @@ def register_point_clouds_using_rotation_sampler_icp_example():
 	background = rrb.Background(color=(255, 255, 255))
 
 	# Setup camera view
-	look_target = np.array([-169.68149308056488, -57.38953201221218, 37.960415331431584])
-	offset = np.array([263.0040045164911, 263.0040045164911, 263.0040045164911])
-	camera_eye_position = look_target + offset
+	overview_position = np.array([356.32651595, 468.61847702, 563.96842436])
+	look_target = np.array([-169.68149308, -57.38953201, 37.96041533])
 	eye_up = np.array([0.0, 0.0, 1.0])
-	zoom_out_factor = 2
-
-	vec = camera_eye_position - look_target
-	dir_vec = vec / np.linalg.norm(vec)
-	overview_position = look_target + dir_vec * (np.linalg.norm(vec) * zoom_out_factor)
 
 	eye_controls = rrb.EyeControls3D(
 		kind=rrb.Eye3DKind.Orbital,
@@ -4297,14 +4328,14 @@ def get_example_dict():
 		"convert_mesh_to_point_cloud": convert_mesh_to_point_cloud_example,
 		
 		# Create
-		"create_cylinder_mesh": create_cylinder_mesh_example, #TODO: Camera eye position needs to be adjusted
+		"create_cylinder_mesh": create_cylinder_mesh_example,
 		"create_plane_mesh": create_plane_mesh_example,
-		"create_sphere_mesh": create_sphere_mesh_example, #TODO: Camera eye position needs to be adjusted
-		"create_torus_mesh": create_torus_mesh_example, #TODO: Camera eye position needs to be adjusted
+		"create_sphere_mesh": create_sphere_mesh_example,
+		"create_torus_mesh": create_torus_mesh_example,
 		
 		# Filters and estimators
 		"estimate_principal_axis_within_radius": estimate_principal_axis_within_radius_example,
-		"estimate_principal_axes": estimate_principal_axes_example,  #TODO: Missing point cloud file
+		"estimate_principal_axes": estimate_principal_axes_example,
 		"filter_point_cloud_using_pass_through_filter": filter_point_cloud_using_pass_through_filter_example,
 		"filter_point_cloud_using_bounding_box": filter_point_cloud_using_bounding_box_example,
 		"filter_point_cloud_using_cylinder_base_removal": filter_point_cloud_using_cylinder_base_removal_example, 
@@ -4331,10 +4362,9 @@ def get_example_dict():
 		
 		# Reconstruct
 		"reconstruct_mesh_using_convex_hull": reconstruct_mesh_using_convex_hull_example,
-		"reconstruct_mesh_using_poisson": reconstruct_mesh_using_poisson_example,  #TODO, Arjun, not working because pcd doesnt have normals. compute normals inside vitreous?
+		"reconstruct_mesh_using_poisson": reconstruct_mesh_using_poisson_example,
 		
 		# Register
-		"register_point_clouds_using_centroid_translation": register_point_clouds_using_centroid_translation_example,  
 		"register_point_clouds_using_cuboid_translation_sampler_icp": register_point_clouds_using_cuboid_translation_sampler_icp_example, 
 		"register_point_clouds_using_fast_global_registration": register_point_clouds_using_fast_global_registration_example,
 		"register_point_clouds_using_point_to_plane_icp": register_point_clouds_using_point_to_plane_icp_example, #TODO: Arjun, add better visualization
@@ -4344,7 +4374,6 @@ def get_example_dict():
 		# Segment 
 		"segment_point_cloud_using_color": segment_point_cloud_using_color_example, 
 		"segment_point_cloud_using_plane": segment_point_cloud_using_plane_example,
-		"segment_point_cloud_using_vector_proximity": segment_point_cloud_using_vector_proximity_example, #TODO for Haris
 	}
 
 
