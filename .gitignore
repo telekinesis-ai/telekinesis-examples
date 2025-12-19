@@ -1,0 +1,15 @@
+data/
+lib/__pycache__/
+__pycache__/
+.idea/
+*.pt
+*.egg-info/
+.vscode/
+build/
+*.zdf
+*.obj
+*.mtl
+
+# dont push site because this is build from mkdocs and it should not be in git
+site/
+public/
