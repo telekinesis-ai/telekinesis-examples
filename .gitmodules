@@ -1,0 +1,3 @@
+[submodule "telekinesis-data"]
+	path = telekinesis-data
+	url = https://gitlab.com/telekinesis/telekinesis-data.git
