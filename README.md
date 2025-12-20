@@ -1,27 +1,27 @@
-  <div align="center">
-    <p>
-      <a align="center" href="https://github.com/telekinesis-ai" target="_blank">
-        <img
-          width="100%"
-          src="https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/Telekinesis+Banner.png"
-        >
-      </a>
-    </p>
-
-    <br>
-
-    <a href="https://github.com/telekinesis-ai/telekinesis-examples">Telekinesis Examples</a> |
-    <a href="https://github.com/telekinesis-ai/telekinesis-data">Telekinesis Data</a>
-    <br>
-
-    <a href="https://pypi.org/project/telekinesis-ai/">
-      <img src="https://img.shields.io/pypi/v/telekinesis-ai" />
+<div align="center">
+  <p>
+    <a align="center" href="https://github.com/telekinesis-ai" target="_blank">
+      <img
+        width="100%"
+        src="https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/Telekinesis+Banner.png"
+      >
     </a>
-    <img src="https://img.shields.io/pypi/l/telekinesis-ai" />
-    <a href="https://pypi.org/project/telekinesis-ai/">
-      <img src="https://img.shields.io/pypi/pyversions/telekinesis-ai" />
-    </a>
-  </div>
+  </p>
+
+  <br>
+
+  <a href="https://github.com/telekinesis-ai/telekinesis-examples">Telekinesis Examples</a> |
+  <a href="https://github.com/telekinesis-ai/telekinesis-data">Telekinesis Data</a>
+  <br>
+
+  <!-- <a href="https://pypi.org/project/telekinesis-ai/">
+    <img src="https://img.shields.io/pypi/v/telekinesis-ai" />
+  </a>
+  <img src="https://img.shields.io/pypi/l/telekinesi-ai" />
+  <a href="https://pypi.org/project/telekinesis-ai/">
+    <img src="https://img.shields.io/pypi/pyversions/telekinesis-ai" />
+  </a> -->
+</div>
 
   # Telekinesis Examples
 
@@ -239,21 +239,12 @@
   - Create an issue
   - Contact the Telekinesis development team
 
-
-  <p align="center">
-    <a href="https://github.com/telekinesis-ai">
-      <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg" width="18" alt="GitHub"/>
-    </a>
-    &nbsp;
-    <a href="https://www.linkedin.com/company/telekinesis-ai/">
-      <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linkedin.svg" width="18" alt="LinkedIn"/>
-    </a>
-    &nbsp;
-    <a href="https://x.com/telekinesis_ai">
-      <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/x.svg" width="18" alt="X"/>
-    </a>
-    &nbsp;
-    <a href="https://discord.gg/7NnQ3bQHqm">
-      <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg" width="18" alt="Discord"/>
-    </a>
-  </p>
+<p align="center">
+  <a href="https://github.com/telekinesis-ai">GitHub</a>
+  &nbsp;•&nbsp;
+  <a href="https://www.linkedin.com/company/telekinesis-ai/">LinkedIn</a>
+  &nbsp;•&nbsp;
+  <a href="https://x.com/telekinesis_ai">X</a>
+  &nbsp;•&nbsp;
+  <a href="https://discord.gg/7NnQ3bQHqm">Discord</a>
+</p>
