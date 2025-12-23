@@ -36,18 +36,25 @@ These examples focus on **practical usage** of Telekinesis APIs, including:
 
 ---
 
-## Prerequisites
+## Getting Started
 
-We recommend completing the [Telekinesis SDK Quickstart](https://docs.telekinesis.ai/getting-started/quickstart) to set up your system. 
+**To run these examples, you’ll need the Telekinesis SDK and an API key.**
 
-This ensures that:
-- Your `TELEKINESIS_API_KEY` is correctly configured
-- The Telekinesis SDK is installed
-- Your first example is already set up successfully
+Start with the official [Telekinesis SDK Quickstart](https://docs.telekinesis.ai/getting-started/quickstart).
+
+The Quickstart walks you through:
+- Creating a Telekinesis account
+- Generating and configuring your `TELEKINESIS_API_KEY`
+- Installing the SDK
+- Running your first example from this repository
+
+After completing the Quickstart, you can immediately run and explore the examples below.
 
 ---
 
 ## Running Examples
+
+All examples are contained within `vitreous_examples.py`.
 
 ### Quick start example
 
@@ -86,7 +93,6 @@ This will display all available examples, such as:
 - `filter_point_cloud_using_voxel_downsampling`
 - ... and many more
 
-
 ### Run a specific example
 ```bash
 python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_box
@@ -94,14 +100,14 @@ python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_b
 
 The example name should be provided **without** the `_example` suffix.
 
-### Run all examples
-```bash
-python examples/vitreous_examples.py --all
-```
+### Run a specific example with your own data
+The data path is configured in `examples/vitreous_examples.py` on line 16. 
+By default, it points to `telekinesis-data/` in the repository root. 
 
-To pause between examples:
+To use a custom data location, modify the `DATA_DIR` variable.
+
 ```bash
-python examples/vitreous_examples.py --all --pause
+python examples\vitreous_examples.py --example filter_point_cloud_using_statistical_outlier_removal
 ```
 
 ---
@@ -169,8 +175,6 @@ telekinesis-examples/
 ├── LICENSE.txt                 # License file
 └── .gitmodules                 # Git submodule configuration
 ```
-All examples are contained within `vitreous_examples.py`. Use the `--list` flag to see all available examples.
-The data path is configured in `examples/vitreous_examples.py` on line 16. By default, it points to `telekinesis-data/` in the repository root. To use a custom data location, modify the `DATA_DIR` variable.
 
 ---
 
