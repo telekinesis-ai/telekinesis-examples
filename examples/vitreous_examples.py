@@ -4215,7 +4215,7 @@ def segment_point_cloud_using_plane_example():
 	logger.success(f"Loaded point cloud with {len(point_cloud.positions)} points")
 
 	# Execute operation
-	segmented_point_cloud = vitreous.segment_point_cloud_using_plane(
+	segmented_point_cloud, plane_model = vitreous.segment_point_cloud_using_plane(
 		distance_threshold=1.0,
 		num_initial_points=3,
 		max_iterations=1000,
