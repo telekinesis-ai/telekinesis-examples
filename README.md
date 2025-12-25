@@ -3,7 +3,7 @@
     <a align="center" href="https://github.com/telekinesis-ai" target="_blank">
       <img
         width="100%"
-        src="https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/Telekinesis+Banner.png"
+        src="assets/telekinesis_banner.png"
       >
     </a>
   </p>
@@ -11,16 +11,9 @@
   <br>
 
   <a href="https://github.com/telekinesis-ai/telekinesis-examples">Telekinesis Examples</a> |
-  <a href="https://github.com/telekinesis-ai/telekinesis-data">Telekinesis Data</a>
+  <a href="https://gitlab.com/telekinesis/telekinesis-data">Telekinesis Data</a>
   <br>
 
-  <!-- <a href="https://pypi.org/project/telekinesis-ai/">
-    <img src="https://img.shields.io/pypi/v/telekinesis-ai" />
-  </a>
-  <img src="https://img.shields.io/pypi/l/telekinesi-ai" />
-  <a href="https://pypi.org/project/telekinesis-ai/">
-    <img src="https://img.shields.io/pypi/pyversions/telekinesis-ai" />
-  </a> -->
 </div>
 
 # Telekinesis Examples
@@ -38,23 +31,67 @@ These examples focus on **practical usage** of Telekinesis APIs, including:
 
 ## Getting Started
 
-**To run these examples, you’ll need the Telekinesis SDK and an API key.**
+### Requirements
 
-Start with the official [Telekinesis SDK Quickstart](https://docs.telekinesis.ai/getting-started/quickstart).
+To run these examples, you’ll need:
+- Python 3.11
+- A Telekinesis account
+- A valid Telekinesis API key
 
-The Quickstart walks you through:
-- Creating a Telekinesis account
-- Generating and configuring your `TELEKINESIS_API_KEY`
-- Installing the SDK
-- Running your first example from this repository
+1. Create an API Key
 
-After completing the Quickstart, you can immediately run and explore the examples below.
+Create a Telekinesis account and generate an API key: [Create a API Key](https://platform.telekinesis.ai/api-keys)
+
+2. Configure the API Key
+
+Export your API key as an environment variable:
+```bash
+# macOS / Linux
+export TELEKINESIS_API_KEY="your_api_key"
+```
+
+```shell
+# Windows
+setx TELEKINESIS_API_KEY "your_api_key"
+```
+> After running setx on Windows, restart your terminal for the change to take effect.
+
+3. Install the Telekinesis SDK
+```bash
+pip install telekinesis-ai
+```
+---
+
+## Repository Setup
+
+### Clone the repository
+
+```bash
+git clone --recurse-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
+cd telekinesis-examples
+```
+> This will also download the `telekinesis-data` repository, which contains sample point clouds, meshes, and images used by the examples.
+
+If you already cloned the repository without submodules, you can fetch them with:
+```bash
+git submodule update --init --recursive
+```
+
+All examples are contained within `vitreous_examples.py`.
+
+### Install example-only dependencies
+
+These dependencies are **only required for running examples**, not for the core SDK.
+
+```bash
+pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru
+```
+
+Once installed, you’re ready to run any example in this repository.
 
 ---
 
 ## Running Examples
-
-All examples are contained within `vitreous_examples.py`.
 
 ### Quick start example
 
@@ -64,7 +101,7 @@ Run a simple example to verify everything is working:
 python examples/vitreous_examples.py --example filter_point_cloud_using_voxel_downsampling
 ```
 
-Expected output:
+Terminal output:
 ```bash
 2025-12-17 17:59:58.437 | SUCCESS  | __main__:main:4783 - Running filter_point_cloud_using_voxel_downsampling example...
 2025-12-17 17:59:58.852 | SUCCESS  | __main__:filter_point_cloud_using_voxel_downsampling_example:2998 - Filtered points using voxel downsampling
@@ -74,8 +111,8 @@ This will also open a `rerun` visualization window showing the input point cloud
 
 <div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
   <div style="flex: 1;">
-    <h4>Output:</h4>
-    <img src="image.png"></img>
+    <h4>Visualization Output:</h4>
+    <img src="assets/voxel_downsample_input_output.png" width="500">
   </div>
 </div>
 
@@ -166,6 +203,7 @@ All examples include optional visualization sections that can be removed if only
 ```text
 telekinesis-examples/
 ├── examples/
+│   └── datatypes_examples.py   # Datatypes examples
 │   └── vitreous_examples.py    # Main examples script with all example functions
 ├── telekinesis-data/           # Git submodule containing example data files
 │   ├── point_clouds/           # PLY point cloud files
@@ -179,7 +217,7 @@ telekinesis-examples/
 ---
 
 ## Documentation
-Full SDK documentation is available at: [https://docs.telekinesis.ai/](https://docs.telekinesis.ai/)
+Full SDK documentation is available at: [Telekinesis Docs](https://docs.telekinesis.ai/)
 
 ## Support
 
