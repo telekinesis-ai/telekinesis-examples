@@ -36,7 +36,7 @@ def boxes3d_example():
     """Example for Boxes3D datatype."""
     half_size = np.array([[1.0, 2.0, 3.0]], dtype=np.float32)
     center = np.array([[0.0, 0.0, 0.0]], dtype=np.float32)
-    colors = np.array([[255, 0, 0, 255]], dtype=np.uint8)
+    colors = np.array([255, 0, 255], dtype=np.uint8)
     rotation = np.array([[0.0, 0.0, 0.0]], dtype=np.float32)
     b = datatypes.Boxes3D(half_size, center=center, colors=colors, rotation_in_euler_angles=rotation)
     logger.info("Boxes3D half_size:", b.half_size)
