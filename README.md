@@ -77,7 +77,7 @@ If you already cloned the repository without submodules, you can fetch them with
 git submodule update --init --recursive
 ```
 
-All examples are contained within `vitreous_examples.py`.
+All point cloud processing examples are contained within `vitreous_examples.py`.
 
 ### Install example-only dependencies
 
@@ -112,7 +112,7 @@ This will also open a `rerun` visualization window showing the input point cloud
 <div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
   <div style="flex: 1;">
     <h4>Visualization Output:</h4>
-    <img src="assets/voxel_downsample_input_output.png" width="500">
+    <img src="assets/voxel_downsample_input_output.png" width="400">
   </div>
 </div>
 
@@ -204,7 +204,7 @@ All examples include optional visualization sections that can be removed if only
 telekinesis-examples/
 ├── examples/
 │   └── datatypes_examples.py   # Datatypes examples
-│   └── vitreous_examples.py    # Main examples script with all example functions
+│   └── vitreous_examples.py    # Main vitreous examples script with all example functions
 ├── telekinesis-data/           # Git submodule containing example data files
 │   ├── point_clouds/           # PLY point cloud files
 │   ├── meshes/                 # GLB mesh files
