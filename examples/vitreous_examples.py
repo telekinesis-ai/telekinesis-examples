@@ -4403,9 +4403,9 @@ def main():
 	example_dict = get_example_dict()
 
 	if args.list:
-		logger.success("Available examples:")
+		logger.info("Available examples:")
 		for example_name in sorted(example_dict.keys()):
-			logger.success(f"  - {example_name}")
+			logger.info(f"  - {example_name}")
 		return
 
 	if not args.example:
@@ -4431,13 +4431,8 @@ def main():
 
 		raise SystemExit(1)
 
-	logger.success(f"Running {args.example} example...")
-	start_time = time.perf_counter()
+	logger.info(f"Running {args.example} example...")
 	example_dict[args.example]()
-	elapsed = time.perf_counter() - start_time
-	logger.success(
-    f"{args.example} example completed in {elapsed:.3f} seconds."
-    )
 	logger.success(f"{args.example} example completed.")
 
 

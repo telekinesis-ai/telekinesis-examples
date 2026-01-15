@@ -13,3 +13,5 @@ build/
 # dont push site because this is build from mkdocs and it should not be in git
 site/
 public/
+
+examples/run_all_examples.py

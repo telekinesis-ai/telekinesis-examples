@@ -18,14 +18,19 @@
 
 # Telekinesis Examples
 
-This directory contains **example scripts** demonstrating how to use the **Telekinesis SDK (Python)** for robotics and computer vision workflows.
+This directory contains **example scripts** demonstrating the use of the **Telekinesis SDK (Python)** for robotics and computer vision workflows.
 
 These examples focus on **practical usage** of Telekinesis APIs, including:
 
-* point clouds and meshes
+* Point clouds and meshes
 * 3D geometry processing
-* perception utilities
-* optional 3D visualization
+* Image processing
+* Optional 3D visualization
+
+Available modules:
+
+1. Vitreous - 3D Point cloud and mesh processing
+2. Pupil - Image processing
 
 ---
 
@@ -117,6 +122,8 @@ This will also open a `rerun` visualization window showing the input point cloud
 </div>
 
 ### List available examples
+
+For `Vitreous` module (point cloud and mesh processing):
 ```bash
 python examples/vitreous_examples.py --list
 ```
@@ -130,9 +137,25 @@ This will display all available examples, such as:
 - `filter_point_cloud_using_voxel_downsampling`
 - ... and many more
 
-### Run a specific example
+For `Pupil` module (image processing):
 ```bash
-python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_box
+python examples/pupil_examples.py --list
+```
+
+This will display all available examples, such as:
+- `enhance_image_using_auto_gamma_correction`
+- `enhance_image_using_clahe`
+- `enhance_image_using_white_balance`
+- `filter_image_using_bilateral`
+- `filter_image_using_blur`
+- `filter_image_using_box`
+- ... and many more
+
+### Run a specific example
+
+```bash
+python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_box        # Vitreous
+python examples/pupil_examples.py --example filter_image_using_morphological_gradient     # Pupil
 ```
 
 The example name should be provided **without** the `_example` suffix.
@@ -151,7 +174,12 @@ python examples\vitreous_examples.py --example filter_point_cloud_using_statisti
 
 ## Example Categories
 
-Examples are organized by functionality and common workflows:
+Examples in each module are organized by functionality and common workflows. 
+
+> > Note: All examples include optional **Rerun-based 3D visualization** with camera controls and overlays. This can be disabled if only numerical output is required.
+
+<details>
+<summary><strong>Vitreous</strong></summary>
 
 * **Point Cloud Calculations**
   * Axis-aligned and oriented bounding boxes
@@ -190,11 +218,34 @@ Examples are organized by functionality and common workflows:
   * Converting meshes to point clouds
   * Reconstructing meshes from point clouds (convex hull, Poisson)
 
-* **Visualization (Optional)**
-  * Rerun-based 3D visualization
-  * Camera controls and overlays
+</details>
 
-All examples include optional visualization sections that can be removed if only numerical output is needed.
+<details>
+<summary><strong>Pupil</strong></summary>
+
+* **Image Filtering**
+  * **Morphological filters**  
+    Erode, Dilate, Open, Close, Gradient, Top-hat, Black-hat    
+
+  * **Ridge & structure enhancement**  
+    Frangi, Hessian, Sato, Meijering    
+
+  * **Edge & sharpening filters**  
+    Laplacian, Sobel, Scharr, Gabor   
+
+  * **Smoothing & denoising**  
+    Gaussian blur, Median blur, Box filter, Bilateral filter, Blur
+
+* **Image Enhancement**
+  * CLAHE (contrast enhancement)
+  * Auto gamma correction
+  * White balance
+
+* **Image Transformation**
+  * Pyramid downsampling & upsampling
+  * Binary mask thinning (blob thinning)
+
+</details>    
 
 ---
 
@@ -203,14 +254,16 @@ All examples include optional visualization sections that can be removed if only
 ```text
 telekinesis-examples/
 ├── examples/
-│   └── datatypes_examples.py   # Datatypes examples
-│   └── vitreous_examples.py    # Main vitreous examples script with all example functions
+│   └── datatypes_examples.py   # Datatypes examples script with all example functions
+│   └── vitreous_examples.py    # vitreous examples script with all example functions
+│   └── pupil_examples.py       # Pupil examples script with all example functions
 ├── telekinesis-data/           # Git submodule containing example data files
+│   ├── images/                 # Image files
 │   ├── point_clouds/           # PLY point cloud files
-│   ├── meshes/                 # GLB mesh files
-│   └── images/                 # Image files
+│   └── meshes/                 # GLB mesh files
 ├── README.md                   # This file
 ├── LICENSE.txt                 # License file
+├── .gitignore                  # License file
 └── .gitmodules                 # Git submodule configuration
 ```
 
