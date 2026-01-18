@@ -29,20 +29,16 @@
 
 # Telekinesis SDK Examples – Robotics & Computer Vision in Python
 
-This repository provides **Python examples for the Telekinesis SDK**, demonstrating how to build **robotics, computer vision, and Physical AI pipelines** using modular perception and geometry processing APIs.
+This repository provides **Python examples for the Telekinesis SDK**, demonstrating **Telekinesis Skills - atomic robotics control and computer vision operations** - using Telekinesis APIs.
 
-The examples focus on **practical usage of Telekinesis APIs**, including:
+Each example in this repository:
+- Demonstrates a **single Telekinesis SDK function call**
+- Focuses on one **well-defined perception or robotics operation**
+- Is designed to be **standalone, readable, and composable**
 
-- **3D point cloud and mesh processing**
-- **Computer vision and image processing**
-- **Object detection and segmentation**
-- **Robotics perception workflows**
-- **Geometry, filtering, clustering, and registration**
+These examples are intended as **indiviudal Skills - building blocks** that can be combined to create larger **industrial robotics and computer vision pipelines**.
 
-Each example corresponds directly to a single Telekinesis SDK function call and focuses on one well-defined operation.
-
-> Note: These examples are intended as **reference implementations** for integrating Telekinesis SDK calls into your own projects.
-
+> Note: Use examples as **reference implementations** to integrate into your own projects.
 
 ## Table of Contents
 
@@ -62,38 +58,30 @@ Each example corresponds directly to a single Telekinesis SDK function call and 
 
 ### Available Today
 
-1. **Vitreous** – 3D point cloud and mesh processing for robotics perception  
-2. **Pupil** – Image processing and classical computer vision pipelines
+1. **Vitreous** – 3D point cloud and mesh processing  
+2. **Pupil** – 2D image processing
 
-### In Active Development
+### In Active Development (Not in the examples)
 
-The Telekinesis SDK is modular and continuously expanding. Upcoming modules include:
+The SDK is modular and continuously expanding. Upcoming modules include:
 
-- **Retina** – Object detection and visual foundation models  
-- **Cornea** – Image segmentation 
-- **Illusion** – Synthetic data generation and simulation  
-- **Iris** – Model training and fine-tuning
+- **Retina** – 2D object detection & visual foundation models  
+- **Cornea** – 2D image segmentation 
+- **Illusion** – Synthetic data generation 
+- **Iris** – Model training & fine-tuning
 
-For a full overview of the Telekinesis SDK ecosystem, see the [Telekinesis Documentation](https://docs.telekinesis.ai).
+And many more...
 
-## Common Use Cases
+For a full overview of the Telekinesis SDK ecosystem, see the [Official Documentation](https://docs.telekinesis.ai).
 
-The examples in this repository can be used as building blocks for:
-
-- **Robotics perception pipelines**
-- **6D pose estimation**
-- **ICP-based registration and alignment**
-- **Object localization and pose estimation**
-- **Industrial computer vision workflows**
-- **Preprocessing for grasping, inspection, and manipulation**
 
 ## Getting Started
 
-Follow these steps to run **Telekinesis SDK examples for robotics and computer vision** on your local machine.
+Follow these steps to run **Telekinesis SDK examples** on your local machine.
 
 These instructions are self-contained and let you run examples directly from this repository.
 
-> This setup is also available in the Telekinesis documentation:
+> This setup is also available in the official documentation:
 > [Quickstart Guide](https://docs.telekinesis.ai/getting-started/quickstart.html)
 
 ### Requirements
@@ -105,7 +93,7 @@ To run these examples, you’ll need:
 
 1. Create an API Key
 
-Create a Telekinesis account, generate an API key and save it: [Create an API Key](https://platform.telekinesis.ai/api-keys)
+Create a Telekinesis account, generate an API key and **save it**: [Create an API Key](https://platform.telekinesis.ai/api-keys)
 
 2. Configure the API Key
 
@@ -125,6 +113,7 @@ setx TELEKINESIS_API_KEY "your_api_key"
 ```bash
 pip install telekinesis-ai
 ```
+
 
 ## Repository Setup
 
@@ -151,9 +140,8 @@ pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru
 
 Once installed, you’re ready to run any example in this repository.
 
-## Running Examples
 
-Each example executes a **single Telekinesis SDK operation**, making it easy to understand and integrate into your own robotics or vision pipelines.
+## Running Examples
 
 ### Quick start example
 
@@ -180,7 +168,7 @@ This will also open a `rerun` visualization window showing the input point cloud
 
 ### List available examples
 
-The following commands list all available **robotics and computer vision examples** included in this repository.
+The following commands list all available **Skills**.
 
 **`Vitreous` module (point cloud and mesh processing):**
 ```bash
@@ -191,9 +179,6 @@ This will display all available examples, such as:
 - `calculate_axis_aligned_bounding_box`
 - `calculate_oriented_bounding_box`
 - `calculate_point_cloud_centroid`
-- `cluster_point_cloud_using_dbscan`
-- `convert_mesh_to_point_cloud`
-- `filter_point_cloud_using_voxel_downsampling`
 - ... [and many more](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html#overview-of-skills)
 
 **`Pupil` module (image processing):**
@@ -204,10 +189,6 @@ python examples/pupil_examples.py --list
 This will display all available examples, such as:
 - `enhance_image_using_auto_gamma_correction`
 - `enhance_image_using_clahe`
-- `enhance_image_using_white_balance`
-- `filter_image_using_bilateral`
-- `filter_image_using_blur`
-- `filter_image_using_box`
 - ... [and many more](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html#overview-of-skills)
 
 ### Run a specific example
@@ -221,7 +202,18 @@ python examples/pupil_examples.py --example filter_image_using_morphological_gra
 
 By default, examples load data from the bundled `telekinesis-data` submodule.
 
-To use your own data, update the `DATA_DIR` variable in the example scripts:
+To use your own data, 
+
+1. Create `your_data_directory` with a structure:
+```text
+<your_data_directory>/        
+  ├── images/                 # Image files
+  ├── point_clouds/           # PLY point cloud files
+  └── meshes/                 # GLB mesh files
+```
+
+2. Update the `DATA_DIR` variable with `your_data_directory` location in the example scripts:
+
 - [Vitreous](https://github.com/telekinesis-ai/telekinesis-examples/blob/137792e9eddc33ed666c1a139c8ac660b59d4973/examples/vitreous_examples.py#L18)
 
 - [Pupil](https://github.com/telekinesis-ai/telekinesis-examples/blob/137792e9eddc33ed666c1a139c8ac660b59d4973/examples/pupil_examples.py#L13)
@@ -230,25 +222,38 @@ To use your own data, update the `DATA_DIR` variable in the example scripts:
 python examples\vitreous_examples.py --example filter_point_cloud_using_statistical_outlier_removal
 ```
 
-## How to Use These Examples
 
-Each example in this repository is designed to be:
+## How to Use In Your Project
+
+Each example is:
 
 - **Standalone** – run independently
-- **Readable** – minimal boilerplate
 - **Modifiable** – easy to adapt to your own data
 
-Typical workflow:
+**Steps to use in project:**
+
 1. Find an example matching your use case
 2. Run it using the provided command
 3. Inspect numerical output or visualization
 4. Copy the relevant SDK calls into your own project
 
+**Typical use cases:**
+
+By composing multiple **Skills** you can build below **robotics and computer vision workflows** such as:
+
+- **3D and 6D pose estimation**
+- **ICP-based point cloud registration and alignment**
+- **Point cloud preprocessing for grasping and manipulation**
+- **Industrial computer vision and inspection workflows**
+- **Image processing for detection, segmentation, and measurement**
+- **Robotics control pipelines**
+
+
 ## Example Categories
 
-Examples are grouped by **common robotics and computer vision workflows**, making it easy to explore specific capabilities of the Telekinesis SDK.
+Examples are grouped into modules for - **vision, robotics and agentic(coming soon) workflows**, making it easy to explore specific capabilities of the Telekinesis SDK.
 
-### Visualization
+**Visualization**
 
 All examples include **optional visualization using Rerun**, enabling:
 
@@ -326,6 +331,7 @@ Visualization can be disabled if only numerical output is required.
 
 </details>    
 
+
 ## Directory Structure
 
 The repository is organized to separate **example scripts** from **sample data**, enabling easy customization and extension.
@@ -346,20 +352,22 @@ telekinesis-examples/
 └── .gitmodules                 # Git submodule configuration
 ```
 
+
 ## Who Is This For?
 
 This repository is intended for:
 
 - Robotics engineers
 - Computer Vision engineers
-- Researchers working on perception and geometry
 - Teams building Physical AI and robotic perception systems
+
 
 ## Next Steps
 
 - Explore the full SDK capabilities at [Telekinesis Docs](https://docs.telekinesis.ai).
 - Integrate Telekinesis into your own robotics or vision pipelines.
 - Join the [Discord community](https://discord.gg/7NnQ3bQHqm) to ask questions and share feedback.
+
 
 ## Support
 
