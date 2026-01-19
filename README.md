@@ -27,7 +27,7 @@
   </p>
 </div>
 
-# Telekinesis SDK Examples – Robotics & Computer Vision in Python
+# Telekinesis SDK Examples for Computer Vision, Robotics and Physical AI applications
 
 This repository provides **Python examples for the Telekinesis SDK**, demonstrating **Telekinesis Skills - atomic robotics control and computer vision operations** - using Telekinesis APIs.
 
@@ -42,6 +42,7 @@ These examples are intended as **indiviudal Skills - building blocks** that can 
 
 ## Table of Contents
 
+- [Features](#features)
 - [Telekinesis SDK Modules](#telekinesis-sdk-modules)
 - [Getting Started](#getting-started)
 - [Repository Setup](#repository-setup)
@@ -53,6 +54,17 @@ These examples are intended as **indiviudal Skills - building blocks** that can 
 - [Next Steps](#next-steps)
 - [Support](#support)
 
+
+## Features
+
+Agentic Skill Library Features:
+
+- **Unified Python SDK** — One interface for perception, motion, control, and agentic AI systems
+- **Composable Skills** — Reusable primitives, zero glue code
+- **Prototype to Production** — Identical codepaths from digital twin to hardware
+- **Agentic Execution** — Task reasoning, planning, and safe execution
+- **Cloud & On-Prem** —  Deploy anywhere, control your data
+- **Consistent APIs** - Integrates cleanly with existing stacks
 
 ## Telekinesis SDK Modules
 
