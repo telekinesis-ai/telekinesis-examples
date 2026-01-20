@@ -60,11 +60,9 @@ These examples are intended as **indiviudal Skills - building blocks** that can 
 Agentic Skill Library Features:
 
 - **Unified Python SDK** — One interface for perception, motion, control, and agentic AI systems
-- **Composable Skills** — Reusable primitives, zero glue code
-- **Prototype to Production** — Identical codepaths from digital twin to hardware
+- **Composable Skills** — Reusable algorithms
 - **Agentic Execution** — Task reasoning, planning, and safe execution
-- **Cloud & On-Prem** —  Deploy anywhere, control your data
-- **Consistent APIs** - Integrates cleanly with existing stacks
+- **Consistent APIs** - Integrates cleanly with existing robotics and computer vision stacks
 
 ## Telekinesis SDK Modules
 
@@ -77,10 +75,12 @@ Agentic Skill Library Features:
 
 The SDK is modular and continuously expanding. Upcoming modules include:
 
-- **Retina** – 2D object detection & visual foundation models  
-- **Cornea** – 2D image segmentation 
-- **Illusion** – Synthetic data generation 
-- **Iris** – Model training & fine-tuning
+- **Retina** – 2D object detection & visual foundation models *(Planned - Jan 2026)*
+- **Cornea** – 2D image segmentation *(Planned - Jan 2026)*
+- **Illusion** – Synthetic data generation *(Planned - Feb 2026)*
+- **Iris** – Model training & fine-tuning *(Planned - Feb 2026)*
+- **Neuroplan** – Motion planning & control *(Planned - Feb 2026)*
+- **Cortex** – Task planning & skill composition *(Planned - Mar 2026)*
 
 And many more...
 
