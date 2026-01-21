@@ -15,3 +15,4 @@ site/
 public/
 
 examples/run_all_examples.py
+profiling/
