@@ -142,6 +142,13 @@ If you already cloned the repository without submodules, you can fetch them with
 git submodule update --init --recursive
 ```
 
+> **Note:** This repository is actively developed and updated frequently.
+
+When pulling new changes, ensure submodules are initialized and up to date by running:
+```bash
+git submodule update --init --recursive
+```
+
 ### Install example-only dependencies
 
 These dependencies are **required for running examples**:
@@ -230,8 +237,14 @@ To use your own data,
 
 - [Pupil](https://github.com/telekinesis-ai/telekinesis-examples/blob/137792e9eddc33ed666c1a139c8ac660b59d4973/examples/pupil_examples.py#L13)
 
+
+3. Update the `file_name` to your input image, point cloud or mesh:
+
+For eg: In this [Vitreous example](https://github.com/telekinesis-ai/telekinesis-examples/blob/137792e9eddc33ed666c1a139c8ac660b59d4973/examples/vitreous_examples.py#L33C2-L33C83) rename `can_vertical_1_raw_preprocessed.ply` to your `file_name`
+
+4. Run the example to view the output:
 ```bash
-python examples\vitreous_examples.py --example filter_point_cloud_using_statistical_outlier_removal
+python examples\vitreous_examples.py --example calculate_axis_aligned_bounding_box
 ```
 
 
