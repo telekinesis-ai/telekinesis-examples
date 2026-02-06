@@ -19,12 +19,32 @@ This guide is for contributors working on the `telekinesis-examples` repository.
 
 ### Initial Setup
 
-1. Clone the repository with submodules:
+
+
+1. Clone the main repository (with full history and all branches):
 
 ```bash
-git clone --recurse-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
+git clone https://github.com/telekinesis-ai/telekinesis-examples.git
 cd telekinesis-examples
 ```
+
+
+2. Initialize the telekinesis-data submodule as a shallow clone (latest commit only):
+
+```bash
+git submodule update --init --progress --depth 1 --recommend-shallow telekinesis-data
+```
+
+> **Warning:**
+> - Cloning the `telekinesis-data` submodule may take some time, especially on a slow connection or the first time you run this command.
+> - By default, Git may not show progress output and can appear unresponsive while downloading large files. This is expected—please be patient.
+> - To see download progress, use the `--progress` flag as shown above.
+
+> **Why this approach?**
+>
+> - You get the full commit history and all branches for the main repository, so you can work with all features and branches.
+> - The `telekinesis-data` submodule is shallow, so you only download the latest data commit, saving time and space.
+> - This is the best balance for most developers and contributors, and avoids long download times for large data submodules.
 
 2. If you already cloned without `--recurse-submodules`:
 

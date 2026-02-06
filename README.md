@@ -399,11 +399,24 @@ pip install telekinesis-ai
 
 1. Clone the `telekinesis-examples` repository (including the data submodule):
 
+
+
 ```bash
-git clone --recurse-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
+git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
 ```
 
-> This also downloads the [telekinesis-data](https://gitlab.com/telekinesis/telekinesis-data) repository, which contains sample point clouds, meshes, and images. You can replace this with your own data when using Telekinesis in your projects. Download time may vary depending on your connection.
+> **About shallow clone:**
+>
+> - This command downloads only the latest commit of the main repository and its submodules, making the process much faster and using less disk space.
+> - You get all the latest code and data, but not the full git history.
+> - This is ideal for most users, CI/CD, and quick testing.
+> - If you want the full commit history (for development or advanced git operations), use:
+>
+>   ```bash
+>   git clone --recurse-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
+>   ```
+
+This also downloads the [telekinesis-data](https://gitlab.com/telekinesis/telekinesis-data) repository, which contains sample point clouds, meshes, and images. You can replace this with your own data when using Telekinesis in your projects. Download time may vary depending on your connection.
 
 2. Change into the repository directory:
 
