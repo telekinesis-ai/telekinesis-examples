@@ -19,11 +19,36 @@ This guide is for contributors working on the `telekinesis-examples` repository.
 
 ### Initial Setup
 
-1. Clone the repository with submodules:
+
+1. Clone the repository with submodules (shallow, fast, latest commit):
+
+```bash
+git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
+cd telekinesis-examples
+```
+
+> **Tip:** This command will clone only the latest commit of the main repository and its submodules, making the download much faster and using less disk space. This is ideal for most users and CI setups. If you need the full history, remove `--depth 1 --shallow-submodules`.
+
+---
+
+### Fast Cloning for Latest Commit (Recommended)
+
+If you want to quickly pull the latest code and data (without full git history), use:
+
+```bash
+git clone --depth 1 --recurse-submodules --shallow-submodules \
+    https://github.com/telekinesis-ai/telekinesis-examples.git
+```
+
+This will:
+- Download only the latest commit of the main repo and submodules
+- Make cloning much faster and use less disk space
+- Still give you all the latest code and data for development or testing
+
+If you need to contribute or require full git history, use the standard clone command:
 
 ```bash
 git clone --recurse-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
-cd telekinesis-examples
 ```
 
 2. If you already cloned without `--recurse-submodules`:
