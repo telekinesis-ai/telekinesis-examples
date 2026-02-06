@@ -20,36 +20,31 @@ This guide is for contributors working on the `telekinesis-examples` repository.
 ### Initial Setup
 
 
-1. Clone the repository with submodules (shallow, fast, latest commit):
+
+1. Clone the main repository (with full history and all branches):
 
 ```bash
-git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
+git clone https://github.com/telekinesis-ai/telekinesis-examples.git
 cd telekinesis-examples
 ```
 
-> **Tip:** This command will clone only the latest commit of the main repository and its submodules, making the download much faster and using less disk space. This is ideal for most users and CI setups. If you need the full history, remove `--depth 1 --shallow-submodules`.
 
----
-
-### Fast Cloning for Latest Commit (Recommended)
-
-If you want to quickly pull the latest code and data (without full git history), use:
+2. Initialize the telekinesis-data submodule as a shallow clone (latest commit only):
 
 ```bash
-git clone --depth 1 --recurse-submodules --shallow-submodules \
-    https://github.com/telekinesis-ai/telekinesis-examples.git
+git submodule update --init --progress --depth 1 --recommend-shallow telekinesis-data
 ```
 
-This will:
-- Download only the latest commit of the main repo and submodules
-- Make cloning much faster and use less disk space
-- Still give you all the latest code and data for development or testing
+> **Warning:**
+> - Cloning the `telekinesis-data` submodule may take some time, especially on a slow connection or the first time you run this command.
+> - By default, Git may not show progress output and can appear unresponsive while downloading large files. This is expected—please be patient.
+> - To see download progress, use the `--progress` flag as shown above.
 
-If you need to contribute or require full git history, use the standard clone command:
-
-```bash
-git clone --recurse-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
-```
+> **Why this approach?**
+>
+> - You get the full commit history and all branches for the main repository, so you can work with all features and branches.
+> - The `telekinesis-data` submodule is shallow, so you only download the latest data commit, saving time and space.
+> - This is the best balance for most developers and contributors, and avoids long download times for large data submodules.
 
 2. If you already cloned without `--recurse-submodules`:
 
