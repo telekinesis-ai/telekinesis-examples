@@ -38,11 +38,7 @@
 
 # Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI
 
-<video src="assets/application-vitreous-point-cloud-processing.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-
-<p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">
-  Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI applications
-</p>
+<img src="assets/application-vitreous-point-cloud-processing.gif" alt="Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI" style="width: 100%; border-radius: 1rem;" />
 
 The [**Telekinesis Agentic Skill Library**](https://docs.telekinesis.ai/) is the first large-scale Python library for building agentic robotics, computer vision, and Physical AI systems. It provides:
 
@@ -214,11 +210,7 @@ To learn more, explore [Cortex](https://docs.telekinesis.ai/cortex/overview.html
 
 ## What Can You Build?
 
-<video src="assets/application-automated-relay-soldering.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-
-<p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">
-  Automated relay soldering powered by Physical AI
-</p>
+<img src="assets/application-automated-relay-soldering.gif" alt="Automated relay soldering powered by Physical AI" style="width: 100%; border-radius: 1rem;" />
 
 **Telekinesis Agentic Skill Library** helps you build **real-world robotics and Physical AI applications** for industries such as manufacturing, automotive, aerospace, and others. Below are use cases the Telekinesis team has deployed using the skill library.
 
@@ -229,24 +221,12 @@ To learn more, explore [Cortex](https://docs.telekinesis.ai/cortex/overview.html
 | **Automated Assembly** | Multi-step assembly combining task planning, coordinated manipulation, and precise motion execution. |
 | **Vision-Based Quality Control** | Industrial computer vision for defect detection, dimensional verification, and surface analysis. |
 
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 2rem 0;">
-  <div>
-    <video src="assets/application-automated-basil-harvesting.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Automated Basil Harvesting</p>
-  </div>
-  <div>
-    <video src="assets/application-carton-palletizing.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Carton Palletizing</p>
-  </div>
-  <div>
-    <video src="assets/application-auto-assemble.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Automated Assembly</p>
-  </div>
-  <div>
-    <video src="assets/application-quality-control.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Vision-Based Quality Control</p>
-  </div>
-</div>
+| | |
+|:---:|:---:|
+| <img src="assets/application-automated-basil-harvesting.gif" alt="Automated Basil Harvesting" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/application-carton-palletizing.gif" alt="Carton Palletizing" style="width: 100%; border-radius: 1rem;" /> |
+| Automated Basil Harvesting | Carton Palletizing |
+| <img src="assets/application-auto-assemble.gif" alt="Automated Assembly" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/application-quality-control.gif" alt="Vision-Based Quality Control" style="width: 100%; border-radius: 1rem;" /> |
+| Automated Assembly | Vision-Based Quality Control |
 
 
 ## Control Any Industrial Robot, Mobile Robot & Humanoid with a Unified Python Interface
@@ -261,11 +241,7 @@ from telekinesis import neuroplan  # robotics skills
 
 **Prototype** on any robot, **perform** any task on the same platform, and **deploy** the same Skill Groups anywhere—*any robot, any task, on one Physical AI platform.*
 
-<video src="assets/simulation-robots.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-
-<p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">
-  Telekinesis supports industrial, mobile and humanoid robots
-</p>
+<img src="assets/simulation-robots.gif" alt="Telekinesis supports industrial, mobile and humanoid robots" style="width: 100%; border-radius: 1rem;" />
 
 
 ## Production-Grade Computer Vision Models for Robotics and Physical AI Systems
@@ -295,11 +271,11 @@ from telekinesis import medulla    # sensor interface skills
     <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">3D Point Cloud Processing & Mesh Generation</p>
     <p>Develop geometric alignment pipelines using <a href="https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html">Vitreous</a> to register point clouds or meshes against reference models or scenes. Vitreous provides reusable registration Skills—ICP-based alignment, global registration—enabling precise localization and model-to-scene matching.</p>
   </div>
-  <video src="assets/vision-icp-registration.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
+  <img src="assets/vision-icp-registration.gif" alt="ICP registration" style="width: 100%; border-radius: 1rem;" />
 </div>
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin: 2rem 0;">
-  <video src="assets/vision-3d-object-detection.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
+  <img src="assets/vision-3d-object-detection.gif" alt="3D object detection" style="width: 100%; border-radius: 1rem;" />
   <div>
     <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">3D Object Detection & 6D Pose Estimation</p>
     <p>Create 3D object detection and 6D pose estimation pipelines by combining <a href="https://docs.telekinesis.ai/retina/overview.html">Retina</a> for object detection with <a href="https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html">Vitreous</a> for point cloud filtering, registration, and geometric pose estimation—for grasp planning, inspection, and vision-guided manipulation.</p>
@@ -323,32 +299,12 @@ from telekinesis import medulla    # sensor interface skills
 
 Develop and simulate digital twin workflows to validate, stress-test, and optimize Skill Groups. Deploy the same Skill Groups to real-world robots using a simulation-to-real transfer pipeline.
 
-<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin: 2rem 0;">
-  <div>
-    <video src="assets/simulation-cnc-machine-tending.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">CNC Machine Tending</p>
-  </div>
-  <div>
-    <video src="assets/simulation-pick-and-place.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Pick and Place</p>
-  </div>
-  <div>
-    <video src="assets/simulation-polishing.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Surface Polishing</p>
-  </div>
-  <div>
-    <video src="assets/simulation-welding.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Robotic Welding</p>
-  </div>
-  <div>
-    <video src="assets/simulation-metal-palletizing.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Metal Palletizing</p>
-  </div>
-  <div>
-    <video src="assets/simulation-palletizing.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
-    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Palletizing</p>
-  </div>
-</div>
+| | | |
+|:---:|:---:|:---:|
+| <img src="assets/simulation-cnc-machine-tending.gif" alt="CNC Machine Tending" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-pick-and-place.gif" alt="Pick and Place" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-polishing.gif" alt="Surface Polishing" style="width: 100%; border-radius: 1rem;" /> |
+| CNC Machine Tending | Pick and Place | Surface Polishing |
+| <img src="assets/simulation-welding.gif" alt="Robotic Welding" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-metal-palletizing.gif" alt="Metal Palletizing" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-palletizing.gif" alt="Palletizing" style="width: 100%; border-radius: 1rem;" /> |
+| Robotic Welding | Metal Palletizing | Palletizing |
 
 ## Getting Started
 
@@ -425,7 +381,7 @@ python examples/vitreous_examples.py --example filter_point_cloud_using_voxel_do
 
 If the example runs successfully, a **Rerun** visualization window will open showing the input and filtered point cloud. Rerun is a visualization tool for 3D data and processing results.
 
-<video src="assets/voxel_downsample_input_output.mp4" autoplay loop muted playsinline style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 1rem;"></video>
+<img src="assets/voxel_downsample_input_output.gif" alt="Voxel downsampling: input and filtered point cloud" style="width: 100%; border-radius: 1rem;" />
 
 ### List Available Examples
 
