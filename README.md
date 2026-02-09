@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-    <a href="https://github.com/telekinesis-ai" target="_blank">
+    <a href="https://github.com/telekinesis-ai">
       <img width="100%" src="assets/telekinesis_banner.png" />
     </a>
   </p>
@@ -38,7 +38,7 @@
 
 # Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI
 
-<img src="assets/application-vitreous-point-cloud-processing.gif" alt="Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI" style="width: 100%; border-radius: 1rem;" />
+<img width="100%" src="assets/application-vitreous-point-cloud-processing.gif" alt="Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI" />
 
 The [**Telekinesis Agentic Skill Library**](https://docs.telekinesis.ai/) is the first large-scale Python library for building agentic robotics, computer vision, and Physical AI systems. It provides:
 
@@ -197,9 +197,7 @@ To learn more, explore [Cortex](https://docs.telekinesis.ai/cortex/overview.html
 
 ![Telekinesis Agentic Skill Library Architecture](assets/skill-composition.png)
 
-<p style="font-size: 0.875rem; color: #6b7280; margin-top: 8px;">
-  Telekinesis Agentic Skill Library Architecture
-</p>
+*Telekinesis Agentic Skill Library Architecture*
 
 **Flow Overview**
 
@@ -210,7 +208,7 @@ To learn more, explore [Cortex](https://docs.telekinesis.ai/cortex/overview.html
 
 ## What Can You Build?
 
-<img src="assets/application-automated-relay-soldering.gif" alt="Automated relay soldering powered by Physical AI" style="width: 100%; border-radius: 1rem;" />
+<img width="100%" src="assets/application-automated-relay-soldering.gif" alt="Automated relay soldering powered by Physical AI" />
 
 **Telekinesis Agentic Skill Library** helps you build **real-world robotics and Physical AI applications** for industries such as manufacturing, automotive, aerospace, and others. Below are use cases the Telekinesis team has deployed using the skill library.
 
@@ -223,9 +221,9 @@ To learn more, explore [Cortex](https://docs.telekinesis.ai/cortex/overview.html
 
 | | |
 |:---:|:---:|
-| <img src="assets/application-automated-basil-harvesting.gif" alt="Automated Basil Harvesting" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/application-carton-palletizing.gif" alt="Carton Palletizing" style="width: 100%; border-radius: 1rem;" /> |
+| <img width="100%" src="assets/application-automated-basil-harvesting.gif" alt="Automated Basil Harvesting" /> | <img width="100%" src="assets/application-carton-palletizing.gif" alt="Carton Palletizing" /> |
 | Automated Basil Harvesting | Carton Palletizing |
-| <img src="assets/application-auto-assemble.gif" alt="Automated Assembly" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/application-quality-control.gif" alt="Vision-Based Quality Control" style="width: 100%; border-radius: 1rem;" /> |
+| <img width="100%" src="assets/application-auto-assemble.gif" alt="Automated Assembly" /> | <img width="100%" src="assets/application-quality-control.gif" alt="Vision-Based Quality Control" /> |
 | Automated Assembly | Vision-Based Quality Control |
 
 
@@ -241,7 +239,7 @@ from telekinesis import neuroplan  # robotics skills
 
 **Prototype** on any robot, **perform** any task on the same platform, and **deploy** the same Skill Groups anywhere—*any robot, any task, on one Physical AI platform.*
 
-<img src="assets/simulation-robots.gif" alt="Telekinesis supports industrial, mobile and humanoid robots" style="width: 100%; border-radius: 1rem;" />
+<img width="100%" src="assets/simulation-robots.gif" alt="Telekinesis supports industrial, mobile and humanoid robots" />
 
 
 ## Production-Grade Computer Vision Models for Robotics and Physical AI Systems
@@ -258,52 +256,27 @@ from telekinesis import iris       # AI model training skills
 from telekinesis import medulla    # sensor interface skills
 ```
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin: 2rem 0;">
-  <img src="assets/computer-vision-capabilities.png" alt="Computer Vision Skill Groups" style="width: 100%; border-radius: 1rem;" />
-  <div>
-    <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">2D Image Processing, Object Detection & Segmentation</p>
-    <p>Build reusable 2D vision pipelines using <a href="https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html">Pupil</a> for low-level image processing, <a href="https://docs.telekinesis.ai/retina/overview.html">Retina</a> for object detection, and <a href="https://docs.telekinesis.ai/cornea/overview.html">Cornea</a> for segmentation and mask generation. These Skill Groups can be composed into standalone perception pipelines for images, video, or sensor data.</p>
-  </div>
-</div>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin: 2rem 0;">
-  <div>
-    <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">3D Point Cloud Processing & Mesh Generation</p>
-    <p>Develop geometric alignment pipelines using <a href="https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html">Vitreous</a> to register point clouds or meshes against reference models or scenes. Vitreous provides reusable registration Skills—ICP-based alignment, global registration—enabling precise localization and model-to-scene matching.</p>
-  </div>
-  <img src="assets/vision-icp-registration.gif" alt="ICP registration" style="width: 100%; border-radius: 1rem;" />
-</div>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin: 2rem 0;">
-  <img src="assets/vision-3d-object-detection.gif" alt="3D object detection" style="width: 100%; border-radius: 1rem;" />
-  <div>
-    <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">3D Object Detection & 6D Pose Estimation</p>
-    <p>Create 3D object detection and 6D pose estimation pipelines by combining <a href="https://docs.telekinesis.ai/retina/overview.html">Retina</a> for object detection with <a href="https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html">Vitreous</a> for point cloud filtering, registration, and geometric pose estimation—for grasp planning, inspection, and vision-guided manipulation.</p>
-  </div>
-</div>
-
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; margin: 2rem 0;">
-  <div>
-    <p style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Synthetic Data Generation & AI Model Training</p>
-    <p>Generate photo-realistic synthetic image datasets for training object detection, segmentation, and classification models using the <a href="https://docs.telekinesis.ai/illusion/overview.html">Illusion</a> skill group. Train state-of-the-art AI models in the cloud and deploy them to real-world systems using the <a href="https://docs.telekinesis.ai/iris/overview.html">Iris</a> skill group.</p>
-  </div>
-  <img src="assets/synthetic-data-generation.png" alt="Synthetic Data Generation" style="width: 100%; border-radius: 1rem;" />
-</div>
+| | |
+|:---:|:---|
+| <img width="400" src="assets/computer-vision-capabilities.png" alt="Computer Vision Skill Groups" /> | **2D Image Processing, Object Detection & Segmentation** <br><br> Build reusable 2D vision pipelines using [Pupil](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html) for low-level image processing, [Retina](https://docs.telekinesis.ai/retina/overview.html) for object detection, and [Cornea](https://docs.telekinesis.ai/cornea/overview.html) for segmentation and mask generation. These Skill Groups can be composed into standalone perception pipelines for images, video, or sensor data. |
+| **3D Point Cloud Processing & Mesh Generation** <br><br> Develop geometric alignment pipelines using [Vitreous](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) to register point clouds or meshes against reference models or scenes. Vitreous provides reusable registration Skills—ICP-based alignment, global registration—enabling precise localization and model-to-scene matching. | <img width="400" src="assets/vision-icp-registration.gif" alt="ICP registration" /> |
+| <img width="400" src="assets/vision-3d-object-detection.gif" alt="3D object detection" /> | **3D Object Detection & 6D Pose Estimation** <br><br> Create 3D object detection and 6D pose estimation pipelines by combining [Retina](https://docs.telekinesis.ai/retina/overview.html) for object detection with [Vitreous](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) for point cloud filtering, registration, and geometric pose estimation—for grasp planning, inspection, and vision-guided manipulation. |
+| **Synthetic Data Generation & AI Model Training** <br><br> Generate photo-realistic synthetic image datasets for training object detection, segmentation, and classification models using the [Illusion](https://docs.telekinesis.ai/illusion/overview.html) skill group. Train state-of-the-art AI models in the cloud and deploy them to real-world systems using the [Iris](https://docs.telekinesis.ai/iris/overview.html) skill group. | <img width="400" src="assets/synthetic-data-generation.png" alt="Synthetic Data Generation" /> |
 
 
 ## Brainwave: the Telekinesis Physical AI Platform
 
 [**Brainwave**](https://docs.telekinesis.ai/brainwave/overview.html) is the Telekinesis Physical AI cloud platform for managing skill orchestration, simulation, digital twins, and robot deployments from a single system. It enables agent-based robotics systems to be developed, deployed, and operated at scale across heterogeneous robots and tasks.
 
-<img src="assets/physical-ai-platform-brainwave.png" alt="Telekinesis Physical AI Platform – Brainwave" style="width: 100%; border-radius: 1rem; margin: 2rem 0;" />
+<img width="100%" src="assets/physical-ai-platform-brainwave.png" alt="Telekinesis Physical AI Platform – Brainwave" />
 
 Develop and simulate digital twin workflows to validate, stress-test, and optimize Skill Groups. Deploy the same Skill Groups to real-world robots using a simulation-to-real transfer pipeline.
 
 | | | |
 |:---:|:---:|:---:|
-| <img src="assets/simulation-cnc-machine-tending.gif" alt="CNC Machine Tending" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-pick-and-place.gif" alt="Pick and Place" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-polishing.gif" alt="Surface Polishing" style="width: 100%; border-radius: 1rem;" /> |
+| <img width="100%" src="assets/simulation-cnc-machine-tending.gif" alt="CNC Machine Tending" /> | <img width="100%" src="assets/simulation-pick-and-place.gif" alt="Pick and Place" /> | <img width="100%" src="assets/simulation-polishing.gif" alt="Surface Polishing" /> |
 | CNC Machine Tending | Pick and Place | Surface Polishing |
-| <img src="assets/simulation-welding.gif" alt="Robotic Welding" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-metal-palletizing.gif" alt="Metal Palletizing" style="width: 100%; border-radius: 1rem;" /> | <img src="assets/simulation-palletizing.gif" alt="Palletizing" style="width: 100%; border-radius: 1rem;" /> |
+| <img width="100%" src="assets/simulation-welding.gif" alt="Robotic Welding" /> | <img width="100%" src="assets/simulation-metal-palletizing.gif" alt="Metal Palletizing" /> | <img width="100%" src="assets/simulation-palletizing.gif" alt="Palletizing" /> |
 | Robotic Welding | Metal Palletizing | Palletizing |
 
 ## Getting Started
@@ -381,7 +354,7 @@ python examples/vitreous_examples.py --example filter_point_cloud_using_voxel_do
 
 If the example runs successfully, a **Rerun** visualization window will open showing the input and filtered point cloud. Rerun is a visualization tool for 3D data and processing results.
 
-<img src="assets/voxel_downsample_input_output.gif" alt="Voxel downsampling: input and filtered point cloud" style="width: 100%; border-radius: 1rem;" />
+<img width="100%" src="assets/voxel_downsample_input_output.gif" alt="Voxel downsampling: input and filtered point cloud" />
 
 ### List Available Examples
 
