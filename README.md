@@ -109,10 +109,10 @@ blurred_image = pupil.filter_image_using_gaussian_blur(
 Skills are organized in [**Skill Groups**](https://docs.telekinesis.ai/getting-started/skills.html). Each can be imported from the `telekinesis` library:
 
 ```python
-from telekinesis import vitreous   # point cloud processing skills
-from telekinesis import retina     # object detection skills
 from telekinesis import cornea     # image segmentation skills
 from telekinesis import pupil      # image processing skills
+from telekinesis import vitreous   # point cloud processing skills
+from telekinesis import retina     # object detection skills
 from telekinesis import illusion   # synthetic data generation skills
 from telekinesis import iris       # AI model training skills
 from telekinesis import neuroplan  # robotics skills
@@ -120,16 +120,18 @@ from telekinesis import medulla    # hardware communication skills
 from telekinesis import cortex     # physical AI agents
 ```
 
-### [Vitreous: 3D point cloud processing](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html)
+### [Cornea: Image segmentation](https://docs.telekinesis.ai/cornea/overview.html)
 ```python
-from telekinesis import vitreous
+from telekinesis import cornea
 ```
-- **Point cloud:** centroids, normals, bounding boxes, principal axes
-- **Filtering:** masks, outliers, downsampling, plane & cylinder removal
-- **Segmentation:** DBSCAN, density, color, plane-based clustering
-- **Transforms:** rigid transforms, scaling, projection
-- **Registration:** ICP (P2P, P2Plane), global registration, cuboid sampling
-- **Meshes:** shapes, mesh to point cloud, convex hull, Poisson reconstruction
+- **Color-based segmentation:** RGB, HSV, LAB, YCrCb
+- **Region-based segmentation:** Focus region, Watershed, Flood fill
+- **Deep learning segmentation:** BiRefNet (foreground), SAM
+- **Graph-based segmentation:** GrabCut
+- **Superpixel segmentation:** Felzenszwalb, SLIC
+- **Filtering:** Filter by area, color, mask
+- **Thresholding:** Global threshold, Otsu, Local, Yen, Adaptive, Laplacian-based
+
 
 ### [Pupil: 2D image processing](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html)
 ```python
@@ -142,17 +144,23 @@ from telekinesis import pupil
 - **Enhancement:** CLAHE, gamma correction, white balance
 - **Transforms:** pyramids, mask thinning
 
+
+### [Vitreous: 3D point cloud processing](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html)
+```python
+from telekinesis import vitreous
+```
+- **Point cloud:** centroids, normals, bounding boxes, principal axes
+- **Filtering:** masks, outliers, downsampling, plane & cylinder removal
+- **Segmentation:** DBSCAN, density, color, plane-based clustering
+- **Transforms:** rigid transforms, scaling, projection
+- **Registration:** ICP (P2P, P2Plane), global registration, cuboid sampling
+- **Meshes:** shapes, mesh to point cloud, convex hull, Poisson reconstruction
+
 ### [Retina: Object detection](https://docs.telekinesis.ai/retina/overview.html)
 ```python
 from telekinesis import retina
 ```
 - Foundation-model based object detection • Classical object detection
-
-### [Cornea: Image segmentation](https://docs.telekinesis.ai/cornea/overview.html)
-```python
-from telekinesis import cornea
-```
-- Foundation model–based, deep learning, and classical segmentation
 
 ### [Illusion: Synthetic data generation](https://docs.telekinesis.ai/illusion/overview.html)
 ```python
@@ -328,22 +336,9 @@ pip install telekinesis-ai
 
 1. Clone the `telekinesis-examples` repository (including the data submodule):
 
-
-
 ```bash
 git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
 ```
-
-> **About shallow clone:**
->
-> - This command downloads only the latest commit of the main repository and its submodules, making the process much faster and using less disk space.
-> - You get all the latest code and data, but not the full git history.
-> - This is ideal for most users, CI/CD, and quick testing.
-> - If you want the full commit history (for development or advanced git operations), use:
->
->   ```bash
->   git clone --recurse-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
->   ```
 
 This also downloads the [telekinesis-data](https://gitlab.com/telekinesis/telekinesis-data) repository, which contains sample point clouds, meshes, and images. You can replace this with your own data when using Telekinesis in your projects. Download time may vary depending on your connection.
 
@@ -356,37 +351,39 @@ cd telekinesis-examples
 3. Install example dependencies:
 
 ```bash
-pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru
+pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru pycocotools
 ```
 
-4. Run the [voxel downsampling](https://docs.telekinesis.ai/vitreous_sdk/filter_point_cloud_using_voxel_downsampling.html) example:
+4. Run the [segment_image_using_same](https://docs.telekinesis.ai/cornea/segment_image_using_sam.html) example:
 
 ```bash
-python examples/vitreous_examples.py --example filter_point_cloud_using_voxel_downsampling
+python examples/cornea_examples.py --example segment_image_using_sam
 ```
 
 If the example runs successfully, a **Rerun** visualization window will open showing the input and filtered point cloud. Rerun is a visualization tool for 3D data and processing results.
 
-<img width="100%" src="assets/voxel_downsample_input_output.gif" alt="Voxel downsampling: input and filtered point cloud" />
+<img width="100%" src="assets/sam_input_output.png" alt="Segmentation using SAM model" />
 
 ### List Available Examples
 
 ```bash
-python examples/vitreous_examples.py --list   # Vitreous (3D point cloud & mesh)
+python examples/cornea_examples.py --list     # Cornea (2D image segmentation)
 python examples/pupil_examples.py --list      # Pupil (2D image processing)
+python examples/vitreous_examples.py --list   # Vitreous (3D point cloud & mesh)
 ```
 
 ### Run a Specific Example
 
 ```bash
-python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_box
+python examples/cornea_examples.py --example segment_image_using_rgb
 python examples/pupil_examples.py --example filter_image_using_morphological_gradient
+python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_box
 ```
 
 ### Use Your Own Data
 
 1. Create a directory with `images/`, `point_clouds/`, and `meshes/` subdirectories. See the [Skills documentation](https://docs.telekinesis.ai/getting-started/skills.html) for more on data formats.
-2. Update `DATA_DIR` in [vitreous_examples.py](examples/vitreous_examples.py) or [pupil_examples.py](examples/pupil_examples.py).
+2. Update `DATA_DIR` in [vitreous_examples.py](examples/vitreous_examples.py) or [pupil_examples.py](examples/pupil_examples.py) or [cornea_examples.py](examples/cornea_examples.py)..
 3. Update the `file_name` variable to your input file.
 4. Run the example.
 
@@ -396,10 +393,10 @@ python examples/pupil_examples.py --example filter_image_using_morphological_gra
 
 | Module | Description | Status |
 |--------|-------------|--------|
-| [**Vitreous**](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) | 3D point cloud & mesh processing | Released |
+| [**Cornea**](https://docs.telekinesis.ai/cornea/overview.html) | Image segmentation | Released |
 | [**Pupil**](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html) | 2D image processing | Released |
+| [**Vitreous**](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) | 3D point cloud & mesh processing | Released |
 | [**Retina**](https://docs.telekinesis.ai/retina/overview.html) | Object detection (foundation models, classical) | Planned — Feb 2026 |
-| [**Cornea**](https://docs.telekinesis.ai/cornea/overview.html) | Image segmentation | Planned — Feb 2026 |
 | [**Illusion**](https://docs.telekinesis.ai/illusion/overview.html) | Synthetic data generation | Planned — Feb 2026 |
 | [**Iris**](https://docs.telekinesis.ai/iris/overview.html) | Model training & fine-tuning | Planned — Feb 2026 |
 | [**Neuroplan**](https://docs.telekinesis.ai/neuroplan/overview.html) | Motion planning, kinematics, control | Planned — Feb 2026 |
@@ -415,6 +412,7 @@ python examples/pupil_examples.py --example filter_image_using_morphological_gra
 ```
 telekinesis-examples/
 ├── examples/
+│   ├── cornea_examples.py      # Image segmentation Skills
 │   ├── datatypes_examples.py   # Data types & transformations
 │   ├── vitreous_examples.py    # 3D point cloud & mesh Skills
 │   └── pupil_examples.py       # 2D image processing Skills
@@ -424,6 +422,7 @@ telekinesis-examples/
 │   └── meshes/
 ├── assets/
 ├── README.md
+├── DEVELOPMENT.md
 └── LICENSE.txt
 ```
 
@@ -443,8 +442,9 @@ Ready to go further? Explore the Agentic Skill Library, dive into specific modul
 
 - [Documentation](https://docs.telekinesis.ai) — Full Agentic Skill Library reference and guides
 - [Quickstart](https://docs.telekinesis.ai/getting-started/quickstart.html) — Step-by-step setup
-- [Vitreous Skills](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) — 3D point cloud processing
+- [Cornea Skills](https://docs.telekinesis.ai/cornea/overview.html) — Image segmentation
 - [Pupil Skills](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html) — 2D image processing
+- [Vitreous Skills](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) — 3D point cloud processing
 - [Discord](https://discord.gg/S5v8bYAnc6) — Ask questions, share feedback, connect with users
 
 ## Support
