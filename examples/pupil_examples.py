@@ -1,3 +1,10 @@
+"""
+    This example demonstrates how to use the Pupil SDK for image processing operations, including contrast enhancement, 
+    morphological transformations, pyramid transformations, ridge/vesselness filters, and sharpening/gradient filters. 
+    
+    It also shows how to visualize results using Rerun.
+"""
+
 import argparse
 import difflib
 import pathlib
@@ -5,151 +12,14 @@ import numpy as np
 
 from loguru import logger
 import rerun as rr
+import rerun.blueprint as rrb
 
 from telekinesis import pupil
-from datatypes import datatypes, io
+from datatypes import io
 
 ROOT_DIR = pathlib.Path(__file__).parent.parent.resolve()
 DATA_DIR = ROOT_DIR / "telekinesis-data"
 
-# Helper function for rerun initialization
-def init_rerun(example_name: str):
-    """
-    Initialize Rerun for visualization.
-    
-    Attempts to connect to an existing Rerun viewer instance. If no instance
-    is available, spawns a new Rerun viewer window. This function should be
-    called before logging any visualization data to Rerun.
-    
-    Args:
-        example_name: A unique name for this visualization session. Used to
-            identify the recording in Rerun.
-    """
-    rr.init(example_name, spawn=False)
-    try:
-        rr.connect()
-    except Exception:
-        rr.spawn()
-
-
-# Helper functions for loading data
-def load_image(filename, as_gray=False, as_binary=False, binary_method='otsu') -> datatypes.Image:
-    """
-    Load an image from the default data directory.
-    
-    Loads an image file from the telekinesis-data/images directory. Supports
-    loading images in different formats (color, grayscale, binary) and various
-    binary thresholding methods.
-    
-    Args:
-        filename: Name of the image file to load (e.g., "brain_scan.jpg").
-        as_gray: If True, convert the image to grayscale. Default: False.
-        as_binary: If True, convert the image to binary (black and white).
-            Default: False.
-        binary_method: Method for binary thresholding when as_binary=True.
-            Options: 'otsu', 'fixed', etc. Default: 'otsu'.
-    
-    Returns:
-        A datatypes.Image object containing the loaded image, or None if the
-        file is not found or cannot be loaded.
-    
-    Note:
-        The image is loaded from DATA_DIR / "images" / filename. If the file
-        doesn't exist, a warning is logged and None is returned.
-        
-        To use your own data directory, modify the DATA_DIR variable and ensure
-        to have an "images" folder to point to your desired directory with your images.
-    """
-    image_path = str(DATA_DIR / "images" / filename)
-
-    if image_path and pathlib.Path(image_path).exists():
-        image = io.load_image(filepath=image_path, as_gray=as_gray, as_binary=as_binary, binary_method=binary_method)
-        if image is not None:
-            return image
-    logger.warning(f"Image file not found: {image_path}")
-    return None
-
-
-def visualize_image_pair(
-    input_image: np.ndarray,
-    processed_images,
-    title: str = "Image Processing",
-):
-    """
-    Log one input image + multiple processed images to rerun for visualization.
-    
-    Note: All images are automatically converted to uint8 format for visualization
-    purposes. This conversion handles various input formats (float32, float64, etc.)
-    by normalizing and scaling appropriately. The original image data types are
-    preserved in the actual processing results; only the visualization uses uint8.
-
-    Args:
-        input_image: The input image as a numpy array (any dtype).
-        processed_images: The processed image(s) to visualize. Can be:
-            - list/tuple of np.ndarray (multiple images)
-            - dict[str, np.ndarray] (name -> image mapping)
-            - single np.ndarray (single processed image)
-        title: Title for the visualization (used in entity path naming).
-
-    Output entity paths:
-        examples/<title>/input_image (always on left)
-        examples/<title>/processed_<filter_name> (on right, single image)
-        examples/<title>/processed_<filter_name>_1, _2, etc. (on right, multiple images)
-    """
-
-    def _to_u8(img: np.ndarray) -> np.ndarray:
-        if img is None:
-            raise ValueError("image is None")
-        if not isinstance(img, np.ndarray):
-            raise TypeError(f"expected np.ndarray, got {type(img)}")
-
-        if img.dtype == np.uint8:
-            return img
-
-        img = img.astype(np.float32, copy=False)
-        if img.size == 0:
-            return np.zeros_like(img, dtype=np.uint8)
-
-        mx = float(np.nanmax(img))
-        if mx <= 1.0:
-            img = np.clip(img, 0.0, 1.0)
-            return (img * 255.0).astype(np.uint8)
-
-        # intensity-like
-        return np.clip(img, 0.0, 255.0).astype(np.uint8)
-
-    # Normalize input image
-    input_image_u8 = _to_u8(input_image)
-
-    # Extract filter name from title (remove common suffixes like "Filter", "Operation")
-    filter_name = title.replace(" Filter", "").replace(" Operation", "").replace(" ", "_").lower()
-
-    # Normalize processed collection
-    if isinstance(processed_images, dict):
-        items = list(processed_images.items())  # (name, img)
-    elif isinstance(processed_images, (list, tuple)):
-        items = [(str(i + 1) if len(processed_images) > 1 else "", img) for i, img in enumerate(processed_images)]
-    else:
-        # single image fallback
-        items = [("", processed_images)]
-
-    entity_base = f"examples/{title.replace(' ', '_').lower()}"
-
-    # Log input image (always on left)
-    rr.log(f"{entity_base}/input_image", rr.Image(input_image_u8))
-
-    # Log output image(s) (always on right)
-    for suffix, img in items:
-        if suffix:
-            # Multiple images: processed_{filter_name}_1, processed_{filter_name}_2, etc.
-            output_name = f"processed_{filter_name}_{suffix}"
-        else:
-            # Single image: processed_{filter_name}
-            output_name = f"processed_{filter_name}"
-        rr.log(f"{entity_base}/{output_name}", rr.Image(_to_u8(img)))
-
-
-# Filter Examples
 
 # ===================== Contrast =====================
 
@@ -159,26 +29,52 @@ def enhance_image_using_clahe_example():
     
     CLAHE enhances local contrast adaptively, preventing over-amplification
     of noise in uniform regions.
+
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
+
+    # Load image
+    filepath = str(DATA_DIR / "images" / "brain_scan.jpg")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
     
-    image = load_image("brain_scan.jpg")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
-    
+    # Enhance image using CLAHE
     filtered_image = pupil.enhance_image_using_clahe(
         image=image,
         clip_limit=10.0,
         tile_grid_size=4,
         color_space="lab",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied CLAHE filter. Enhanced output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied CLAHE filter. Enhanced output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
+
+    # Initialize Rerun for visualization
+    rr.init("enhance_image_using_clahe", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Enhanced", origin="enhanced_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("enhanced_image", rr.Image(filtered_image_np))
     
-    init_rerun("enhance_image_using_clahe")
-    visualize_image_pair(in_np_image, out_np_image, "CLAHE Filter")
+
 
 # ===================== Morphology =====================
 
@@ -188,12 +84,17 @@ def filter_image_using_morphological_erode_example():
     
     Erosion removes pixels from object boundaries, useful for removing
     small bright spots and shrinking objects.
+
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("gear_with_texture.jpg", as_binary=True, binary_method='fixed')
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "gear_with_texture.jpg")
+    image = io.load_image(filepath=filepath, as_binary=True, binary_method='fixed')
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply erosion morphological operation
     filtered_image = pupil.filter_image_using_morphological_erode(
         image=image,
         kernel_size=5,
@@ -201,14 +102,33 @@ def filter_image_using_morphological_erode_example():
         iterations=10,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied erosion morphological operation. Output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied erosion morphological operation. Output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_morphological_erode")
-    visualize_image_pair(in_np_image, out_np_image, "Erosion Operation")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_morphological_erode", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_morphological_dilate_example():
@@ -217,12 +137,17 @@ def filter_image_using_morphological_dilate_example():
     
     Dilation adds pixels to object boundaries, useful for filling gaps
     and expanding objects.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("spanners_arranged.jpg", as_binary=True, binary_method='fixed')
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "spanners_arranged.jpg")
+    image = io.load_image(filepath=filepath, as_binary=True, binary_method='fixed')
+    logger.success(f"Loaded image from {filepath}")
     
+    # Apply dilation morphological operation
     filtered_image = pupil.filter_image_using_morphological_dilate(
         image=image,
         kernel_size=5,
@@ -230,25 +155,53 @@ def filter_image_using_morphological_dilate_example():
         iterations=5,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied dilation morphological operation. Output image shape: {}", out_np_image.shape)
+    
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied dilation morphological operation. Output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_morphological_dilate")
-    visualize_image_pair(in_np_image, out_np_image, "Dilation Operation")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_morphological_dilate", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_morphological_close_example():
     """
     Applies a close morphological transformation.
+    
+    Closing consists of a dilation followed by an erosion. It is useful for
+    filling small holes, closing gaps between nearby objects, and smoothing
+    object boundaries.
+
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("nuts_scattered.jpg", as_binary=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "nuts_scattered.jpg")
+    image = io.load_image(filepath=filepath, as_binary=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply close morphological operation
     filtered_image = pupil.filter_image_using_morphological_close(
         image=image,
         kernel_size=5,
@@ -256,24 +209,53 @@ def filter_image_using_morphological_close_example():
         iterations=5,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied close morphological operation. Output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied close morphological operation. Output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_morphological_close")
-    visualize_image_pair(in_np_image, out_np_image, "Closing Operation")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_morphological_close", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
+
 
 def filter_image_using_morphological_open_example():
     """
     Applies a open morphological transformation.
+
+    Opening consists of an erosion followed by a dilation. It is useful for
+    removing small bright noise, separating weakly connected objects, and
+    smoothing object boundaries without significantly altering the overall shape.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("broken_cables.png", as_binary=True, binary_method='fixed')
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "broken_cables.png")
+    image = io.load_image(filepath=filepath, as_binary=True, binary_method='fixed')
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply open morphological operation
     filtered_image = pupil.filter_image_using_morphological_open(
         image=image,
         kernel_size=3,
@@ -281,24 +263,53 @@ def filter_image_using_morphological_open_example():
         iterations=2,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied open morphological operation. Output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied open morphological operation. Output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_morphological_open")
-    visualize_image_pair(in_np_image, out_np_image, "Opening Operation")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_morphological_open", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
+
 
 def filter_image_using_morphological_gradient_example():
     """
     Applies a gradient morphological transformation.
+
+    The morphological gradient computes the difference between dilation and
+    erosion of an image. It highlights object boundaries by emphasizing the
+    intensity transitions at the edges.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
-    
-    image = load_image("cartons_arranged.png", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
 
+    # Load image
+    filepath = str(DATA_DIR / "images" / "cartons_arranged.png")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
+
+    # Apply gradient morphological operation
     filtered_image = pupil.filter_image_using_morphological_gradient(
         image=image,
         kernel_size=5,
@@ -306,24 +317,52 @@ def filter_image_using_morphological_gradient_example():
         iterations=1,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied gradient morphological operation. Output image shape: {}", out_np_image.shape)
+    
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied gradient morphological operation. Output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_morphological_gradient")
-    visualize_image_pair(in_np_image, out_np_image, "Gradient Operation")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_morphological_gradient", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 def filter_image_using_morphological_tophat_example():
     """
     Applies a tophat morphological transformation.
+
+    The top-hat transform computes the difference between the original image
+    and its morphological opening. It highlights small bright objects or
+    features that are smaller than the structuring element.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("keyhole.jpg", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "keyhole.jpg")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply tophat morphological operation
     filtered_image = pupil.filter_image_using_morphological_tophat(
         image=image,
         kernel_size=3,
@@ -331,25 +370,52 @@ def filter_image_using_morphological_tophat_example():
         iterations=5,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied tophat morphological operation. Output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied tophat morphological operation. Output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_morphological_tophat")
-    visualize_image_pair(in_np_image, out_np_image, "Tophat Operation")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_morphological_tophat", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_morphological_blackhat_example():
     """
     Applies a blackhat morphological transformation.
+
+    This operation is useful for enhancing dark details, detecting small
+    dark objects on bright backgrounds, and correcting uneven illumination.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("mechanical_parts_gray.png", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "mechanical_parts_gray.png")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply blackhat morphological operation
     filtered_image = pupil.filter_image_using_morphological_blackhat(
         image=image,
         kernel_size=15,
@@ -357,14 +423,33 @@ def filter_image_using_morphological_blackhat_example():
         iterations=2,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied blackhat morphological operation. Output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied blackhat morphological operation. Output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_morphological_blackhat")
-    visualize_image_pair(in_np_image, out_np_image, "Blackhat Operation")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_morphological_blackhat", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 # ===================== Pyramid =====================
 
@@ -374,12 +459,17 @@ def transform_image_using_pyramid_downsampling_example():
     
     Pyramid down reduces image resolution, useful for
     multi-scale analysis and efficient processing.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
-    
-    image = load_image("gearbox.png")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
 
+    # Load image
+    filepath = str(DATA_DIR / "images" / "gearbox.png")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
+
+    # Apply pyramid downsampling transformation multiple times to create a pyramid
     filtered_image = pupil.transform_image_using_pyramid_downsampling(
         image=image,
         scale_factor=0.5,
@@ -387,21 +477,45 @@ def transform_image_using_pyramid_downsampling_example():
     filtered_image_1 = pupil.transform_image_using_pyramid_downsampling(
         image=filtered_image,
         scale_factor=0.5,
-    )
+    )   
     filtered_image_2 = pupil.transform_image_using_pyramid_downsampling(
         image=filtered_image_1,
         scale_factor=0.5,
     )
-    out_np_image = filtered_image.to_numpy()
-    out_np_image_1 = filtered_image_1.to_numpy()
-    out_np_image_2 = filtered_image_2.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied pyramid downsampling. Transformed output image shapes: {}, {}, {}", out_np_image.shape, out_np_image_1.shape, out_np_image_2.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    filtered_image_np_1 = filtered_image_1.to_numpy()
+    filtered_image_np_2 = filtered_image_2.to_numpy()
+    logger.success("Applied pyramid downsampling. Transformed output image shapes: {}, {}, {}", 
+                   filtered_image_np.shape, filtered_image_np_1.shape, filtered_image_np_2.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("transform_image_using_pyramid_downsampling")
-    visualize_image_pair(in_np_image, [out_np_image, out_np_image_1, out_np_image_2], "Pyramid Down")
+    # Initialize Rerun for visualization
+    rr.init("transform_image_using_pyramid_downsampling", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered 1", origin="filtered_image_1"),
+                rrb.Spatial2DView(name="Filtered 2", origin="filtered_image_2"),
+                rrb.Spatial2DView(name="Filtered 3", origin="filtered_image_3"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image_1", rr.Image(filtered_image_np))
+    rr.log("filtered_image_2", rr.Image(filtered_image_np_1))
+    rr.log("filtered_image_3", rr.Image(filtered_image_np_2))
 
 def transform_image_using_pyramid_upsampling_example():
     """
@@ -409,14 +523,19 @@ def transform_image_using_pyramid_upsampling_example():
     
     Pyramid up increases image resolution, useful for image enlargement
     and multi-scale reconstruction.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image_in = load_image("buttons_arranged_downsampled.png")
-    logger.success("Loaded image shape: {}", image_in.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "buttons_arranged_downsampled.png")
+    image = io.load_image(filepath=filepath)
+    logger.success("Loaded image shape: {}", image.to_numpy().shape)
 
+    # Apply pyramid upsampling transformation multiple times to create a pyramid
     filtered_image = pupil.transform_image_using_pyramid_upsampling(
-        image=image_in,
+        image=image,
         scale_factor=2.0,
     )
     filtered_image_1 = pupil.transform_image_using_pyramid_upsampling(
@@ -427,16 +546,39 @@ def transform_image_using_pyramid_upsampling_example():
         image=filtered_image_1,
         scale_factor=2.0,
     )
-    out_np_image = filtered_image.to_numpy()
-    out_np_image_1 = filtered_image_1.to_numpy()
-    out_np_image_2 = filtered_image_2.to_numpy()
-    in_np_image = image_in.to_numpy()
-    logger.success("Applied pyramid upsampling. Transformed output image shapes: {}, {}, {}", out_np_image.shape, out_np_image_1.shape, out_np_image_2.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    filtered_image_np_1 = filtered_image_1.to_numpy()
+    filtered_image_np_2 = filtered_image_2.to_numpy()
+    logger.success("Applied pyramid upsampling. Transformed output image shapes: {}, {}, {}", filtered_image_np.shape, filtered_image_np_1.shape, filtered_image_np_2.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("transform_image_using_pyramid_upsampling")
-    visualize_image_pair(in_np_image, [out_np_image, out_np_image_1, out_np_image_2], "Pyramid Up")
+    # Initialize Rerun for visualization
+    rr.init("transform_image_using_pyramid_upsampling", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered 1", origin="filtered_image_1"),
+                rrb.Spatial2DView(name="Filtered 2", origin="filtered_image_2"),
+                rrb.Spatial2DView(name="Filtered 3", origin="filtered_image_3"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image_1", rr.Image(filtered_image_np))
+    rr.log("filtered_image_2", rr.Image(filtered_image_np_1))
+    rr.log("filtered_image_3", rr.Image(filtered_image_np_2))
 
 
 # ===================== Ridge / Vesselness =====================
@@ -447,12 +589,16 @@ def filter_image_using_frangi_example():
     
     Frangi filter is designed to detect vessel-like structures in medical
     images, fingerprints, and other images with elongated features.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
+    # Load image
+    filepath = str(DATA_DIR / "images" / "tablets_arranged.jpg")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
 
-    image = load_image("tablets_arranged.jpg", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
-
+    # Apply Frangi filter for vesselness enhancement
     filtered_image = pupil.filter_image_using_frangi(
         image=image,
         scale_start=6,
@@ -464,14 +610,33 @@ def filter_image_using_frangi_example():
         border_type="reflect",
         constant_value=0.0,
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Frangi filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Frangi filter. Filtered output image shape: {}", filtered_image_np.shape)
 
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_frangi")
-    visualize_image_pair(in_np_image, out_np_image, "Frangi Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_frangi", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_hessian_example():
@@ -480,12 +645,16 @@ def filter_image_using_hessian_example():
     
     Hessian filter uses eigenvalue analysis to detect vessel-like structures,
     similar to Frangi but with different vesselness measure.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
-    
-    image = load_image("wires.jpg", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "wires.jpg")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Hessian-based vesselness filter
     filtered_image = pupil.filter_image_using_hessian(
         image=image,
         scale_start=1,
@@ -496,14 +665,32 @@ def filter_image_using_hessian_example():
         constant_value=0.0,
     )
 
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Hessian filter. Filtered output image shape: {}", out_np_image.shape)
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Hessian filter. Filtered output image shape: {}", filtered_image_np.shape)
 
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_hessian")
-    visualize_image_pair(in_np_image, out_np_image, "Hessian Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_hessian", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_sato_example():
@@ -512,12 +699,17 @@ def filter_image_using_sato_example():
     
     Sato filter is designed to detect ridges and valleys at multiple scales,
     useful for detecting fine structures like vessels or fibers.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("pcb_top_gray.png", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "pcb_top_gray.png")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Sato filter for multi-scale ridge detection
     filtered_image = pupil.filter_image_using_sato(
         image=image,
         scale_start=1,
@@ -527,14 +719,33 @@ def filter_image_using_sato_example():
         border_type="reflect",
         constant_value=0.0,
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Sato filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Sato filter. Filtered output image shape: {}", filtered_image_np.shape)
 
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_sato")
-    visualize_image_pair(in_np_image, out_np_image, "Sato Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_sato", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_meijering_example():
@@ -543,12 +754,17 @@ def filter_image_using_meijering_example():
     
     Meijering filter is optimized for detecting neurites and similar
     branching structures in biomedical images.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("sidewalk_cracked.jpg", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)  
+    # Load image
+    filepath = str(DATA_DIR / "images" / "sidewalk_cracked.jpg")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")  
 
+    # Apply Meijering filter for neurite detection
     filtered_image = pupil.filter_image_using_meijering(
         image=image,
         scale_start=1,
@@ -558,14 +774,33 @@ def filter_image_using_meijering_example():
         border_type="reflect",
         constant_value=0.0,
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Meijering filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Meijering filter. Filtered output image shape: {}", filtered_image_np.shape)
 
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_meijering")
-    visualize_image_pair(in_np_image, out_np_image, "Meijering Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_meijering", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 # ===================== Sharpening / Gradients =====================
 
@@ -575,28 +810,59 @@ def filter_image_using_laplacian_example():
     
     Laplacian operator detects edges by finding regions where the second
     derivative is zero or changes sign.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("flat_mechanical_component_denoised.png")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "flat_mechanical_component_denoised.png")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Laplacian filter for edge detection
     filtered_image = pupil.filter_image_using_laplacian(
         image=image,
+        output_format="32bit",
         kernel_size=5,
         scale=1.0,
         delta=0.0,
-        output_format="32bit",
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Laplacian filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.debug("Laplacian filter output image dtype: {}", filtered_image_np.dtype)
+    logger.success("Applied Laplacian filter. Filtered output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_laplacian")
-    visualize_image_pair(in_np_image, out_np_image, "Laplacian Filter")
+    # Handle float images for visualization
+    filtered_image_np = np.abs(filtered_image_np.astype(np.float32))
+    filtered_image_np = np.clip(filtered_image_np, 0, 255)
+    filtered_image_np = filtered_image_np.astype(np.uint8)
+
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_laplacian", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
+
 
 
 def filter_image_using_sobel_example():
@@ -605,30 +871,59 @@ def filter_image_using_sobel_example():
     
     Sobel operator computes gradients in X and Y directions, useful for
     detecting edges and their orientation.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("nuts_scattered.jpg", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "nuts.jpg")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Sobel filter for edge detection
     filtered_image = pupil.filter_image_using_sobel(
         image=image,
+        output_format="64bit",
         dx=1,
         dy=1,
         kernel_size=9,
         scale=1.0,
         delta=0.0,
-        output_format="64bit",
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Sobel filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Sobel filter. Filtered output image shape: {}", filtered_image_np.shape)
     
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization (Optional) ======================
+
+    # Handle float images for visualization
+    filtered_image_np = np.abs(filtered_image_np.astype(np.float32))
+    filtered_image_np = np.clip(filtered_image_np, 0, 255)
+    filtered_image_np = filtered_image_np.astype(np.uint8)
     
-    init_rerun("filter_image_using_sobel")
-    visualize_image_pair(in_np_image, out_np_image, "Sobel Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_sobel", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_scharr_example():
@@ -637,29 +932,53 @@ def filter_image_using_scharr_example():
     
     Scharr operator is similar to Sobel but with better rotation invariance
     and more accurate gradient estimation.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("nuts_scattered.jpg", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "nuts_scattered.jpg")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Scharr filter for edge detection
     filtered_image = pupil.filter_image_using_scharr(
         image=image,
+        output_format="8bit",
         dx=0,
         dy=1,
         scale=1.0,
         delta=0.0,
-        output_format="8bit",
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Scharr filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Scharr filter. Filtered output image shape: {}", filtered_image_np.shape)
 
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_scharr")
-    visualize_image_pair(in_np_image, out_np_image, "Scharr Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_scharr", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 def filter_image_using_gabor_example():
     """
@@ -667,12 +986,17 @@ def filter_image_using_gabor_example():
     
     Gabor filters are useful for detecting oriented features and textures
     at specific scales and orientations.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("finger_print.jpg", as_gray=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "finger_print.jpg")
+    image = io.load_image(filepath=filepath, as_gray=True)
+    logger.success(f"Loaded image from {filepath}")
     
+    # Apply Gabor filter for texture analysis and feature detection
     filtered_image = pupil.filter_image_using_gabor(
         image=image,
         kernel_size=5,
@@ -682,22 +1006,43 @@ def filter_image_using_gabor_example():
         aspect_ratio=0.5,
         phase_offset=np.pi * 0.5,
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Gabor filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Gabor filter. Filtered output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    if out_np_image.dtype != np.uint8:
-        # Handle float images like cv2.imshow does
-        if out_np_image.dtype in [np.float32, np.float64]:
-            # Clip to [0, 1] range
-            out_np_image = np.clip(out_np_image, 0, 1)
-            # Scale to [0, 255]
-            out_np_image = (out_np_image * 255).astype(np.uint8)
+    # Handle float images for visualization
+    filtered_image_np = np.abs(filtered_image_np.astype(np.float32))
+    min_val = filtered_image_np.min()
+    max_val = filtered_image_np.max()
+    if max_val > min_val:
+        img = (filtered_image_np - min_val) / (max_val - min_val)
+    else:
+        img = np.zeros_like(filtered_image_np)
+    filtered_image_np = (img * 255).astype(np.uint8)
     
-    init_rerun("filter_image_using_gabor")
-    visualize_image_pair(in_np_image, out_np_image, "Gabor Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_gabor", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 # ===================== Smoothing =====================
@@ -708,12 +1053,17 @@ def filter_image_using_bilateral_example():
     
     Bilateral filtering is effective for noise reduction while maintaining
     edge sharpness. It considers both spatial proximity and color similarity.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
 
-    image = load_image("nuts_scattered_noised.jpg")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "nuts_scattered_noised.jpg")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply bilateral filter for edge-preserving smoothing
     filtered_image = pupil.filter_image_using_bilateral(
         image=image,
         neighborhood_diameter=19,
@@ -721,14 +1071,33 @@ def filter_image_using_bilateral_example():
         color_intensity_sigma=100.0,
         border_type="default",
     )  
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Bilateral filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Bilateral filter. Filtered output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_bilateral")
-    visualize_image_pair(in_np_image, out_np_image, "Bilateral Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_bilateral", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_median_blur_example():
@@ -737,23 +1106,48 @@ def filter_image_using_median_blur_example():
     
     Median blur replaces each pixel with the median of its neighborhood,
     effectively removing impulse noise while preserving edges.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("flat_mechanical_component.png")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "flat_mechanical_component.png")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
+
+    # Apply median blur for salt-and-pepper noise reduction
     filtered_image = pupil.filter_image_using_median_blur(
         image=image,
         kernel_size=11,
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Median Blur filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Median Blur filter. Filtered output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_median_blur")
-    visualize_image_pair(in_np_image, out_np_image, "Median Blur")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_median_blur", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_box_example():
@@ -762,27 +1156,51 @@ def filter_image_using_box_example():
     
     Box filter performs normalized averaging within a kernel region.
     Useful for basic smoothing operations.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("nuts_scattered_noised.jpg")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "nuts_scattered_noised.jpg")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply box filter for basic smoothing
     filtered_image = pupil.filter_image_using_box(
         image=image,
+        output_format="8bit",
         kernel_size=5,
         normalize=True,
-        output_format="8bit",
         border_type="reflect",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Box filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Box filter. Filtered output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_box")
-    visualize_image_pair(in_np_image, out_np_image, "Box Filter")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_box", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_gaussian_blur_example():
@@ -791,12 +1209,17 @@ def filter_image_using_gaussian_blur_example():
     
     Gaussian blur uses a Gaussian kernel for weighted averaging, providing
     natural-looking blur with better edge preservation than simple blur.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("nuts_scattered_noised.jpg")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "nuts_scattered_noised.jpg")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Gaussian blur for smooth noise reduction
     filtered_image = pupil.filter_image_using_gaussian_blur(
         image=image,
         kernel_size=19,
@@ -804,122 +1227,271 @@ def filter_image_using_gaussian_blur_example():
         sigma_y=3.0,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Gaussian Blur filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Gaussian Blur filter. Filtered output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_gaussian_blur")
-    visualize_image_pair(in_np_image, out_np_image, "Gaussian Blur")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_gaussian_blur", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def filter_image_using_blur_example():
     """
     Simple average blur.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("nuts_scattered_noised.jpg")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "nuts_scattered_noised.jpg")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply simple average blur
     filtered_image = pupil.filter_image_using_blur(
         image=image,
         kernel_size=7,
         border_type="default",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Blur filter. Filtered output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Blur filter. Filtered output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("filter_image_using_blur")
-    visualize_image_pair(in_np_image, out_np_image, "Blur")
+    # Initialize Rerun for visualization
+    rr.init("filter_image_using_blur", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def enhance_image_using_auto_gamma_correction_example():
     """
     Applies gamma correction to adjust image brightness non-linearly.
+
+    This operation enhances details in dark or overexposed regions while
+    preserving natural intensity relationships.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("screws_in_dark_lighting.jpg")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "screws_in_dark_lighting.jpg")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply auto gamma correction for non-linear brightness adjustment
     filtered_image = pupil.enhance_image_using_auto_gamma_correction(
         image=image,
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Auto Gamma Correction. Enhanced output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Auto Gamma Correction. Enhanced output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("enhance_image_using_auto_gamma_correction_example")
-    visualize_image_pair(in_np_image, out_np_image, "Gamma Correction")
+    # Initialize Rerun for visualization
+    rr.init("enhance_image_using_auto_gamma_correction", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Enhanced", origin="enhanced_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("enhanced_image", rr.Image(filtered_image_np))
 
 
 def enhance_image_using_white_balance_example():
     """
     White balance (simple per-channel scaling).
+
+    White balance adjusts the intensity of each color channel independently
+    to reduce color casts and achieve a more neutral appearance. It is useful 
+    for correcting illumination bias and improving color consistency across images.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("hand_tools_yellow_light.png")
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "hand_tools_yellow_light.png")
+    image = io.load_image(filepath=filepath)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply white balance for color correction
     filtered_image = pupil.enhance_image_using_white_balance(
         image=image,
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied White Balance. Enhanced output image shape: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied White Balance. Enhanced output image shape: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("enhance_image_using_white_balance")
-    visualize_image_pair(in_np_image, out_np_image, "White Balance")
+    # Initialize Rerun for visualization
+    rr.init("enhance_image_using_white_balance", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Enhanced", origin="enhanced_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("enhanced_image", rr.Image(filtered_image_np))
 
 # ===================== Thinning =====================
 
 def transform_mask_using_blob_thinning_example():
     """
     Skeletonizes (thins) foreground blobs in a binary mask.
+
+    This operation is useful for shape analysis, centerline extraction,
+    and structural feature detection in binary masks.
+    
+    The returned image is processed and used for visualization.
     """
     # ===================== Operation ==========================================
     
-    image = load_image("handwriting_mask.png", as_binary=True)
-    logger.success("Loaded image shape: {}", image.to_numpy().shape)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "handwriting_mask.png")
+    image = io.load_image(filepath=filepath, as_binary=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Zhang-Suen thinning algorithm for skeletonization
     filtered_image = pupil.transform_mask_using_blob_thinning(
         image=image,
         thinning_type="thinning_zhangsuen",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Zhang-Suen thinning. Transformed output image shape 1: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Zhang-Suen thinning. Transformed output image shape 1: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    init_rerun("transform_mask_using_blob_thinning")
-    visualize_image_pair(in_np_image, out_np_image, "Thinning Filter 1")
+    # Initialize Rerun for visualization
+    rr.init("transform_mask_using_blob_thinning", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
     # ===================== Operation ==========================================
     
-    image = load_image("male_female_mask.png", as_binary=True)
+    # Load image
+    filepath = str(DATA_DIR / "images" / "male_female_mask.png")
+    image = io.load_image(filepath=filepath, as_binary=True)
+    logger.success(f"Loaded image from {filepath}")
 
+    # Apply Zhang-Suen thinning algorithm for skeletonization
     filtered_image = pupil.transform_mask_using_blob_thinning(
         image=image,
         thinning_type="thinning_zhangsuen",
     )
-    out_np_image = filtered_image.to_numpy()
-    in_np_image = image.to_numpy()
-    logger.success("Applied Zhang-Suen thinning. Transformed output image shape 2: {}", out_np_image.shape)
+
+    # Access results
+    filtered_image_np = filtered_image.to_numpy()
+    logger.success("Applied Zhang-Suen thinning. Transformed output image shape 2: {}", filtered_image_np.shape)
     
     # ===================== Visualization  (Optional) ======================
     
-    visualize_image_pair(in_np_image, out_np_image, "Thinning Filter 2")
+    # Initialize Rerun for visualization
+    rr.init("transform_mask_using_blob_thinning_2", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Grid(
+                rrb.Spatial2DView(name="Original", origin="input"),
+                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
+            ),
+            rrb.SelectionPanel(),
+            rrb.TimePanel(),
+        ),
+        make_active=True,
+    )
+
+    # Input image
+    image_np = image.to_numpy()
+
+    # Log images
+    rr.log("input", rr.Image(image_np))
+    rr.log("filtered_image", rr.Image(filtered_image_np))
 
 
 def get_example_dict():

@@ -1,3 +1,10 @@
+"""
+    This example demonstrates how to use the Vitreous SDK for point cloud processing operations, 
+	including calculating bounding boxes, centroids, and clustering. 
+	
+	It also shows how to visualize results using Rerun.
+"""
+
 import argparse
 import difflib
 import pathlib
