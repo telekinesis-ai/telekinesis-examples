@@ -13,8 +13,6 @@ from loguru import logger
 import rerun as rr
 from rerun import blueprint as rrb
 from scipy.spatial.transform import Rotation as R
-import cv2
-import time
 
 from telekinesis import vitreous
 from datatypes import datatypes, io
@@ -44,7 +42,7 @@ def calculate_axis_aligned_bounding_box_example():
 	# Execute operation
 	axis_aligned_bounding_box = vitreous.calculate_axis_aligned_bounding_box(point_cloud=point_cloud)
 	logger.success(
-		f"Calculated axis-aligned bounding box for {len(point_cloud.positions)} points: with half-size: {axis_aligned_bounding_box.half_size} and center: {axis_aligned_bounding_box.center}"
+		f"Calculated axis-aligned bounding box for {len(point_cloud.positions)} points: with half-size: {axis_aligned_bounding_box.half_sizes} and centers: {axis_aligned_bounding_box.centers}"
 	)
 
 	# ===================== Visualization  (Optional) ======================
@@ -106,11 +104,11 @@ def calculate_axis_aligned_bounding_box_example():
 	# Log the axis-aligned bounding box as a box and overlay it on the point cloud
 	rr.log("aabb_overlay", rr.Points3D(positions=point_cloud.positions,
 		   colors=point_cloud.colors))
-	quaternions = R.from_euler('xyz', axis_aligned_bounding_box.rotation_in_euler_angles, degrees=True).as_quat()
+	quaternions = R.from_euler('xyz', axis_aligned_bounding_box.rotations_in_euler_angle, degrees=True).as_quat()
 
 	rr.log("aabb_overlay", rr.Boxes3D(
-			half_sizes=axis_aligned_bounding_box.half_size,
-			centers=axis_aligned_bounding_box.center,
+			half_sizes=axis_aligned_bounding_box.half_sizes,
+			centers=axis_aligned_bounding_box.centers,
 			colors=np.array([[0, 255, 0]]),  # Green color for bounding box
 			quaternions=quaternions
 	))
@@ -137,7 +135,7 @@ def calculate_oriented_bounding_box_example():
 	# Execute operation
 	result_bbox = vitreous.calculate_oriented_bounding_box(point_cloud=point_cloud)
 	logger.success(
-		f"Calculated oriented bounding box for {len(point_cloud.positions)} points with half-size: {result_bbox.half_size}, center: {result_bbox.center}, rotation_in_euler_angles: {result_bbox.rotation_in_euler_angles}"
+		f"Calculated oriented bounding box for {len(point_cloud.positions)} points with half-size: {result_bbox.half_sizes}, centers: {result_bbox.centers}, rotations_in_euler_angle: {result_bbox.rotations_in_euler_angle}"
 	)
 
 	# ===================== Visualization  (Optional) ======================
@@ -205,10 +203,10 @@ def calculate_oriented_bounding_box_example():
 		   colors=point_cloud.colors))
 	
 	# Log the oriented bounding box
-	quaternions = R.from_euler('xyz', result_bbox.rotation_in_euler_angles, degrees=True).as_quat()
+	quaternions = R.from_euler('xyz', result_bbox.rotations_in_euler_angle, degrees=True).as_quat()
 	rr.log("obb_overlay", rr.Boxes3D(
-		half_sizes=result_bbox.half_size,
-		centers=result_bbox.center,
+		half_sizes=result_bbox.half_sizes,
+		centers=result_bbox.centers,
 		colors=np.array([[0, 255, 0]]),  # Green color for bounding box
 		quaternions=quaternions
 	))
@@ -1354,16 +1352,15 @@ def filter_point_cloud_using_bounding_box_example():
 	# Execute operation
 	# Create Box
 	x_min, y_min, z_min, x_max, y_max, z_max = np.array([-163, -100, 470, 150, 100, 544])
-	center = np.array(
+	centers = np.array(
 		[[(x_min + x_max) / 2, (y_min + y_max) / 2, (z_min + z_max) / 2]],
 		dtype=np.float32,
 	)
-	half_size = np.array(
+	half_sizes = np.array(
 		[[(x_max - x_min) / 2, (y_max - y_min) / 2, (z_max - z_min) / 2]],
 		dtype=np.float32,
 	)
-	colors = [(255, 0, 0)]
-	bbox = datatypes.Boxes3D(half_size=half_size, center=center, colors=colors)
+	bbox = datatypes.Boxes3D(half_sizes=half_sizes, centers=centers)
 
 	# Filter point cloud using bounding box
 	filtered_point_cloud = vitreous.filter_point_cloud_using_bounding_box(
@@ -1442,8 +1439,8 @@ def filter_point_cloud_using_bounding_box_example():
 	rr.log(
 		"input_point_cloud/bbox",
 		rr.Boxes3D(
-			half_sizes=bbox.half_size,
-			centers=bbox.center,
+			half_sizes=bbox.half_sizes,
+			centers=bbox.centers,
 			colors=[(255, 0, 0), (0, 255, 0), (0, 0, 255)], 
 		)
 	)
@@ -1569,9 +1566,7 @@ def filter_point_cloud_using_mask_example():
 											remove_nan_points=False)
 
 	filepath2 = str(DATA_DIR / "images" / "can_vertical_6_mask.png")
-	mask = cv2.imread(filepath2, cv2.IMREAD_GRAYSCALE)
-
-
+	mask = io.load_image(filepath=filepath2, as_gray=True)
 	logger.success("Loaded point cloud and mask")
    
 	# Execute operation
@@ -1645,7 +1640,8 @@ def filter_point_cloud_using_mask_example():
 			   colors=point_cloud.colors))
 	
 	# Log and mask
-	rr.log("binary_mask", rr.Image(mask, color_model="L"))
+	mask_np = mask.to_numpy()
+	rr.log("binary_mask", rr.Image(mask_np, color_model="L"))
 
 	# Log the filtered point cloud
 	rr.log("masked_point_cloud", rr.ViewCoordinates.RDB, static=True)
@@ -1677,19 +1673,19 @@ def filter_point_cloud_using_oriented_bounding_box_example():
 	rot_y = -7.89877607
 	rot_z = -7.74440359    
 
-	half_size = np.array(
+	half_sizes = np.array(
 		[[(x_max - x_min) / 2, (y_max - y_min) / 2, (z_max - z_min) / 2]],
 		dtype=np.float32,
 	)
-	center = np.array(
+	centers = np.array(
 		[[(x_min + x_max) / 2, (y_min + y_max) / 2, (z_min + z_max) / 2]],
 		dtype=np.float32,
 	)
-	rotation_in_euler_angles = np.array([[rot_x, rot_y, rot_z]], dtype=np.float32)
+	rotations_in_euler_angle = np.array([[rot_x, rot_y, rot_z]], dtype=np.float32)
 	oriented_bbox = datatypes.Boxes3D(
-		half_size=half_size,
-		center=center,
-		rotation_in_euler_angles=rotation_in_euler_angles,
+		half_sizes=half_sizes,
+		centers=centers,
+		rotations_in_euler_angle=rotations_in_euler_angle,
 	)
 
 	# Filter point cloud using oriented bounding box
@@ -1766,10 +1762,10 @@ def filter_point_cloud_using_oriented_bounding_box_example():
 												colors=filtered_point_cloud.colors))
 	
 	# Log the oriented bounding box on the input view
-	quaternions = R.from_euler('xyz', oriented_bbox.rotation_in_euler_angles, degrees=True).as_quat()
+	quaternions = R.from_euler('xyz', oriented_bbox.rotations_in_euler_angle, degrees=True).as_quat()
 	rr.log("input_point_cloud/oriented_bbox", rr.Boxes3D(
-		half_sizes=oriented_bbox.half_size,
-		centers=oriented_bbox.center,
+		half_sizes=oriented_bbox.half_sizes,
+		centers=oriented_bbox.centers,
 		quaternions=quaternions,
 		colors=[(255, 0, 0)],
 	))
