@@ -84,12 +84,18 @@ The Agentic Skill Library and Brainwave are just the beginning. We're building a
 
 A [Skill](https://docs.telekinesis.ai/getting-started/skills.html) is a reusable operation for robotics, computer vision, and Physical AI. Skills span 2D/3D perception (6D pose estimation, 2D/3D detection, segmentation, image processing), motion planning (RRT*, motion generators, trajectory optimization), and motion control (model predictive control, reinforcement learning policies). Skills can be **chained into pipelines** to build real-world robotics applications.
 
-**Example 1: Calculate point cloud centroid** — [docs](https://docs.telekinesis.ai/vitreous_sdk/calculate_point_cloud_centroid.html)
+**Example 1: Segment image using HSV** — [docs](/cornea/segment_image_using_hsv)
 
 ```python
-from telekinesis import vitreous
+from telekinesis import cornea
 
-centroid = vitreous.calculate_point_cloud_centroid(point_cloud=point_cloud)
+result = cornea.segment_image_using_hsv( 
+  image=image,
+  lower_bound=(0, 50, 50),
+  upper_bound=(180, 255, 255),
+  image_id=1,
+) 
+mask = result.to_dict()['labeled_mask']                    
 ```
 
 **Example 2: Apply Gaussian blur to an image** — [docs](https://docs.telekinesis.ai/pupil_sdk/filter_image_using_gaussian_blur.html)
@@ -324,45 +330,57 @@ The Telekinesis Agentic Skill Library uses this API key to authenticate requests
 
 ### Step 3: Install the Telekinesis Agentic Skill Library
 
-We support Python 3.11 and 3.12. Ensure your environment uses one of these versions.
+1. Create an isolated environment so that there is no dependency conflicts. We recommend installing `Miniconda` environment by following instructions from [here](https://docs.conda.io/en/latest/miniconda.html#installing). 
 
-Install the library using `pip`:
+2. Create a new `conda` environment called `telekinesis`:
+    ```bash
+    conda create -n telekinesis python=3.11
+    ```
 
-```bash
-pip install telekinesis-ai
-```
+3. Activate the environment:
+    ```bash
+    conda activate telekinesis
+    ```
+
+4. Install the library using `pip`:
+
+    We support Python 3.11 and 3.12. Ensure your environment uses one of    these versions.
+
+    ```bash
+    pip install telekinesis-ai
+    ```
 
 ### Step 4: Run Your First Example
 
 1. Clone the `telekinesis-examples` repository (including the data submodule):
 
-```bash
-git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/telekinesis-ai/telekinesis-examples.git
-```
+    ```bash
+    git clone --depth 1 --recurse-submodules --shallow-submodules https://    github.com/telekinesis-ai/telekinesis-examples.git
+    ```
 
-This also downloads the [telekinesis-data](https://gitlab.com/telekinesis/telekinesis-data) repository, which contains sample point clouds, meshes, and images. You can replace this with your own data when using Telekinesis in your projects. Download time may vary depending on your connection.
+    This also downloads the [telekinesis-data](https://gitlab.com/    telekinesis/telekinesis-data) repository, which contains sample point     clouds, meshes, and images. You can replace this with your own data     when using Telekinesis in your projects. Download time may vary     depending on your connection.
 
 2. Change into the repository directory:
 
-```bash
-cd telekinesis-examples
-```
+    ```bash
+    cd telekinesis-examples
+    ```
 
 3. Install example dependencies:
 
-```bash
-pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru pycocotools
-```
+    ```bash
+    pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru    pycocotools
+    ```
 
 4. Run the [segment_image_using_same](https://docs.telekinesis.ai/cornea/segment_image_using_sam.html) example:
 
-```bash
-python examples/cornea_examples.py --example segment_image_using_sam
-```
+    ```bash
+    python examples/cornea_examples.py --example segment_image_using_sam
+    ```
 
-If the example runs successfully, a **Rerun** visualization window will open showing the input and filtered point cloud. Rerun is a visualization tool for 3D data and processing results.
+    If the example runs successfully, a **Rerun** visualization window    will open showing the input and filtered point cloud. Rerun is a    visualization tool for 3D data and processing results.
 
-<img width="100%" src="assets/sam_input_output.png" alt="Segmentation using SAM model" />
+    <img width="100%" src="assets/sam_input_output.png" alt="Segmentation     using SAM model" />
 
 ### List Available Examples
 
