@@ -84,7 +84,7 @@ The Agentic Skill Library and Brainwave are just the beginning. We're building a
 
 A [Skill](https://docs.telekinesis.ai/getting-started/skills.html) is a reusable operation for robotics, computer vision, and Physical AI. Skills span 2D/3D perception (6D pose estimation, 2D/3D detection, segmentation, image processing), motion planning (RRT*, motion generators, trajectory optimization), and motion control (model predictive control, reinforcement learning policies). Skills can be **chained into pipelines** to build real-world robotics applications.
 
-**Example 1: Segment image using HSV** — [docs](/cornea/segment_image_using_hsv)
+**Example 1: Segment image using HSV** — [docs](https://docs.telekinesis.ai/cornea/segment_image_using_hsv.html)
 
 ```python
 from telekinesis import cornea
