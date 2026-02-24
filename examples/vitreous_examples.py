@@ -3072,7 +3072,6 @@ def project_point_cloud_to_plane_example():
 	rr.log("input_point_cloud/points", rr.Points3D(
 		positions=point_cloud.positions,
 		colors=point_cloud.colors,
-		radii=point_cloud.radii,
 	))
 
 
@@ -3131,7 +3130,6 @@ def project_point_cloud_to_plane_example():
 		rr.log("projected_point_cloud/points", rr.Points3D(
 			positions=projected_point_cloud.positions,
 			colors=projected_point_cloud.colors,
-			radii=projected_point_cloud.radii,
 		))
 
 
@@ -3220,7 +3218,6 @@ def project_point_cloud_to_plane_defined_by_point_normal_example():
 	rr.log("input_point_cloud_and_plane/points", rr.Points3D(
 		positions=point_cloud.positions,
 		colors=point_cloud.colors,
-		radii=point_cloud.radii,
 	))
 
 	# Log plane
@@ -3279,7 +3276,6 @@ def project_point_cloud_to_plane_defined_by_point_normal_example():
 	rr.log("projected_point_cloud/points", rr.Points3D(
 		positions=projected_point_cloud.positions,
 		colors=projected_point_cloud.colors,
-		radii=projected_point_cloud.radii,
 	))
 
 # Reconstruction examples

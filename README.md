@@ -84,41 +84,42 @@ The Agentic Skill Library and Brainwave are just the beginning. We're building a
 
 A [Skill](https://docs.telekinesis.ai/getting-started/skills.html) is a reusable operation for robotics, computer vision, and Physical AI. Skills span 2D/3D perception (6D pose estimation, 2D/3D detection, segmentation, image processing), motion planning (RRT*, motion generators, trajectory optimization), and motion control (model predictive control, reinforcement learning policies). Skills can be **chained into pipelines** to build real-world robotics applications.
 
-**Example 1: Segment image using HSV** — [docs](https://docs.telekinesis.ai/cornea/segment_image_using_hsv.html)
+**Example 1: Segment image using SAM** — [docs](https://docs.telekinesis.ai/cornea/segment_image_using_sam.html)
 
 ```python
-from telekinesis import cornea
+from telekinesis import cornea                                # Import Cornea - Image segmentation module
 
-result = cornea.segment_image_using_hsv( 
-  image=image,
-  lower_bound=(0, 50, 50),
-  upper_bound=(180, 255, 255),
-  image_id=1,
-) 
-mask = result.to_dict()['labeled_mask']                    
+# Executing a 2D image segmentation Skill                     
+result = cornea.segment_image_using_sam(                      # Executing Skill - `segment_image_using_sam`
+    image=image,
+    bboxes=[[400, 150, 1200, 450]]
+)
+# Access results
+annotations = result.to_list()                
 ```
 
-**Example 2: Apply Gaussian blur to an image** — [docs](https://docs.telekinesis.ai/pupil_sdk/filter_image_using_gaussian_blur.html)
+**Example 2: Detect objects using RF-DETR** — [docs](https://docs.telekinesis.ai/retina/detect_objects_using_rfdetr.html)
 
 ```python
-from telekinesis import pupil
+from telekinesis import retina                                   # Import Retina - Object detection module
 
-blurred_image = pupil.filter_image_using_gaussian_blur(
+# Executing a 2D object detection Skill
+annotations, categories = retina.detect_objects_using_rfdetr(    # Executing Skill - `detect_objects_using_rfdetr`
     image=image,
-    kernel_size=7,
-    sigma_x=3.0,
-    sigma_y=3.0,
-    border_type="default",
+    score_threshold=0.5,
 )
+# Access results
+annotations = annotations.to_list()
+categories = categories.to_list()  
 ```
 
 Skills are organized in [**Skill Groups**](https://docs.telekinesis.ai/getting-started/skills.html). Each can be imported from the `telekinesis` library:
 
 ```python
 from telekinesis import cornea     # image segmentation skills
+from telekinesis import retina     # object detection skills
 from telekinesis import pupil      # image processing skills
 from telekinesis import vitreous   # point cloud processing skills
-from telekinesis import retina     # object detection skills
 from telekinesis import illusion   # synthetic data generation skills
 from telekinesis import iris       # AI model training skills
 from telekinesis import neuroplan  # robotics skills
@@ -137,6 +138,15 @@ from telekinesis import cornea
 - **Superpixel segmentation:** Felzenszwalb, SLIC
 - **Filtering:** Filter by area, color, mask
 - **Thresholding:** Global threshold, Otsu, Local, Yen, Adaptive, Laplacian-based
+
+
+### [Retina: Object detection](https://docs.telekinesis.ai/retina/overview.html)
+```python
+from telekinesis import retina
+```
+- **Classical shape detection** - Hough Transform, Contours
+- **2D Object Detection** - YOLOX, RF-DETR
+- **Open-Vocabulary detection** - Qwen-VL, Grounding DINO
 
 
 ### [Pupil: 2D image processing](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html)
@@ -162,11 +172,6 @@ from telekinesis import vitreous
 - **Registration:** ICP (P2P, P2Plane), global registration, cuboid sampling
 - **Meshes:** shapes, mesh to point cloud, convex hull, Poisson reconstruction
 
-### [Retina: Object detection](https://docs.telekinesis.ai/retina/overview.html)
-```python
-from telekinesis import retina
-```
-- Foundation-model based object detection • Classical object detection
 
 ### [Illusion: Synthetic data generation](https://docs.telekinesis.ai/illusion/overview.html)
 ```python
@@ -228,17 +233,17 @@ To learn more, explore [Cortex](https://docs.telekinesis.ai/cortex/overview.html
 
 | Example Use Case | Description |
 |----------|-------------|
-| **Automated Basil Harvesting** | Vision-based manipulation for agricultural robotics in unstructured outdoor environments. Detect plants, estimate grasp poses, execute adaptive closed-loop motions. |
 | **Carton Palletizing** | Vision-guided palletizing that adapts to changing layouts and product variations. Object detection, pose estimation, and motion planning for accurate placement. |
 | **Automated Assembly** | Multi-step assembly combining task planning, coordinated manipulation, and precise motion execution. |
 | **Vision-Based Quality Control** | Industrial computer vision for defect detection, dimensional verification, and surface analysis. |
+| **Automated Basil Harvesting** | Vision-based manipulation for agricultural robotics in unstructured outdoor environments. Detect plants, estimate grasp poses, execute adaptive closed-loop motions. |
 
 | | |
 |:---:|:---:|
-| <img width="100%" src="assets/application-automated-basil-harvesting.gif" alt="Automated Basil Harvesting" /> | <img width="100%" src="assets/application-carton-palletizing.gif" alt="Carton Palletizing" /> |
-| Automated Basil Harvesting | Carton Palletizing |
-| <img width="100%" src="assets/application-auto-assemble.gif" alt="Automated Assembly" /> | <img width="100%" src="assets/application-quality-control.gif" alt="Vision-Based Quality Control" /> |
-| Automated Assembly | Vision-Based Quality Control |
+| <img width="100%" src="assets/application-carton-palletizing.gif" alt="Carton Palletizing" />  | <img width="100%" src="assets/application-auto-assemble.gif" alt="Automated Assembly" />  |
+| Carton Palletizing  | Automated Assembly |
+|  <img width="100%" src="assets/application-quality-control.gif" alt="Vision-Based Quality Control" /> |  <img width="100%" src="assets/application-automated-basil-harvesting.gif" alt="Automated Basil Harvesting" /> |
+| Vision-Based Quality Control | Automated Basil Harvesting |
 
 
 ## Control Any Industrial Robot, Mobile Robot & Humanoid with a Unified Python Interface
@@ -261,10 +266,10 @@ from telekinesis import neuroplan  # robotics skills
 The library offers **production-grade computer vision Skill Groups** for object detection, segmentation, pose estimation, synthetic data generation, and AI model training.
 
 ```python
-from telekinesis import vitreous   # point cloud processing skills
-from telekinesis import retina     # object detection skills
 from telekinesis import cornea     # image segmentation skills
+from telekinesis import retina     # object detection skills
 from telekinesis import pupil      # image processing skills
+from telekinesis import vitreous   # point cloud processing skills
 from telekinesis import illusion   # synthetic data generation skills
 from telekinesis import iris       # AI model training skills
 from telekinesis import medulla    # sensor interface skills
@@ -369,16 +374,16 @@ The Telekinesis Agentic Skill Library uses this API key to authenticate requests
 3. Install example dependencies:
 
     ```bash
-    pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru    pycocotools
+    pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru pycocotools
     ```
 
-4. Run the [segment_image_using_same](https://docs.telekinesis.ai/cornea/segment_image_using_sam.html) example:
+4. Run the [segment_image_using_sam](https://docs.telekinesis.ai/cornea/segment_image_using_sam.html) example:
 
     ```bash
     python examples/cornea_examples.py --example segment_image_using_sam
     ```
 
-    If the example runs successfully, a **Rerun** visualization window    will open showing the input and filtered point cloud. Rerun is a    visualization tool for 3D data and processing results.
+    If the example runs successfully, a **Rerun** visualization window  will open showing the input and filtered point cloud. Rerun is a    visualization tool for 3D data and processing results.
 
     <img width="100%" src="assets/sam_input_output.png" alt="Segmentation     using SAM model" />
 
@@ -386,6 +391,7 @@ The Telekinesis Agentic Skill Library uses this API key to authenticate requests
 
 ```bash
 python examples/cornea_examples.py --list     # Cornea (2D image segmentation)
+python examples/retina_examples.py --list     # Retina (2D image object detection)
 python examples/pupil_examples.py --list      # Pupil (2D image processing)
 python examples/vitreous_examples.py --list   # Vitreous (3D point cloud & mesh)
 ```
@@ -393,15 +399,16 @@ python examples/vitreous_examples.py --list   # Vitreous (3D point cloud & mesh)
 ### Run a Specific Example
 
 ```bash
-python examples/cornea_examples.py --example segment_image_using_rgb
-python examples/pupil_examples.py --example filter_image_using_morphological_gradient
-python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_box
+python examples/cornea_examples.py --example segment_image_using_rgb                    # Cornea
+python examples/retina_examples.py --example detect_objects_using_grounding_dino        # Retina
+python examples/pupil_examples.py --example filter_image_using_morphological_gradient   # Pupil
+python examples/vitreous_examples.py --example estimate_principal_axes                  # Vitreous
 ```
 
 ### Use Your Own Data
 
 1. Create a directory with `images/`, `point_clouds/`, and `meshes/` subdirectories. See the [Skills documentation](https://docs.telekinesis.ai/getting-started/skills.html) for more on data formats.
-2. Update `DATA_DIR` in [vitreous_examples.py](examples/vitreous_examples.py) or [pupil_examples.py](examples/pupil_examples.py) or [cornea_examples.py](examples/cornea_examples.py)..
+2. Update `DATA_DIR` in [vitreous_examples.py](examples/vitreous_examples.py) or [pupil_examples.py](examples/pupil_examples.py) or [cornea_examples.py](examples/cornea_examples.py) or [retina_examples.py](examples/retina_examples.py)
 3. Update the `file_name` variable to your input file.
 4. Run the example.
 
@@ -412,17 +419,14 @@ python examples/vitreous_examples.py --example calculate_axis_aligned_bounding_b
 | Module | Description | Status |
 |--------|-------------|--------|
 | [**Cornea**](https://docs.telekinesis.ai/cornea/overview.html) | Image segmentation | Released |
+| [**Retina**](https://docs.telekinesis.ai/retina/overview.html) | Object detection (foundation models, classical) | Released|
 | [**Pupil**](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html) | 2D image processing | Released |
 | [**Vitreous**](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) | 3D point cloud & mesh processing | Released |
-| [**Retina**](https://docs.telekinesis.ai/retina/overview.html) | Object detection (foundation models, classical) | Planned — Feb 2026 |
 | [**Illusion**](https://docs.telekinesis.ai/illusion/overview.html) | Synthetic data generation | Planned — Feb 2026 |
 | [**Iris**](https://docs.telekinesis.ai/iris/overview.html) | Model training & fine-tuning | Planned — Feb 2026 |
 | [**Neuroplan**](https://docs.telekinesis.ai/neuroplan/overview.html) | Motion planning, kinematics, control | Planned — Feb 2026 |
 | [**Cortex**](https://docs.telekinesis.ai/cortex/overview.html) | Task planning & skill composition | Planned — Mar 2026 |
 | [**Brainwave**](https://docs.telekinesis.ai/brainwave/overview.html) | End-to-end robotic solutions | Planned — Apr 2026 |
-
-
-
 
 
 ## Directory Structure
@@ -432,8 +436,9 @@ telekinesis-examples/
 ├── examples/
 │   ├── cornea_examples.py      # Image segmentation Skills
 │   ├── datatypes_examples.py   # Data types & transformations
-│   ├── vitreous_examples.py    # 3D point cloud & mesh Skills
-│   └── pupil_examples.py       # 2D image processing Skills
+│   ├── pupil_examples.py       # 2D image processing Skills
+│   ├── retina_examples.py      # Object detection Skills
+│   └── vitreous_examples.py    # 3D point cloud & mesh Skills
 ├── telekinesis-data/           # Git submodule (sample data)
 │   ├── images/
 │   ├── point_clouds/

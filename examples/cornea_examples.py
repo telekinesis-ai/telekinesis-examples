@@ -1476,7 +1476,7 @@ def main():
     if args.list:
         logger.info("Available examples:")
         for example_name in sorted(example_dict.keys()):
-            logger.info(f" {example_name}")
+            logger.info(f" - {example_name}")
         return
 
     if not args.example:
