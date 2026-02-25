@@ -145,7 +145,7 @@ from telekinesis import cornea
 from telekinesis import retina
 ```
 - **Classical shape detection** - Hough Transform, Contours
-- **2D Object Detection** - YOLOX, RF-DETR
+- **2D Object detection** - YOLOX, RF-DETR
 - **Open-Vocabulary detection** - Qwen-VL, Grounding DINO
 
 
@@ -363,7 +363,7 @@ The Telekinesis Agentic Skill Library uses this API key to authenticate requests
     git clone --depth 1 --recurse-submodules --shallow-submodules https://    github.com/telekinesis-ai/telekinesis-examples.git
     ```
 
-    This also downloads the [telekinesis-data](https://gitlab.com/    telekinesis/telekinesis-data) repository, which contains sample point     clouds, meshes, and images. You can replace this with your own data     when using Telekinesis in your projects. Download time may vary     depending on your connection.
+    This also downloads the [telekinesis-data](https://gitlab.com/telekinesis/telekinesis-data) repository, which contains sample point     clouds, meshes, and images. You can replace this with your own data     when using Telekinesis in your projects. Download time may vary     depending on your connection.
 
 2. Change into the repository directory:
 
