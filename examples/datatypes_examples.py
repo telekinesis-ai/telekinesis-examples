@@ -1164,7 +1164,6 @@ def bin_example():
 
 
 datatype_example_dict = {
-    "array": array_example,
     "bool": bool_example,
     "float": float_example,
     "int": int_example,
@@ -1172,14 +1171,10 @@ datatype_example_dict = {
     "boxes2d": boxes2d_example,
     "mesh3d": mesh3d_example,
     "points3d": points3d_example,
-    "vector2d": vector2d_example,
     "vector3d": vector3d_example,
     "vector4d": vector4d_example,
-    "position2d": position2d_example,
-    "position3d": position3d_example,
     "imageformat": imageformat_example,
     "image": image_example,
-    "list_of_images": list_of_images_example,
     "mat4x4": mat4x4_example,
     "mat3x3": mat3x3_example,
     "float32": float32_example,
