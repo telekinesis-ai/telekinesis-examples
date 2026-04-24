@@ -1,14 +1,13 @@
 """
-    This example demonstrates how to use the Cornea SDK for image segmentation operations, 
-    including color-based segmentation, region-based segmentation, thresholding, and superpixel segmentation.
-    
-    It also shows how to visualize results using Rerun.
+This example demonstrates how to use the Cornea SDK for image segmentation operations,
+including color-based segmentation, region-based segmentation, thresholding, and superpixel segmentation.
+
+It also shows how to visualize results using Rerun.
 """
 
 import argparse
 import difflib
 import pathlib
-from typing import Optional
 import numpy as np
 
 import cv2
@@ -22,7 +21,6 @@ from telekinesis import cornea, pupil
 
 ROOT_DIR = pathlib.Path(__file__).parent.parent
 DATA_DIR = ROOT_DIR / "telekinesis-data"
-
 
 
 # ===================== Color Examples =====================
@@ -46,14 +44,12 @@ def segment_image_using_rgb_example():
 
     # Segment image
     result = cornea.segment_image_using_rgb(
-        image=image,
-        lower_bound=(0, 50, 50),
-        upper_bound=(180, 255, 255)
+        image=image, lower_bound=(0, 50, 50), upper_bound=(180, 255, 255)
     )
 
     # Access results
     annotation = result.to_dict()
-    logger.success("Segmentation completed.")
+    logger.success("Segmentation length: {len(annotation)}")
 
     # ===================== Visualization  (Optional) ======================
 
@@ -75,7 +71,7 @@ def segment_image_using_rgb_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -88,7 +84,7 @@ def segment_image_using_hsv_example():
 
     This function demonstrates how to segment an image using a specified
     HSV range.
-    
+
     The returned annotations is processed and used for visualization.
     """
 
@@ -99,12 +95,9 @@ def segment_image_using_hsv_example():
     image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
 
-
     # Segment image
     result = cornea.segment_image_using_hsv(
-        image=image,
-        lower_bound=(0, 50, 50),
-        upper_bound=(180, 255, 255)
+        image=image, lower_bound=(0, 50, 50), upper_bound=(180, 255, 255)
     )
 
     # Access results
@@ -131,7 +124,7 @@ def segment_image_using_hsv_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -156,9 +149,7 @@ def segment_image_using_lab_example():
 
     # Segment image
     result = cornea.segment_image_using_lab(
-        image=image,
-        lower_bound=(120, 50, 50),
-        upper_bound=(180, 255, 255)
+        image=image, lower_bound=(120, 50, 50), upper_bound=(180, 255, 255)
     )
 
     # Access results
@@ -185,7 +176,7 @@ def segment_image_using_lab_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -210,9 +201,7 @@ def segment_image_using_ycrcb_example():
 
     # Segment image
     result = cornea.segment_image_using_ycrcb(
-        image=image,
-        lower_bound=(0, 133, 77),
-        upper_bound=(255, 173, 127)
+        image=image, lower_bound=(0, 133, 77), upper_bound=(255, 173, 127)
     )
 
     # Access results
@@ -239,7 +228,7 @@ def segment_image_using_ycrcb_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -247,6 +236,7 @@ def segment_image_using_ycrcb_example():
 
 
 # ===================== Region Examples =====================
+
 
 def segment_image_using_focus_region_example():
     """
@@ -267,9 +257,7 @@ def segment_image_using_focus_region_example():
 
     # Segment image
     result = cornea.segment_image_using_focus_region(
-        image=image,
-        blur_kernel_size=151,
-        threshold=5
+        image=image, blur_kernel_size=151, threshold=5
     )
 
     # Access results
@@ -295,7 +283,7 @@ def segment_image_using_focus_region_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -355,18 +343,24 @@ def segment_image_using_watershed_example():
             gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
 
         # 1) Otsu threshold (inverse)
-        _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        _, thresh = cv2.threshold(
+            gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
+        )
 
         # 2) Opening
         kernel = np.ones((kernel_size, kernel_size), np.uint8)
-        opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=opening_iterations)
+        opening = cv2.morphologyEx(
+            thresh, cv2.MORPH_OPEN, kernel, iterations=opening_iterations
+        )
 
         # 3) Sure background
         sure_bg = cv2.dilate(opening, kernel, iterations=dilate_iterations)
 
         # 4) Sure foreground
         dist_transform = cv2.distanceTransform(opening, cv2.DIST_L2, 5)
-        _, sure_fg = cv2.threshold(dist_transform, dist_fg_ratio * dist_transform.max(), 255, 0)
+        _, sure_fg = cv2.threshold(
+            dist_transform, dist_fg_ratio * dist_transform.max(), 255, 0
+        )
         sure_fg_u8 = np.uint8(sure_fg)
 
         # 5) Unknown
@@ -394,12 +388,17 @@ def segment_image_using_watershed_example():
             )
         return markers_i32, debug_data
 
-    # Build watershed markers 
+    # Build watershed markers
     markers, debug_data = _build_and_save_watershed_markers_opencv(
         rgb_image_np=original_np.copy(),
         save_debug=True,
     )
-    logger.info("Markers computed with dtype=%s min=%d max=%d", markers.dtype, int(markers.min()), int(markers.max()))
+    logger.info(
+        "Markers computed with dtype=%s min=%d max=%d",
+        markers.dtype,
+        int(markers.min()),
+        int(markers.max()),
+    )
 
     # --- Build elevation/gradient image
     if original_np.ndim == 3:
@@ -409,20 +408,24 @@ def segment_image_using_watershed_example():
 
     # Using telekinesis pupil library to get the gradient image.
     gray_image = datatypes.Image(image=gray)
-    gradient_y = pupil.filter_image_using_sobel(gray_image, dx=0, dy=1).to_numpy()
-    gradient_x = pupil.filter_image_using_sobel(gray_image, dx=1, dy=0).to_numpy()
+    gradient_y = pupil.filter_image_using_sobel(
+        gray_image, dx=0, dy=1
+    ).to_numpy()
+    gradient_x = pupil.filter_image_using_sobel(
+        gray_image, dx=1, dy=0
+    ).to_numpy()
 
     gradient = np.sqrt(gradient_x**2 + gradient_y**2)
 
     gradient_normalized = (
-        (gradient - gradient.min()) / (gradient.max() - gradient.min() + 1e-12) * 255
+        (gradient - gradient.min())
+        / (gradient.max() - gradient.min() + 1e-12)
+        * 255
     ).astype(np.uint8)
     gradient_image = datatypes.Image(image=gradient_normalized, color_model="L")
 
     result = cornea.segment_image_using_watershed(
-        image=gradient_image,   
-        markers=markers,
-        connectivity=1
+        image=gradient_image, markers=markers, connectivity=1
     )
 
     annotation = result.to_dict()
@@ -473,9 +476,7 @@ def segment_image_using_flood_fill_example():
 
     # Perform flood fill segmentation
     result = cornea.segment_image_using_flood_fill(
-        image=image,
-        seed_point=(0, 0),
-        tolerance=10
+        image=image, seed_point=(0, 0), tolerance=10
     )
 
     # Access results
@@ -502,7 +503,7 @@ def segment_image_using_flood_fill_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -510,6 +511,7 @@ def segment_image_using_flood_fill_example():
 
 
 # ===================== Threshold Examples =====================
+
 
 def segment_image_using_otsu_threshold_example():
     """
@@ -553,7 +555,7 @@ def segment_image_using_otsu_threshold_example():
     in_np_image = image.to_numpy()
 
     # Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -578,8 +580,7 @@ def segment_image_using_local_threshold_example():
 
     # Segment image
     result = cornea.segment_image_using_local_threshold(
-        image=image,
-        block_size=23
+        image=image, block_size=23
     )
 
     # Access results
@@ -602,12 +603,11 @@ def segment_image_using_local_threshold_example():
         make_active=True,
     )
 
-
     # Input image
     in_np_image = image.to_numpy()
 
     # Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Rerun logging
     rr.log("input", rr.Image(in_np_image))
@@ -630,9 +630,7 @@ def segment_image_using_yen_threshold_example():
     logger.success(f"Loaded image from {filepath}")
 
     # Segment image
-    result = cornea.segment_image_using_yen_threshold(
-        image=image
-    )
+    result = cornea.segment_image_using_yen_threshold(image=image)
 
     # Access results
     annotation = result.to_dict()
@@ -654,12 +652,11 @@ def segment_image_using_yen_threshold_example():
         make_active=True,
     )
 
-
     # Input image
     in_np_image = image.to_numpy()
 
     # Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Rerun logging
     rr.log("input", rr.Image(in_np_image))
@@ -686,7 +683,7 @@ def segment_image_using_threshold_example():
         image=image,
         min_value=45,
         max_value=255,
-        threshold_type='binary',
+        threshold_type="binary",
     )
 
     # Access results
@@ -713,7 +710,7 @@ def segment_image_using_threshold_example():
     in_np_image = image.to_numpy()
 
     # Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Rerun logging
     rr.log("input", rr.Image(in_np_image))
@@ -724,7 +721,7 @@ def segment_image_using_adaptive_threshold_example():
     """
     Performs adaptive threshold segmentation.
 
-    This function applies adaptive thresholding to segment images with 
+    This function applies adaptive thresholding to segment images with
     non-uniform illumination by computing local thresholds.
 
     The returned annotations is processed and used for visualization.
@@ -741,9 +738,9 @@ def segment_image_using_adaptive_threshold_example():
         image=image,
         max_value=255,
         adaptive_method="gaussian constant",
-        threshold_type='binary',
+        threshold_type="binary",
         block_size=61,
-        offset_constant=5
+        offset_constant=5,
     )
 
     # Access results
@@ -770,7 +767,7 @@ def segment_image_using_adaptive_threshold_example():
     in_np_image = image.to_numpy()
 
     # Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Rerun logging
     rr.log("input", rr.Image(in_np_image))
@@ -821,7 +818,7 @@ def segment_image_using_laplacian_threshold_example():
     in_np_image = image.to_numpy()
 
     # Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Rerun logging
     rr.log("input", rr.Image(in_np_image))
@@ -829,6 +826,7 @@ def segment_image_using_laplacian_threshold_example():
 
 
 # ===================== Superpixel Examples =====================
+
 
 def segment_image_using_felzenszwalb_example():
     """
@@ -849,10 +847,7 @@ def segment_image_using_felzenszwalb_example():
 
     # Segment Image
     result = cornea.segment_image_using_felzenszwalb(
-        image=image,
-        scale=500,
-        sigma=1,
-        min_size=200
+        image=image, scale=500, sigma=1, min_size=200
     )
 
     # Access results
@@ -879,7 +874,7 @@ def segment_image_using_felzenszwalb_example():
     in_np_image = image.to_numpy()
 
     # Segmentation Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log Images
     rr.log("input", rr.Image(in_np_image))
@@ -919,7 +914,7 @@ def segment_image_using_slic_superpixel_example():
         use_slic_zero=False,
         start_label=1,
         mask=None,
-        channel_axis=-1
+        channel_axis=-1,
     )
 
     # Access results
@@ -946,7 +941,7 @@ def segment_image_using_slic_superpixel_example():
     in_np_image = image.to_numpy()
 
     # Segmentation Mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log Images
     rr.log("input", rr.Image(in_np_image))
@@ -966,26 +961,19 @@ def filter_segments_by_area_example():
 
     # Load image
     filepath = str(DATA_DIR / "images" / "eggs_carton.jpg")
-    image = io.load_image(filepath=filepath) 
+    image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
-
 
     # Generate superpixels first
     result_felzenszwalb = cornea.segment_image_using_felzenszwalb(
-        image=image,
-        scale=500,
-        sigma=1,
-        min_size=200
+        image=image, scale=500, sigma=1, min_size=200
     )
 
-    superpixel_labels = result_felzenszwalb.to_dict()['labeled_mask']
+    superpixel_labels = result_felzenszwalb.to_dict()["labeled_mask"]
 
     # Filter superpixels based on area
     result = cornea.filter_segments_by_area(
-        image=image,
-        labels=superpixel_labels,
-        min_area=10000,
-        max_area=100000
+        image=image, labels=superpixel_labels, min_area=10000, max_area=100000
     )
 
     # Access results
@@ -1000,7 +988,9 @@ def filter_segments_by_area_example():
         rrb.Blueprint(
             rrb.Grid(
                 rrb.Spatial2DView(name="Original", origin="input"),
-                rrb.Spatial2DView(name="Filtered Mask", origin="segmented_mask"),
+                rrb.Spatial2DView(
+                    name="Filtered Mask", origin="segmented_mask"
+                ),
             ),
             rrb.SelectionPanel(),
             rrb.TimePanel(),
@@ -1012,7 +1002,7 @@ def filter_segments_by_area_example():
     in_np_image = image.to_numpy()
 
     # Filtered Labeled mask
-    filtered_labels_np = annotation['labeled_mask']
+    filtered_labels_np = annotation["labeled_mask"]
 
     # Log Images
     rr.log("input", rr.Image(in_np_image))
@@ -1032,27 +1022,20 @@ def filter_segments_by_color_example():
 
     # Load image
     filepath = str(DATA_DIR / "images" / "eggs_carton.jpg")
-    image = io.load_image(filepath=filepath) 
+    image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
 
-    
     # Generate superpixels first
     result_felzenszwalb = cornea.segment_image_using_felzenszwalb(
-        image=image,
-        scale=500,
-        sigma=1,
-        min_size=200
+        image=image, scale=500, sigma=1, min_size=200
     )
 
-    superpixel_labels = result_felzenszwalb.to_dict()['labeled_mask']
+    superpixel_labels = result_felzenszwalb.to_dict()["labeled_mask"]
     superpixel_labels = datatypes.Image(superpixel_labels)
 
     # Filter superpixels based on color
     result = cornea.filter_segments_by_color(
-        image=image,
-        labels=superpixel_labels,
-        min_color=0,
-        max_color=125.0
+        image=image, labels=superpixel_labels, min_color=0, max_color=125.0
     )
 
     # Access results
@@ -1067,7 +1050,9 @@ def filter_segments_by_color_example():
         rrb.Blueprint(
             rrb.Grid(
                 rrb.Spatial2DView(name="Original", origin="input"),
-                rrb.Spatial2DView(name="Filtered Mask", origin="segmented_mask"),
+                rrb.Spatial2DView(
+                    name="Filtered Mask", origin="segmented_mask"
+                ),
             ),
             rrb.SelectionPanel(),
             rrb.TimePanel(),
@@ -1079,7 +1064,7 @@ def filter_segments_by_color_example():
     in_np_image = image.to_numpy()
 
     # Filtered Labeled mask
-    filtered_labels_np = annotation['labeled_mask']
+    filtered_labels_np = annotation["labeled_mask"]
 
     # Log Images
     rr.log("input", rr.Image(in_np_image))
@@ -1099,35 +1084,30 @@ def filter_segments_by_mask_example():
 
     # Load and preprocess image
     filepath = str(DATA_DIR / "images" / "eggs_carton.jpg")
-    image = io.load_image(filepath=filepath) 
+    image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
-    
+
     # Generate superpixels first
     result_felzenszwalb = cornea.segment_image_using_felzenszwalb(
-        image=image,
-        scale=500,
-        sigma=1,
-        min_size=200
+        image=image, scale=500, sigma=1, min_size=200
     )
 
-    superpixel_labels = result_felzenszwalb.to_dict()['labeled_mask']
+    superpixel_labels = result_felzenszwalb.to_dict()["labeled_mask"]
     superpixel_labels = datatypes.Image(superpixel_labels)
 
     # Create mask as one third of the image size
     def half_mask(image):
         h, w, _ = image.shape
         mask = np.zeros((h, w), dtype=np.uint8)
-        mask[:, :w//3] = 1
+        mask[:, : w // 3] = 1
         return mask
-    
+
     mask = half_mask(image.to_numpy()) * 255
-    mask = datatypes.Image(image=mask, color_model='L')
+    mask = datatypes.Image(image=mask, color_model="L")
 
     # Apply filtering
     result = cornea.filter_segments_by_mask(
-        image=image,
-        labels=superpixel_labels,
-        mask=mask
+        image=image, labels=superpixel_labels, mask=mask
     )
 
     # Access results
@@ -1143,7 +1123,9 @@ def filter_segments_by_mask_example():
             rrb.Grid(
                 rrb.Spatial2DView(name="Input", origin="input"),
                 rrb.Spatial2DView(name="Filtering Mask", origin="input_mask"),
-                rrb.Spatial2DView(name="Filtered Mask", origin="segmented_mask"),
+                rrb.Spatial2DView(
+                    name="Filtered Mask", origin="segmented_mask"
+                ),
             ),
             rrb.SelectionPanel(),
             rrb.TimePanel(),
@@ -1158,7 +1140,7 @@ def filter_segments_by_mask_example():
     mask_np_in = mask.to_numpy()
 
     # Filtered
-    filtered_labels_np = annotation['labeled_mask']
+    filtered_labels_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -1167,6 +1149,7 @@ def filter_segments_by_mask_example():
 
 
 # ===================== Graph Examples =====================
+
 
 def segment_image_using_grab_cut_example():
     """
@@ -1179,7 +1162,7 @@ def segment_image_using_grab_cut_example():
     The returned annotations is processed and used for visualization.
     """
     # ===================== Operation ==========================================
-    
+
     # Load image
     filepath = str(DATA_DIR / "images" / "plastic_part.jpg")
     image = io.load_image(filepath=filepath)
@@ -1187,15 +1170,13 @@ def segment_image_using_grab_cut_example():
 
     # Define bounding box
     bbox = [220, 20, 930, 850]  # [x, y, width, height] top left x and y
-    bbox_dt = datatypes.Boxes2D(arrays=bbox, array_format='XYWH')
+    bbox_dt = datatypes.Boxes2D(arrays=bbox, array_format="XYWH")
 
     # Segment image
     annotation = cornea.segment_image_using_grab_cut(
-        image=image,
-        num_iterations=2,
-        bbox=bbox_dt
+        image=image, num_iterations=2, bbox=bbox_dt
     )
-    
+
     # Access results
     annotation = annotation.to_dict()
     logger.success("Segmentation completed.")
@@ -1220,20 +1201,24 @@ def segment_image_using_grab_cut_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log input image overlaid with bbox
     rr.log("input", rr.Image(in_np_image))
-    rr.log("input", rr.Boxes2D(
-        array=np.array([bbox]),
-        array_format=rr.Box2DFormat.XYWH,
-        colors=[0, 255, 0],
-    ))
+    rr.log(
+        "input",
+        rr.Boxes2D(
+            array=np.array([bbox]),
+            array_format=rr.Box2DFormat.XYWH,
+            colors=[0, 255, 0],
+        ),
+    )
 
     rr.log("segmented_mask", rr.Image(mask_np))
 
 
 # ===================== Deep Learning Examples =====================
+
 
 def segment_image_using_foreground_birefnet_example():
     """
@@ -1255,10 +1240,8 @@ def segment_image_using_foreground_birefnet_example():
 
     # Perform segmentation
     result = cornea.segment_image_using_foreground_birefnet(
-        image=image,
-        input_height=1024,
-        input_width=1024,
-        threshold=0
+        image=image, 
+        mask_threshold=0
     )
 
     # Access results
@@ -1285,7 +1268,7 @@ def segment_image_using_foreground_birefnet_example():
     in_np_image = image.to_numpy()
 
     # Segmentation mask
-    mask_np = annotation['labeled_mask']
+    mask_np = annotation["labeled_mask"]
 
     # Log images
     rr.log("input", rr.Image(in_np_image))
@@ -1303,23 +1286,21 @@ def segment_image_using_sam_example():
     # ===================== Operation ==========================================
 
     # Load image
-    filepath = str(DATA_DIR / "images" / "weld_clamp_0_raw.png")
+    filepath = str(DATA_DIR / "images" / "pedestrians.jpg")
     image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
 
     # Define bounding boxes for SAM segmentation
-    bboxes = [[400, 150, 1200, 450],
-              [764, 515, 1564, 815]]
-    
+    bboxes = [[40, 70, 330, 414]]
+
     # Segment image
-    result = cornea.segment_image_using_sam(
-        image=image,
-        bboxes=bboxes
-    )
+    result = cornea.segment_image_using_sam(image=image, 
+                                            bboxes=bboxes,
+                                            mask_threshold=0.5)
 
     # Access results
     annotations = result.to_list()
-    logger.success("Segmentation completed.")
+    logger.success(f"Segmented {len(annotations)} objects.")
 
     # ===================== Visualization  (Optional) ======================
 
@@ -1327,10 +1308,10 @@ def segment_image_using_sam_example():
     rr.init("cornea_sam_segmentation", spawn=True)
     rr.send_blueprint(
         rrb.Blueprint(
-                rrb.Horizontal(
-                    rrb.Spatial2DView(name="Input", origin="input"),
-                    rrb.Spatial2DView(name="Bboxes & Segments", origin="segmented"),
-                ),
+            rrb.Horizontal(
+                rrb.Spatial2DView(name="Input", origin="input"),
+                rrb.Spatial2DView(name="Bboxes & Segments", origin="segmented"),
+            ),
             rrb.SelectionPanel(),
             rrb.TimePanel(),
         ),
@@ -1344,8 +1325,10 @@ def segment_image_using_sam_example():
     rr.log("input", rr.Image(in_np_image))
 
     # 2. Overlay image with bboxes and segments
-    rr.log("segmented/image", rr.Image(in_np_image))  # Log original as base for overlay
-    
+    rr.log(
+        "segmented/image", rr.Image(in_np_image)
+    )  # Log original as base for overlay
+
     # Create empty masks
     h, w = in_np_image.shape[:2]
     masks = []
@@ -1357,7 +1340,6 @@ def segment_image_using_sam_example():
     class_ids = []
 
     for idx, ann in enumerate(annotations):
-
         label = idx + 1
         mask_i = np.zeros((h, w), dtype=np.uint8)
 
@@ -1384,7 +1366,9 @@ def segment_image_using_sam_example():
                 mask_i = (temp > 0).astype(np.uint8)
 
         if mask_i.sum() == 0:
-            logger.info(f"Skipping annotation {idx} with label {label} due to empty mask.")
+            logger.info(
+                f"Skipping annotation {idx} with label {label} due to empty mask."
+            )
             continue
 
         masks.append(mask_i)
@@ -1417,39 +1401,32 @@ def get_example_dict():
     """Returns a dictionary mapping SDK function names to their example functions."""
     return {
         # Color Examples
-        "segment_image_using_rgb": segment_image_using_rgb_example,  
-        "segment_image_using_hsv": segment_image_using_hsv_example,  
-        "segment_image_using_lab": segment_image_using_lab_example,  
-        "segment_image_using_ycrcb": segment_image_using_ycrcb_example, 
-
+        "segment_image_using_rgb": segment_image_using_rgb_example,
+        "segment_image_using_hsv": segment_image_using_hsv_example,
+        "segment_image_using_lab": segment_image_using_lab_example,
+        "segment_image_using_ycrcb": segment_image_using_ycrcb_example,
         # Region Examples
-        "segment_image_using_focus_region": segment_image_using_focus_region_example,  
-        "segment_image_using_watershed": segment_image_using_watershed_example,  
-        "segment_image_using_flood_fill": segment_image_using_flood_fill_example,  
-
+        "segment_image_using_focus_region": segment_image_using_focus_region_example,
+        "segment_image_using_watershed": segment_image_using_watershed_example,
+        "segment_image_using_flood_fill": segment_image_using_flood_fill_example,
         # Deep Learning Examples
-        "segment_image_using_foreground_birefnet": segment_image_using_foreground_birefnet_example,  
-        "segment_image_using_sam": segment_image_using_sam_example, 
-
+        "segment_image_using_foreground_birefnet": segment_image_using_foreground_birefnet_example,
+        "segment_image_using_sam": segment_image_using_sam_example,
         # Graph Examples
-        "segment_image_using_grab_cut": segment_image_using_grab_cut_example, 
-
+        "segment_image_using_grab_cut": segment_image_using_grab_cut_example,
         # Superpixel Examples
-        "segment_image_using_felzenszwalb": segment_image_using_felzenszwalb_example,  
-        "segment_image_using_slic_superpixel": segment_image_using_slic_superpixel_example, 
-        "filter_segments_by_area": filter_segments_by_area_example,  
-        "filter_segments_by_color": filter_segments_by_color_example, 
-        "filter_segments_by_mask": filter_segments_by_mask_example,  
-
+        "segment_image_using_felzenszwalb": segment_image_using_felzenszwalb_example,
+        "segment_image_using_slic_superpixel": segment_image_using_slic_superpixel_example,
+        "filter_segments_by_area": filter_segments_by_area_example,
+        "filter_segments_by_color": filter_segments_by_color_example,
+        "filter_segments_by_mask": filter_segments_by_mask_example,
         # Threshold Examples
-        "segment_image_using_otsu_threshold": segment_image_using_otsu_threshold_example,  
-        "segment_image_using_local_threshold": segment_image_using_local_threshold_example,  
-        "segment_image_using_yen_threshold": segment_image_using_yen_threshold_example,  
-        "segment_image_using_threshold": segment_image_using_threshold_example,  
-        "segment_image_using_adaptive_threshold": segment_image_using_adaptive_threshold_example,  
-        "segment_image_using_laplacian_threshold": segment_image_using_laplacian_threshold_example,  
-
- 
+        "segment_image_using_otsu_threshold": segment_image_using_otsu_threshold_example,
+        "segment_image_using_local_threshold": segment_image_using_local_threshold_example,
+        "segment_image_using_yen_threshold": segment_image_using_yen_threshold_example,
+        "segment_image_using_threshold": segment_image_using_threshold_example,
+        "segment_image_using_adaptive_threshold": segment_image_using_adaptive_threshold_example,
+        "segment_image_using_laplacian_threshold": segment_image_using_laplacian_threshold_example,
     }
 
 
@@ -1459,7 +1436,7 @@ def parse_args():
     parser.add_argument(
         "--example",
         type=str,
-        default="segment_image_using_watershed",   # <-- default example name
+        default="segment_image_using_watershed",  # <-- default example name
         help="Name of the example to run (without _example suffix) or use --list to see all available examples",
     )
     parser.add_argument(
@@ -1496,7 +1473,7 @@ def main():
         )
 
         if close_matches:
-            logger.error(f"Did you mean one of these?")
+            logger.error("Did you mean one of these?")
             for match in close_matches:
                 logger.error(f"  - {match}")
 
