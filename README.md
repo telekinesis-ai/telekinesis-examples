@@ -59,7 +59,7 @@ This repository provides **Python examples** demonstrating Telekinesis Skills—
 
 ## The Telekinesis Community
 
-The Agentic Skill Library and Brainwave are just the beginning. We're building a community of contributors who grow the Physical AI Skill ecosystem—researchers, hobbyists, and engineers alike. If you have a Skill, we want to see it. Release it, let others use and improve it, and watch it deploy in real-world systems.
+Telekinesis Agentic Skill Library is just the beginning. We're building a community of contributors who grow the Physical AI Skill ecosystem—researchers, hobbyists, and engineers alike. If you have a Skill, we want to see it. Release it, let others use and improve it, and watch it deploy in real-world systems.
 
 [Join our Discord community](https://discord.gg/S5v8bYAnc6) to connect, share, and build together.
 
@@ -120,11 +120,10 @@ from telekinesis import cornea     # image segmentation skills
 from telekinesis import retina     # object detection skills
 from telekinesis import pupil      # image processing skills
 from telekinesis import vitreous   # point cloud processing skills
+from telekinesis import synapse  # robotics skills
+from telekinesis import medulla    # hardware communication skills
 from telekinesis import illusion   # synthetic data generation skills
 from telekinesis import iris       # AI model training skills
-from telekinesis import neuroplan  # robotics skills
-from telekinesis import medulla    # hardware communication skills
-from telekinesis import cortex     # physical AI agents
 ```
 
 ### [Cornea: Image segmentation](https://docs.telekinesis.ai/cornea/overview.html)
@@ -149,7 +148,7 @@ from telekinesis import retina
 - **Open-Vocabulary detection** - Qwen-VL, Grounding DINO
 
 
-### [Pupil: 2D image processing](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html)
+### [Pupil: 2D image processing](https://docs.telekinesis.ai/pupil/overview.html)
 ```python
 from telekinesis import pupil
 ```
@@ -161,7 +160,7 @@ from telekinesis import pupil
 - **Transforms:** pyramids, mask thinning
 
 
-### [Vitreous: 3D point cloud processing](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html)
+### [Vitreous: 3D point cloud processing](https://docs.telekinesis.ai/vitreous/overview.html)
 ```python
 from telekinesis import vitreous
 ```
@@ -185,21 +184,11 @@ from telekinesis import iris
 ```
 - AI model training pipelines • Fine-tuning and evaluation of foundation models
 
-### [Neuroplan: Robotics](https://docs.telekinesis.ai/neuroplan/overview.html)
+### [Synapse: Robotics](https://docs.telekinesis.ai/synapse/overview.html)
 ```python
-from telekinesis import neuroplan
+from telekinesis import synapse
 ```
 - Kinematics • Motion planning • Control • Robot database
-
-### [Cortex: Physical AI Agents](https://docs.telekinesis.ai/cortex/overview.html)
-```python
-from telekinesis import cortex
-```
-- Action & Skill graphs • Physical AI Agents for skill graph generation and execution
-
-### [Brainwave: Physical AI Platform](https://docs.telekinesis.ai/brainwave/overview.html)
-- Skill & Agent orchestration • Simulation, digital twins, sim-to-real workflows • Monitoring and logging
-
 
 
 ## What is a Physical AI Agent?
@@ -208,7 +197,7 @@ Recent advances in LLMs and VLMs have shown the potential of learned models to p
 
 In the Telekinesis library, a **Physical AI Agent**—typically a Vision Language Model (VLM) or Large Language Model (LLM)—autonomously interprets natural language instructions and generates high-level **Skill plans**. In autonomous Physical AI systems, Agents continuously produce and execute Skill plans, allowing the system to operate with minimal human intervention.
 
-To learn more, explore [Cortex](https://docs.telekinesis.ai/cortex/overview.html).
+To learn more, explore [Tzara](https://docs.telekinesis.ai/agents/introduction.html).
 
 
 
@@ -283,11 +272,7 @@ from telekinesis import medulla    # sensor interface skills
 | **Synthetic Data Generation & AI Model Training** <br><br> Generate photo-realistic synthetic image datasets for training object detection, segmentation, and classification models using the [Illusion](https://docs.telekinesis.ai/illusion/overview.html) skill group. Train state-of-the-art AI models in the cloud and deploy them to real-world systems using the [Iris](https://docs.telekinesis.ai/iris/overview.html) skill group. | <img width="400" src="assets/synthetic-data-generation.png" alt="Synthetic Data Generation" /> |
 
 
-## Brainwave: the Telekinesis Physical AI Platform
-
-[**Brainwave**](https://docs.telekinesis.ai/brainwave/overview.html) is the Telekinesis Physical AI cloud platform for managing skill orchestration, simulation, digital twins, and robot deployments from a single system. It enables agent-based robotics systems to be developed, deployed, and operated at scale across heterogeneous robots and tasks.
-
-<img width="100%" src="assets/physical-ai-platform-brainwave.png" alt="Telekinesis Physical AI Platform – Brainwave" />
+## Simulation Applications
 
 Develop and simulate digital twin workflows to validate, stress-test, and optimize Skill Groups. Deploy the same Skill Groups to real-world robots using a simulation-to-real transfer pipeline.
 
@@ -385,7 +370,7 @@ The Telekinesis Agentic Skill Library uses this API key to authenticate requests
 
     If the example runs successfully, a **Rerun** visualization window  will open showing the input and filtered point cloud. Rerun is a    visualization tool for 3D data and processing results.
 
-    <img width="100%" src="assets/sam_input_output.png" alt="Segmentation     using SAM model" />
+    <img width="100%" src="assets/sam-input-output.webp" alt="Segmentation     using SAM model" />
 
 ### List Available Examples
 
@@ -420,13 +405,14 @@ python examples/vitreous_examples.py --example estimate_principal_axes          
 |--------|-------------|--------|
 | [**Cornea**](https://docs.telekinesis.ai/cornea/overview.html) | Image segmentation | Released |
 | [**Retina**](https://docs.telekinesis.ai/retina/overview.html) | Object detection (foundation models, classical) | Released|
-| [**Pupil**](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html) | 2D image processing | Released |
-| [**Vitreous**](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) | 3D point cloud & mesh processing | Released |
-| [**Illusion**](https://docs.telekinesis.ai/illusion/overview.html) | Synthetic data generation | Planned — Feb 2026 |
-| [**Iris**](https://docs.telekinesis.ai/iris/overview.html) | Model training & fine-tuning | Planned — Feb 2026 |
-| [**Neuroplan**](https://docs.telekinesis.ai/neuroplan/overview.html) | Motion planning, kinematics, control | Planned — Feb 2026 |
-| [**Cortex**](https://docs.telekinesis.ai/cortex/overview.html) | Task planning & skill composition | Planned — Mar 2026 |
-| [**Brainwave**](https://docs.telekinesis.ai/brainwave/overview.html) | End-to-end robotic solutions | Planned — Apr 2026 |
+| [**Pupil**](https://docs.telekinesis.ai/pupil/overview.html) | 2D image processing | Released |
+| [**Vitreous**](https://docs.telekinesis.ai/vitreous/overview.html) | 3D point cloud & mesh processing | Released |
+| [**Synapse**](https://docs.telekinesis.ai/neuroplan/overview.html) | Motion planning, kinematics, control | Released |
+| [**Tzara**](https://docs.telekinesis.ai/agents/introduction.html) | Task planning & skill composition | Released |
+| [**Medulla**](https://docs.telekinesis.ai/medulla/overview.html) | Task planning & skill composition | Released |
+| [**Illusion**](https://docs.telekinesis.ai/illusion/overview.html) | Synthetic data generation | Planned — Apr 2026 |
+| [**Iris**](https://docs.telekinesis.ai/iris/overview.html) | Model training & fine-tuning | Planned — Apr 2026 |
+
 
 
 ## Directory Structure
@@ -465,9 +451,6 @@ Ready to go further? Explore the Agentic Skill Library, dive into specific modul
 
 - [Documentation](https://docs.telekinesis.ai) — Full Agentic Skill Library reference and guides
 - [Quickstart](https://docs.telekinesis.ai/getting-started/quickstart.html) — Step-by-step setup
-- [Cornea Skills](https://docs.telekinesis.ai/cornea/overview.html) — Image segmentation
-- [Pupil Skills](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html) — 2D image processing
-- [Vitreous Skills](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) — 3D point cloud processing
 - [Discord](https://discord.gg/S5v8bYAnc6) — Ask questions, share feedback, connect with users
 
 ## Support

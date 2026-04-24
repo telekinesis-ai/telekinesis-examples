@@ -1,11 +1,10 @@
 """
-    This example demonstrates how to use the Retina Skill Group for image object detection operations, 
-    including classic computer vision techniques (like Hough Circle Transform and contour detection) 
-    as well as modern neural network-based detectors (like YOLOX, RF-DETR, QWEN VLM, and Grounding DINO).
-    
-    It also shows how to visualize results using Rerun.
-"""
+This example demonstrates how to use the Retina Skill Group for image object detection operations,
+including classic computer vision techniques (like Hough Circle Transform and contour detection)
+as well as modern neural network-based detectors (like YOLOX, RF-DETR, QWEN VLM, and Grounding DINO).
 
+It also shows how to visualize results using Rerun.
+"""
 
 import argparse
 import difflib
@@ -27,6 +26,7 @@ DATA_DIR = ROOT_DIR / "telekinesis-data"
 # -------------------------
 # Circle examples
 # -------------------------
+
 
 def detect_circle_using_classic_hough_example():
     """
@@ -56,10 +56,12 @@ def detect_circle_using_classic_hough_example():
 
     # Access results
     annotations = annotations.to_list()
-    logger.success(f"Detected {len(annotations)} circles using classic Hough transform.")
+    logger.success(
+        f"Detected {len(annotations)} circles using classic Hough transform."
+    )
 
     # ===================== Visualization  (Optional) ===========================
-    
+
     image_np = image.to_numpy()
 
     # Extract circles and bboxes form annotations
@@ -96,19 +98,25 @@ def detect_circle_using_classic_hough_example():
     def circle_polyline_2d(center_xy, radius, n=128):
         cx, cy = center_xy
         t = np.linspace(0, 2 * np.pi, n, endpoint=True)
-        pts = np.stack([cx + radius * np.cos(t), cy + radius * np.sin(t)], axis=1)
+        pts = np.stack(
+            [cx + radius * np.cos(t), cy + radius * np.sin(t)], axis=1
+        )
         return pts
 
-    circle_polylines = [circle_polyline_2d((cx, cy), r) for cx, cy, r in circles]
-    circle_labels = [f"Circle {i} (r={int(r)})" for i, (cx, cy, r) in enumerate(circles)]
+    circle_polylines = [
+        circle_polyline_2d((cx, cy), r) for cx, cy, r in circles
+    ]
+    circle_labels = [
+        f"Circle {i} (r={int(r)})" for i, (cx, cy, r) in enumerate(circles)
+    ]
 
     # Log circle outlines as LineStrips2D on overlay image
     rr.log(
         "detection/circles",
         rr.LineStrips2D(
             circle_polylines,
-            colors=[[0, 255, 0]] ,
-            radii=[1] ,
+            colors=[[0, 255, 0]],
+            radii=[1],
             labels=circle_labels,
         ),
     )
@@ -118,11 +126,11 @@ def detect_circle_using_classic_hough_example():
     rr.log(
         "detection/bboxes",
         rr.Boxes2D(
-            array = bboxes, 
-            array_format=rr.Box2DFormat.XYWH, 
-            colors=[[0, 255, 0]], 
-            labels=box_labels, 
-            radii=[1] 
+            array=bboxes,
+            array_format=rr.Box2DFormat.XYWH,
+            colors=[[0, 255, 0]],
+            labels=box_labels,
+            radii=[1],
         ),
     )
 
@@ -131,12 +139,13 @@ def detect_circle_using_classic_hough_example():
 # Edge examples
 # -------------------------
 
+
 def detect_contours_example():
     """
     Detect contours using a contour-based detector.
 
     Extracts contours from the input image and returns
-    coco-style annotations. 
+    coco-style annotations.
 
     The annotations are used for visualization overlays.
     """
@@ -158,7 +167,9 @@ def detect_contours_example():
 
     # Access results
     annotations = annotations.to_list()
-    logger.debug(f"Detected {len(annotations)} contours using contour detector.")
+    logger.success(
+        f"Detected {len(annotations)} contours using contour detector."
+    )
 
     # ===================== Visualization  (Optional) ======================
 
@@ -225,6 +236,7 @@ def detect_contours_example():
 # Neural Network examples
 # -------------------------
 
+
 def detect_objects_using_yolox_example():
     """
     Detect objects using YOLOX.
@@ -237,7 +249,7 @@ def detect_objects_using_yolox_example():
 
     # ===================== Operation ==========================================
 
-    #load image
+    # load image
     filepath = str(DATA_DIR / "images" / "warehouse_2.jpg")
     image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
@@ -255,11 +267,13 @@ def detect_objects_using_yolox_example():
     logger.success(f"YOLOX detected {len(annotations)} objects.")
 
     # ===================== Visualization  (Optional) ======================
-    
+
     image_np = image.to_numpy()
 
     # Build categories_map
-    categories_map = {category["id"]: category["name"] for category in categories}
+    categories_map = {
+        category["id"]: category["name"] for category in categories
+    }
 
     # Extract objects form annotations
     bboxes = []
@@ -279,14 +293,14 @@ def detect_objects_using_yolox_example():
         color = colors_list[idx % len(colors_list)]
         label = categories_map.get(ann.get("category_id", 0), "")
         score = ann.get("score", 0.0)
-        bboxes.append(ann["bbox"])          # [x, y, w, h]
-        colors.append(color)                  # (r,g,b)
+        bboxes.append(ann["bbox"])  # [x, y, w, h]
+        colors.append(color)  # (r,g,b)
         labels.append(f"{label} {score:.2f}")
         radii.append(2)
 
     # Intialize Rerun and send blueprint
     rr.init("detect_objects_using_yolox_example", spawn=True)
-    
+
     rr.send_blueprint(
         rrb.Blueprint(
             rrb.Grid(
@@ -330,11 +344,10 @@ def detect_objects_using_rfdetr_example():
 
     # ===================== Operation ==========================================
 
-    #load image
+    # load image
     filepath = str(DATA_DIR / "images" / "warehouse_1.jpg")
     image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
-
 
     annotations, categories = retina.detect_objects_using_rfdetr(
         image=image,
@@ -343,15 +356,17 @@ def detect_objects_using_rfdetr_example():
 
     # Access results
     annotations = annotations.to_list()
-    categories = categories.to_list()  
+    categories = categories.to_list()
     logger.success(f"RF-DETR detected {len(annotations)} objects.")
 
     # ===================== Visualization  (Optional) ======================
-    
+
     image_np = image.to_numpy()
 
     # Build categories_map
-    categories_map = {category["id"]: category["name"] for category in categories}
+    categories_map = {
+        category["id"]: category["name"] for category in categories
+    }
 
     # Extract objects form annotations
     bboxes = []
@@ -371,8 +386,8 @@ def detect_objects_using_rfdetr_example():
         color = colors_list[idx % len(colors_list)]
         label = categories_map.get(ann.get("category_id", 0), "")
         score = ann.get("score", 0.0)
-        bboxes.append(ann["bbox"])          # [x, y, w, h]
-        colors.append(color)                  # (r,g,b)
+        bboxes.append(ann["bbox"])  # [x, y, w, h]
+        colors.append(color)  # (r,g,b)
         labels.append(f"{label}{score:.2f}")
         radii.append(2)
 
@@ -409,6 +424,7 @@ def detect_objects_using_rfdetr_example():
         ),
     )
 
+
 # -------------------------
 # VLM examples
 # -------------------------
@@ -418,14 +434,14 @@ def detect_objects_using_qwen_example():
     """
     Detect objects using QWEN VLM.
 
-    Objects, mentioned in the prompt, are detected in an RGB image and a list of COCO-like annotations is returned. 
+    Objects, mentioned in the prompt, are detected in an RGB image and a list of COCO-like annotations is returned.
 
     The annotations are used for visualization overlays.
     """
 
     # ===================== Operation ==========================================
 
-    #load image
+    # load image
     filepath = str(DATA_DIR / "images" / "warehouse_1.jpg")
     image = io.load_image(filepath=filepath)
     logger.success(f"Loaded image from {filepath}")
@@ -433,16 +449,17 @@ def detect_objects_using_qwen_example():
     # Detect Objects
     annotations = retina.detect_objects_using_qwen(
         image=image,
-        objects_to_detect="person .",
-        model_name="Qwen/Qwen3-VL-4B-Instruct",
+        prompt="person .",
     )
 
     # Access results
-    annotations = annotations.to_list()  
-    logger.success(f"Applied QWEN object detection on the given image. Detected {len(annotations)} objects.")
+    annotations = annotations.to_list()
+    logger.success(
+        f"Applied QWEN object detection on the given image. Detected {len(annotations)} objects."
+    )
 
     # ===================== Visualization  (Optional) ======================
-    
+
     image_np = image.to_numpy()
 
     # Extract objects form annotations
@@ -461,14 +478,14 @@ def detect_objects_using_qwen_example():
 
     for idx, ann in enumerate(annotations):
         color = colors_list[idx % len(colors_list)]
-        bboxes.append(ann["bbox"])          # [x, y, w, h]
-        colors.append(color)                  # (r,g,b)
+        bboxes.append(ann["bbox"])  # [x, y, w, h]
+        colors.append(color)  # (r,g,b)
         labels.append(idx)
         radii.append(2)
 
     # Intialize Rerun and send blueprint
     rr.init("detect_objects_using_qwen_example", spawn=True)
-    
+
     rr.send_blueprint(
         rrb.Blueprint(
             rrb.Grid(
@@ -520,7 +537,7 @@ def detect_objects_using_grounding_dino_example():
     # Detect Objects
     annotations, categories = retina.detect_objects_using_grounding_dino(
         image=image,
-        text="cartons .",
+        prompt="cartons .",
         box_threshold=0.5,
         text_threshold=0.5,
     )
@@ -531,11 +548,13 @@ def detect_objects_using_grounding_dino_example():
     logger.success(f"Grounding DINO detected {len(annotations)} objects.")
 
     # ===================== Visualization  (Optional) ======================
-    
+
     image_np = image.to_numpy()
 
     # Build categories_map
-    categories_map = {category["id"]: category["name"] for category in categories}
+    categories_map = {
+        category["id"]: category["name"] for category in categories
+    }
 
     # Extract objects form annotations
     bboxes = []
@@ -555,14 +574,14 @@ def detect_objects_using_grounding_dino_example():
         color = colors_list[idx % len(colors_list)]
         label = categories_map.get(ann.get("category_id", 0), "")
         score = ann.get("score", 0.0)
-        bboxes.append(ann["bbox"])          # [x, y, w, h]
-        colors.append(color)                  # (r,g,b)
+        bboxes.append(ann["bbox"])  # [x, y, w, h]
+        colors.append(color)  # (r,g,b)
         labels.append(f"{label} {score:.2f}")
         radii.append(2)
 
     # Intialize Rerun and send blueprint
     rr.init("detect_objects_using_grounding_dino_example", spawn=True)
-    
+
     rr.send_blueprint(
         rrb.Blueprint(
             rrb.Grid(
@@ -597,17 +616,13 @@ def detect_objects_using_grounding_dino_example():
 def get_example_dict():
     """Returns a dictionary mapping example names (without _example suffix) to their functions."""
     return {
-
         # Circle Examples
         "detect_circle_using_classic_hough": detect_circle_using_classic_hough_example,
-
         # Edge Examples
-        "detect_contours": detect_contours_example, 
-
+        "detect_contours": detect_contours_example,
         # Neural Network Examples
         "detect_objects_using_yolox": detect_objects_using_yolox_example,
         "detect_objects_using_rfdetr": detect_objects_using_rfdetr_example,
-
         # Vlm Examples
         "detect_objects_using_qwen": detect_objects_using_qwen_example,
         "detect_objects_using_grounding_dino": detect_objects_using_grounding_dino_example,
@@ -656,7 +671,7 @@ def main():
         )
 
         if close_matches:
-            logger.error(f"Did you mean one of these?")
+            logger.error("Did you mean one of these?")
             for match in close_matches:
                 logger.error(f"  - {match}")
 
@@ -669,4 +684,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
