@@ -9,6 +9,7 @@ build/
 *.zdf
 *.obj
 *.mtl
+.claude/
 
 # dont push site because this is build from mkdocs and it should not be in git
 site/
