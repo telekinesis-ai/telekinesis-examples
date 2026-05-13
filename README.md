@@ -188,7 +188,17 @@ from telekinesis import iris
 ```python
 from telekinesis import synapse
 ```
-- Kinematics • Motion planning • Control • Robot database
+- **Kinematics:** forward & inverse kinematics, collision-free IK, IK with seed/motion profile, solver setup, default joint configuration
+- **Motion:** Cartesian & joint moves, joint-space Cartesian targets, freedrive, teach mode, jog, move-until-contact, motion stop, protective stop
+- **Servo control:** Cartesian, joint, and circular servoing
+- **Force control:** tool-contact detection
+- **State reading:** TCP pose/force/speed, joint positions/velocities/torques, target values, timestamp, connection status
+- **Robot statuses:** robot mode, safety mode, runtime state, controller frequency
+- **Diagnostics:** speed scaling, target speed fraction
+- **Tools (grippers):** open/close, move, set force/speed/position range/unit, read current position
+- **Visualization & model:** visual & collision meshes, link transforms
+- **Supported robots:** ABB, Fanuc, Franka Emika, KUKA, Motoman, Neura, Universal Robots (no-hardware quickstarts included)
+- **Supported tools:** parallel grippers — Robotiq 2F-85, OnRobot RG6
 
 
 ## What is a Physical AI Agent?
@@ -372,7 +382,34 @@ The Telekinesis Agentic Skill Library uses this API key to authenticate requests
 
     <img width="100%" src="assets/sam-input-output.webp" alt="Segmentation     using SAM model" />
 
+5. (Optional) Run a Synapse robotics quickstart — **no hardware required**:
+
+    The [examples/synapse/](examples/synapse/) directory ships per-vendor quickstarts that drive a robot through a Cartesian-pose circle, visualized live in **Rerun**.
+
+    > **Note:** Synapse quickstarts require the `synapse` extras and a newer Rerun than the vision examples. Install both into your environment before running them:
+    >
+    > ```bash
+    > pip install 'telekinesis-ai[synapse]'
+    > pip install --upgrade rerun-sdk==0.31
+    > ```
+
+    Pick any supported vendor:
+
+    ```bash
+    python examples/synapse/quickstart_set_cartesian_pose_abb.py                # ABB
+    python examples/synapse/quickstart_set_cartesian_pose_fanuc.py              # Fanuc
+    python examples/synapse/quickstart_set_cartesian_pose_franka_robotics.py    # Franka Emika
+    python examples/synapse/quickstart_set_cartesian_pose_kuka.py               # KUKA
+    python examples/synapse/quickstart_set_cartesian_pose_motoman.py            # Motoman
+    python examples/synapse/quickstart_set_cartesian_pose_neura_robotics.py     # Neura
+    python examples/synapse/quickstart_set_cartesian_pose_universal_robots.py   # Universal Robots
+    ```
+
+    Joint-space variants (`quickstart_set_joint_positions_*.py`) are available for each vendor as well. A Rerun window will open and animate the robot tracing a circle in its TCP frame, with a color-gradient trajectory drawn live.
+
 ### List Available Examples
+
+Computer vision examples (Cornea, Retina, Pupil, Vitreous) are launched from a single file per Skill Group with `--list`:
 
 ```bash
 python examples/cornea_examples.py --list     # Cornea (2D image segmentation)
@@ -381,13 +418,29 @@ python examples/pupil_examples.py --list      # Pupil (2D image processing)
 python examples/vitreous_examples.py --list   # Vitreous (3D point cloud & mesh)
 ```
 
+Robotics (Synapse) and hardware (Medulla) examples are organized as standalone scripts in subdirectories—browse them directly:
+
+```bash
+ls examples/synapse/             # Synapse: kinematics/, motion/, servo_control/, state_reading/, tools/, ...
+ls examples/medulla/             # Medulla: ids/, webcam/
+```
+
 ### Run a Specific Example
 
 ```bash
+# Computer vision (one launcher per Skill Group)
 python examples/cornea_examples.py --example segment_image_using_rgb                    # Cornea
 python examples/retina_examples.py --example detect_objects_using_grounding_dino        # Retina
 python examples/pupil_examples.py --example filter_image_using_morphological_gradient   # Pupil
 python examples/vitreous_examples.py --example estimate_principal_axes                  # Vitreous
+
+# Robotics (run the script directly)
+python examples/synapse/quickstart_set_cartesian_pose_abb.py                            # Synapse (no hardware required)
+python examples/synapse/motion/set_cartesian_pose.py                                    # Synapse motion
+python examples/synapse/kinematics/forward_kinematics.py                                # Synapse kinematics
+
+# Hardware
+python examples/medulla/webcam/capture_image_example.py                                 # Medulla (webcam)
 ```
 
 ### Use Your Own Data
@@ -420,12 +473,29 @@ python examples/vitreous_examples.py --example estimate_principal_axes          
 ```
 telekinesis-examples/
 ├── examples/
-│   ├── cornea_examples.py      # Image segmentation Skills
-│   ├── datatypes_examples.py   # Data types & transformations
-│   ├── pupil_examples.py       # 2D image processing Skills
-│   ├── retina_examples.py      # Object detection Skills
-│   └── vitreous_examples.py    # 3D point cloud & mesh Skills
-├── telekinesis-data/           # Git submodule (sample data)
+│   ├── cornea_examples.py             # Cornea: image segmentation Skills
+│   ├── retina_examples.py             # Retina: object detection Skills
+│   ├── pupil_examples.py              # Pupil: 2D image processing Skills
+│   ├── vitreous_examples.py           # Vitreous: 3D point cloud & mesh Skills
+│   ├── datatypes_examples.py          # Data types & transformations
+│   ├── use_cases_examples.py          # End-to-end Skill compositions
+│   ├── synapse/                       # Synapse: robotics Skills
+│   │   ├── quickstart_set_cartesian_pose_*.py   # No-hardware quickstarts (ABB, Fanuc, Franka, KUKA, Motoman, Neura, UR)
+│   │   ├── quickstart_set_joint_positions_*.py  # No-hardware quickstarts (per vendor)
+│   │   ├── connection_and_disconnection/
+│   │   ├── kinematics/                # FK, IK, collision-free IK, solver setup
+│   │   ├── motion/                    # Cartesian/joint moves, freedrive, teach, jog, contact
+│   │   ├── servo_control/             # Cartesian, joint, circular servoing
+│   │   ├── force_control/             # Contact detection
+│   │   ├── state_reading/             # TCP pose/force/speed, joint positions/torques
+│   │   ├── robot_statuses/            # Mode, safety, runtime state, controller frequency
+│   │   ├── diagnostics/               # Speed scaling, target speed fraction
+│   │   ├── tools/                     # Gripper control: open/close/move/force/speed
+│   │   └── visualization_and_model/   # Visual & collision meshes, link transforms
+│   └── medulla/                       # Medulla: hardware communication Skills
+│       ├── ids/                       # IDS industrial cameras
+│       └── webcam/                    # USB/integrated webcams
+├── telekinesis-data/                  # Git submodule (sample data)
 │   ├── images/
 │   ├── point_clouds/
 │   └── meshes/
