@@ -1,12 +1,7 @@
 """
-Inverse Kinematics with an explicit seed for the Synapse SDK.
+Inverse Kinematics with an explicit seed and solver for the Synapse SDK.
 
-``inverse_kinematics`` is defined on the abstract manipulator and supports
-all robots.
-
-Universal Robots (UR10e) is used here purely for illustration.
-The solver runs purely on the kinematic model, so this example does not
-connect to hardware and no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python inverse_kinematics_with_seed.py

@@ -1,8 +1,11 @@
 """
 Set Cartesian Pose example for the Synapse SDK.
 
-Drives a real UR10e to the target Cartesian pose. Currently supported
-only for Universal Robots (UR10e).
+Drives a real UR10e to the target Cartesian pose. This example is for real robot.
+
+Currently supported only for Universal Robots (UR10e).
+
+For offline, refer to quick start examples.
 
 Usage:
     python set_cartesian_pose.py --ip <ROBOT_IP>

@@ -5,7 +5,7 @@ Returns the timestamp of the most recent state update [s since epoch].
 With ``--ip``, reads live hardware state. Without ``--ip``, reads from the
 internal commanded cache (no connection made) and logs a warning.
 
-Currently supported only for Universal Robots (UR10e).
+Illustrated using Universal Robots (UR10e), supported on all robots.
 
 Usage:
     python get_timestamp.py [--ip <ROBOT_IP>]

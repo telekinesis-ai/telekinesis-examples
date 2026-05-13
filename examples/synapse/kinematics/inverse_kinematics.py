@@ -1,12 +1,7 @@
 """
 Simple Inverse Kinematics examples for the Synapse SDK with default seed.
 
-``inverse_kinematics`` is defined on the abstract manipulator and supports
-all robot.
-
-Universal Robots (UR10e) is used here purely for illustration.
-The solver runs purely on the kinematic model, so these examples do not
-connect to hardware and no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python inverse_kinematics_example.py

@@ -1,7 +1,10 @@
 """
 Set Joint Positions example for the Synapse SDK.
 
-Drives the robot to a target joint configuration.
+Drives the robot to a target joint configuration. Currently supported
+only for Universal Robots (UR10e).
+
+For offline, refer to quick start examples.
 
 Usage:
     python set_joint_positions.py --ip <ROBOT_IP>

@@ -11,6 +11,8 @@ the live robot state is streamed throughout the async move.
 Make sure the cell is clear and the robot is in remote-control mode
 before running.
 
+For offline, refer to quick start examples.
+
 Install:
     pip install rerun-sdk==0.31  # tested on 0.31
 

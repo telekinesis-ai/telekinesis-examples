@@ -4,10 +4,7 @@ Servo Cartesian example for the Synapse SDK.
 Streams TCP poses at 500 Hz to trace a small circle in the YZ plane around
 the current TCP pose using ``servo_cartesian``.
 
-Currently supported only for Universal Robots (UR10e). ``servo_cartesian``
-is a real-time call that drives the RTDE servoL loop on the controller, so
-this example requires a real (or simulated) robot connection — there is no
-offline mode for servo streaming.
+Currently supported only for Universal Robots (UR10e).
 
 Usage:
     python servo_cartesian.py --ip <ROBOT_IP>

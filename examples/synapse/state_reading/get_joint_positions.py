@@ -5,7 +5,7 @@ Returns the manipulator's joint positions [deg]. With ``--ip``, reads live
 hardware state. Without ``--ip``, reads from the internal commanded cache
 (no connection made) and logs a warning.
 
-Currently supported only for Universal Robots (UR10e).
+Illustrated using Universal Robots (UR10e), supported on all robots.
 
 Usage:
     python get_joint_positions.py [--ip <ROBOT_IP>]

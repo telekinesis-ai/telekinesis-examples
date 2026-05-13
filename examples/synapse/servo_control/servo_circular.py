@@ -6,10 +6,7 @@ using ``servo_circular`` (UR ``servoC``). The target here is offset 2 cm
 along Z and 2 cm along Y so the arc is visually distinct from a straight
 line.
 
-Currently supported only for Universal Robots (UR10e). ``servo_circular``
-is a real-time RTDE call that runs on the controller, so this example
-requires a real (or simulated) robot connection — there is no offline mode.
-
+Currently supported only for Universal Robots (UR10e).
 Usage:
     python servo_circular.py --ip <ROBOT_IP>
 """

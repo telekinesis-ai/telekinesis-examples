@@ -1,8 +1,8 @@
 """
 Tool contact polling example for the Synapse SDK.
 
-``is_tool_in_contact`` is the low-level contact-detection primitive on UR
-— it only returns ``True`` **while the robot is actively executing
+``is_tool_in_contact`` is the low-level contact-detection primitive which
+only returns ``True`` **while the robot is actively executing
 motion**. On an idle robot it always returns ``False``, so the usual
 pattern is to poll it from inside a streaming-motion loop.
 

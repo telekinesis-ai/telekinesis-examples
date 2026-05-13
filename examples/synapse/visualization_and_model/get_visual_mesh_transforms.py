@@ -4,12 +4,9 @@ Read per-link visual mesh world transforms for the Synapse SDK.
 ``get_visual_mesh_transforms`` returns ``{link_name: world_T_visual_mesh}``
 — a 4x4 homogeneous matrix per link, composed from the link frame and the
 URDF ``<visual><origin>`` offset. Links without a usable visual mesh are
-omitted. Useful for rendering: each transform is the exact pose at which
-the corresponding mesh should be drawn.
+omitted.
 
-Universal Robots (UR10e) is used here purely for illustration.
-This example runs purely on the kinematic model and does not connect to
-hardware — no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python get_visual_mesh_transforms.py

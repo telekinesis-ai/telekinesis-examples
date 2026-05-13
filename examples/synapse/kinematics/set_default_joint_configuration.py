@@ -1,13 +1,10 @@
 """
 Set the default joint configuration for the Synapse SDK.
 
-``set_default_joint_configuration`` overrides the brand-default "home" pose
-that the kinematic model uses as the seed for ``inverse_kinematics`` and
-as the offline commanded state. Values are in degrees.
+``set_default_joint_configuration`` overrides the brand-default joint configuration
+that are used as the offline commanded state. Values are in degrees.
 
-Universal Robots (UR10e) is used here purely for illustration.
-This example runs purely on the kinematic model and does not connect to
-hardware — no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots. This example runs purely on the kinematic model and does
 
 Usage:
     python set_default_joint_configuration.py

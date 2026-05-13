@@ -7,9 +7,6 @@ Immediately halts all motion and puts the robot into a protective stop
 state. The robot remains powered but frozen until the stop is
 acknowledged and cleared from the teach pendant.
 
-Note: requires an active motion program on the controller. Calling this
-on an idle robot raises "RTDE control script is not running".
-
 Usage:
     python trigger_protective_stop.py --ip <ROBOT_IP>
 """

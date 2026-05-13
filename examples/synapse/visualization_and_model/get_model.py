@@ -2,13 +2,9 @@
 Read the Pinocchio kinematic model for the Synapse SDK.
 
 ``get_model`` returns the standard ``pinocchio.Model`` object built from
-the robot's URDF. This is the Python Pinocchio model — distinct from the
-internal C++ Synapse wrapper used by IK/FK methods — and is useful for
-custom kinematics, dynamics, or downstream Pinocchio-based pipelines.
+the robot's URDF. 
 
-Universal Robots (UR10e) is used here purely for illustration.
-This example runs purely on the kinematic model and does not connect to
-hardware — no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python get_model.py

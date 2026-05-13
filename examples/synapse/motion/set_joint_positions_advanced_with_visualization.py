@@ -4,14 +4,10 @@ Connects to a UR10e (or URSim) over RTDE, then runs two example moves:
   - Example 1: synchronous move of -5° on joint 0 (blocks until complete).
   - Example 2: synchronous move of +5° on joint 0 (blocks until complete).
 
-Each example draws the target TCP frame in rerun (RGB axis arrows) by
-computing forward kinematics at the target joint configuration before
-the move. The robot mesh is re-logged after each move so the live state
-mirrors what the controller is actually reporting.
+Currently supported only for Universal Robots (UR10e).
 
-Make sure the cell is clear and the robot is in remote-control mode
-before running.
-
+For offline, refer to quick start examples.
+  
 Install:
     pip install rerun-sdk==0.31  # tested on 0.31
 

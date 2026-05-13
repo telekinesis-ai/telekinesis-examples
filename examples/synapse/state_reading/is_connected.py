@@ -2,12 +2,12 @@
 Check live connection status example for the Synapse SDK.
 
 ``is_connected`` reports whether the manipulator state is being driven by
-live hardware. Returns ``False`` before ``connect()`` and after
-``disconnect()``; returns ``True`` while a live RTDE/equivalent session
-is open. Currently supported only for Universal Robots.
+live hardware.
 
 With ``--ip``, logs the value before connect, after connect, and after
 disconnect. Without ``--ip``, only the offline (``False``) case is shown.
+
+Illustrated using Universal Robots (UR10e), supported on all robots.
 
 Usage:
     python is_connected.py [--ip <ROBOT_IP>]

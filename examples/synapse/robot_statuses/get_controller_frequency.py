@@ -3,8 +3,7 @@ Read controller frequency example for the Synapse SDK.
 
 ``get_controller_frequency`` measures the controller's update rate by
 polling ``get_timestamp()`` for ``window_s`` seconds and computing
-``1 / mean_step_time``. Typically 500 Hz on UR e-Series / UR-Series,
-125 Hz on CB3-Series.
+``1 / mean_step_time``. 
 
 Currently supported only for Universal Robots (UR10e).
 

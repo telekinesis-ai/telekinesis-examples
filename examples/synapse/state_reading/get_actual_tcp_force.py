@@ -5,7 +5,7 @@ Returns the TCP wrench ``[Fx, Fy, Fz (N), Tx, Ty, Tz (N·m)]``. With
 ``--ip``, reads live hardware state. Without ``--ip``, reads from the
 internal commanded cache (no connection made) and logs a warning.
 
-Currently supported only for Universal Robots (UR10e).
+Illustrated using Universal Robots (UR10e), supported on all robots.
 
 Usage:
     python get_actual_tcp_force.py [--ip <ROBOT_IP>]

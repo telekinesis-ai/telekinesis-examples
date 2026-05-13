@@ -1,9 +1,10 @@
 """
 Set Cartesian Pose example for the Synapse SDK.
 
-Drives a real robot to the relative pose from current pose. 
-
+Drives a real robot to the relative pose from current pose.
 Currently supported only for Universal Robots (UR10e).
+
+For offline, refer to quick start examples.
 
 Usage:
     python set_cartesian_pose.py --ip <ROBOT_IP>

@@ -2,12 +2,9 @@
 Set Joint Position in Cartesian Space example for the Synapse SDK.
 
 Moves to a target joint configuration using a trajectory that is linear in
-Cartesian space (Cartesian ``moveL`` derived from joint positions via FK).
+Cartesian space.
 
-Real hardware is currently supported only for Universal Robots (UR10e).
-Offline mode is supported for all manipulator brands — to run offline, omit
-the ``robot.connect()`` / ``robot.disconnect()`` calls below; the SDK will
-update the commanded-state cache (via FK) without touching hardware.
+Currently supported only for Universal Robots (UR10e).
 
 Usage:
     python set_joint_position_in_cartesian_space.py --ip <ROBOT_IP>

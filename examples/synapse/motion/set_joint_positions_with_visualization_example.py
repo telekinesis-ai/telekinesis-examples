@@ -5,6 +5,10 @@ This example runs against real robot hardware. The live robot state and
 target TCP frames (derived from forward kinematics of the target joint
 configuration) are streamed to a rerun viewer.
 
+Currently supported only for Universal Robots (UR10e).
+
+For offline, refer to quick start examples.
+
 Install:
     pip install rerun-sdk==0.31
 
@@ -21,20 +25,6 @@ from loguru import logger
 
 from telekinesis.synapse import utils
 from telekinesis.synapse.robots.manipulators import universal_robots
-
-
-def _confirm_real_motion(description: str) -> None:
-    """Print a loud warning and require explicit 'yes' to proceed."""
-    logger.warning("=" * 70)
-    logger.warning("REAL ROBOT MOTION ABOUT TO EXECUTE")
-    logger.warning(description)
-    logger.warning(
-        "This command will move physical hardware. You are responsible for ensuring "
-        "the workspace is clear, the e-stop is reachable, and the trajectory is safe."
-    )
-    logger.warning("=" * 70)
-    if input("Type 'yes' to proceed: ").strip().lower() != "yes":
-        raise SystemExit("Aborted by user.")
 
 
 def _visualize_robot(robot, static_meshes: bool = False) -> None:
@@ -108,9 +98,6 @@ def main(ip: str):
         q_target_1[0] += delta_deg
         _visualize_target_joints(robot, "/target_joints_1", q_target_1)
 
-        # Confirm with the user before executing real motion
-        _confirm_real_motion(f"Will set joint positions to {q_target_1}")
-
         # Command the joint move and refresh the visualization
         robot.set_joint_positions(joint_positions=q_target_1,
                                   speed=20,
@@ -124,9 +111,6 @@ def main(ip: str):
         q_target_2 = list(current)
         q_target_2[0] -= delta_deg
         _visualize_target_joints(robot, "/target_joints_2", q_target_2)
-
-        # Confirm with the user before executing real motion
-        _confirm_real_motion(f"Will set joint positions to {q_target_2}")
 
         # Command the joint move and refresh the visualization
         robot.set_joint_positions(joint_positions=q_target_2,

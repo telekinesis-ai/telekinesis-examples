@@ -1,16 +1,13 @@
 """
 Pre-initialize an IK solver for the Synapse SDK.
 
-``setup_kinematics_solver`` initializes a C++ IK solver by name and caches
+``setup_kinematics_solver`` initializes an IK solver by name and caches
 it on the robot, so subsequent ``inverse_kinematics`` calls skip the
-solver-construction cost. ``inverse_kinematics`` will also auto-switch
-solvers, but pre-warming avoids that latency on the first solve.
+solver-construction cost. 
 
 Supported solver names: ``"clik"``, ``"multi_start_clik"``, ``"tracik"``.
 
-Universal Robots (UR10e) is used here purely for illustration.
-The solver runs purely on the kinematic model, so this example does not
-connect to hardware and no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python setup_kinematics_solver.py

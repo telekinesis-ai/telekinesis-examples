@@ -1,14 +1,10 @@
 """
 Read per-link visual mesh data (vertices/triangles/normals) for the Synapse SDK.
 
-``get_visual_meshes_data`` parses the robot's URDF and loads each link's
-visual mesh via ``trimesh``, returning raw vertex/triangle/normal arrays
-ready for visualizers like rerun (``rr.Mesh3D``). Smooth vertex normals
-are auto-computed so PBR renderers get proper shading.
+``get_visual_meshes_data`` parses the robot's URDF and returns raw
+vertex/triangle/normal arrays ready for visualizers.
 
-Universal Robots (UR10e) is used here purely for illustration.
-This example runs purely on the kinematic model and does not connect to
-hardware — no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python get_visual_meshes_data.py

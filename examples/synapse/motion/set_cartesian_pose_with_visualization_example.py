@@ -27,20 +27,6 @@ from telekinesis.synapse import utils
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def _confirm_real_motion(description: str) -> None:
-    """Print a loud warning and require explicit 'yes' to proceed."""
-    logger.warning("=" * 70)
-    logger.warning("REAL ROBOT MOTION ABOUT TO EXECUTE")
-    logger.warning(description)
-    logger.warning(
-        "This command will move physical hardware. You are responsible for ensuring "
-        "the workspace is clear, the e-stop is reachable, and the trajectory is safe."
-    )
-    logger.warning("=" * 70)
-    if input("Type 'yes' to proceed: ").strip().lower() != "yes":
-        raise SystemExit("Aborted by user.")
-
-
 def _visualize_robot(robot, static_meshes: bool = False) -> None:
     """Log per-link transforms to rerun, plus the static meshes on the first call."""
     if static_meshes:
@@ -108,9 +94,6 @@ def set_cartesian_pose_with_visualization_example(ip: str):
         target_1[2] -= 0.02
         _visualize_target_frame("/target_pose_1", target_1)
 
-        # Confirm with the user before executing real motion
-        _confirm_real_motion(f"Will set Cartesian pose to {target_1}")
-
         # Command the Cartesian move and refresh the visualization
         robot.set_cartesian_pose(cartesian_pose=target_1,
                                  speed=0.25,
@@ -124,9 +107,6 @@ def set_cartesian_pose_with_visualization_example(ip: str):
         target_2 = list(current)
         target_2[2] += 0.02
         _visualize_target_frame("/target_pose_2", target_2)
-
-        # Confirm with the user before executing real motion
-        _confirm_real_motion(f"Will set Cartesian pose to {target_2}")
 
         # Command the Cartesian move and refresh the visualization
         robot.set_cartesian_pose(cartesian_pose=target_2,

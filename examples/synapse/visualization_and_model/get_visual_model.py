@@ -2,12 +2,9 @@
 Read the Pinocchio visual geometry model for the Synapse SDK.
 
 ``get_visual_model`` returns the Python Pinocchio ``GeometryModel``
-populated with the robot's visual geometries from the URDF. Useful for
-custom visualization pipelines built on top of Pinocchio (e.g. MeshCat).
+populated with the robot's visual geometries from the URDF. 
 
-Universal Robots (UR10e) is used here purely for illustration.
-This example runs purely on the kinematic model and does not connect to
-hardware — no ``--ip`` is required.
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python get_visual_model.py

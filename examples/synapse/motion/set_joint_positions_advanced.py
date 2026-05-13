@@ -1,10 +1,12 @@
 """
 Set Joint Positions example for the Synapse SDK.
 
-Drives a real robot to the relative joint positions from current positions in synchronous mode
-and back in asynchronous mode.
+Drives a real robot to the relative joint positions from current positions in
+synchronous mode and back in asynchronous mode.
 
 Currently supported only for Universal Robots (UR10e).
+
+For offline, refer to quick start examples.
 
 Usage:
     python set_cartesian_pose.py --ip <ROBOT_IP>

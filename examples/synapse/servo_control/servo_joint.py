@@ -6,10 +6,7 @@ the current joint configuration using ``servo_joint`` — a smooth sinusoidal
 motion of small amplitude. Only the base moves; all other joints are held
 at their starting values.
 
-Currently supported only for Universal Robots (UR10e). ``servo_joint`` is
-a real-time call that drives the RTDE servoJ loop on the controller, so
-this example requires a real (or simulated) robot connection — there is
-no offline mode for servo streaming.
+Currently supported only for Universal Robots (UR10e).
 
 Usage:
     python servo_joint.py --ip <ROBOT_IP>

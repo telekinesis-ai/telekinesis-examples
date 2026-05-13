@@ -1,7 +1,8 @@
 """
 Move until Contact example for the Synapse SDK.
 
-Drives a real robot to the target Cartesian pose. 
+Drives a real robot downwards in z direction until contact is detected,
+then stops and reports the result.
 
 Currently supported only for Universal Robots (UR10e).
 
@@ -18,13 +19,6 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(robot_ip: str):
     """
     Main function to demonstrate how to create an instance of a robot using the Universal Robots module in Python.
-
-    Args:
-        robot_ip (str): The IP address of the UR robot
-    Returns:
-        None
-    Raises:
-        None
     """
 
     # Create robot instance
