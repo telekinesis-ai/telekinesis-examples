@@ -10,7 +10,7 @@ Install:
     pip install rerun-sdk==0.31  # tested on 0.31
 
 Run:
-    python examples/py/github_examples/kuka_set_joint_positions_with_visualization.py
+    python examples/synapse/quickstart_set_joint_positions_kuka.py
 """
 
 import colorsys
