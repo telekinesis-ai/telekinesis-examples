@@ -14,7 +14,7 @@ from loguru import logger
 import rerun as rr
 import rerun.blueprint as rrb
 
-from telekinesis import retina
+from telekinesis import retina, pupil
 from datatypes import datatypes
 
 
@@ -36,8 +36,10 @@ def detect_objects_using_qwen_example():
     image_bgr = cv2.imdecode(
         np.frombuffer(response.content, dtype=np.uint8), cv2.IMREAD_COLOR,
     )
-    image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
-    image = datatypes.Image(image=image_rgb, color_model="RGB")
+    image = datatypes.Image(image=image_bgr, color_model="BGR")
+    image = pupil.convert_image_color_space(image, 
+                                            source_color_space="BGR", 
+                                            target_color_space="RGB") 
     logger.success(f"Loaded image from {image_url}")
 
     # ===================== Run Skill ==========================================
