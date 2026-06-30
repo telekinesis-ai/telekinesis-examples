@@ -6,8 +6,6 @@ Traces a closed circle of radius 0.5m in the YZ plane around the home TCP pose. 
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
-Install:
-    pip install rerun-sdk==0.31  # tested on 0.31
 
 Run:
     python examples/synapse/quickstart_set_cartesian_pose_abb.py
@@ -77,8 +75,8 @@ def main():
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
-    visualize_robot(robot, static_meshes=True)
-    time.sleep(2.0)
+    robot.visualize_rerun(axis_length=0.1,
+                          recording_stream=rr.get_global_data_recording())
 
     # Get home pose (default configuration)
     home_pose = robot.get_cartesian_pose()
@@ -102,7 +100,7 @@ def main():
             continue  # outside reach / joint limits
 
         # Visualize robot and path
-        visualize_robot(robot)
+        robot.visualize_rerun()
         actual = robot.get_cartesian_pose()
         path.append([float(actual[0]), float(actual[1]), float(actual[2])])
         visualize_path(path)

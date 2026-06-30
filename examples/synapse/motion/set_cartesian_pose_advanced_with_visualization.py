@@ -13,9 +13,6 @@ before running.
 
 For offline, refer to quick start examples.
 
-Install:
-    pip install rerun-sdk==0.31  # tested on 0.31
-
 Run (replace ``192.168.x.y`` with your UR10e or URSim IP):
     python examples/synapse/motion/set_cartesian_pose_advanced_with_visualization.py --ip 192.168.x.y
 """

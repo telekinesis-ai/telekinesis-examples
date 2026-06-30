@@ -21,28 +21,6 @@ from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
-
-def visualize_robot(robot, static_meshes: bool = False) -> None:
-    """Log per-link transforms to rerun, plus the static meshes on the first call."""
-    if static_meshes:
-        for link, m in robot.get_visual_meshes_data().items():
-            if m["vertices"] is None:
-                continue
-            kwargs: dict = {
-                "vertex_positions": m["vertices"],
-                "triangle_indices": m["triangles"],
-                "vertex_normals": m["vertex_normals"],
-            }
-            if m["vertex_colors"] is not None:
-                kwargs["vertex_colors"] = m["vertex_colors"]
-            else:
-                kwargs["albedo_factor"] = m["color"] or [179, 179, 179]
-            rr.log(f"/robot/{link}", rr.Mesh3D(**kwargs), static=True)
-
-    for link, T in robot.get_visual_mesh_transforms().items():
-        rr.log(f"/robot/{link}", rr.Transform3D(translation=T[:3, 3], mat3x3=T[:3, :3]))
-
-
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
     if len(path) < 2:
@@ -72,7 +50,7 @@ def main():
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
-    visualize_robot(robot, static_meshes=True)
+    robot.visualize_rerun(axis_length=0.1, recording_stream=rr.get_global_data_recording())
     time.sleep(2.0)
 
     # Extract home pose
@@ -96,7 +74,7 @@ def main():
             continue  # outside reach / joint limits
 
         # Visualize robot and path
-        visualize_robot(robot)
+        robot.visualize_rerun()
         actual = robot.get_cartesian_pose()
         path.append([float(actual[0]), float(actual[1]), float(actual[2])])
         visualize_path(path)
