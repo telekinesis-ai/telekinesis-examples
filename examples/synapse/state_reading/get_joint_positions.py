@@ -1,9 +1,7 @@
 """
 Read joint positions example for the Synapse SDK.
 
-Returns the manipulator's joint positions [deg]. With ``--ip``, reads live
-hardware state. Without ``--ip``, reads from the internal commanded cache
-(no connection made) and logs a warning.
+Returns the manipulator's joint positions [deg]. Connects to ``--ip`` (default ``192.168.1.100``) and reads the live state.
 
 Illustrated using Universal Robots (UR10e), supported on all robots.
 
@@ -23,25 +21,17 @@ def main(ip: str | None = None):
     # Create the robot instance
     robot = universal_robots.UniversalRobotsUR10E()
 
-    # Connect if --ip was provided, otherwise read from the commanded cache
-    if ip is not None:
-        robot.connect(ip=ip)
-    else:
-        logger.warning(
-            "No --ip provided; reading offline commanded-cache state, "
-            "not live hardware readings."
-        )
+    robot.connect(ip=ip)
 
     try:
         logger.success(f"joint_positions [deg]: {robot.get_joint_positions()}")
     finally:
-        if ip is not None:
-            robot.disconnect()
+        robot.disconnect()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read joint positions Synapse example")
-    parser.add_argument("--ip", type=str, default=None, help="UR robot IP address (optional)")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)

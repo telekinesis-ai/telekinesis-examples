@@ -4,8 +4,8 @@ Check live connection status example for the Synapse SDK.
 ``is_connected`` reports whether the manipulator state is being driven by
 live hardware.
 
-With ``--ip``, logs the value before connect, after connect, and after
-disconnect. Without ``--ip``, only the offline (``False``) case is shown.
+Connects to ``--ip`` (default ``192.168.1.100``) and logs the value before
+connect, after connect, and after disconnect.
 
 Illustrated using Universal Robots (UR10e), supported on all robots.
 
@@ -20,14 +20,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main(ip: str | None = None):
-    """Log ``is_connected`` offline, and around a connect/disconnect cycle if ``ip`` is given."""
+    """Log ``is_connected`` before, during, and after a connect/disconnect cycle."""
 
     # Create the robot instance (no hardware yet)
     robot = universal_robots.UniversalRobotsUR10E()
     logger.info(f"is_connected (pre-connect): {robot.is_connected()}")
-
-    if ip is None:
-        return
 
     # Connect to the robot with given ip
     robot.connect(ip=ip)
@@ -40,7 +37,7 @@ def main(ip: str | None = None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="is_connected Synapse example")
-    parser.add_argument("--ip", type=str, default=None, help="UR robot IP address (optional)")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)
