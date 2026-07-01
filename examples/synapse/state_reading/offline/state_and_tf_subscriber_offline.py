@@ -82,8 +82,7 @@ def on_tf(msg: dict) -> None:
     """node.Subscriber callback — visualizes the robot's TF frames in Rerun.
 
     Builds the TransformTree on the first message, then just updates each
-    frame's transform on later messages (adding any new frame, e.g. a TCP
-    frame that appears after connect()).
+    frame's transform on later messages (adding any new frame that appears).
     """
 
     # Create tf_tree

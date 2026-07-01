@@ -1,7 +1,8 @@
 """
 Inverse Kinematics with profiling diagnostics for the Synapse SDK.
 
-Pass ``profile=True`` to return profile diagnostics.
+Pass ``profile=True`` to return a ``(q, timing)`` tuple, where ``timing`` reports
+total solve time, seeds tried, the winning seed, and the residual pose error.
 
 Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
@@ -15,7 +16,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main():
-    """Solve IK with ``profile=True`` and log the timing diagnostics. Supports all robots."""
+    """Solve IK with ``profile=True`` and log the timing diagnostics."""
 
     # Create the robot (no connect required — IK runs on the kinematic model)
     robot = universal_robots.UniversalRobotsUR10E()

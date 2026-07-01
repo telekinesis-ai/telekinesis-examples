@@ -17,9 +17,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main(robot_ip: str):
-    """
-    Main function to demonstrate how to create an instance of a robot using the Universal Robots module in Python.
-    """
+    """Move the TCP down in -Z until contact is detected, then report and disconnect."""
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()

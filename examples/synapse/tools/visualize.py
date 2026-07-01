@@ -1,5 +1,6 @@
-"""
-Visualize a tool in rerun
+"""Schunk EGP gripper visualization example for the Synapse SDK.
+
+Loads a Schunk EGP gripper and visualizes it in Rerun (no hardware required).
 
 Run:
     python examples/synapse/tools/visualize.py
@@ -8,10 +9,8 @@ Run:
 from telekinesis.synapse.tools.parallel_grippers import schunk
 
 def main():
-    """
-    Visualize a Schunk EGP gripper in Rerun
-    """
-    
+    """Visualize a Schunk EGP gripper in Rerun."""
+
     gripper = schunk.SchunkEGP()
     gripper.visualize_rerun()
 

@@ -15,9 +15,7 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 
 def main():
-    """
-    Set controller interface TC as active.
-    """
+    """Set the controller-interface TCP as active."""
 
     # Parse command-line arguments for the UR controller IP address
     parser = argparse.ArgumentParser(description="Set and get TCP on a real UR10E.")
@@ -34,16 +32,15 @@ def main():
         logger.info(f"Registered TCPs: {tcps}")
 
         # Current Active TCP, transform w.r.t default tcp, and current TCP pose
-        logger.info(f"Active TCP before add_tcp(): {robot.active_tcp}"
+        logger.info(f"Active TCP: {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
 
-       
-        # Set controller interface TCP as active after add_tcp
+        # Set the controller-interface TCP as active
         robot.active_tcp = "controller_interface_tcp"
 
         # Get updated Active TCP, transform w.r.t default tcp, and TCP pose
-        logger.info(f"Active TCP after use_controller_interface_tcp(): {robot.active_tcp}"
+        logger.info(f"Active TCP after setting controller_interface_tcp: {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
 

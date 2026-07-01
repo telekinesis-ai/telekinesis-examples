@@ -1,9 +1,6 @@
 """
 Example: visualize a UR10e robot with an OnRobot gripper in Rerun.
 
-Runs entirely offline (no hardware required). The gripper mesh is placed at
-the robot's active TCP on every step, so it tracks the arm as it moves.
-
 Supported grippers:
   - rg6    OnRobot RG6  (default)
   - rg2    OnRobot RG2  (no URDF yet — gripper mesh will not render)
@@ -14,13 +11,9 @@ Demonstrates:
   - TF tree with home and target poses visualized as coordinate frames
   - Linear interpolation over Cartesian targets
 
-Install:
-    pip install rerun-sdk==0.31
-    pip install pycollada
-
 Run:
-    python examples/py/ur10e_onrobot_rerun.py              # defaults to RG6
-    python examples/py/ur10e_onrobot_rerun.py --gripper rg2
+    python examples/synapse/attach_tool/attach_and_move_with_onrobot.py                # defaults to RG6
+    python examples/synapse/attach_tool/attach_and_move_with_onrobot.py --gripper rg2
 """
 
 import argparse
@@ -42,6 +35,7 @@ _GRIPPERS = {
 
 def interpolated_poses(start: list, end: list, n_steps: int) -> list:
     """Return ``n_steps`` linearly interpolated poses from ``start`` to ``end``."""
+    
     start_arr = np.array(start, dtype=float)
     end_arr = np.array(end, dtype=float)
     return [
@@ -51,7 +45,12 @@ def interpolated_poses(start: list, end: list, n_steps: int) -> list:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="UR10e + OnRobot gripper Rerun visualization")
+    """
+    Visualize a UR10e robot with an OnRobot gripper in Rerun,
+    and move the robot through a series of Cartesian poses.
+    """
+
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         "--gripper",
         choices=list(_GRIPPERS),
@@ -59,20 +58,20 @@ def main():
         help="Gripper model to visualize (default: rg6)",
     )
     args = parser.parse_args()
+    gripper_cls, tcp_z_offset = _GRIPPERS[args.gripper]
 
-    gripper_cls, tcp_z = _GRIPPERS[args.gripper]
 
+    # Create robot and gripper
     robot = universal_robots.UniversalRobotsUR10E()
     gripper = gripper_cls()
 
+    # Attach the gripper and add TCP
     robot.attach_tool(gripper)
     robot.add_tcp(name="gripper_tip",
-                  transform=[0.0, 0.0, tcp_z, 0.0, 0.0, 0.0],
+                  transform=[0.0, 0.0, tcp_z_offset, 0.0, 0.0, 0.0],
                   set_active=True)
 
-    hz = 60
-    n_steps = 40
-
+    # Define home and target cartesian poses
     home_cartesian_pose = [0.40, 0.00, 0.60, 180.0, 0.0, 0.0]
     target_cartesian_poses = [
         [0.40,  0.10,  0.45, 180.0, 0.0, 0.0],
@@ -80,6 +79,8 @@ def main():
         [0.35,  0.00,  0.55, 180.0, 0.0, 0.0],
     ]
 
+    # Visualize the TF tree with home and target poses in Rerun,
+    # and visualize the robot + gripper together
     rr.init(f"telekinesis_synapse_ur10e_onrobot_{args.gripper}", spawn=True)
     recording_stream = rr.get_global_data_recording()
 
@@ -92,14 +93,18 @@ def main():
                  tfutils.pose_to_transformation_matrix(target, rot_type="deg"),
                  rot_type="mat")
     tree.visualize_rerun(axis_len=0.05, recording_stream=recording_stream)
-
     robot.visualize_rerun(recording_stream=recording_stream)
 
+    # Move to home pose smoothly
+    hz = 60
+    n_steps = 40
     for pose in interpolated_poses(robot.get_cartesian_pose(), home_cartesian_pose, n_steps):
         robot.set_cartesian_pose(pose)
         robot.visualize_rerun(recording_stream=recording_stream)
         time.sleep(1.0 / hz)
 
+
+    # Move to target poses smoothly, visualizing the robot + gripper together
     for i, target in enumerate(target_cartesian_poses):
         for pose in interpolated_poses(robot.get_cartesian_pose(), target, n_steps):
             try:
@@ -110,6 +115,7 @@ def main():
                 logger.warning("Pose {} unreachable", i + 1)
                 exit()
 
+    # Return to home pose smoothly
     for pose in interpolated_poses(robot.get_cartesian_pose(), home_cartesian_pose, n_steps):
         robot.set_cartesian_pose(pose)
         robot.visualize_rerun(recording_stream=recording_stream)

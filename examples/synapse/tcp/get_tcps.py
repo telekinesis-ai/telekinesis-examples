@@ -35,7 +35,7 @@ def main():
         logger.info(f"Registered TCPs: {tcps}")
 
         # Current Active TCP, transform w.r.t default tcp, and current TCP pose
-        logger.info(f"Active TCP before add_tcp(): {robot.active_tcp}"
+        logger.info(f"Active TCP: {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
 

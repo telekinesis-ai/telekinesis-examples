@@ -83,7 +83,7 @@ def main():
         robot.visualize_rerun(recording_stream=rr.get_global_data_recording())
         time.sleep(1.0 / hz)
 
-    #  Set active tcp to default tcp
+    # Section 1: cartesian control with the default (tool0) TCP active
     logger.info("\n--- Section 1: cartesian control  (active TCP: '{}') ---", robot.active_tcp)
 
     # Move the robot to target cartesian poses

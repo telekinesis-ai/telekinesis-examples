@@ -3,10 +3,11 @@ Servo Circular example for the Synapse SDK.
 
 Commands a circular-arc move from the current TCP pose to a target pose
 using ``servo_circular`` (UR ``servoC``). The target here is offset 2 cm
-along Z and 2 cm along Y so the arc is visually distinct from a straight
-line.
+in Y and -2 cm in Z from the current pose so the arc is visually distinct
+from a straight line.
 
 Currently supported only for Universal Robots (UR10e).
+
 Usage:
     python servo_circular.py --ip <ROBOT_IP>
 """
@@ -29,7 +30,7 @@ def main(robot_ip: str):
     robot.connect(ip=robot_ip)
 
     try:
-        # Target pose: 2 cm down in Z and 2 cm out in Y from the current pose.
+        # Target pose: 2 cm out in Y and 2 cm down in Z from the current pose.
         current = robot.get_cartesian_pose()
         target = list(current)
         target[1] += 0.02
@@ -49,10 +50,9 @@ def main(robot_ip: str):
             blend=0.0,
         )
 
-        time.sleep(2.0)  # In a real application, you would typically stream continuously until some condition is met (e.g. a certain time has elapsed, or a sensor triggers).
-
         # In a real application, you would typically stream continuously until some
         # condition is met (e.g. a certain time has elapsed, or a sensor triggers).
+        time.sleep(2.0)
         robot.servo_stop()
         logger.success("servo_circular complete.")
     finally:

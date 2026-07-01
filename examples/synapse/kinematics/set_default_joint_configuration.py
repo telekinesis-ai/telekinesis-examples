@@ -2,9 +2,9 @@
 Set the default joint configuration for the Synapse SDK.
 
 ``set_default_joint_configuration`` overrides the brand-default joint configuration
-that are used as the offline commanded state. Values are in degrees.
+used as the offline commanded state. Values are in degrees.
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots. This example runs purely on the kinematic model and does
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python set_default_joint_configuration.py

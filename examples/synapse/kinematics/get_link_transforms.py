@@ -5,8 +5,7 @@ Per-link forward kinematics example for the Synapse SDK.
 homogeneous matrix per frame in the kinematic chain at the current joint
 configuration.
 
-Universal Robots (UR10e) is used here purely for illustration. It supports
-all robots. 
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
     python get_link_transforms.py

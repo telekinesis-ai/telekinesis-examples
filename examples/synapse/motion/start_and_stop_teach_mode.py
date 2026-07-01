@@ -9,7 +9,7 @@ Enter to bookmark the current TCP pose, Ctrl-C to finish.
 Currently supported only for Universal Robots (UR10e).
 
 Usage:
-    python teach_and_record_waypoints.py --ip <ROBOT_IP>
+    python start_and_stop_teach_mode.py --ip <ROBOT_IP>
 """
 
 import argparse

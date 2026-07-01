@@ -1,15 +1,9 @@
 """
-Visualize a robot in rerun
+Visualize a robot in Rerun.
 
 Run:
     python examples/synapse/visualization_and_model/visualize.py
 """
-import time
-
-import numpy as np
-import rerun as rr
-from loguru import logger
-
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 

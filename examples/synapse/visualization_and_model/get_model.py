@@ -2,9 +2,11 @@
 Read the Pinocchio kinematic model for the Synapse SDK.
 
 ``get_model`` returns the standard ``pinocchio.Model`` object built from
-the robot's URDF. 
+the robot's URDF.
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
+Universal Robots (UR10e) is used here purely for illustration; the same API
+works for all supported robots. Runs on the kinematic model only — no
+hardware connection and no ``--ip`` required.
 
 Usage:
     python get_model.py

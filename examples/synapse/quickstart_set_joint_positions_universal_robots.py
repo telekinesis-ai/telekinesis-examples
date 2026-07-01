@@ -2,7 +2,7 @@
 Telekinesis quickstart: drive a Universal Robots robot in joint space along a sweeping trajectory.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Sweeps the base 320° around home while the elbow oscillates ±30°. The
+Sweeps the base 360° around home while the elbow oscillates ±30°. The
 TCP traces the resulting wavy circle, drawn live as a connected line
 with a hue gradient (older segments blue, newest red).
 
@@ -48,11 +48,11 @@ def main():
     base_joint_span = 360.0
     base_joint_speed = 60.0
 
-    # Number of full elbow oscillations per base revolution.
+    # Elbow oscillation: amplitude (deg) and number of full cycles per base sweep.
     elbow_amplitude_deg = 30.0
     elbow_cycles = 4
 
-    # Total number of waypointsin trajectory
+    # Total number of waypoints in trajectory
     n_steps = int(base_joint_span / (base_joint_speed * dt))
 
     # ----------------------------------------------------------------------------

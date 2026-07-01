@@ -2,10 +2,9 @@
 Telekinesis quickstart: drive an ABB robot along a YZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Traces a closed circle of radius 0.5m in the YZ plane around the home TCP pose. The TCP
+Traces a closed circle of radius 0.50m in the YZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
-
 
 Run:
     python examples/synapse/quickstart_set_cartesian_pose_abb.py
@@ -19,31 +18,6 @@ import rerun as rr
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import abb
-
-
-def visualize_robot(robot, static_meshes: bool = False) -> None:
-    """Log per-link transforms to rerun, plus the static meshes on the first call."""
-
-    # Log static meshes once
-    if static_meshes:
-        for link, m in robot.get_visual_meshes_data().items():
-            if m["vertices"] is None:
-                continue
-            kwargs: dict = {
-                "vertex_positions": m["vertices"],
-                "triangle_indices": m["triangles"],
-                "vertex_normals": m["vertex_normals"],
-            }
-            if m["vertex_colors"] is not None:
-                kwargs["vertex_colors"] = m["vertex_colors"]
-            else:
-                kwargs["albedo_factor"] = m["color"] or [179, 179, 179]
-            rr.log(f"/robot/{link}", rr.Mesh3D(**kwargs), static=True)
-
-    # Log per-link transforms on every update
-    for link, T in robot.get_visual_mesh_transforms().items():
-        rr.log(f"/robot/{link}", rr.Transform3D(translation=T[:3, 3], mat3x3=T[:3, :3]))
-
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""

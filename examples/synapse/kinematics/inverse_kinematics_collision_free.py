@@ -17,7 +17,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main():
-    """Solve IK with self-collision filtering enabled. Supports all robots."""
+    """Solve IK with self-collision filtering enabled."""
 
     # Create the robot (no connect required — IK runs on the kinematic model)
     robot = universal_robots.UniversalRobotsUR10E()

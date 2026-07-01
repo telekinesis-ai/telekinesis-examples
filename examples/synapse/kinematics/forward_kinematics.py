@@ -1,12 +1,12 @@
 """
 Forward kinematics example for the Synapse SDK.
 
-This example demonstrates how to compute the forward kinematics for a manipulator
-using the Synapse SDK. The example uses the Universal Robots UR10e purely for
-illustration, but supports all robot brands.
+Compute the forward kinematics for a manipulator using the Synapse SDK.
+
+Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
 
 Usage:
-    python forward_kinematics_example.py
+    python forward_kinematics.py
 """
 
 from telekinesis.synapse.robots.manipulators import universal_robots

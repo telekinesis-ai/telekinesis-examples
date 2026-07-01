@@ -76,7 +76,7 @@ def _visualize_target_joints(robot, path: str, joint_positions, axis_length: flo
 
 
 def main(ip: str):
-    """Move joint 0 by ±60 deg with a live rerun visualization. Supports all robots."""
+    """Move joint 0 by +60 deg then -60 deg with a live rerun visualization."""
 
     # Create the robot, initialize rerun, and log the static meshes
     robot = universal_robots.UniversalRobotsUR10E()

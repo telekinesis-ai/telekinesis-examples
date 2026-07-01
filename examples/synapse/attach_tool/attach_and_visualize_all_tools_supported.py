@@ -1,5 +1,13 @@
 """
 Example: visualize a UR10e robot with multiple tools.
+
+Demonstrates:
+    - ``robot.attach_tool(gripper)``     -- attach gripper once; visualization is automatic
+    - ``robot.visualize_rerun()``        -- renders robot + gripper together every step
+
+Run:
+    python examples/synapse/attach_tool/attach_and_visualize_all_tools_supported.py
+
 """
 
 import time
@@ -29,16 +37,15 @@ def main():
     # Create robot
     robot = universal_robots.UniversalRobotsUR10E()
 
-    # Move robot to ee down orientation
+    # Move the robot to an end-effector-down orientation
     robot.set_joint_positions([180, -90, 90, -90, -90, 0])
 
-    # Visualize the robot with all tools in _GRIPPERS
-
+    # Attach and visualize each supported tool in turn
     for gripper_cls in _GRIPPERS.values():
         gripper = gripper_cls()
         robot.attach_tool(gripper)
         robot.visualize_rerun()
-        time.sleep(1)  # Sleep to allow Rerun to update the visualization
+        time.sleep(1)  # Allow Rerun to update the visualization
         logger.info(f"Visualizing {gripper_cls.__name__}...")
 
 if __name__ == "__main__":

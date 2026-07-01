@@ -1,8 +1,8 @@
 """Robotiq 2F-85 connect and disconnect example for the Synapse SDK.
 
 Usage:
-    python connnection_and_disconnection.py --ip <ROBOT_IP>
-    python connnection_and_disconnection.py --protocol MODBUS_RTU --serial-port COM4
+    python connection_and_disconnection.py --ip <ROBOT_IP>
+    python connection_and_disconnection.py --protocol MODBUS_RTU --serial-port COM4
 """
 
 import argparse

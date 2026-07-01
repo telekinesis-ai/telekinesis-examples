@@ -1,5 +1,10 @@
 """
-Example: Attach tool and visualize in Rerun
+Example: attach an OnRobot RG6 gripper to a UR10e and visualize in Rerun.
+
+Demonstrates:
+    - ``robot.attach_tool()``
+    - ``robot.add_tcp()``
+    - ``robot.visualize_rerun()``
 
 Run:
     python examples/synapse/attach_tool/attach_tool.py
@@ -12,12 +17,14 @@ from telekinesis.synapse.tools.parallel_grippers import onrobot
 
 def main():
     """
-    Attach robotiq gripper to UniversalRobots UR10e and visualize in Rerun.
+    Attach an OnRobot RG6 gripper to a UR10e and visualize in Rerun.
     """
-  
+
+    # Create robot and gripper instances
     robot = universal_robots.UniversalRobotsUR10E()
     gripper = onrobot.OnRobotRG6()
-   
+
+    # Attach the gripper to the robot and set the active TCP frame
     robot.attach_tool(gripper)
     robot.add_tcp(name="gripper_tip",
                   transform=[0.0, 0.0, 0.18, 0.0, 0.0, 0.0],

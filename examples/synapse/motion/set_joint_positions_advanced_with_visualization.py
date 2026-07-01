@@ -1,13 +1,13 @@
 """Drive a real UR10e through advanced joint-position moves, with a live Rerun feed.
 
 Connects to a UR10e (or URSim) over RTDE, then runs two example moves:
-  - Example 1: synchronous move of -5° on joint 0 (blocks until complete).
-  - Example 2: synchronous move of +5° on joint 0 (blocks until complete).
+  - Example 1: synchronous move of +5° on joint 0 (blocks until complete).
+  - Example 2: synchronous move of -5° on joint 0 (blocks until complete).
 
 Currently supported only for Universal Robots (UR10e).
 
 For offline, refer to quick start examples.
-  
+
 Run (replace ``192.168.x.y`` with your UR10e or URSim IP):
     python examples/synapse/motion/set_joint_positions_advanced_with_visualization.py --ip 192.168.x.y
 """
@@ -93,7 +93,7 @@ def main(robot_ip: str):
     visualize_robot(robot)
 
     try:
-        # ----- Example 1: synchronous move -30° on joint 0 -----
+        # ----- Example 1: synchronous move +5° on joint 0 -----
         delta_deg = 5
         initial_joint_positions = robot.get_joint_positions()
         new_joint_positions = initial_joint_positions[:]
@@ -109,7 +109,7 @@ def main(robot_ip: str):
         visualize_robot(robot)
         logger.info(f"Moved to target joint positions: {new_joint_positions}")
 
-        # ----- Example 2: synchronous move +30° on joint 0 -----
+        # ----- Example 2: synchronous move -5° on joint 0 -----
         actual_joint_positions = robot.get_joint_positions()
         new_joint_positions = actual_joint_positions[:]
         new_joint_positions[0] -= delta_deg

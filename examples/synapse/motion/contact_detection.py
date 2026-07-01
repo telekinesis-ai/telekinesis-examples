@@ -107,9 +107,9 @@ def main():
     """
     Run a Contact Detection Synapse example.
     Usage:
-        python contact_detection_examples.py --list
-        python contact_detection_examples.py --ip <ROBOT_IP> --example <NAME>
-        python contact_detection_examples.py --ip <ROBOT_IP> --all
+        python contact_detection.py --list
+        python contact_detection.py --ip <ROBOT_IP> --example <NAME>
+        python contact_detection.py --ip <ROBOT_IP> --all
 
     Use --list to print the names of available examples without connecting to
     a robot, so you can choose one to pass to --example. --ip is not required

@@ -2,7 +2,7 @@
 
 Connects to a UR10e, then runs two example moves:
   - Example 1: synchronous move -20cm in Z (blocks until complete).
-  - Example 2: asynchronous move +20cm in Z, stopped after 0.5s with
+  - Example 2: asynchronous move +20cm in Z, stopped after 2s with
     ``stop_cartesian_motion`` before it reaches the target.
 
 Each example draws the target TCP frame in rerun (RGB axis arrows) and
@@ -109,7 +109,7 @@ def main(robot_ip: str):
         visualize_robot(robot)
         logger.info(f"Moved to target Cartesian pose: {new_tcp_pose}")
 
-        # ----- Example 2: asynchronous move +20cm in Z, stopped after 0.5s -----
+        # ----- Example 2: asynchronous move +20cm in Z, stopped after 2s -----
         actual_tcp_pose = robot.get_cartesian_pose()
         new_tcp_pose = actual_tcp_pose[:]
         new_tcp_pose[2] += delta_z

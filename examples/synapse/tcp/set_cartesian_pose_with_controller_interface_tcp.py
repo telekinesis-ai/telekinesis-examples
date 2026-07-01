@@ -2,8 +2,7 @@
 Example: move 2 cm along -Y from the current pose, first with the default
 (tool0) TCP active and then with the controller-interface TCP active.
 
-Requires hardware -- connects to the robot at ``--ip`` and executes the motion,
-with live visualization in Rerun.
+Requires hardware -- connects to the robot at ``--ip`` and executes the motion.
 
 Demonstrates:
   - ``robot.active_tcp``           -- switch the active end-effector frame
@@ -31,7 +30,7 @@ def main(ip: str | None = None):
     robot.connect(ip=ip)
 
     try:
-        logger.info(f"Active TCP before add_tcp(): {robot.active_tcp}"
+        logger.info(f"Active TCP: {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
 

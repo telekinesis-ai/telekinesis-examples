@@ -14,7 +14,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main():
-    """Solve IK with an explicit initial joint seed. Supports all robots."""
+    """Solve IK with an explicit initial joint seed and solver."""
 
     # Create the robot (no connect required — IK runs on the kinematic model)
     robot = universal_robots.UniversalRobotsUR10E()

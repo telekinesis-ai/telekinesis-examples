@@ -1,13 +1,15 @@
 """
-Set Cartesian Pose example for the Synapse SDK.
+Set Cartesian Pose (advanced) example for the Synapse SDK.
 
-Drives a real robot to the relative pose from current pose.
+Moves the TCP down 20 cm synchronously, then commands a 20 cm move back up
+and interrupts it mid-trajectory with ``stop_cartesian_motion``.
+
 Currently supported only for Universal Robots (UR10e).
 
 For offline, refer to quick start examples.
 
 Usage:
-    python set_cartesian_pose.py --ip <ROBOT_IP>
+    python set_cartesian_pose_advanced.py --ip <ROBOT_IP>
 """
 
 import argparse
@@ -19,16 +21,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main(robot_ip: str):
-    """
-    Main function to demonstrate how to create an instance of a robot using the Universal Robots module in Python.
-
-    Args:
-        robot_ip (str): The IP address of the UR robot
-    Returns:
-        None
-    Raises:
-        None
-    """
+    """Run a synchronous Cartesian move, then a move interrupted mid-trajectory."""
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
@@ -36,18 +29,17 @@ def main(robot_ip: str):
     # Connect to the robot
     robot.connect(ip=robot_ip)
 
-    # Example 1
-    # Get initial Cartesian pose
+    # Example 1: synchronous move down 20 cm in Z
     initial_tcp_pose = robot.get_cartesian_pose()
 
-    # Move to target Cartesian pose
+    # Build the target pose
     new_tcp_pose = initial_tcp_pose[:]
     new_tcp_pose[2] -= 0.2
     tcp_speed = 0.25
     tcp_acceleration = 0.25
     asynchronous = False
 
-    # Move to target Cartesian pose
+    # Command the move
     robot.set_cartesian_pose(
         cartesian_pose=new_tcp_pose,
         speed=tcp_speed,
@@ -56,11 +48,11 @@ def main(robot_ip: str):
     )
     logger.info(f"Moved to target Cartesian pose: {new_tcp_pose}")
 
-    # Example 2: Async
-    # Get initial Cartesian pose
+    # Example 2: move back up, then interrupt with stop_cartesian_motion
+    # Get current Cartesian pose
     actual_tcp_pose = robot.get_cartesian_pose()
 
-    # Move to target Cartesian pose
+    # Build the target pose
     new_tcp_pose = actual_tcp_pose[:]
     new_tcp_pose[2] += 0.2
     tcp_speed = 0.25
@@ -68,7 +60,7 @@ def main(robot_ip: str):
     stopping_speed = 0.25
     asynchronous = False
 
-    # Move to target Cartesian pose
+    # Command the move, then stop it mid-trajectory
     robot.set_cartesian_pose(
         cartesian_pose=new_tcp_pose,
         speed=tcp_speed,

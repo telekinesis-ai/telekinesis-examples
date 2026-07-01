@@ -6,7 +6,9 @@ Read per-link visual mesh world transforms for the Synapse SDK.
 URDF ``<visual><origin>`` offset. Links without a usable visual mesh are
 omitted.
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
+Universal Robots (UR10e) is used here purely for illustration; the same API
+works for all supported robots. Runs on the kinematic model only — no
+hardware connection and no ``--ip`` required.
 
 Usage:
     python get_visual_mesh_transforms.py

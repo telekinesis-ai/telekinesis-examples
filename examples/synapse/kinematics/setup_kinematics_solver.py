@@ -3,7 +3,7 @@ Pre-initialize an IK solver for the Synapse SDK.
 
 ``setup_kinematics_solver`` initializes an IK solver by name and caches
 it on the robot, so subsequent ``inverse_kinematics`` calls skip the
-solver-construction cost. 
+solver-construction cost.
 
 Supported solver names: ``"clik"``, ``"multi_start_clik"``, ``"tracik"``.
 

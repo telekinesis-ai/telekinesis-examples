@@ -1,7 +1,7 @@
 """
-Read actual joint velocities example for the Synapse SDK.
+Read joint velocities example for the Synapse SDK.
 
-Returns the manipulator's measured joint velocities [deg/s]. Connects to ``--ip`` (default ``192.168.1.100``) and reads the live state.
+Returns the manipulator's joint velocities [deg/s]. Connects to ``--ip`` (default ``192.168.1.100``) and reads the live state.
 
 Illustrated using Universal Robots (UR10e), supported on all robots.
 

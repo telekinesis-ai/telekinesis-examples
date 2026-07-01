@@ -1,12 +1,12 @@
 """
-Example: Demonstrates how to change active tcp
+Example: Demonstrates how to change the active TCP
 
 Usage:
     python change_active_tcp.py [--ip <ROBOT_IP>]
 
 Demonstrates:
 - add_tcp()                   — register a custom TCP frame and push it to the controller
-- chaneg active tcp
+- active_tcp                  — change which frame is currently active
 """
 
 import argparse
@@ -15,10 +15,7 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 
 def main():
-    """
-    Demonstartes how to change active tcp
-    and observe the active TCP before and after change.
-    """
+    """Change the active TCP and observe it before and after each change."""
 
     # Parse command-line arguments for the UR controller IP address
     parser = argparse.ArgumentParser(description="Set and get TCP on a real UR10E.")
@@ -30,7 +27,7 @@ def main():
     robot.connect(ip=args.ip)
 
     try:
-        new_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.1, 0.0, 0.0, 0.0]  # 185 mm along Z-axis
+        new_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.1, 0.0, 0.0, 0.0]  # 100 mm along Z-axis
         robot.add_tcp(name="camera_tip",
                       transform=new_tcp_pose_in_default_tcp_frame,
                       set_active=True)

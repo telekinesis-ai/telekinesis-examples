@@ -1,7 +1,7 @@
 """
 Set Cartesian Pose example for the Synapse SDK.
 
-Drives a real UR10e to the target Cartesian pose. This example is for real robot.
+Drives a real UR10e to the target Cartesian pose.
 
 Currently supported only for Universal Robots (UR10e).
 

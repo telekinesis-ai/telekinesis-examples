@@ -15,22 +15,13 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main(robot_ip: str):
-    """
-    Main function to demonstrate how to create an instance of a robot using the Universal Robots module in Python.
-
-    Args:
-        robot_ip (str): The IP address of the UR robot
-    Returns:
-        None
-    Raises:
-        None
-    """
+    """Move the robot to a target joint configuration."""
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
 
     # Connect to the robot
-    robot.connect(ip="192.168.1.2")
+    robot.connect(ip=robot_ip)
 
     # Move to target joint positions
     robot.set_joint_positions(
@@ -47,7 +38,7 @@ def main(robot_ip: str):
 if __name__ == "__main__":
     # args parser to get ip
     parser = argparse.ArgumentParser(description="UR10e robot set joint positions example")
-    parser.add_argument("--ip", type=str, default="192.168.1.2", help="IP address of the UR robot")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot")
     args = parser.parse_args()
 
     main(args.ip)

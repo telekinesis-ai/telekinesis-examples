@@ -2,7 +2,7 @@
 Example: Demonstrates adding and updating TCP
 
 Usage:
-    python add_tcp.py [--ip <ROBOT_IP>]
+    python update_tcp.py [--ip <ROBOT_IP>]
 
 Demonstrates:
 - add_tcp()                   — register a custom TCP frame and push it to the controller
@@ -29,7 +29,7 @@ def main():
     robot.connect(ip=args.ip)
 
     try:
-        new_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.1, 0.0, 0.0, 0.0]  # 185 mm along Z-axis
+        new_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.1, 0.0, 0.0, 0.0]  # 100 mm along Z-axis
         robot.add_tcp(name="new_tool",
                       transform=new_tcp_pose_in_default_tcp_frame,
                       set_active=True)
@@ -40,7 +40,7 @@ def main():
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
 
         # Update the TCP
-        updated_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.2, 0.0, 0.0, 0.0]  # 285 mm along Z-axis
+        updated_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.2, 0.0, 0.0, 0.0]  # 200 mm along Z-axis
         robot.update_tcp(name="new_tool",
                          transform=updated_tcp_pose_in_default_tcp_frame)
 

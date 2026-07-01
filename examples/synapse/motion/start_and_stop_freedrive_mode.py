@@ -10,7 +10,7 @@ motion control.
 Currently supported only for Universal Robots (UR10e).
 
 Usage:
-    python freedrive_mode.py --ip <ROBOT_IP>
+    python start_and_stop_freedrive_mode.py --ip <ROBOT_IP>
 """
 
 import argparse
