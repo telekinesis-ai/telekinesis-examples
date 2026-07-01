@@ -19,9 +19,9 @@ from telekinesis.synapse.tools.parallel_grippers import robotiq, onrobot, schunk
 _GRIPPERS = {
     "2f85":  robotiq.Robotiq2F85,  
     "2f140": robotiq.Robotiq2F140, 
-    # "hande": robotiq.RobotiqHandE, # URDF broken
+    "hande": robotiq.RobotiqHandE, 
     "rg6":   onrobot.OnRobotRG6,
-    # "rg2":   onrobot.OnRobotRG2, # URDF broken
+    "rg2":   onrobot.OnRobotRG2,
     "egu50":   schunk.SchunkEGU50,
     "egp":     schunk.SchunkEGP,
     "pznplus": schunk.SchunkPZNPlus,

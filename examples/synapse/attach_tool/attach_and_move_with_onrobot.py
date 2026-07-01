@@ -29,7 +29,7 @@ from telekinesis.synapse.tools.parallel_grippers import onrobot
 
 _GRIPPERS = {
     "rg6": (onrobot.OnRobotRG6, 0.25),
-    "rg2": (onrobot.OnRobotRG2, 0.20), # no URDF yet, so gripper mesh will not render
+    "rg2": (onrobot.OnRobotRG2, 0.20), 
 }
 
 

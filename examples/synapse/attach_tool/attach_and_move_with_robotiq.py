@@ -32,7 +32,7 @@ from telekinesis.synapse.tools.parallel_grippers import robotiq
 _GRIPPERS = {
     "2f85":  (robotiq.Robotiq2F85,   0.100),
     "2f140": (robotiq.Robotiq2F140,  0.130),
-    "hande": (robotiq.RobotiqHandE,  0.085), # no URDF yet, so gripper mesh will not render
+    "hande": (robotiq.RobotiqHandE,  0.150), 
 }
 
 
