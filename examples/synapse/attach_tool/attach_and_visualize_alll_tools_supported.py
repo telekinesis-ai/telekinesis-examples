@@ -6,7 +6,7 @@ Demonstrates:
     - ``robot.visualize_rerun()``        -- renders robot + gripper together every step
 
 Run:
-    python examples/synapse/attach_tool/attach_and_visualize_all_tools_supported.py
+    python examples/synapse/attach_tool/attach_and_visualize_alll_tools_supported.py
 
 """
 
@@ -17,7 +17,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 from telekinesis.synapse.tools.parallel_grippers import robotiq, onrobot, schunk
 
 _GRIPPERS = {
-    "2f85":  robotiq.Robotiq2F85,  
+    # "2f85":  robotiq.Robotiq2F85,  
     "2f140": robotiq.Robotiq2F140, 
     # "hande": robotiq.RobotiqHandE, # URDF broken
     "rg6":   onrobot.OnRobotRG6,
