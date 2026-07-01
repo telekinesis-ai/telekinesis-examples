@@ -136,8 +136,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--ip",
         type=str,
-        required=True,
-        help="IPv4 address (or hostname) of the UR10e controller",
+        default="192.168.1.100",
+        help="IPv4 address (or hostname) of the UR10e controller (default: 192.168.1.100)",
     )
     args = parser.parse_args()
 

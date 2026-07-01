@@ -11,9 +11,9 @@ Install:
     pip install rerun-sdk==0.31
 
 Usage:
-    python set_cartesian_pose_with_visualization_example.py --ip <ROBOT_IP> --list
-    python set_cartesian_pose_with_visualization_example.py --ip <ROBOT_IP> --example <NAME>
-    python set_cartesian_pose_with_visualization_example.py --ip <ROBOT_IP> --all
+    python set_cartesian_pose_with_visualization_example.py [--ip <ROBOT_IP>] --list
+    python set_cartesian_pose_with_visualization_example.py [--ip <ROBOT_IP>] --example <NAME>
+    python set_cartesian_pose_with_visualization_example.py [--ip <ROBOT_IP>] --all
 """
 
 import argparse
@@ -131,14 +131,14 @@ def main():
     """
     Run a Set Cartesian Pose with rerun visualization Synapse example.
     Usage:
-        python set_cartesian_pose_with_visualization_example.py --ip <ROBOT_IP> --list
-        python set_cartesian_pose_with_visualization_example.py --ip <ROBOT_IP> --example <NAME>
-        python set_cartesian_pose_with_visualization_example.py --ip <ROBOT_IP> --all
+        python set_cartesian_pose_with_visualization_example.py [--ip <ROBOT_IP>] --list
+        python set_cartesian_pose_with_visualization_example.py [--ip <ROBOT_IP>] --example <NAME>
+        python set_cartesian_pose_with_visualization_example.py [--ip <ROBOT_IP>] --all
     """
 
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Set Cartesian Pose with rerun visualization Synapse example")
-    parser.add_argument("--ip", type=str, required=True, help="Robot IP address")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="Robot IP address (default: 192.168.1.100)")
     parser.add_argument("--example", type=str)
     parser.add_argument("--list", action="store_true")
     parser.add_argument("--all", action="store_true")

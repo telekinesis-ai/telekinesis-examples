@@ -7,7 +7,7 @@ scaling applied during motion.
 Currently supported only for Universal Robots (UR10e).
 
 Usage:
-    python get_speed_scaling_combined.py --ip <ROBOT_IP>
+    python get_speed_scaling_combined.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -32,7 +32,7 @@ def main(ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read combined speed scaling Synapse example")
-    parser.add_argument("--ip", type=str, required=True, help="UR robot IP address")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)

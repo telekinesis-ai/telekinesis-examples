@@ -7,7 +7,7 @@ Cartesian space.
 Currently supported only for Universal Robots (UR10e).
 
 Usage:
-    python set_joint_position_in_cartesian_space.py --ip <ROBOT_IP>
+    python set_joint_position_in_cartesian_space.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="UR10e set_joint_position_in_cartesian_space example"
     )
-    parser.add_argument("--ip", type=str, required=True, help="IP address of the UR robot")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(args.ip)

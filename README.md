@@ -488,7 +488,7 @@ telekinesis-examples/
 │   │   ├── servo_control/             # Cartesian, joint, circular servoing
 │   │   ├── force_control/             # Contact detection
 │   │   ├── state_reading/             # TCP pose/force/speed, joint positions/torques
-│   │   ├── robot_statuses/            # Mode, safety, runtime state, controller frequency
+│   │   ├── statuses/            # Mode, safety, runtime state, controller frequency
 │   │   ├── diagnostics/               # Speed scaling, target speed fraction
 │   │   ├── tools/                     # Gripper control: open/close/move/force/speed
 │   │   └── visualization_and_model/   # Visual & collision meshes, link transforms

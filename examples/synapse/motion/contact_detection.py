@@ -8,7 +8,7 @@ disarms it and returns the final result.
 Currently supported only for Universal Robots (UR10e).
 
 Usage:
-    python contact_detection.py --ip <ROBOT_IP>
+    python contact_detection.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -108,8 +108,8 @@ def main():
     Run a Contact Detection Synapse example.
     Usage:
         python contact_detection.py --list
-        python contact_detection.py --ip <ROBOT_IP> --example <NAME>
-        python contact_detection.py --ip <ROBOT_IP> --all
+        python contact_detection.py [--ip <ROBOT_IP>] --example <NAME>
+        python contact_detection.py [--ip <ROBOT_IP>] --all
 
     Use --list to print the names of available examples without connecting to
     a robot, so you can choose one to pass to --example. --ip is not required
@@ -118,7 +118,7 @@ def main():
 
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Contact Detection Synapse examples")
-    parser.add_argument("--ip", type=str, help="UR robot IP address")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     parser.add_argument("--example", type=str)
     parser.add_argument("--list", action="store_true")
     parser.add_argument("--all", action="store_true")

@@ -7,7 +7,7 @@ only for Universal Robots (UR10e).
 For offline, refer to quick start examples.
 
 Usage:
-    python set_joint_positions.py --ip <ROBOT_IP>
+    python set_joint_positions.py [--ip <ROBOT_IP>]
 """
 
 import argparse

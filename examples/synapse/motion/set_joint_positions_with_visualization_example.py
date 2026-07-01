@@ -13,7 +13,7 @@ Install:
     pip install rerun-sdk==0.31
 
 Usage:
-    python set_joint_positions_with_visualization_example.py --ip <ROBOT_IP>
+    python set_joint_positions_with_visualization_example.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Set Joint Positions with rerun visualization Synapse example"
     )
-    parser.add_argument("--ip", type=str, required=True, help="Robot IP address")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="Robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)

@@ -8,7 +8,7 @@ Currently supported only for Universal Robots (UR10e).
 For offline, refer to quick start examples.
 
 Usage:
-    python set_cartesian_pose.py --ip <ROBOT_IP>
+    python set_cartesian_pose.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -51,7 +51,7 @@ def set_cartesian_pose(robot_ip: str):
 def main():
     """Run the set_cartesian_pose Synapse example."""
     parser = argparse.ArgumentParser(description="UR10e set_cartesian_pose example")
-    parser.add_argument("--ip", type=str, required=True, help="IP address of the UR robot")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
     # Run the example

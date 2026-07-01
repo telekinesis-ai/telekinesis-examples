@@ -16,7 +16,7 @@ use ``move_until_contact`` instead.
 Currently supported only for Universal Robots (UR10e).
 
 Usage:
-    python is_tool_in_contact.py --ip <ROBOT_IP>
+    python is_tool_in_contact.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -71,7 +71,7 @@ def main(ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
-    parser.add_argument("--ip", type=str, required=True, help="UR robot IP address")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)
