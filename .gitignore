@@ -18,6 +18,7 @@ public/
 examples/run_all_examples.py
 profiling/
 results/
+outputs/
 
 scripts/
 backup_assets/
