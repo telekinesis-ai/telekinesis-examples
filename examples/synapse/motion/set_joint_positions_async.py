@@ -4,7 +4,7 @@ Set Joint Positions (asynchronous) example for the Synapse SDK.
 Commands an asynchronous joint move (joint 0 by +5 deg), then interrupts it
 mid-trajectory with ``stop_joint_motion``.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python set_joint_positions_async.py [--ip <ROBOT_IP>]

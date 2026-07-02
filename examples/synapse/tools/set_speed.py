@@ -2,6 +2,7 @@
 
 Sets the default speed (percent of max) used by subsequent open/close/move
 calls.
+Supported only for real hardware.
 
 Usage:
     python set_speed.py --ip <ROBOT_IP>

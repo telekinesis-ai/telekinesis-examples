@@ -3,7 +3,9 @@ Read TCP wrench (force/torque) example for the Synapse SDK.
 
 Returns the TCP wrench ``[Fx, Fy, Fz (N), Tx, Ty, Tz (N·m)]``. Connects to ``--ip`` (default ``192.168.1.100``) and reads the live state.
 
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
 
 Usage:
     python get_tcp_force.py [--ip <ROBOT_IP>]

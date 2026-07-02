@@ -64,7 +64,6 @@ def on_state(msg: dict, fields: list[str]) -> None:
     ``fields`` is bound in main() via functools.partial so the callback keeps
     babyros's single-argument signature.
     """
-
     # Drive the timeline with the receive time so values advance offline too
     # (the commanded-cache timestamp is constant between set_* commands).
     rr.set_time("log_time", timestamp=time.time())

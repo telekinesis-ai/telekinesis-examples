@@ -1,12 +1,17 @@
 """
 Example: Set controller interface TCP as active
 
-Usage:
-    python set_controller_interface_tcp_as_active.py [--ip <ROBOT_IP>]
-
 Demonstrates:
 - get_tcps()                  — retrieve all registered TCP frames from the controller
 - use_controller_interface_tcp()  — set the controller interface TCP as the active TCP
+
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
+
+
+Usage:
+    python set_controller_interface_tcp_as_active.py [--ip <ROBOT_IP>]
 """
 
 import argparse

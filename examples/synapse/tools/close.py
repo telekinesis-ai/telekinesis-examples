@@ -1,6 +1,7 @@
 """Robotiq 2F-85 close example for the Synapse SDK.
 
 Closes the gripper fully at 100% speed and 50% force, synchronously.
+Supported only for real hardware.
 
 Usage:
     python close.py --ip <ROBOT_IP>

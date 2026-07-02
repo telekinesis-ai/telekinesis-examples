@@ -10,7 +10,7 @@ Demonstrates:
 - `read_contact_detection()`
 - `stop_contact_detection()`
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python contact_detection.py [--ip <ROBOT_IP>]

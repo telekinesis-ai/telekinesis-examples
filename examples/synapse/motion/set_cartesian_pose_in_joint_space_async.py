@@ -4,7 +4,7 @@ Set Cartesian Pose in Joint Space (asynchronous) example for the Synapse SDK.
 Commands an asynchronous Cartesian move (10 cm up in Z) using joint-space
 motion, then interrupts it mid-trajectory with ``stop_joint_motion``.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python set_cartesian_pose_in_joint_space_async.py [--ip <ROBOT_IP>]

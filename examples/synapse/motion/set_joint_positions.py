@@ -1,8 +1,9 @@
 """
 Set Joint Positions example for the Synapse SDK.
 
-Drives the robot to a target joint configuration. Currently supported
-only for Universal Robots (UR10e).
+Drives the robot to a target joint configuration.
+
+Currently supported only for Universal Robots (UR10e) for real hardware.
 
 For offline, refer to offline/
 

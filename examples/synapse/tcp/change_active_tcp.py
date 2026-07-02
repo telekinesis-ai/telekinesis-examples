@@ -7,6 +7,10 @@ Usage:
 Demonstrates:
 - add_tcp()                   — register a custom TCP frame and push it to the controller
 - active_tcp                  — change which frame is currently active
+
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
 """
 
 import argparse

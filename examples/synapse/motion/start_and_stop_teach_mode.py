@@ -6,7 +6,7 @@ There is no built-in "save waypoint" feature in teach mode — but combining
 gives the standard teach-and-repeat pattern: hand-guide the arm, press
 Enter to bookmark the current TCP pose, Ctrl-C to finish.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python start_and_stop_teach_mode.py [--ip <ROBOT_IP>]

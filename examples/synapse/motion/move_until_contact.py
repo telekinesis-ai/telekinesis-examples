@@ -4,7 +4,7 @@ Move until Contact example for the Synapse SDK.
 Drives a real robot downwards in z direction until contact is detected,
 then stops and reports the result.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python move_until_contact.py [--ip <ROBOT_IP>]

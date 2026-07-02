@@ -2,6 +2,7 @@
 
 Configures mm units and 85 mm stroke range, then moves to 20 mm at 100% speed
 and 50% force.
+Supported only for real hardware.
 
 Usage:
     python move.py --ip <ROBOT_IP>

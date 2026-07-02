@@ -2,6 +2,7 @@
 
 Sets the default grip force (percent of max) used by subsequent
 open/close/move calls.
+Supported only for real hardware.
 
 Usage:
     python set_force.py --ip <ROBOT_IP>

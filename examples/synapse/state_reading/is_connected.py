@@ -7,7 +7,9 @@ live hardware.
 Connects to ``--ip`` (default ``192.168.1.100``) and logs the value before
 connect, after connect, and after disconnect.
 
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
 
 Usage:
     python is_connected.py [--ip <ROBOT_IP>]

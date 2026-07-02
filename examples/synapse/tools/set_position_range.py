@@ -1,6 +1,7 @@
 """Robotiq 2F-85 set position range example for the Synapse SDK.
 
 Sets the gripper stroke range. 85 mm is the 2F-85 maximum.
+Supported only for real hardware.
 
 Usage:
     python set_position_range.py --ip <ROBOT_IP>

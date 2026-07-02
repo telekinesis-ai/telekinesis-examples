@@ -6,6 +6,8 @@ Demonstrates:
     - ``robot.add_tcp()``
     - ``robot.visualize_rerun()``
 
+    Supported for all robots offline, and Universal Robots in real.
+
 Run:
     python examples/synapse/attach_tool/attach_tool.py
 """

@@ -1,10 +1,10 @@
 """
 Set Joint Positions with live Rerun logging example for the Synapse SDK.
 
-Drives a real robot to a target joint configuration while a babyros subscriber
-logs each state message and redraws the robot in Rerun.
+Drives a real UR10e to a target joint configuration while a babyros subscriber
+redraws the robot in Rerun on each state message.
 
-Real robots are currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 For offline, refer to set_joint_positions_with_rerun in motion/offline/
 
@@ -22,12 +22,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def on_state(msg, robot):
-    """Log each state message and redraw the robot in Rerun.
+    """Redraw the robot in Rerun on each state message.
 
     ``robot`` is bound via functools.partial so the callback keeps babyros's
     single-argument (msg) signature.
     """
-    logger.info(f"Received robot state: {msg}")
     robot.visualize_rerun()
 
 

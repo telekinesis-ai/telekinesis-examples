@@ -20,8 +20,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Move the robot to a target joint configuration on the kinematic model, drawing it in Rerun before and after the move."""
 
-    # Create robot instance with a name so its state publisher starts
-    # (the subscriber below needs a non-empty state_publisher_topic).
+    # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
 
     # Visualize the robot in Rerun

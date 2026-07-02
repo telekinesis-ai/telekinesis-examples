@@ -13,7 +13,7 @@ timeout elapses), it issues ``stop_jog`` to halt the motion.
 For the one-shot equivalent (start a move, block until contact, stop),
 use ``move_until_contact`` instead.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware, and only Universal Robots.
 
 Usage:
     python is_tool_in_contact.py [--ip <ROBOT_IP>]

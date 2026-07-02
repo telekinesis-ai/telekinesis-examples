@@ -1,14 +1,15 @@
 """
-Set Cartesian Pose example for the Synapse SDK.
+Set Cartesian Pose with live Rerun logging example for the Synapse SDK.
 
-Drives a real UR10e to the target Cartesian pose.
+Drives a real UR10e to the target Cartesian pose while a babyros subscriber
+redraws the robot in Rerun on each state message.
 
-Real robots are currently supported only for Universal Robots.
+Real robots are currently supported only for Universal Robots for real hardware.
 
-For offline, refer to set_cartesian_pose in motion/offline/
+For offline, refer to set_cartesian_pose_with_rerun in motion/offline/
 
 Usage:
-    python set_cartesian_pose.py [--ip <ROBOT_IP>]
+    python set_cartesian_pose_with_rerun.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -21,12 +22,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def on_state(msg, robot):
-    """Log each state message and redraw the robot in Rerun.
+    """Redraw the robot in Rerun on each state message.
 
     ``robot`` is bound via functools.partial so the callback keeps babyros's
     single-argument (msg) signature.
     """
-    logger.info(f"Received robot state: {msg}")
     robot.visualize_rerun()
 
 
@@ -49,7 +49,7 @@ def main():
     # Define target Cartesian pose
     current_cartesian_pose = robot.get_cartesian_pose()
     target_cartesian_pose = current_cartesian_pose.copy()
-    target_cartesian_pose[2] -= 0.2  # Move 10 cm up in Z
+    target_cartesian_pose[2] -= 0.2  # Move 20 cm down in Z
 
     # Subscriber to states
     sub = node.Subscriber(topic=robot.state_publisher_topic,

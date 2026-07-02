@@ -5,7 +5,7 @@ Commands an asynchronous joint move and interrupts it mid-trajectory
 with ``stop_joint_motion``. ``stopping_speed`` controls the deceleration
 profile (deg/s).
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python stop_joint_motion.py [--ip <ROBOT_IP>]

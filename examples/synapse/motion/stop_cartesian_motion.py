@@ -5,7 +5,7 @@ Commands an asynchronous Cartesian move and interrupts it mid-trajectory
 with ``stop_cartesian_motion``. ``stopping_speed`` controls the
 deceleration profile (m/s).
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python stop_cartesian_motion.py [--ip <ROBOT_IP>]

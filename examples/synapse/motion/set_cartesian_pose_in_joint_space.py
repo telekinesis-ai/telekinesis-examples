@@ -4,7 +4,7 @@ Set Cartesian Pose in Joint Space example for the Synapse SDK.
 Moves to a target Cartesian pose using a trajectory that is linear in joint
 space (joint-space ``moveJ`` with internal IK).
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 
 Usage:
@@ -35,7 +35,7 @@ def main():
     # Target Cartesian pose
     current_cartesian_pose = robot.get_cartesian_pose()
     target_pose = current_cartesian_pose.copy()
-    target_pose[2] -= 0.1  # Move 10 cm down in
+    target_pose[2] -= 0.1  # Move 10 cm down in Z
 
     try:
         robot.set_cartesian_pose_in_joint_space(

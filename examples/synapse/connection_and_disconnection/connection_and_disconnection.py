@@ -1,8 +1,8 @@
 """
 Connection and disconnection example for the Synapse SDK.
 
-Connects to and disconnects from real robot hardware. Currently supported
-only for Universal Robots (UR10e).
+Currently supported only for connecting to real hardware,
+and only Universal Robots.
 
 Usage:
     python connection_and_disconnection.py [--ip <ROBOT_IP>]

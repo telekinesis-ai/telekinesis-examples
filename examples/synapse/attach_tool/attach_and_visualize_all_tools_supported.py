@@ -5,6 +5,8 @@ Demonstrates:
     - ``robot.attach_tool(gripper)``     -- attach gripper once; visualization is automatic
     - ``robot.visualize_rerun()``        -- renders robot + gripper together every step
 
+    Supported for all robots offline, and Universal Robots in real.
+
 Run:
     python examples/synapse/attach_tool/attach_and_visualize_all_tools_supported.py
 

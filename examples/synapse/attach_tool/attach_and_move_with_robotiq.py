@@ -4,13 +4,15 @@ Example: visualize a UR10e robot with a Robotiq gripper in Rerun.
 Supported grippers:
   - 2f85     Robotiq 2F-85  (default)
   - 2f140    Robotiq 2F-140
-  - hande    Robotiq Hand-E  (no URDF yet — gripper mesh will not render)
+  - hande    Robotiq Hand-E
 
 Demonstrates:
   - ``robot.attach_tool(gripper)``     -- attach gripper once; visualization is automatic
   - ``robot.visualize_rerun()``        -- renders robot + gripper together every step
   - TF tree with home and target poses visualized as coordinate frames
   - Linear interpolation over Cartesian targets
+  
+Supported for all robots offline, and Universal Robots in real.
 
 Run:
     python examples/synapse/attach_tool/attach_and_move_with_robotiq.py                # defaults to 2F-85

@@ -8,7 +8,7 @@ button on the teach pendant. ``feature`` selects the frame:
 ``0`` = base, ``1`` = tool, ``2`` = custom (provide ``custom_frame``).
 This is Cartesian jogging — there is no joint-jog API.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python start_and_stop_jog_mode.py [--ip <ROBOT_IP>]

@@ -1,6 +1,7 @@
 """Robotiq 2F-85 open example for the Synapse SDK.
 
 Opens the gripper fully at 100% speed and 50% force, synchronously.
+Supported only for real hardware.
 
 Usage:
     python open.py --ip <ROBOT_IP>

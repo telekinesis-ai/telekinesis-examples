@@ -4,7 +4,7 @@ Set Cartesian Pose (asynchronous) example for the Synapse SDK.
 Commands an asynchronous 20 cm move up in Z, then interrupts it
 mid-trajectory with ``stop_cartesian_motion``.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python set_cartesian_pose_async.py [--ip <ROBOT_IP>]

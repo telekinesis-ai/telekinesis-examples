@@ -4,7 +4,7 @@ Read robot mode example for the Synapse SDK.
 Returns the controller's high-level robot mode (e.g. ``"RUNNING"``,
 ``"IDLE"``, ``"POWER_OFF"``).
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots.
 
 Usage:
     python get_robot_mode.py [--ip <ROBOT_IP>]

@@ -16,8 +16,9 @@ set_* commands. Logging against it would stack every sample on one time point
 and nothing would appear. We therefore drive the timeline with the message
 receive time (time.time()), which advances both offline and on a real robot.
 
-Install:
-    pip install rerun-sdk
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
 
 Usage:
     python state_and_tf_subscriber.py                       # offline commanded state
@@ -63,7 +64,6 @@ def on_state(msg: dict, fields: list[str]) -> None:
     ``fields`` is bound in main() via functools.partial so the callback keeps
     babyros's single-argument signature.
     """
-
     # Drive the timeline with the receive time so values advance offline too
     # (the commanded-cache timestamp is constant between set_* commands).
     rr.set_time("log_time", timestamp=time.time())

@@ -3,7 +3,7 @@ Set Cartesian Pose example for the Synapse SDK.
 
 Drives a real UR10e to the target Cartesian pose.
 
-Real robots are currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 For offline, refer to set_cartesian_pose in motion/offline/
 

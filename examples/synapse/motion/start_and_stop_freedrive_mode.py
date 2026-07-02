@@ -7,7 +7,7 @@ mask ``[x, y, z, rx, ry, rz]`` where ``1`` means the axis is free and ``0``
 means it is locked. ``stop_freedrive_mode`` returns the controller to normal
 motion control.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python start_and_stop_freedrive_mode.py [--ip <ROBOT_IP>]

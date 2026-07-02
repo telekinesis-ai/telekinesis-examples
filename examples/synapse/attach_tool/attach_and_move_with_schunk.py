@@ -16,6 +16,8 @@ Demonstrates:
   - TF tree with home and target poses visualized as coordinate frames
   - Linear interpolation over Cartesian targets
 
+  Supported for all robots offline, and Universal Robots in real.
+  
 Run:
     python examples/synapse/attach_tool/attach_and_move_with_schunk.py                  # defaults to EGU 50
     python examples/synapse/attach_tool/attach_and_move_with_schunk.py --gripper egp

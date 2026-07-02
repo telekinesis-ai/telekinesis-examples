@@ -8,6 +8,10 @@ Demonstrates:
 - add_tcp()                   — register a custom TCP frame and push it to the controller
 - get_active_tcp_transform()  — read the active TCP offset (metres, Euler-XYZ degrees)
 - active_tcp                  — check which frame is currently active
+
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
 """
 
 import argparse

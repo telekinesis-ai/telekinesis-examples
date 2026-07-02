@@ -4,7 +4,7 @@ Set Joint Position in Cartesian Space example for the Synapse SDK.
 Moves to a target joint configuration using a trajectory that is linear in
 Cartesian space.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
 Usage:
     python set_joint_position_in_cartesian_space.py [--ip <ROBOT_IP>]

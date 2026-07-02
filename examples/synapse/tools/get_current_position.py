@@ -1,6 +1,7 @@
 """Robotiq 2F-85 read current position example for the Synapse SDK.
 
 Reads the gripper's current position in the configured unit.
+Supported only for real hardware.
 
 Usage:
     python get_current_position.py --ip <ROBOT_IP>

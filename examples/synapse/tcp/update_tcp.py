@@ -1,12 +1,16 @@
 """
 Example: Demonstrates adding and updating TCP
 
-Usage:
-    python update_tcp.py [--ip <ROBOT_IP>]
-
 Demonstrates:
 - add_tcp()                   — register a custom TCP frame and push it to the controller
 - update_tcp()                — update a custom TCP frame in the controller
+
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
+
+Usage:
+    python set_controller_interface_tcp_as_active.py [--ip <ROBOT_IP>]
 """
 
 import argparse

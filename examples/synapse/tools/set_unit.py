@@ -1,6 +1,7 @@
 """Robotiq 2F-85 set position unit example for the Synapse SDK.
 
 Switches the gripper position unit to normalized (0..1).
+Supported only for real hardware.
 
 Usage:
     python set_unit.py --ip <ROBOT_IP>

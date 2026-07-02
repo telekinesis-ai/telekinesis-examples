@@ -9,7 +9,9 @@ hardware-dependent optional fields). Connects to ``--ip`` (default ``192.168.1.1
 ``get_state()`` requires an initialized state publisher, so the robot is created
 with a ``name`` (which starts the publisher at construction, before connecting).
 
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to set_cartesian_pose in state_reading/offline/
 
 Usage:
     python get_state.py [--ip <ROBOT_IP>]

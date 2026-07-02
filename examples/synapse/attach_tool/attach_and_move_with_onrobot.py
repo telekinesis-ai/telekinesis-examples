@@ -3,13 +3,15 @@ Example: visualize a UR10e robot with an OnRobot gripper in Rerun.
 
 Supported grippers:
   - rg6    OnRobot RG6  (default)
-  - rg2    OnRobot RG2  (no URDF yet — gripper mesh will not render)
+  - rg2    OnRobot RG2
 
 Demonstrates:
   - ``robot.attach_tool(gripper)``     -- attach gripper once; visualization is automatic
   - ``robot.visualize_rerun()``        -- renders robot + gripper together every step
   - TF tree with home and target poses visualized as coordinate frames
   - Linear interpolation over Cartesian targets
+
+Supported for all robots offline, and Universal Robots in real.
 
 Run:
     python examples/synapse/attach_tool/attach_and_move_with_onrobot.py                # defaults to RG6
