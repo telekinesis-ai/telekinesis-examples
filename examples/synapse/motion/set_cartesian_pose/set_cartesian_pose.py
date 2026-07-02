@@ -1,15 +1,14 @@
 """
-Set Cartesian Pose (relative) example for the Synapse SDK.
+Set Cartesian Pose example for the Synapse SDK.
 
-Reads the current TCP pose and moves to a target defined *relative* to it
-(an offset applied to the current pose).
+Drives a real UR10e to the target Cartesian pose.
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware from Universal Robots
 
-For an offline version, refer to set_cartesian_pose_relative in motion/offline/
+For offline, refer to set_cartesian_pose in motion/offline/set_cartesian_pose/
 
 Usage:
-    python set_cartesian_pose_relative.py [--ip <ROBOT_IP>]
+    python set_cartesian_pose.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -26,17 +25,15 @@ def main(ip: str):
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
-    # Define a target relative to the current pose
-    current_cartesian_pose = robot.get_cartesian_pose()
-    target_cartesian_pose = current_cartesian_pose.copy()
-    target_cartesian_pose[2] += 0.1  # Move 10 cm up in Z
+    # Define target Cartesian pose
+    target_cartesian_pose = [0.5, 0.0, 0.5, 180.0, 0.0, 0.0] 
 
     # Command the move, then disconnect cleanly
     try:
         robot.set_cartesian_pose(
             cartesian_pose=target_cartesian_pose,
-            speed=0.5,
-            acceleration=0.5,
+            speed=0.1,
+            acceleration=0.1,
         )
         logger.info(f"Moved to target Cartesian pose: {target_cartesian_pose}")
     finally:
