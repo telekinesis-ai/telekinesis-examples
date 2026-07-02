@@ -1,7 +1,8 @@
 """Schunk EGP gripper visualization example for the Synapse SDK.
 
 Loads a Schunk EGP gripper and visualizes it in Rerun (no hardware required).
-Supported for all grippers
+This script visualizes a single Schunk EGP gripper; swap the gripper class to
+visualize another supported model.
 
 Run:
     python examples/synapse/tools/visualize.py

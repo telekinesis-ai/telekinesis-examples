@@ -1,13 +1,13 @@
 """
-Set Joint Positions example for the Synapse SDK -- offline.
+Set Joint Positions (relative) example for the Synapse SDK -- offline.
 
-Moves the robot to a target joint configuration on the kinematic model; no
-hardware connection is made.
+Reads the current joint configuration and moves to a target defined *relative* to
+it, on the kinematic model; no hardware connection is made.
 
 Supports all robots.
 
 Usage:
-    python set_joint_positions.py
+    python set_joint_positions_relative.py
 """
 
 from loguru import logger
@@ -21,7 +21,8 @@ def main():
     robot = universal_robots.UniversalRobotsUR10E()
 
     # Target: current joint configuration with the base joint rotated +30 deg
-    target_joint_positions = [0, -90, -90, -90, 90, 0]
+    target_joint_positions = robot.get_joint_positions().copy()
+    target_joint_positions[0] += 30
 
     # Move to target joint positions
     robot.set_joint_positions(

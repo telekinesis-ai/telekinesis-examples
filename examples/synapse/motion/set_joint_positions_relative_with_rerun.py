@@ -1,15 +1,15 @@
 """
-Set Joint Positions with live Rerun logging example for the Synapse SDK.
+Set Joint Positions (relative) with live Rerun logging example for the Synapse SDK.
 
-Drives a real UR10e to a target joint configuration while a babyros subscriber
-redraws the robot in Rerun on each state message.
+Reads the current joint configuration and moves to a target defined *relative* to
+it, while a babyros subscriber redraws the robot in Rerun on each state message.
 
-Currently supported only for real hardware from Universal Robots
+Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_joint_positions_with_rerun in motion/offline/
+For an offline version, refer to set_joint_positions_relative_with_rerun in motion/offline/
 
 Usage:
-    python set_joint_positions_with_rerun.py [--ip <ROBOT_IP>]
+    python set_joint_positions_relative_with_rerun.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -41,7 +41,8 @@ def main(ip: str):
     robot.visualize_rerun()
 
     # Target: current joint configuration with the base joint rotated +30 deg
-    target_joint_positions = [0, -90, -90, -90, 90, 0]
+    target_joint_positions = robot.get_joint_positions().copy()
+    target_joint_positions[0] += 30
 
     # Subscriber to states
     sub = node.Subscriber(topic=robot.state_publisher_topic,

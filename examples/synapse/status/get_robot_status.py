@@ -1,8 +1,10 @@
 """
 Read robot status example for the Synapse SDK.
 
-Returns the controller's high-level robot status (e.g. ``"NORMAL"``,
-``"REDUCED"``, ``"PROTECTIVE_STOP"``).
+Returns the controller's high-level robot status flags (e.g. whether the robot
+is powered on, whether a program is running, and whether an emergency or
+protective stop is active). This is distinct from the safety mode reported by
+``get_safety_mode`` (see get_safety_mode.py).
 
 Currently supported only for real hardware from Universal Robots.
 

@@ -1,14 +1,16 @@
 """
 Simple Inverse Kinematics example for the Synapse SDK with default seed.
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
+Universal Robots (UR10e) is used here purely for illustration; the same API works for all supported robots.
 
 Usage:
     python inverse_kinematics.py
 """
 
 from loguru import logger
+
 from telekinesis.synapse.robots.manipulators import universal_robots
+
 
 def main():
     """Solve IK for a target TCP pose with default solver parameters."""

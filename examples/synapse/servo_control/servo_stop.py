@@ -26,7 +26,9 @@ def main(robot_ip: str):
     # Servo-loop and trajectory parameters
     dt = 0.008          # 125 Hz servo loop
     amplitude = 2.0     # ±2 deg base oscillation
-    period = 4.0        # seconds per full oscillation
+    period = 4.0        # seconds for one complete sine cycle
+    # Only stream for a fraction of ``period``, so the motion is interrupted
+    # partway through the cycle (~1/4 cycle here) rather than completing it.
     stream_duration = 1.0  # stream servo targets for this long before stopping
     deceleration = 10.0    # deg/s² for servo_stop
 

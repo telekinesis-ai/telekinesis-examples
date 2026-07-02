@@ -1,13 +1,13 @@
 """
-Set Cartesian Pose example for the Synapse SDK -- offline.
+Set Cartesian Pose (relative) example for the Synapse SDK -- offline.
 
-Moves the TCP to a target Cartesian pose on the kinematic model; no hardware
-connection is made.
+Reads the current TCP pose and moves to a target defined *relative* to it, on the
+kinematic model; no hardware connection is made.
 
 Supports all robots.
 
 Usage:
-    python set_cartesian_pose.py
+    python set_cartesian_pose_relative.py
 """
 
 from loguru import logger
@@ -20,9 +20,11 @@ def main():
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
-
+    
     # Define target Cartesian pose
-    target_cartesian_pose = [0.5, 0.0, 0.5, 180.0, 0.0, 0.0]
+    current_cartesian_pose = robot.get_cartesian_pose()
+    target_cartesian_pose = current_cartesian_pose.copy()
+    target_cartesian_pose[2] += 0.1  # Move 10 cm up in Z
 
     # Command the move
     robot.set_cartesian_pose(

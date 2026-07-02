@@ -10,7 +10,7 @@ Demonstrates:
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For an offline version, refer to tcp/offline/change_active_tcp.py
 """
 
 import argparse
@@ -22,7 +22,7 @@ def main():
     """Change the active TCP and observe it before and after each change."""
 
     # Parse command-line arguments for the UR controller IP address
-    parser = argparse.ArgumentParser(description="Set and get TCP on a real UR10E.")
+    parser = argparse.ArgumentParser(description="Register several TCPs on a real UR10E and switch the active one.")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
@@ -41,7 +41,6 @@ def main():
         robot.add_tcp(name="laser_tip",
                       transform=[0.0, 0.0, 0.3, 0.0, 0.0, 0.0],
                       set_active=False)
-        
 
         # Get updated Active TCP, transform w.r.t default tcp, and TCP pose
         logger.info(f"Active TCP after add_tcp(): {robot.active_tcp}"

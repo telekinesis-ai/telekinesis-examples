@@ -25,7 +25,7 @@ def main():
 
     # Read the Pinocchio collision GeometryModel
     collision_model = robot.get_collision_model()
-    
+
     logger.info(f"Number of collision geometries: {len(collision_model.geometryObjects)}")
     logger.info(f"Number of collision pairs: {len(collision_model.collisionPairs)}")
 

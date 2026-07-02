@@ -1,13 +1,14 @@
 """
-Set Joint Positions with Rerun visualization example for the Synapse SDK -- offline.
+Set Joint Positions (relative) with Rerun visualization example for the Synapse SDK -- offline.
 
-Moves the robot to a target joint configuration on the kinematic model; no
-hardware connection is made. The robot is drawn in Rerun before and after the move.
+Reads the current joint configuration and moves to a target defined *relative* to
+it, on the kinematic model; no hardware connection is made. The robot is drawn in
+Rerun before and after the move.
 
 Supports all robots.
 
 Usage:
-    python set_joint_positions_with_rerun.py
+    python set_joint_positions_relative_with_rerun.py
 """
 
 import time
@@ -28,7 +29,8 @@ def main():
     time.sleep(2.0)  # Wait for Rerun to initialize
 
     # Target: current joint configuration with the base joint rotated +30 deg
-    target_joint_positions = [0, -90, -90, -90, 90, 0]
+    target_joint_positions = robot.get_joint_positions().copy()
+    target_joint_positions[0] += 30
 
     # Command the move
     robot.set_joint_positions(

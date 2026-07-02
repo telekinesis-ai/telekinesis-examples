@@ -47,8 +47,7 @@ def main():
     time.sleep(2.0)  # Wait for Rerun to initialize
 
     # Target: current joint configuration with the base joint rotated +30 deg
-    target_joint_positions = robot.get_joint_positions().copy()
-    target_joint_positions[0] += 30
+    target_joint_positions = [0, -90, -90, -90, 90, 0]
 
     # Subscriber to states
     sub = node.Subscriber(topic=robot.state_publisher_topic,
@@ -64,6 +63,7 @@ def main():
         logger.info(f"Moved to target joint positions: {target_joint_positions}")
     finally:
         sub.delete()
+
 
 if __name__ == "__main__":
     main()

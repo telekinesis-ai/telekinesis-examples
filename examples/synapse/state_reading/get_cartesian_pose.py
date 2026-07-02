@@ -6,7 +6,7 @@ Connects to ``--ip`` (default ``192.168.1.100``) and reads the live state.
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For offline, refer to get_cartesian_pose in state_reading/offline/
 
 Usage:
     python get_cartesian_pose.py [--ip <ROBOT_IP>]

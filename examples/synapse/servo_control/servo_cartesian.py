@@ -18,6 +18,7 @@ from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
+
 def main(robot_ip: str):
     """Trace a YZ circle around the current TCP pose with servo_cartesian."""
 
@@ -73,10 +74,7 @@ def main(robot_ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="UR10e servo_cartesian example")
-    parser.add_argument("--ip",
-                        type=str,
-                        default="192.168.1.100",
-                        help="IP address of the UR robot (default: 192.168.1.100)")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(args.ip)

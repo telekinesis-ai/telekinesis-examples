@@ -19,9 +19,9 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 from telekinesis.synapse.tools.parallel_grippers import robotiq, onrobot, schunk
 
 _GRIPPERS = {
-    "2f85":  robotiq.Robotiq2F85,  
-    "2f140": robotiq.Robotiq2F140, 
-    "hande": robotiq.RobotiqHandE, 
+    "2f85":  robotiq.Robotiq2F85,
+    "2f140": robotiq.Robotiq2F140,
+    "hande": robotiq.RobotiqHandE,
     "rg6":   onrobot.OnRobotRG6,
     "rg2":   onrobot.OnRobotRG2,
     "egu50":   schunk.SchunkEGU50,
@@ -46,9 +46,10 @@ def main():
     for gripper_cls in _GRIPPERS.values():
         gripper = gripper_cls()
         robot.attach_tool(gripper)
+        logger.info(f"Visualizing {gripper_cls.__name__}...")
         robot.visualize_rerun()
         time.sleep(1)  # Allow Rerun to update the visualization
-        logger.info(f"Visualizing {gripper_cls.__name__}...")
+
 
 if __name__ == "__main__":
     main()

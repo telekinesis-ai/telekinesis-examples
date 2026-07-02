@@ -11,7 +11,7 @@ Demonstrates:
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For an offline version, refer to tcp/offline/set_cartesian_pose_with_custom_tcp.py
 
 Usage:
     python set_cartesian_pose_with_custom_tcp.py [--ip <ROBOT_IP>]

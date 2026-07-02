@@ -11,7 +11,7 @@ Demonstrates:
   - ``robot.visualize_rerun()``        -- renders robot + gripper together every step
   - TF tree with home and target poses visualized as coordinate frames
   - Linear interpolation over Cartesian targets
-  
+
 Supported for all robots offline, and Universal Robots in real.
 
 Run:
@@ -34,7 +34,7 @@ from telekinesis.synapse.tools.parallel_grippers import robotiq
 _GRIPPERS = {
     "2f85":  (robotiq.Robotiq2F85,   0.100),
     "2f140": (robotiq.Robotiq2F140,  0.130),
-    "hande": (robotiq.RobotiqHandE,  0.150), 
+    "hande": (robotiq.RobotiqHandE,  0.150),
 }
 
 

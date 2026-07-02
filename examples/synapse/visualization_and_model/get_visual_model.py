@@ -25,7 +25,7 @@ def main():
 
     # Read the Pinocchio visual GeometryModel
     visual_model = robot.get_visual_model()
-    
+
     logger.info(f"Number of visual geometries: {len(visual_model.geometryObjects)}")
     for geom in visual_model.geometryObjects:
         logger.info(f"  - {geom.name}")

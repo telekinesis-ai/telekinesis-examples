@@ -11,7 +11,7 @@ with a ``name`` (which starts the publisher at construction, before connecting).
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For offline, refer to get_state in state_reading/offline/
 
 Usage:
     python get_state.py [--ip <ROBOT_IP>]

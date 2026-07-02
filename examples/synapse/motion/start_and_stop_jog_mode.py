@@ -22,12 +22,12 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 
 def main(ip: str):
-    """Jog the TCP -Z at 5 cm/s in the base frame for 5 seconds, then stop."""
+    """Jog the TCP +Z (upward) at 5 cm/s in the base frame for 5 seconds, then stop."""
 
     # Create and connect to the robot
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
-    
+
     # Cartesian twist [vx, vy, vz (m/s), ωx, ωy, ωz (deg/s)] in the base frame
     cartesian_velocity = [0.0, 0.0, 0.05, 0.0, 0.0, 0.0]
     logger.info(f"Starting jog - cartesian_velocity [m/s, deg/s]: {cartesian_velocity}")
@@ -47,7 +47,7 @@ def main(ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser = argparse.ArgumentParser(description="Start Cartesian jog mode, then stop it")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

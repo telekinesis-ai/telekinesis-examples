@@ -36,7 +36,7 @@ def main(ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser = argparse.ArgumentParser(description="Move the TCP down until contact is detected")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

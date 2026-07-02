@@ -12,7 +12,7 @@ Demonstrates:
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For an offline version, refer to tcp/offline/set_cartesian_pose_with_custom_tcp_rerun_live.py
 
 Usage:
     python set_cartesian_pose_with_custom_tcp_rerun_live.py [--ip <ROBOT_IP>]
@@ -68,7 +68,7 @@ def main(ip: str | None = None):
                  tfutils.pose_to_transformation_matrix(target_tcp_pose, rot_type="deg"),
                  rot_type="mat")
         tree.visualize_rerun(axis_len=0.05,
-                             recording_stream=rr.get_global_data_recording())
+                             recording_stream=recording)
 
         # Move with the default (tool0) TCP active
         robot.set_cartesian_pose(target_tcp_pose)

@@ -11,7 +11,7 @@ Demonstrates:
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For an offline version, refer to tcp/offline/add_tcp.py
 """
 
 import argparse
@@ -23,7 +23,7 @@ def main():
     """Observe the active TCP and its transform before and after add_tcp()."""
 
     # Parse command-line arguments for the UR controller IP address
-    parser = argparse.ArgumentParser(description="Set and get TCP on a real UR10E.")
+    parser = argparse.ArgumentParser(description="Add a custom TCP to a real UR10E and inspect the active TCP.")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

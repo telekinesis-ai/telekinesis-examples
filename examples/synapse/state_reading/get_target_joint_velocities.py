@@ -5,7 +5,7 @@ Returns the manipulator's target/commanded joint velocities [deg/s]. Connects to
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For offline, refer to get_target_joint_velocities in state_reading/offline/
 
 Usage:
     python get_target_joint_velocities.py [--ip <ROBOT_IP>]
@@ -17,7 +17,7 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str | None = None):
+def main(ip: str):
     """Log the current target joint velocities [deg/s]."""
 
     robot = universal_robots.UniversalRobotsUR10E()

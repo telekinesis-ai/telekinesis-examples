@@ -5,7 +5,7 @@ Returns the manipulator's joint torques [N·m]. Connects to ``--ip`` (default ``
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For offline, refer to get_joint_torques in state_reading/offline/
 
 Usage:
     python get_joint_torques.py [--ip <ROBOT_IP>]
@@ -17,7 +17,7 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str | None = None):
+def main(ip: str):
     """Log the current joint torques [N·m]."""
 
     robot = universal_robots.UniversalRobotsUR10E()

@@ -1,14 +1,14 @@
 """
-Set Cartesian Pose with live Rerun logging example for the Synapse SDK -- offline.
+Set Cartesian Pose (relative) with live Rerun logging example for the Synapse SDK -- offline.
 
-Moves the TCP to a target Cartesian pose on the kinematic model; no hardware
-connection is made. A babyros subscriber logs each state message and redraws
-the robot in Rerun continuously as the move runs.
+Reads the current TCP pose and moves to a target defined *relative* to it, on the
+kinematic model; no hardware connection is made. A babyros subscriber redraws the
+robot in Rerun continuously as the move runs.
 
 Supports all robots.
 
 Usage:
-    python set_cartesian_pose_with_rerun_live.py
+    python set_cartesian_pose_relative_with_rerun_live.py
 """
 
 import time
@@ -47,7 +47,9 @@ def main():
     time.sleep(2.0)  # Wait for Rerun to initialize
 
     # Define target Cartesian pose
-    target_cartesian_pose = [0.5, 0.0, 0.5, 180.0, 0.0, 0.0]
+    current_cartesian_pose = robot.get_cartesian_pose()
+    target_cartesian_pose = current_cartesian_pose.copy()
+    target_cartesian_pose[2] -= 0.2  # Move 20 cm down in Z
 
     # Subscriber to states
     sub = node.Subscriber(topic=robot.state_publisher_topic,

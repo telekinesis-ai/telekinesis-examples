@@ -2,9 +2,12 @@
 Inverse Kinematics with profiling diagnostics for the Synapse SDK.
 
 Pass ``profile=True`` to return a ``(q, timing)`` tuple, where ``timing`` reports
-total solve time, seeds tried, the winning seed, and the residual pose error.
+the total solve time (``total_s``), the number of seeds tried
+(``num_seeds_tried``), the winning seed index (``winning_seed_index``), and the
+separate residual linear and angular errors (``linear_error_norm_meters`` and
+``angular_error_norm_rad``).
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
+Universal Robots (UR10e) is used here purely for illustration; the same API works for all supported robots.
 
 Usage:
     python inverse_kinematics_with_profile.py

@@ -1,11 +1,12 @@
 """
 Collision-free Inverse Kinematics example for the Synapse SDK.
 
-Passing ``collision_free_ik=True`` discards solutions that self-collide.
-This is most useful on redundant manipulators (e.g. 7-DOF arms) where
-multiple joint solutions exist for the same TCP pose.
+Passing ``collision_free_ik=True`` discards solutions that self-collide,
+so the returned configuration is guaranteed to be self-collision-free
+(where multiple joint solutions exist for the same TCP pose, a colliding
+one is rejected in favour of a clear one).
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
+Universal Robots (UR10e) is used here purely for illustration; the same API works for all supported robots.
 
 Usage:
     python inverse_kinematics_collision_free.py

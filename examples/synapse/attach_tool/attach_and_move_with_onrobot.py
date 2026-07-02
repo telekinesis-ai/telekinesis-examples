@@ -31,13 +31,13 @@ from telekinesis.synapse.tools.parallel_grippers import onrobot
 
 _GRIPPERS = {
     "rg6": (onrobot.OnRobotRG6, 0.25),
-    "rg2": (onrobot.OnRobotRG2, 0.20), 
+    "rg2": (onrobot.OnRobotRG2, 0.20),
 }
 
 
 def interpolated_poses(start: list, end: list, n_steps: int) -> list:
     """Return ``n_steps`` linearly interpolated poses from ``start`` to ``end``."""
-    
+
     start_arr = np.array(start, dtype=float)
     end_arr = np.array(end, dtype=float)
     return [
@@ -52,7 +52,7 @@ def main():
     and move the robot through a series of Cartesian poses.
     """
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="UR10e + OnRobot gripper Rerun visualization")
     parser.add_argument(
         "--gripper",
         choices=list(_GRIPPERS),
@@ -60,7 +60,7 @@ def main():
         help="Gripper model to visualize (default: rg6)",
     )
     args = parser.parse_args()
-    gripper_cls, tcp_z_offset = _GRIPPERS[args.gripper]
+    gripper_cls, tcp_z = _GRIPPERS[args.gripper]
 
 
     # Create robot and gripper
@@ -70,7 +70,7 @@ def main():
     # Attach the gripper and add TCP
     robot.attach_tool(gripper)
     robot.add_tcp(name="gripper_tip",
-                  transform=[0.0, 0.0, tcp_z_offset, 0.0, 0.0, 0.0],
+                  transform=[0.0, 0.0, tcp_z, 0.0, 0.0, 0.0],
                   set_active=True)
 
     # Define home and target cartesian poses

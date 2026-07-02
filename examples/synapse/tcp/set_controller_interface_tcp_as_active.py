@@ -7,8 +7,7 @@ Demonstrates:
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
-
+For offline TCP examples, refer to tcp/offline/
 
 Usage:
     python set_controller_interface_tcp_as_active.py [--ip <ROBOT_IP>]
@@ -23,7 +22,7 @@ def main():
     """Set the controller-interface TCP as active."""
 
     # Parse command-line arguments for the UR controller IP address
-    parser = argparse.ArgumentParser(description="Set and get TCP on a real UR10E.")
+    parser = argparse.ArgumentParser(description="Set the controller-interface TCP as active on a real UR10E.")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

@@ -6,8 +6,6 @@ Traces a closed circle with radius 0.20m in the YZ plane around the home TCP pos
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
-Install:
-    pip install rerun-sdk==0.31  # tested on 0.31
 Run:
     python examples/synapse/quickstart_set_cartesian_pose_universal_robots.py
 """

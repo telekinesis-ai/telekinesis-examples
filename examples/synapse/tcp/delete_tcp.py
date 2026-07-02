@@ -10,7 +10,7 @@ Demonstrates:
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For an offline version, refer to tcp/offline/delete_tcp.py
 """
 
 import argparse
@@ -24,7 +24,7 @@ def main():
     """
 
     # Parse command-line arguments for the UR controller IP address
-    parser = argparse.ArgumentParser(description="Set and get TCP on a real UR10E.")
+    parser = argparse.ArgumentParser(description="Add and then delete a custom TCP on a real UR10E.")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

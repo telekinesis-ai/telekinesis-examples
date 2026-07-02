@@ -25,30 +25,31 @@ def main(ip: str):
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
-    # Get initial joint positions [deg]
-    initial_joint_positions = robot.get_joint_positions()
+    try:
+        # Get initial joint positions [deg]
+        initial_joint_positions = robot.get_joint_positions()
 
-    # Asynchronous +20 deg move on joint 0
-    target_joint_positions = initial_joint_positions[:]
-    target_joint_positions[0] += 20
-    robot.set_joint_positions(
-        joint_positions=target_joint_positions,
-        speed=60,
-        acceleration=80,
-        asynchronous=True,
-    )
+        # Asynchronous +20 deg move on joint 0
+        target_joint_positions = list(initial_joint_positions)
+        target_joint_positions[0] += 20
+        robot.set_joint_positions(
+            joint_positions=target_joint_positions,
+            speed=60,
+            acceleration=80,
+            asynchronous=True,
+        )
 
-    # Let the move run briefly, then interrupt it
-    time.sleep(0.3)
-    robot.stop_joint_motion(stopping_speed=30)
-    logger.info("Stopped joint motion.")
-
-    # Disconnect
-    robot.disconnect()
+        # Let the move run briefly, then interrupt it
+        time.sleep(0.3)
+        robot.stop_joint_motion(stopping_speed=30)
+        logger.info("Stopped joint motion.")
+    finally:
+        # Disconnect
+        robot.disconnect()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser = argparse.ArgumentParser(description="Interrupt an async joint move with stop_joint_motion")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

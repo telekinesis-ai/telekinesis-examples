@@ -3,7 +3,7 @@ Telekinesis quickstart: drive a Universal Robots robot in joint space along a sw
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
 Sweeps the base 360° around home while the elbow oscillates ±30°. The
-TCP traces the resulting wavy circle, drawn live as a connected line
+TCP traces the resulting wavy path, drawn live as a connected line
 with a hue gradient (older segments blue, newest red).
 
 Run:

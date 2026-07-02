@@ -16,9 +16,10 @@ set_* commands. Logging against it would stack every sample on one time point
 and nothing would appear. We therefore drive the timeline with the message
 receive time (time.time()), which advances both offline and on a real robot.
 
-Currently supported only for real hardware from Universal Robots.
+Runs offline on the commanded state by default (no connection required), and
+switches to live telemetry when connected to real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For a purely offline variant, refer to state_and_tf_subscriber in state_reading/offline/
 
 Usage:
     python state_and_tf_subscriber.py                       # offline commanded state
@@ -110,7 +111,7 @@ def main() -> None:
     """Subscribe to a robot's state and TF topics and visualize them in Rerun."""
 
     parser = argparse.ArgumentParser()
-    parser.add_argument( "--ip",
+    parser.add_argument("--ip",
                         type=str,
                         default="192.168.1.100",
                         help="UR robot IP (omit to run offline on commanded state)")
@@ -129,7 +130,7 @@ def main() -> None:
 
         # Launch subscribers for state and tf
         state_subscriber = node.Subscriber(
-            topic=robot.state_publisher_topic, 
+            topic=robot.state_publisher_topic,
             callback=partial(on_state, fields=state_fields)
         )
         tf_subscriber = node.Subscriber(

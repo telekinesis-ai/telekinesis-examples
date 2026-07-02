@@ -1,7 +1,7 @@
 """
 Inverse Kinematics with an explicit seed and solver for the Synapse SDK.
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
+Universal Robots (UR10e) is used here purely for illustration; the same API works for all supported robots.
 
 Usage:
     python inverse_kinematics_with_seed.py
@@ -21,7 +21,7 @@ def main():
 
     # Pick a known-reachable configuration and derive its forward-kinematic pose
     q_deg = np.asarray([0, -90 - 5.7, -90, 0, 90, 0], dtype=float)
-    target_pose = robot.forward_kinematics(q_deg)
+    target_pose = robot.forward_kinematics(q=q_deg)
 
     # Perturb the configuration to use as an IK seed
     q_init = q_deg + np.random.normal(loc=0.0, scale=30.0, size=q_deg.shape)

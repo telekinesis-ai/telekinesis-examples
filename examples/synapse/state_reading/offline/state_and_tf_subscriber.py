@@ -121,7 +121,7 @@ def main() -> None:
 
         # Launch subscribers for state and tf
         state_subscriber = node.Subscriber(
-            topic=robot.state_publisher_topic, 
+            topic=robot.state_publisher_topic,
             callback=partial(on_state, fields=state_fields)
         )
         tf_subscriber = node.Subscriber(

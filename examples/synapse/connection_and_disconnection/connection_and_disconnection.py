@@ -10,6 +10,7 @@ Usage:
 
 import argparse
 import time
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots

@@ -19,8 +19,7 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 
 def main(ip: str):
     """Move to a target joint configuration via Cartesian-space motion."""
-    
-    # Create robot instance
+
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
@@ -43,7 +42,7 @@ def main(ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser = argparse.ArgumentParser(description="Move to a target joint configuration via Cartesian-space motion")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

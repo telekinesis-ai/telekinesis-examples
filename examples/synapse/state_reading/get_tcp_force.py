@@ -5,7 +5,7 @@ Returns the TCP wrench ``[Fx, Fy, Fz (N), Tx, Ty, Tz (N·m)]``. Connects to ``--
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For offline, refer to get_tcp_force in state_reading/offline/
 
 Usage:
     python get_tcp_force.py [--ip <ROBOT_IP>]
@@ -17,7 +17,7 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str | None = None):
+def main(ip: str):
     """Log the current TCP wrench [N, N·m]."""
 
     robot = universal_robots.UniversalRobotsUR10E()

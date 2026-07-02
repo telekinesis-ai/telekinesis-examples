@@ -1,13 +1,14 @@
 """
-Set Cartesian Pose with Rerun visualization example for the Synapse SDK -- offline.
+Set Cartesian Pose (relative) with Rerun visualization example for the Synapse SDK -- offline.
 
-Moves the TCP to a target Cartesian pose on the kinematic model; no hardware
-connection is made. The robot is drawn in Rerun before and after the move.
+Reads the current TCP pose and moves to a target defined *relative* to it, on the
+kinematic model; no hardware connection is made. The robot is drawn in Rerun
+before and after the move.
 
 Supports all robots.
 
 Usage:
-    python set_cartesian_pose_with_rerun.py
+    python set_cartesian_pose_relative_with_rerun.py
 """
 
 import time
@@ -28,7 +29,9 @@ def main():
     time.sleep(2.0)  # Wait for Rerun to initialize
 
     # Define target Cartesian pose
-    target_cartesian_pose = [0.5, 0.0, 0.5, 180.0, 0.0, 0.0]
+    current_cartesian_pose = robot.get_cartesian_pose()
+    target_cartesian_pose = current_cartesian_pose.copy()
+    target_cartesian_pose[2] -= 0.2  # Move 20 cm down in Z
 
     # Command the move
     robot.set_cartesian_pose(

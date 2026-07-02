@@ -1,9 +1,6 @@
 """
 Example: visualize a UR10e robot with a Schunk gripper in Rerun.
 
-Runs entirely offline (no hardware required). The gripper mesh is placed at
-the robot's active TCP on every step, so it tracks the arm as it moves.
-
 Supported grippers:
   - egu50      Schunk EGU 50    (default)
   - egp        Schunk EGP
@@ -16,8 +13,8 @@ Demonstrates:
   - TF tree with home and target poses visualized as coordinate frames
   - Linear interpolation over Cartesian targets
 
-  Supported for all robots offline, and Universal Robots in real.
-  
+Supported for all robots offline, and Universal Robots in real.
+
 Run:
     python examples/synapse/attach_tool/attach_and_move_with_schunk.py                  # defaults to EGU 50
     python examples/synapse/attach_tool/attach_and_move_with_schunk.py --gripper egp

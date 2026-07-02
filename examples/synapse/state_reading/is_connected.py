@@ -9,7 +9,7 @@ connect, after connect, and after disconnect.
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For offline, refer to is_connected in state_reading/offline/
 
 Usage:
     python is_connected.py [--ip <ROBOT_IP>]
@@ -21,7 +21,7 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str | None = None):
+def main(ip: str):
     """Log ``is_connected`` before, during, and after a connect/disconnect cycle."""
 
     # Create the robot instance (no hardware yet)

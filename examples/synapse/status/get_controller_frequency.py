@@ -3,7 +3,7 @@ Read controller frequency example for the Synapse SDK.
 
 ``get_controller_frequency`` measures the controller's update rate by
 polling ``get_timestamp()`` for ``window_s`` seconds and computing
-``1 / mean_step_time``. 
+``1 / mean_step_time``.
 
 Currently supported only for real hardware from Universal Robots.
 

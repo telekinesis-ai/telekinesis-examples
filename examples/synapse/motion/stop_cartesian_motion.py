@@ -23,32 +23,33 @@ def main(ip: str):
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=args.ip)
+    robot.connect(ip=ip)
 
-    # Get initial Cartesian pose [x, y, z, rx, ry, rz] (m, deg)
-    actual_pose = robot.get_cartesian_pose()
+    try:
+        # Get initial Cartesian pose [x, y, z, rx, ry, rz] (m, deg)
+        actual_pose = robot.get_cartesian_pose()
 
-    # Asynchronous +15 cm move along Z
-    target_pose = actual_pose[:]
-    target_pose[2] += 0.15
-    robot.set_cartesian_pose(
-        cartesian_pose=target_pose,
-        speed=0.25,
-        acceleration=0.5,
-        asynchronous=True,
-    )
+        # Asynchronous +15 cm move along Z
+        target_pose = list(actual_pose)
+        target_pose[2] += 0.15
+        robot.set_cartesian_pose(
+            cartesian_pose=target_pose,
+            speed=0.25,
+            acceleration=0.5,
+            asynchronous=True,
+        )
 
-    # Let the move run briefly, then interrupt it
-    time.sleep(0.3)
-    robot.stop_cartesian_motion(stopping_speed=0.25)
-    logger.info("Stopped Cartesian motion.")
-
-    # Disconnect
-    robot.disconnect()
+        # Let the move run briefly, then interrupt it
+        time.sleep(0.3)
+        robot.stop_cartesian_motion(stopping_speed=0.25)
+        logger.info("Stopped Cartesian motion.")
+    finally:
+        # Disconnect
+        robot.disconnect()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser = argparse.ArgumentParser(description="Interrupt an async Cartesian move with stop_cartesian_motion")
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 

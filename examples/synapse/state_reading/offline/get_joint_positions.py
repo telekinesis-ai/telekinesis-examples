@@ -7,7 +7,7 @@ state; no hardware connection is made.
 Illustrated using Universal Robots (UR10e), supported on all robots.
 
 Usage:
-    python get_joint_positions_offline.py
+    python get_joint_positions.py
 """
 
 from loguru import logger

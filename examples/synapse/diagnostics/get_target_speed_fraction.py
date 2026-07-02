@@ -11,6 +11,7 @@ Usage:
 """
 
 import argparse
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots

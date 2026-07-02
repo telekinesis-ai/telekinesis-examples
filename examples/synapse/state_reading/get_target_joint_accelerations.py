@@ -6,7 +6,7 @@ Connects to ``--ip`` (default ``192.168.1.100``) and reads the live state.
 
 Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to set_cartesian_pose in state_reading/offline/
+For offline, refer to get_target_joint_accelerations in state_reading/offline/
 
 Usage:
     python get_target_joint_accelerations.py [--ip <ROBOT_IP>]
@@ -18,7 +18,7 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str | None = None):
+def main(ip: str):
     """Log the current target joint accelerations [deg/s²]."""
 
     robot = universal_robots.UniversalRobotsUR10E()
