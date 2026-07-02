@@ -18,17 +18,11 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main():
+def main(ip: str):
     """Move the robot to a target joint configuration."""
-    # args parser to get ip
-    parser = argparse.ArgumentParser(description="UR10e robot set joint positions example")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot")
-    args = parser.parse_args()
-
+   
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
     robot.connect(ip=args.ip)
 
     # Target: current joint configuration with the base joint rotated +30 deg
@@ -49,4 +43,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)
+

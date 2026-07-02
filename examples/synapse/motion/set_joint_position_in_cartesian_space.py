@@ -17,16 +17,12 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main():
+def main(ip: str):
     """Move to a target joint configuration via Cartesian-space motion."""
-    parser = argparse.ArgumentParser(
-        description="UR10e set_joint_position_in_cartesian_space example"
-    )
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
-
+    
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
+    robot.connect(ip=ip)
 
     # Target joint positions in degrees
     q_target = [0, -90, 0, -90, 0, 0]
@@ -36,9 +32,6 @@ def main():
         f"About to move real robot to joint positions {q_target}. "
         "Make sure it's safe to move there, otherwise use the advanced example."
     )
-
-    # Connect to the robot
-    robot.connect(ip=args.ip)
 
     try:
         robot.set_joint_position_in_cartesian_space(
@@ -50,4 +43,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)
+

@@ -16,12 +16,12 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main():
+def main(ip: str):
     """Move the TCP down in -Z until contact is detected, then report and disconnect."""
-    # args parser to get ip
-    parser = argparse.ArgumentParser(description="UR10e robot move until contact example")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
+
+    # Create robot instance
+    robot = universal_robots.UniversalRobotsUR10E()
+    robot.connect(ip=ip)
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
@@ -43,4 +43,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)
+

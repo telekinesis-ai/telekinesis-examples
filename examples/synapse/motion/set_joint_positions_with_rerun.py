@@ -30,18 +30,12 @@ def on_state(msg, robot):
     robot.visualize_rerun()
 
 
-def main():
+def main(ip: str):
     """Run the set_joint_positions Synapse example with live Rerun logging."""
-    parser = argparse.ArgumentParser(description="UR10e set_joint_positions example")
-    parser.add_argument("--ip", type=str,
-                        default="192.168.1.100",
-                        help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
 
-    # Create robot instance with a name so its state publisher starts
-    # (the subscriber below needs a non-empty state_publisher_topic).
+    # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
-    robot.connect(ip=args.ip)
+    robot.connect(ip=ip)
 
     # Visualize the robot in Rerun
     robot.visualize_rerun()
@@ -67,4 +61,8 @@ def main():
         robot.disconnect()
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)

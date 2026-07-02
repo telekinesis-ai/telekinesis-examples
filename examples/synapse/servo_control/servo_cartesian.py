@@ -4,10 +4,10 @@ Servo Cartesian example for the Synapse SDK.
 Streams TCP poses at 500 Hz to trace a small circle in the YZ plane around
 the current TCP pose using ``servo_cartesian``.
 
-Currently supported only for Universal Robots.
+Currently supported only for real hardware from Universal Robots.
 
 Usage:
-    python servo_cartesian.py --ip <ROBOT_IP>
+    python servo_cartesian.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -73,7 +73,10 @@ def main(robot_ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="UR10e servo_cartesian example")
-    parser.add_argument("--ip", type=str, required=True, help="IP address of the UR robot")
+    parser.add_argument("--ip",
+                        type=str,
+                        default="192.168.1.100",
+                        help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(args.ip)

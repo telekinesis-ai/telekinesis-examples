@@ -18,19 +18,12 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main():
+def main(ip: str):
     """Enter teach mode, capture TCP poses on each Enter press, exit on Ctrl-C."""
-    parser = argparse.ArgumentParser(
-        description="UR robot teach mode + manual waypoint capture example"
-    )
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
 
-    # Create robot instance
+    # Create and connect to the robot
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
-    robot.connect(ip=args.ip)
+    robot.connect(ip=ip)
 
     # Enter teach mode (zero-gravity back-drive, all axes free)
     logger.info("Starting teach mode")
@@ -54,4 +47,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)
+

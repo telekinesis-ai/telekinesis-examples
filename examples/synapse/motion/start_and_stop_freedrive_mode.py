@@ -20,17 +20,12 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main():
+def main(ip: str):
     """Enter freedrive for 10 seconds, then exit."""
-    parser = argparse.ArgumentParser(description="UR robot freedrive mode example")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
-    robot.connect(ip=args.ip)
+    robot.connect(ip=ip)
 
     # Enter freedrive with all axes free
     free_axes = [1, 1, 1, 1, 1, 1]
@@ -49,4 +44,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Tool contact polling Synapse example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)
+
