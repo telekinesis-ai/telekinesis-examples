@@ -6,7 +6,7 @@ the current joint configuration using ``servo_joint`` — a smooth sinusoidal
 motion of small amplitude. Only the base moves; all other joints are held
 at their starting values.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python servo_joint.py --ip <ROBOT_IP>

@@ -5,7 +5,7 @@ Read controller frequency example for the Synapse SDK.
 polling ``get_timestamp()`` for ``window_s`` seconds and computing
 ``1 / mean_step_time``. 
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python get_controller_frequency.py [--ip <ROBOT_IP>]

@@ -4,7 +4,7 @@ Move until Contact example for the Synapse SDK.
 Drives a real robot downwards in z direction until contact is detected,
 then stops and reports the result.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python move_until_contact.py [--ip <ROBOT_IP>]
@@ -16,14 +16,18 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main():
     """Move the TCP down in -Z until contact is detected, then report and disconnect."""
+    # args parser to get ip
+    parser = argparse.ArgumentParser(description="UR10e robot move until contact example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
+    args = parser.parse_args()
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
 
     # Connect to the robot
-    robot.connect(ip=robot_ip)
+    robot.connect(ip=args.ip)
 
     # Move by the cartesian velocity until contact
     contacted = robot.move_until_contact(
@@ -39,9 +43,4 @@ def main(robot_ip: str):
 
 
 if __name__ == "__main__":
-    # args parser to get ip
-    parser = argparse.ArgumentParser(description="UR10e robot move until contact example")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
-
-    main(args.ip)
+    main()

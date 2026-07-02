@@ -4,7 +4,7 @@ Set Joint Position in Cartesian Space example for the Synapse SDK.
 Moves to a target joint configuration using a trajectory that is linear in
 Cartesian space.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python set_joint_position_in_cartesian_space.py [--ip <ROBOT_IP>]
@@ -17,8 +17,13 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main():
     """Move to a target joint configuration via Cartesian-space motion."""
+    parser = argparse.ArgumentParser(
+        description="UR10e set_joint_position_in_cartesian_space example"
+    )
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
+    args = parser.parse_args()
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
@@ -33,7 +38,7 @@ def main(robot_ip: str):
     )
 
     # Connect to the robot
-    robot.connect(ip=robot_ip)
+    robot.connect(ip=args.ip)
 
     try:
         robot.set_joint_position_in_cartesian_space(
@@ -45,10 +50,4 @@ def main(robot_ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="UR10e set_joint_position_in_cartesian_space example"
-    )
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
-
-    main(args.ip)
+    main()

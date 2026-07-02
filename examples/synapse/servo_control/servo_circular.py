@@ -6,7 +6,7 @@ using ``servo_circular`` (UR ``servoC``). The target here is offset 2 cm
 in Y and -2 cm in Z from the current pose so the arc is visually distinct
 from a straight line.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python servo_circular.py --ip <ROBOT_IP>

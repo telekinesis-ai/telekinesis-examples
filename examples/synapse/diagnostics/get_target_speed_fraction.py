@@ -4,7 +4,7 @@ Read target speed fraction example for the Synapse SDK.
 ``get_target_speed_fraction`` returns the **target/desired** speed fraction
 set by the operator via the teach-pendant speed slider.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python get_target_speed_fraction.py [--ip <ROBOT_IP>]

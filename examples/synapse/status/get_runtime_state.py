@@ -4,7 +4,7 @@ Read runtime state example for the Synapse SDK.
 Returns the controller's program runtime state (e.g. ``"PLAYING"``,
 ``"PAUSED"``, ``"STOPPED"``).
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python get_runtime_state.py [--ip <ROBOT_IP>]

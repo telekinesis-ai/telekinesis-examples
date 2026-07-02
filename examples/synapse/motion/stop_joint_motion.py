@@ -5,7 +5,7 @@ Commands an asynchronous joint move and interrupts it mid-trajectory
 with ``stop_joint_motion``. ``stopping_speed`` controls the deceleration
 profile (deg/s).
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python stop_joint_motion.py [--ip <ROBOT_IP>]
@@ -18,14 +18,18 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main():
     """Start an async joint move and interrupt it with stop_joint_motion."""
+
+    parser = argparse.ArgumentParser(description="UR robot stop joint motion example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
+    args = parser.parse_args()
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
 
     # Connect to the robot
-    robot.connect(ip=robot_ip)
+    robot.connect(ip=args.ip)
 
     # Get initial joint positions [deg]
     initial_joint_positions = robot.get_joint_positions()
@@ -50,8 +54,4 @@ def main(robot_ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="UR robot stop joint motion example")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
-
-    main(args.ip)
+    main()

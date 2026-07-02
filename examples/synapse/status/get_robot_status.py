@@ -4,7 +4,7 @@ Read robot status example for the Synapse SDK.
 Returns the controller's high-level robot status (e.g. ``"NORMAL"``,
 ``"REDUCED"``, ``"PROTECTIVE_STOP"``).
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python get_robot_status.py [--ip <ROBOT_IP>]

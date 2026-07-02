@@ -5,7 +5,7 @@ Starts a brief ``servo_joint`` streaming move and then interrupts it with
 ``servo_stop``. ``deceleration`` controls how quickly the controller ramps
 the joints down [deg/s²].
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python servo_stop.py --ip <ROBOT_IP>

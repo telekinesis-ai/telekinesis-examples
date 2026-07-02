@@ -5,7 +5,7 @@ Commands an asynchronous Cartesian move and interrupts it mid-trajectory
 with ``stop_cartesian_motion``. ``stopping_speed`` controls the
 deceleration profile (m/s).
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python stop_cartesian_motion.py [--ip <ROBOT_IP>]
@@ -18,14 +18,18 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main():
     """Start an async Cartesian move and interrupt it with stop_cartesian_motion."""
+
+    parser = argparse.ArgumentParser(description="UR robot stop cartesian motion example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
+    args = parser.parse_args()
 
     # Create robot instance
     robot = universal_robots.UniversalRobotsUR10E()
 
     # Connect to the robot
-    robot.connect(ip=robot_ip)
+    robot.connect(ip=args.ip)
 
     # Get initial Cartesian pose [x, y, z, rx, ry, rz] (m, deg)
     actual_pose = robot.get_cartesian_pose()
@@ -50,8 +54,4 @@ def main(robot_ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="UR robot stop cartesian motion example")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
-    args = parser.parse_args()
-
-    main(args.ip)
+    main()

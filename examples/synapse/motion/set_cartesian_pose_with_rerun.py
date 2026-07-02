@@ -12,26 +12,48 @@ Usage:
 """
 
 import argparse
+from functools import partial
 
 from loguru import logger
+from babyros import node
 
 from telekinesis.synapse.robots.manipulators import universal_robots
+
+
+def on_state(msg, robot):
+    """Log each state message and redraw the robot in Rerun.
+
+    ``robot`` is bound via functools.partial so the callback keeps babyros's
+    single-argument (msg) signature.
+    """
+    logger.info(f"Received robot state: {msg}")
+    robot.visualize_rerun()
 
 
 def main():
     """Run the set_cartesian_pose Synapse example."""
     parser = argparse.ArgumentParser(description="UR10e set_cartesian_pose example")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
+    parser.add_argument("--ip", type=str,
+                        default="192.168.1.100",
+                        help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    # Create robot instance
-    robot = universal_robots.UniversalRobotsUR10E()
+    # Create robot instance with a name so its state publisher starts
+    # (the subscriber below needs a non-empty state_publisher_topic).
+    robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
     robot.connect(ip=args.ip)
+
+    # Visualize the robot in Rerun
+    robot.visualize_rerun()
 
     # Define target Cartesian pose
     current_cartesian_pose = robot.get_cartesian_pose()
     target_cartesian_pose = current_cartesian_pose.copy()
-    target_cartesian_pose[2] += 0.1  # Move 10 cm up in Z
+    target_cartesian_pose[2] -= 0.2  # Move 10 cm up in Z
+
+    # Subscriber to states
+    sub = node.Subscriber(topic=robot.state_publisher_topic,
+                          callback=partial(on_state, robot=robot))
 
     # Command the move, then disconnect cleanly
     try:
@@ -42,6 +64,7 @@ def main():
         )
         logger.info(f"Moved to target Cartesian pose: {target_cartesian_pose}")
     finally:
+        sub.delete()
         robot.disconnect()
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ Read combined speed scaling example for the Synapse SDK.
 ``get_speed_scaling_combined`` returns the **actual effective** speed
 scaling applied during motion.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for Universal Robots.
 
 Usage:
     python get_speed_scaling_combined.py [--ip <ROBOT_IP>]
