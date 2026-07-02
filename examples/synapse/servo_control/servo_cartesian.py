@@ -46,7 +46,7 @@ def main(robot_ip: str):
                 break
 
             theta = 2.0 * math.pi * t / period
-            target = center[:]
+            target = list(center)  # copy so writes below don't mutate `center`
             target[1] = center[1] + radius * math.cos(theta) - radius
             target[2] = center[2] + radius * math.sin(theta)
 

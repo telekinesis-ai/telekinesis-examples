@@ -122,8 +122,8 @@ def main():
                 robot.visualize_rerun(recording_stream=recording_stream)
                 time.sleep(1.0 / hz)
             except ValueError:
-                logger.warning("Pose {} unreachable", i + 1)
-                exit()
+                logger.warning("Pose {} unreachable; skipping to next target", i + 1)
+                break
 
     # Return to home pose smoothly
     for pose in interpolated_poses(robot.get_cartesian_pose(), home_cartesian_pose, n_steps):

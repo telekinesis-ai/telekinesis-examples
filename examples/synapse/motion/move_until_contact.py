@@ -23,22 +23,15 @@ def main(ip: str):
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
-    # Create robot instance
-    robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
-    robot.connect(ip=args.ip)
-
-    # Move by the cartesian velocity until contact
-    contacted = robot.move_until_contact(
-        cartesian_velocity=[0, 0, -0.02, 0, 0, 0],
-        direction=[0, 0, 0, 0, 0, 0],
-        acceleration=0.1,
-    )
-
-    # Stop when the robot contact
-    if contacted is True:
-        logger.info(f"Robot is contacted: {contacted}")
+    try:
+        # Move by the cartesian velocity until contact
+        contacted = robot.move_until_contact(
+            cartesian_velocity=[0, 0, -0.02, 0, 0, 0],
+            direction=[0, 0, 0, 0, 0, 0],
+            acceleration=0.1,
+        )
+        logger.info(f"Contact detected: {contacted}")
+    finally:
         robot.disconnect()
 
 

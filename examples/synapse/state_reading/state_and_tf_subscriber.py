@@ -116,6 +116,7 @@ def main() -> None:
                         help="UR robot IP (omit to run offline on commanded state)")
     args = parser.parse_args()
 
+    state_subscriber = tf_subscriber = None
     try:
 
         # Create a robot with a name: this auto-starts the state and TF publisher.
@@ -153,10 +154,12 @@ def main() -> None:
         logger.info("Interrupted.")
 
     finally:
-        # Clean up subscribers and robot nodes
+        # Clean up subscribers (guard against a failure before they were created)
         logger.info("Shutting down.")
-        state_subscriber.delete()
-        tf_subscriber.delete()
+        if state_subscriber is not None:
+            state_subscriber.delete()
+        if tf_subscriber is not None:
+            tf_subscriber.delete()
 
 
 if __name__ == "__main__":

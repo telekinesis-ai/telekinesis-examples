@@ -41,13 +41,16 @@ def interpolated_poses(start: list, end: list, n_steps: int) -> list:
     ]
 
 
-def on_state(msg, robot):
+def on_state(msg, robot, recording):
     """Redraw the robot in Rerun on each state message.
 
-    ``robot`` is bound via functools.partial so the callback keeps babyros's
-    single-argument (msg) signature.
+    ``robot`` and ``recording`` are bound via functools.partial so the callback
+    keeps babyros's single-argument (msg) signature. Passing ``recording``
+    explicitly is required because this callback runs on a babyros worker thread,
+    where Rerun's thread-local active recording is not set -- without it,
+    ``visualize_rerun`` would spawn a new viewer per message.
     """
-    robot.visualize_rerun()
+    robot.visualize_rerun(recording_stream=recording)
 
 
 def main():
@@ -56,8 +59,10 @@ def main():
     # (the subscriber below needs a non-empty state_publisher_topic).
     robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
 
-    # Visualize the robot in Rerun
+    # Visualize the robot in Rerun, and capture the recording stream so the
+    # subscriber callback can draw into it from its worker thread.
     robot.visualize_rerun()
+    recording = rr.get_global_data_recording()
 
     # Home pose and target cartesian poses
     home_cartesian_pose = [0.40, 0.00, 0.60, 180.0, 0.0, 0.0]
@@ -76,11 +81,11 @@ def main():
         tree.add("world", f"target_{i + 1}",
                  tfutils.pose_to_transformation_matrix(target, rot_type="deg"),
                  rot_type="mat")
-    tree.visualize_rerun(axis_len=0.05, recording_stream=rr.get_global_data_recording())
+    tree.visualize_rerun(axis_len=0.05, recording_stream=recording)
 
     # Subscriber redraws the robot in Rerun as it moves
     sub = node.Subscriber(topic=robot.state_publisher_topic,
-                          callback=partial(on_state, robot=robot))
+                          callback=partial(on_state, robot=robot, recording=recording))
 
     try:
         # Section 1: cartesian control with the default (tool0) TCP active.
