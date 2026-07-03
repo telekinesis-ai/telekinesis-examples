@@ -27,9 +27,6 @@ from telekinesis.tf import tftree, tfutils
 from telekinesis.synapse.robots.manipulators import universal_robots
 from telekinesis.synapse.tools.parallel_grippers import onrobot
 
-HZ = 60
-N_STEPS = 40
-
 
 def interpolated_poses(start: list, end: list, n_steps: int) -> list:
     """Return a list of ``n_steps`` linearly interpolated poses from ``start`` to ``end``."""
@@ -58,6 +55,14 @@ def main():
     # Create robot with a name so its state publisher starts
     # (the subscriber below needs a non-empty state_publisher_topic).
     robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
+
+    # Attach a gripper and add a custom TCP at its tip
+    gripper = onrobot.OnRobotRG6()
+    robot.attach_tool(gripper)
+    robot.add_tcp(name="gripper_tip",
+                    transform=[0.0, 0.0, 0.25, 0.0, 0.0, 0.0],
+                    set_active=False)
+    
 
     # Visualize the robot in Rerun, and capture the recording stream so the
     # subscriber callback can draw into it from its worker thread.
@@ -91,24 +96,21 @@ def main():
         # Section 1: cartesian control with the default (tool0) TCP active.
         # Establish a known start at home, tour the targets, then return home.
         logger.info(f"--- Section 1: cartesian control (active TCP: '{robot.active_tcp}') ---")
-        for target in [home_cartesian_pose, *target_cartesian_poses, home_cartesian_pose]:
-            for pose in interpolated_poses(robot.get_cartesian_pose(), target, N_STEPS):
-                robot.set_cartesian_pose(pose)
-                time.sleep(1.0 / HZ)
 
-        # Attach a gripper and add a custom TCP at its tip
-        gripper = onrobot.OnRobotRG6()
-        robot.attach_tool(gripper)
-        robot.add_tcp(name="gripper_tip",
-                      transform=[0.0, 0.0, 0.25, 0.0, 0.0, 0.0],
-                      set_active=True)
+        hz = 60
+        n_steps = 40
+        for target in [home_cartesian_pose, *target_cartesian_poses, home_cartesian_pose]:
+            for pose in interpolated_poses(robot.get_cartesian_pose(), target, n_steps):
+                robot.set_cartesian_pose(pose)
+                time.sleep(1.0 / hz)
 
         # Section 2: tour the targets and return home with the gripper tip active
+        robot.active_tcp = "gripper_tip"
         logger.info(f"--- Section 2: cartesian control (active TCP: '{robot.active_tcp}') ---")
         for target in [*target_cartesian_poses, home_cartesian_pose]:
-            for pose in interpolated_poses(robot.get_cartesian_pose(), target, N_STEPS):
+            for pose in interpolated_poses(robot.get_cartesian_pose(), target, n_steps):
                 robot.set_cartesian_pose(pose)
-                time.sleep(1.0 / HZ)
+                time.sleep(1.0 / hz)
 
     finally:
         sub.delete()

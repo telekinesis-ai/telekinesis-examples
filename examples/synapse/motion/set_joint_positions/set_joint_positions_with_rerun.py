@@ -14,10 +14,12 @@ Usage:
 
 import argparse
 from functools import partial
+import rerun as rr
 
 from loguru import logger
 from babyros import node
 
+from telekinesis.tf import tftree
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
@@ -42,6 +44,14 @@ def main(ip: str):
 
     # Target: current joint configuration with the base joint rotated +30 deg
     target_joint_positions = [0, -90, -90, -90, 90, 0]
+
+    # Visualize taregt pose in Rerun
+    tf_tree = tftree.TransformTree(root_name="world")
+    tf_tree.add(source_name="world",
+                target_name="target",
+                transform=robot.forward_kinematics(target_joint_positions).tolist(),
+                rot_type="deg"
+    )
 
     # Subscriber to states
     sub = node.Subscriber(topic=robot.state_publisher_topic,

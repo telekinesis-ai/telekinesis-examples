@@ -14,10 +14,12 @@ Usage:
 
 import argparse
 from functools import partial
+import rerun as rr
 
 from loguru import logger
 from babyros import node
 
+from telekinesis.tf import tftree
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
@@ -45,6 +47,16 @@ def main(ip: str):
     current_cartesian_pose = robot.get_cartesian_pose()
     target_cartesian_pose = current_cartesian_pose.copy()
     target_cartesian_pose[2] -= 0.2  # Move 20 cm down in Z
+
+    # Add tf tree to visualize target frame
+    tf_tree = tftree.TransformTree(root_name="world")
+    tf_tree.add(source_name="world",
+                target_name="target",
+                transform=target_cartesian_pose,
+                rot_type="deg"
+    )
+    tf_tree.visualize_rerun(recording_stream=rr.get_global_data_recording(),
+                            axis_len=0.05)
 
     # Subscriber to states
     sub = node.Subscriber(topic=robot.state_publisher_topic,

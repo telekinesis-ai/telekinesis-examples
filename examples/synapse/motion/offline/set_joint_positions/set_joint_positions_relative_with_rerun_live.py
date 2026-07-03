@@ -63,6 +63,7 @@ def main():
         )
         logger.info(f"Moved to target joint positions: {target_joint_positions}")
     finally:
+        time.sleep(1.0)  # Wait for last state to be drawn in Rerun
         sub.delete()
 
 

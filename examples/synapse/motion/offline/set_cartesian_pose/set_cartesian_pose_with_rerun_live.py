@@ -62,6 +62,7 @@ def main():
         )
         logger.info(f"Moved to target Cartesian pose: {target_cartesian_pose}")
     finally:
+        time.sleep(1.0)  # Wait for last state to be drawn in Rerun
         sub.delete()
 
 

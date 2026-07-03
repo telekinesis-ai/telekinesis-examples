@@ -1,21 +1,22 @@
 """
-Example: move 10 cm along -Z from the current pose, first with the default
-(tool0) TCP active and then with a custom TCP active -- with live Rerun logging.
+Example: move 2 cm along -Z from the current pose, first with the default
+(tool0) TCP active and then with the controller-interface TCP active -- with
+live Rerun logging.
 
 Requires hardware -- connects to the robot at ``--ip`` and executes the motion.
 A babyros subscriber redraws the robot in Rerun continuously as it moves.
 
 Demonstrates:
-  - ``robot.add_tcp()``            -- register a custom TCP offset
   - ``robot.active_tcp``           -- switch the active end-effector frame
+  - ``robot.get_cartesian_pose()`` -- read the current world-frame pose
   - ``robot.set_cartesian_pose()`` -- move via world-frame target; verify arrival
 
 Currently supported only for real hardware from Universal Robots.
 
-For an offline version, refer to tcp/offline/set_cartesian_pose_with_custom_tcp_rerun_live.py
+For offline TCP examples, refer to tcp/offline/
 
 Usage:
-    python set_cartesian_pose_with_custom_tcp_rerun_live.py [--ip <ROBOT_IP>]
+    python set_cartesian_pose_with_controller_interface_tcp_rerun_live.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -42,9 +43,6 @@ def on_state(msg, robot, recording):
 
 
 def main(ip: str | None = None):
-    """
-    Run the set_cartesian_pose Synapse example with live Rerun logging.
-    """
     # Create the robot with a name so its state publisher starts, then connect.
     robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
     robot.connect(ip=ip)
@@ -59,11 +57,13 @@ def main(ip: str | None = None):
                           callback=partial(on_state, robot=robot, recording=recording))
 
     try:
-        logger.info(f"Active TCP: {robot.active_tcp}")
+        logger.info(f"Active TCP: {robot.active_tcp}"
+                    f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
+                    f" \n TCP pose: {robot.get_cartesian_pose()}")
 
-        # Target: current pose moved 10 cm along -Z
-        target_tcp_pose = list(robot.get_cartesian_pose())
-        target_tcp_pose[2] -= 0.1
+        current_tcp_pose = robot.get_cartesian_pose()
+        target_tcp_pose = list(current_tcp_pose)
+        target_tcp_pose[2] -= 0.05  # Move 5 cm along -Z
 
         # Draw the target frame in Rerun as a TF tree
         tree = tftree.TransformTree("world")
@@ -73,14 +73,11 @@ def main(ip: str | None = None):
         tree.visualize_rerun(axis_len=0.05,
                              recording_stream=recording)
 
-        # Move with the default (tool0) TCP active
         robot.set_cartesian_pose(target_tcp_pose)
         logger.success(f"arrived: {robot.get_cartesian_pose()}")
 
-        # Add a custom TCP, make it active, and move to the same target
-        robot.add_tcp(name="gripper_tcp",
-                      transform=[0.0, 0.0, 0.05, 0.0, 0.0, 0.0],
-                      set_active=True)
+        robot.active_tcp = "controller_interface_tcp"
+
         robot.set_cartesian_pose(target_tcp_pose)
         logger.success(f"arrived: {robot.get_cartesian_pose()}")
 
@@ -91,7 +88,7 @@ def main(ip: str | None = None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Move 10 cm in -Z with the default and a custom TCP, with Rerun."
+        description="Move -5 cm in Z with the default and controller-interface TCPs, with Rerun."
     )
     parser.add_argument("--ip", type=str, default="192.168.1.100",
                         help="UR controller IP address (default: 192.168.1.100)")
