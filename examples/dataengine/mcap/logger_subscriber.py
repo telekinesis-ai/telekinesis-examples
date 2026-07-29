@@ -11,7 +11,7 @@ import argparse
 import pathlib
 import time
 
-from telekinesis.data_engine import MCAPLogger
+from telekinesis.dataengine import MCAPLogger
 
 
 def main(path: pathlib.Path) -> None:

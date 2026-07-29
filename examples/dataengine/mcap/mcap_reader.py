@@ -8,7 +8,7 @@ import argparse
 import pathlib
 from collections import Counter
 
-from telekinesis.data_engine import MCAPLogger
+from telekinesis.dataengine import MCAPLogger
 
 
 def main(path: pathlib.Path) -> None:
