@@ -31,8 +31,8 @@ def main(ip: Optional[str], serial_port: str, protocol: str) -> None:
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Robotiq gripper move example")
-    p.add_argument("--protocol", choices=["RTDE", "MODBUS_RTU"], default="RTDE")
-    p.add_argument("--ip", default=None, help="IP for RTDE")
+    p.add_argument("--protocol", choices=["URCAP", "MODBUS_RTU"], default="URCAP")
+    p.add_argument("--ip", default=None, help="IP for Robot Controller")
     p.add_argument("--serial-port", dest="serial_port", default="COM4",
                    help="Serial port for MODBUS_RTU")
     args = p.parse_args()

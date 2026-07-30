@@ -102,15 +102,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--protocol",
         type=str,
-        default="RTDE",
-        choices=["RTDE", "MODBUS_RTU"],
-        help="Transport: RTDE (UR controller) or MODBUS_RTU (direct USB).",
+        default="URCAP",
+        choices=["URCAP", "MODBUS_RTU"],
+        help="Transport: URCAP (UR controller) or MODBUS_RTU (direct USB).",
     )
     parser.add_argument(
         "--ip",
         type=str,
         default=None,
-        help="Gripper IP address (used with protocol=RTDE).",
+        help="Robot Controller IP address (used with protocol=URCAP).",
     )
     parser.add_argument(
         "--serial-port",

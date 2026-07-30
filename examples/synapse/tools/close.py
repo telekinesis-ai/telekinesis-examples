@@ -17,8 +17,9 @@ from telekinesis.synapse.tools.parallel_grippers import robotiq
 
 
 def main(ip: Optional[str], serial_port: str, protocol: str) -> None:
-    gripper = robotiq.Robotiq2F85()
-    gripper.connect(ip=ip, serial_port=serial_port, protocol=protocol)
+    gripper = robotiq.RobotiqHandE()
+    # gripper.connect(ip=ip, serial_port=serial_port, protocol=protocol)
+    gripper.connect(serial_port=serial_port, protocol=protocol)
     try:
         status = gripper.close(speed=100.0, force=50.0, asynchronous=False)
         logger.success(f"close() status: {status}, position: {gripper.get_current_position():.2f}")
@@ -28,8 +29,8 @@ def main(ip: Optional[str], serial_port: str, protocol: str) -> None:
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Robotiq gripper close example")
-    p.add_argument("--protocol", choices=["RTDE", "MODBUS_RTU"], default="RTDE")
-    p.add_argument("--ip", default=None, help="IP for RTDE")
+    p.add_argument("--protocol", choices=["URCAP", "MODBUS_RTU"], default="URCAP")
+    p.add_argument("--ip", default=None, help="IP for Robot Controller")
     p.add_argument("--serial-port", dest="serial_port", default="COM4",
                    help="Serial port for MODBUS_RTU")
     args = p.parse_args()
