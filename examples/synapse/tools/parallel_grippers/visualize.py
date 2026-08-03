@@ -5,7 +5,7 @@ This script visualizes a single Schunk EGP gripper; swap the gripper class to
 visualize another supported model.
 
 Run:
-    python examples/synapse/tools/visualize.py
+    python visualize.py
 """
 
 from telekinesis.synapse.tools.parallel_grippers import schunk
