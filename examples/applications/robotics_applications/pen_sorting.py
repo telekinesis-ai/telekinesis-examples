@@ -367,7 +367,7 @@ def main():
         logger.info(f"robot connected, current pose: {robot.get_cartesian_pose()}")
 
         gripper = OnRobotRG2()
-        gripper.connect(GRIPPER_IP, protocol="MODBUS_TCP", verbose=True)
+        gripper.connect(GRIPPER_IP, protocol="MODBUS_TCP")
         logger.info("gripper connected, opening to home")
         gripper.move(GRIPPER_OPEN_WIDTH, force=GRIPPER_GRIP_FORCE_N)
 

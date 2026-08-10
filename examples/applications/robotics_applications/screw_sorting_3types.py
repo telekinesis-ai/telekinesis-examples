@@ -810,7 +810,7 @@ def main():
         # Connect gripper
         logger.info(f"Connecting to OnRobot RG2 at {GRIPPER_IP}")
         gripper = OnRobotRG2()
-        gripper.connect(GRIPPER_IP, protocol="MODBUS_TCP", verbose=True)
+        gripper.connect(GRIPPER_IP, protocol="MODBUS_TCP")
         logger.success("Gripper connected")
 
         # Connect camera
