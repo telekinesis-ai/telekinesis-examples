@@ -10,7 +10,7 @@ import numpy as np
 from loguru import logger
 import rerun as rr
 
-from telekinesis import vitreous
+from telekinesis import datatypes, vitreous
 
 
 def create_torus_mesh_example():
@@ -33,12 +33,7 @@ def create_torus_mesh_example():
     # ===================== Visualization  (Optional) ======================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("create_torus_mesh_example", spawn=True)
-    rr.log("/torus_mesh", rr.Mesh3D(
-        vertex_positions=torus_mesh.vertex_positions,
-        triangle_indices=torus_mesh.triangle_indices,
-        vertex_normals=torus_mesh.vertex_normals,
-        albedo_factor=[0.8, 0.8, 0.8, 1.0],
-    ))
+    datatypes.visualize(torus_mesh, entity_path="/TorusMesh/torus_mesh", label="Torus Mesh")
 
 
 if __name__ == "__main__":

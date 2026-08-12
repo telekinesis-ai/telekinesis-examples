@@ -35,7 +35,7 @@ def estimate_principal_axes_example():
     # ===================== Visualization  (Optional) ======================
     rr.init("estimate_principal_axes_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/point_cloud")
-    datatypes.visualize(datatypes.Vectors3D(principal_axes.T), entity_path="/principal_axes")
+    datatypes.visualize(principal_axes.T, entity_path="/principal_axes")
 
 
 if __name__ == "__main__":
