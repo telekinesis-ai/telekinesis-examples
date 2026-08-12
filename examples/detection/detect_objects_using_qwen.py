@@ -6,113 +6,58 @@ Objects, mentioned in the prompt, are detected in an RGB image and a list of COC
 The annotations are used for visualization overlays.
 """
 
-import numpy as np
-import requests
-import cv2
-
 from loguru import logger
 import rerun as rr
-import rerun.blueprint as rrb
 
-from telekinesis import retina, pupil
-from datatypes import datatypes
+from telekinesis import retina, datatypes
 
 
 def detect_objects_using_qwen_example():
     """
     Detect objects using QWEN VLM.
 
-    Objects, mentioned in the prompt, are detected in an RGB image and a list of COCO-like annotations is returned.
-
-    The annotations are used for visualization overlays.
+    Requires the input objects to be defined to detect objects in an image and
+    returns object detections using datatype `COCOObjectDetectionDetectionResults`.
     """
+    # Load image
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/warehouse_1.jpg"
+    image = datatypes.Image.from_url(url=image_url)
+    logger.info(f"Loaded {image} from the URL: {image_url}")
 
-    # ===================== Load Image ==========================================
-
-    # Download and decode image from cloud
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/warehouse_1.jpg"
-    response = requests.get(image_url, timeout=60)
-    response.raise_for_status()
-    image_bgr = cv2.imdecode(
-        np.frombuffer(response.content, dtype=np.uint8), cv2.IMREAD_COLOR,
-    )
-    image = datatypes.Image(image=image_bgr, color_model="BGR")
-    image = pupil.convert_image_color_space(image, 
-                                            source_color_space="BGR", 
-                                            target_color_space="RGB") 
-    logger.success(f"Loaded image from {image_url}")
-
-    # ===================== Run Skill ==========================================
-
-    # Detect Objects
-    annotations = retina.detect_objects_using_qwen(
+    # Detect objects
+    detection_results, categories = retina.detect_objects_using_qwen(
         image=image,
-        prompt="person .",
+        objects=["person"],
     )
+    logger.info(f"QWEN detected {len(detection_results)} objects.")
+    logger.info(f"Categories available: {categories}")
 
-    # Access results
-    annotations = annotations.to_list()
-    logger.success(
-        f"Applied QWEN object detection on the given image. Detected {len(annotations)} objects."
-    )
+    # Access the underlying grouped data
+    all_bboxes = detection_results.bboxes
+    all_scores = detection_results.scores
+    all_category_ids = detection_results.category_ids
+    logger.info(f"All detected object bounding boxes: {all_bboxes}")
+    logger.info(f"All detected object scores: {all_scores}")
+    logger.info(f"All detected object category IDs: {all_category_ids}")
 
-    # ===================== Visualization  (Optional) ======================
+    # Access the first detected object and print its details
+    # Indexed object is of type `COCOObjectDetectionResult`
+    index = 0
+    detection_at_index = detection_results[index]
+    detection_at_index_bbox = detection_at_index.bbox
+    detection_at_index_score = detection_at_index.score
+    detection_at_index_category_id = detection_at_index.category_id
+    detection_at_index_category_name = categories[detection_at_index_category_id]
 
-    image_np = image.to_numpy()
+    logger.info(f"Detected object at index {index}: {detection_at_index}")
+    logger.info(f"Detected object at index {index} bounding box: {detection_at_index_bbox}")
+    logger.info(f"Detected object at index {index} score: {detection_at_index_score}")
+    logger.info(f"Detected object at index {index} category ID: {detection_at_index_category_id}")
+    logger.info(f"Detected object at index {index} category name: {detection_at_index_category_name}")
 
-    # Extract objects form annotations
-    bboxes = []
-    colors = []
-    labels = []
-    radii = []
-    colors_list = [
-        (255, 0, 0),
-        (0, 255, 0),
-        (0, 0, 255),
-        (255, 255, 0),
-        (255, 0, 255),
-        (0, 255, 255),
-    ]
-
-    for idx, ann in enumerate(annotations):
-        color = colors_list[idx % len(colors_list)]
-        bboxes.append(ann["bbox"])  # [x, y, w, h]
-        colors.append(color)  # (r,g,b)
-        labels.append(idx)
-        radii.append(2)
-
-    # Intialize Rerun and send blueprint
+    # Visualize results using Rerun
     rr.init("detect_objects_using_qwen_example", spawn=True)
-
-    rr.send_blueprint(
-        rrb.Blueprint(
-            rrb.Grid(
-                rrb.Spatial2DView(name="Original", origin="image"),
-                rrb.Spatial2DView(name="Detection", origin="detection"),
-            ),
-            rrb.SelectionPanel(),
-            rrb.TimePanel(),
-        ),
-        make_active=True,
-    )
-
-    # Log original image
-    rr.log("image", rr.Image(image_np))
-
-    # Log overlay image (same as input, annotations will be overlaid using rerun primitives)
-    rr.log("detection", rr.Image(image_np))
-
-    # Log bounding boxes as Boxes2D on overlay image
-    rr.log(
-        "detection/bboxes",
-        rr.Boxes2D(
-            array=np.array(bboxes, dtype=np.float32),
-            array_format=rr.Box2DFormat.XYWH,
-            colors=np.array(colors, dtype=np.uint8),
-            labels=labels,
-            radii=radii,
-        ),
-    )
+    datatypes.visualize(image, detection_results, categories, entity_path="/Image")
 
 
 if __name__ == "__main__":
