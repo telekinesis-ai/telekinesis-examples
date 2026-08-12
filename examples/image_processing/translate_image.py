@@ -21,7 +21,7 @@ from telekinesis import pupil
 def translate_image_example():
     """Applies translate_image operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/checkerboard.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/checkerboard.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

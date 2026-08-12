@@ -45,11 +45,11 @@ from telekinesis.dataengine.detection.utils import convert_dataset, merge_datase
 # The images this tutorial detects objects in. Swap these for your own URLs
 # (or local files) to try the pipeline on different scenes.
 IMAGE_URLS = [
-    "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/warehouse_1.jpg",
-    "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/warehouse_2.jpg",
-    "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/palletizing.jpg",
-    "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/cartons_arranged.png",
-    "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/pedestrians.jpg",
+    "https://assets.telekinesis.ai/examples/v1/images/warehouse_1.jpg",
+    "https://assets.telekinesis.ai/examples/v1/images/warehouse_2.jpg",
+    "https://assets.telekinesis.ai/examples/v1/images/palletizing.jpg",
+    "https://assets.telekinesis.ai/examples/v1/images/cartons_arranged.png",
+    "https://assets.telekinesis.ai/examples/v1/images/pedestrians.jpg",
 ]
 
 

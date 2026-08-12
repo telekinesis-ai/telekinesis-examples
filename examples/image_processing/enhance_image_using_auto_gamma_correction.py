@@ -21,7 +21,7 @@ from telekinesis import pupil
 def enhance_image_using_auto_gamma_correction_example():
     """Applies enhance_image_using_auto_gamma_correction operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/screws_in_dark_lighting.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/screws_in_dark_lighting.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

@@ -21,12 +21,12 @@ def detect_objects_using_grounding_dino_example():
     Requires the input objects to be defined to detect objects in an image and
     returns object detections using datatype `COCOObjectDetectionDetectionResults` with `Categories`.
     """
-    # Load image
+    # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/palletizing.jpg"
     image = datatypes.Image.from_url(url=image_url)
     logger.info(f"Loaded {image} from the URL: {image_url}")
 
-    # Detect objects
+    # ===================== Run Skill ==========================================
     detection_results, categories = retina.detect_objects_using_grounding_dino(
         image=image,
         objects=["carton"],
@@ -50,7 +50,7 @@ def detect_objects_using_grounding_dino_example():
     logger.info(f"Detected object at index {index} category ID: {detection_at_index_category_id}")
     logger.info(f"Detected object at index {index} category name: {detection_at_index_category_name}")
 
-    # Visualize results using Rerun
+    # ===================== Visualization  (Optional) ======================
     rr.init("detect_objects_using_grounding_dino_example", spawn=True)
     datatypes.visualize(image, detection_results, categories, entity_path="/Image")
 

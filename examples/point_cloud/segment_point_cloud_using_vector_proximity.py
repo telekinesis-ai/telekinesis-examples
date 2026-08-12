@@ -4,16 +4,13 @@ Demonstrates segmenting points near a line defined by a point and direction vect
 This example:
 - Downloads an example point cloud.
 - Keeps points within a distance threshold of an infinite line through a reference point along a direction.
+- Visualizes the result using Rerun.
 """
 
-import pathlib
-import tempfile
-
-import requests
 from loguru import logger
+import rerun as rr
 
-from datatypes import datatypes, io
-from telekinesis import vitreous
+from telekinesis import vitreous, datatypes
 
 
 def segment_point_cloud_using_vector_proximity_example():
@@ -24,9 +21,9 @@ def segment_point_cloud_using_vector_proximity_example():
     reference point along a direction.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/point_clouds/can_vertical_3_downsampled.ply"
-    point_cloud = fetch_point_cloud(point_cloud_url)
-    logger.success(f"Loaded point cloud with {len(point_cloud.positions)} points")
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_3_downsampled.ply"
+    point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
+    logger.success(f"Loaded point cloud with {len(point_cloud)} points")
 
     # ===================== Run Skill ==========================================
     result_point_cloud = vitreous.segment_point_cloud_using_vector_proximity(
@@ -36,22 +33,12 @@ def segment_point_cloud_using_vector_proximity_example():
         reference_point=[0.0, 0.0, 0.0],
         reference_vector=[0.0, 0.0, 1.0],
     )
-    logger.success(
-        f"Segmented {len(result_point_cloud.positions)} points using vector proximity"
-    )
+    logger.success(f"Segmented {len(result_point_cloud)} points using vector proximity")
 
-
-def fetch_point_cloud(url: str) -> datatypes.Points3D:
-    """Downloads a PLY point cloud from a URL and loads it as a Points3D object."""
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-    with tempfile.NamedTemporaryFile(suffix=pathlib.Path(url).suffix, delete=False) as tmp:
-        tmp.write(response.content)
-        tmp_path = tmp.name
-    point_cloud = io.load_point_cloud(filepath=tmp_path)
-    pathlib.Path(tmp_path).unlink(missing_ok=True)
-    logger.success(f"Loaded point cloud from {url}")
-    return point_cloud
+    # ===================== Visualization  (Optional) ======================
+    rr.init("segment_point_cloud_using_vector_proximity_example", spawn=True)
+    datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
+    datatypes.visualize(result_point_cloud, entity_path="/segmented_point_cloud")
 
 
 if __name__ == "__main__":

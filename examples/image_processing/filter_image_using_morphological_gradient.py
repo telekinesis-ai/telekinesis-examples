@@ -21,7 +21,7 @@ from telekinesis import pupil
 def filter_image_using_morphological_gradient_example():
     """Applies filter_image_using_morphological_gradient operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/cartons_arranged.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/cartons_arranged.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

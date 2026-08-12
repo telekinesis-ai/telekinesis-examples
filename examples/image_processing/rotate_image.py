@@ -21,7 +21,7 @@ from telekinesis import pupil
 def rotate_image_example():
     """Applies rotate_image operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/synthetic_data_bin.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/synthetic_data_bin.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

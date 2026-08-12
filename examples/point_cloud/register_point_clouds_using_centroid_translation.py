@@ -7,17 +7,11 @@ This example:
 - Visualizes the result using Rerun.
 """
 
-import pathlib
-import tempfile
-
 import numpy as np
-import requests
 from loguru import logger
 import rerun as rr
-from rerun import blueprint as rrb
 
-from datatypes import datatypes, io
-from telekinesis import vitreous
+from telekinesis import vitreous, datatypes
 
 
 def register_point_clouds_using_centroid_translation_example():
@@ -28,12 +22,12 @@ def register_point_clouds_using_centroid_translation_example():
     center. Fast initial alignment step before fine registration.
     """
     # ===================== Load Data ==========================================
-    source_point_cloud_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/point_clouds/zivid_manufacturing_workpieces.ply"
-    target_point_cloud_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/point_clouds/zivid_manufacturing_workpieces_centered.ply"
-    source_point_cloud = fetch_point_cloud(source_point_cloud_url)
-    target_point_cloud = fetch_point_cloud(target_point_cloud_url)
-    logger.success(f"Loaded source point cloud with {len(source_point_cloud.positions)} points")
-    logger.success(f"Loaded target point cloud with {len(target_point_cloud.positions)} points")
+    source_point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/zivid_manufacturing_workpieces.ply"
+    target_point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/zivid_manufacturing_workpieces_centered.ply"
+    source_point_cloud = datatypes.PointCloud.from_url(url=source_point_cloud_url, use_cache=True)
+    target_point_cloud = datatypes.PointCloud.from_url(url=target_point_cloud_url, use_cache=True)
+    logger.success(f"Loaded source point cloud with {len(source_point_cloud)} points")
+    logger.success(f"Loaded target point cloud with {len(target_point_cloud)} points")
 
     # ===================== Run Skill ==========================================
     transformation_matrix = vitreous.register_point_clouds_using_centroid_translation(
@@ -41,56 +35,20 @@ def register_point_clouds_using_centroid_translation_example():
         target_point_cloud=target_point_cloud,
         initial_transformation_matrix=np.eye(4),
     )
-    logger.success(f"Registered point clouds using centroid translation, transformation_matrix: {transformation_matrix.matrix}")
+    logger.success(f"Registered point clouds using centroid translation, transformation_matrix: {transformation_matrix.data}")
 
     # ===================== Visualization  (Optional) ======================
-    visualize(source_point_cloud, target_point_cloud)
-
-
-def fetch_point_cloud(url: str) -> datatypes.Points3D:
-    """Downloads a PLY point cloud from a URL and loads it as a Points3D object."""
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-    with tempfile.NamedTemporaryFile(suffix=pathlib.Path(url).suffix, delete=False) as tmp:
-        tmp.write(response.content)
-        tmp_path = tmp.name
-    point_cloud = io.load_point_cloud(filepath=tmp_path)
-    pathlib.Path(tmp_path).unlink(missing_ok=True)
-    logger.success(f"Loaded point cloud from {url}")
-    return point_cloud
-
-
-def visualize(source_point_cloud, target_point_cloud) -> None:
-    """Visualizes the source and target point clouds using Rerun."""
-    # Initialize Rerun
-    rr.init("register_point_clouds_using_centroid_translation", spawn=False)
-    try:
-        rr.connect()
-    except Exception:
-        rr.spawn()
-
-    # Send blueprint
-    rr.send_blueprint(rrb.Blueprint(
-        rrb.Horizontal(
-            rrb.Spatial3DView(name="Source Point Cloud", origin="source_point_cloud"),
-            rrb.Spatial3DView(name="Target Point Cloud", origin="target_point_cloud")
-        ))
+    aligned_source_point_cloud = vitreous.apply_transform_to_point_cloud(
+        point_cloud=source_point_cloud,
+        transformation_matrix=transformation_matrix,
+        modify_inplace=False,
     )
-    # Log input point clouds
-    rr.log(
-        "source_point_cloud",
-        rr.Points3D(
-            positions=source_point_cloud.positions,
-            colors=source_point_cloud.colors
-        ),
-    )
-    rr.log(
-        "target_point_cloud",
-        rr.Points3D(
-            positions=target_point_cloud.positions,
-            colors=target_point_cloud.colors
-        ),
-    )
+
+    rr.init("register_point_clouds_using_centroid_translation_example", spawn=True)
+    datatypes.visualize(source_point_cloud, entity_path="/before_registration/source")
+    datatypes.visualize(target_point_cloud, entity_path="/before_registration/target")
+    datatypes.visualize(aligned_source_point_cloud, entity_path="/after_registration/source_aligned")
+    datatypes.visualize(target_point_cloud, entity_path="/after_registration/target")
 
 
 if __name__ == "__main__":

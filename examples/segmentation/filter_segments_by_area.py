@@ -22,7 +22,7 @@ from telekinesis import cornea, pupil
 def filter_segments_by_area_example():
     """Filters superpixels based on area."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/eggs_carton.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/eggs_carton.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

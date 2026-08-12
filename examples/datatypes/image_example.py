@@ -74,7 +74,7 @@ def image_example():
     datatypes.visualize(my_image_from_path, entity_path="/ImageFromPath")
 
     # Create image from URL
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/screws_standing.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/screws_standing.jpg"
     response = requests.get(image_url, timeout=60)
     response.raise_for_status()
     my_image_url = datatypes.Image.from_encoded_buffer(response.content)

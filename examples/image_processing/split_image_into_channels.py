@@ -21,7 +21,7 @@ from telekinesis import pupil
 def split_image_into_channels_example():
     """Splits an image into its color channels."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/vegetables.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/vegetables.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

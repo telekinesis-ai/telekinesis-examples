@@ -12,12 +12,11 @@ import tempfile
 
 import numpy as np
 import requests
+import trimesh
 from loguru import logger
 import rerun as rr
-from rerun import blueprint as rrb
 
-from datatypes import datatypes, io
-from telekinesis import vitreous
+from telekinesis import vitreous, datatypes
 
 
 def convert_mesh_to_point_cloud_example():
@@ -27,7 +26,7 @@ def convert_mesh_to_point_cloud_example():
     Samples points on the mesh surface using uniform or Poisson disk sampling.
     """
     # ===================== Load Data ==========================================
-    mesh_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/meshes/gear_box.glb"
+    mesh_url = "https://assets.telekinesis.ai/examples/v1/meshes/gear_box.glb"
     mesh = fetch_mesh(mesh_url)
     logger.success(f"Loaded mesh with {len(mesh.vertex_positions)} vertices")
 
@@ -40,89 +39,47 @@ def convert_mesh_to_point_cloud_example():
         initial_point_cloud=None,
         use_triangle_normal=False,
     )
-    logger.success(
-        f"Converted mesh with {len(mesh.vertex_positions)} vertices to point cloud"
-    )
+    logger.success(f"Converted mesh with {len(mesh.vertex_positions)} vertices to point cloud with {len(point_cloud)} points")
 
     # ===================== Visualization  (Optional) ======================
-    visualize(mesh, point_cloud)
-
-
-def fetch_mesh(url: str) -> datatypes.Mesh3D:
-    """Downloads a mesh from a URL and loads it as a Mesh3D object."""
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-    with tempfile.NamedTemporaryFile(suffix=pathlib.Path(url).suffix, delete=False) as tmp:
-        tmp.write(response.content)
-        tmp_path = tmp.name
-    mesh = io.load_mesh(filepath=tmp_path)
-    pathlib.Path(tmp_path).unlink(missing_ok=True)
-    logger.success(f"Loaded mesh from {url}")
-    return mesh
-
-
-def visualize(mesh, point_cloud) -> None:
-    """Visualizes the input mesh and the sampled output point cloud using Rerun."""
-    # Initialize Rerun
-    rr.init("convert_mesh_to_point_cloud", spawn=False)
-    try:
-        rr.connect()
-    except Exception:
-        rr.spawn()
-
-    # Setup additional rerun settings
-    line_grid = rrb.LineGrid3D(visible=False)
-    spatial_information = rrb.SpatialInformation(
-        target_frame="tf#/",
-        show_axes=False,
-        show_bounding_box=False,
-    )
-    background = rrb.Background(color=(255, 255, 255))
-
-    # Setup camera view
-    overview_position = np.array([399.73988139, 599.90846721, 400.29698451])
-    look_target = np.array([0.0867062, 0.03051093, -0.09899484])
-    eye_up = np.array([0.0, 0.0, 1.0])
-
-    eye_controls = rrb.EyeControls3D(
-        kind=rrb.Eye3DKind.Orbital,
-        position=overview_position,
-        look_target=look_target,
-        eye_up=eye_up,
-        spin_speed=0.5,
-        speed=0.0,
-        tracking_entity=None,
-    )
-
-    # Send blueprint
-    rr.send_blueprint(rrb.Blueprint(
-        rrb.Horizontal(
-            rrb.Spatial3DView(name="Input Mesh", origin="input_mesh",
-                              background=background,
-                              eye_controls=eye_controls,
-                              line_grid=line_grid,
-                              spatial_information=spatial_information),
-            rrb.Spatial3DView(name="Output Point Cloud",
-                              origin="output_point_cloud",
-                              background=background,
-                              eye_controls=eye_controls,
-                              line_grid=line_grid,
-                              spatial_information=spatial_information),
-        )
-    ))
-
-    # Log the input mesh under input_mesh
-    rr.log("input_mesh", rr.Mesh3D(
+    rr.init("convert_mesh_to_point_cloud_example", spawn=True)
+    # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
+    rr.log("/input_mesh", rr.Mesh3D(
         vertex_positions=mesh.vertex_positions,
         triangle_indices=mesh.triangle_indices,
         vertex_colors=mesh.vertex_colors,
         vertex_normals=mesh.vertex_normals,
         albedo_factor=[0.8, 0.8, 0.8, 1.0],
     ))
+    datatypes.visualize(point_cloud, entity_path="/output_point_cloud")
 
-    # Log the output point cloud under output_point_cloud
-    rr.log("output_point_cloud", rr.Points3D(positions=point_cloud.positions,
-                                             colors=point_cloud.colors))
+
+def fetch_mesh(url: str) -> datatypes.Mesh3D:
+    """Downloads a mesh from a URL and loads it as a Mesh3D object.
+
+    `Mesh3D` has no `from_url` loader (unlike `PointCloud`), so the mesh is
+    decoded via `trimesh` and its arrays are wrapped directly.
+    """
+    response = requests.get(url, timeout=60)
+    response.raise_for_status()
+    with tempfile.NamedTemporaryFile(suffix=pathlib.Path(url).suffix, delete=False) as tmp:
+        tmp.write(response.content)
+        tmp_path = tmp.name
+    scene = trimesh.load(tmp_path, force="scene")
+    trimesh_mesh = (
+        trimesh.util.concatenate(tuple(scene.geometry.values()))
+        if isinstance(scene, trimesh.Scene)
+        else scene
+    )
+    pathlib.Path(tmp_path).unlink(missing_ok=True)
+    logger.success(f"Loaded mesh from {url}")
+    return datatypes.Mesh3D(
+        vertex_positions=trimesh_mesh.vertices.astype(np.float32),
+        triangle_indices=trimesh_mesh.faces.astype(np.int32),
+        vertex_normals=trimesh_mesh.vertex_normals.astype(np.float32)
+        if trimesh_mesh.vertex_normals is not None
+        else None,
+    )
 
 
 if __name__ == "__main__":

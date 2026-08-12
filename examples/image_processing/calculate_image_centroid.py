@@ -21,7 +21,7 @@ from telekinesis import pupil
 def calculate_image_centroid_example():
     """Computes the centroid of a binary mask."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/metal_part_mask.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/metal_part_mask.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

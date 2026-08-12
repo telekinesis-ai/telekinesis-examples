@@ -21,7 +21,7 @@ from telekinesis import pupil
 def bitwise_not_image_example():
     """Performs bitwise NOT (inversion) on an image."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/einstein.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/einstein.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

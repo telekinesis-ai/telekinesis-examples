@@ -21,7 +21,7 @@ from telekinesis import pupil
 def filter_image_using_gabor_example():
     """Applies filter_image_using_gabor operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/finger_print.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/finger_print.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

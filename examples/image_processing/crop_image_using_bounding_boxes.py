@@ -21,7 +21,7 @@ from telekinesis import pupil
 def crop_image_using_bounding_boxes_example():
     """Crops image using bounding boxes."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/driver_screw.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/driver_screw.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

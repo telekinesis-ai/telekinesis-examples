@@ -21,7 +21,7 @@ from telekinesis import pupil
 def filter_image_using_morphological_erode_example():
     """Applies erosion to shrink bright regions and remove small noise."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/gear_with_texture.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/gear_with_texture.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

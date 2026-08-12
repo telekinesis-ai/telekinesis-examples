@@ -21,7 +21,7 @@ from telekinesis import pupil
 def enhance_image_using_white_balance_example():
     """Applies enhance_image_using_white_balance operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/hand_tools_yellow_light.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/hand_tools_yellow_light.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

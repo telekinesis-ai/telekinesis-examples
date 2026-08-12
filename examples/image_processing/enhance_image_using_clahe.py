@@ -21,7 +21,7 @@ from telekinesis import pupil
 def enhance_image_using_clahe_example():
     """Applies enhance_image_using_clahe operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/dark_warehouse.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/dark_warehouse.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

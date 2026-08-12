@@ -21,7 +21,7 @@ from telekinesis import pupil
 def convert_image_color_space_example():
     """Applies convert_image_color_space operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/apples_black_container.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/apples_black_container.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

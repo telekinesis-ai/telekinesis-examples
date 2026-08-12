@@ -21,7 +21,7 @@ from telekinesis import pupil
 def normalize_image_intensity_example():
     """Applies normalize_image_intensity operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/gauge_washed.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/gauge_washed.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

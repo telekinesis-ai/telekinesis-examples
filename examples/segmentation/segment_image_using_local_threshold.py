@@ -19,7 +19,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_local_threshold_example():
     """Applies adaptive (local) thresholding to segment the image."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/car_number_plate.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/car_number_plate.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

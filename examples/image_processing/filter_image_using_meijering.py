@@ -21,7 +21,7 @@ from telekinesis import pupil
 def filter_image_using_meijering_example():
     """Applies filter_image_using_meijering operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/sidewalk_cracked.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/sidewalk_cracked.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

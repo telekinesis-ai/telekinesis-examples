@@ -19,7 +19,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_laplacian_threshold_example():
     """Uses the Laplacian operator to segment edge-rich areas."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/mechanical_parts_gray.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/mechanical_parts_gray.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

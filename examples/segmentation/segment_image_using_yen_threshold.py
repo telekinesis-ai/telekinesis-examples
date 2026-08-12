@@ -19,7 +19,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_yen_threshold_example():
     """Applies Yen's method to segment the image based on intensity histograms."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/bolts_and_%20nuts_white_bg.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/bolts_and_%20nuts_white_bg.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

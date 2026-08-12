@@ -78,6 +78,11 @@ def box3d_example():
         f"Box3D dimensions multiplied by {multipy_factor} using numpy: {new_box3d_dimensions}"
     )
 
+    # Create from different input formats
+    input_box3d_xyzxyz = [1, 2, 2.5, 5, 3, 5]
+    box3d_from_xyzxyz = datatypes.Box3D.from_format(input_box3d_xyzxyz, source_format="xyzxyz")
+    logger.info(f"Box3D created from xyzxyz format: {box3d_from_xyzxyz}")
+
     # Serialize to pyarrow and back
     serialization_start_time = time.perf_counter()
     serialized = datatypes.serialize(my_box3d)

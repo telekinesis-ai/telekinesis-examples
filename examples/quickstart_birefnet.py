@@ -20,7 +20,7 @@ from telekinesis import cornea, pupil
 
 # Public sample image shipped by Telekinesis (you can swap this for a local file later).
 IMAGE_URL = (
-    "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/screws_standing.jpg"
+    "https://assets.telekinesis.ai/screws_standing.jpg"
 )
 
 

@@ -21,8 +21,8 @@ from telekinesis import pupil
 def bitwise_difference_images_example():
     """Performs bitwise difference between two images."""
     # ===================== Load Images ==========================================
-    image_url_a = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/driver_screw.png"
-    image_url_b = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/difference_image.png"
+    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/driver_screw.png"
+    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/difference_image.png"
     image_a = fetch_image(image_url_a)
     image_b = fetch_image(image_url_b)
 

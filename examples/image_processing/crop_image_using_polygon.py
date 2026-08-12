@@ -21,7 +21,7 @@ from telekinesis import pupil
 def crop_image_using_polygon_example():
     """Crops image using a polygon mask."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/pedestrians.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/pedestrians.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

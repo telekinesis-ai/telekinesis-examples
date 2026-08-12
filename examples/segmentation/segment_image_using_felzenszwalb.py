@@ -19,7 +19,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_felzenszwalb_example():
     """Segments an image using the Felzenszwalb algorithm."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/eggs_carton.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/eggs_carton.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

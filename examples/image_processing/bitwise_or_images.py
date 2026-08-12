@@ -21,8 +21,8 @@ from telekinesis import pupil
 def bitwise_or_images_example():
     """Performs bitwise OR between two images."""
     # ===================== Load Images ==========================================
-    image_url_a = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/can_vertical_6_mask.png"
-    image_url_b = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/rectangles_mask.png"
+    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/can_vertical_6_mask.png"
+    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/rectangles_mask.png"
     image_a = fetch_image(image_url_a)
     image_b = fetch_image(image_url_b)
 

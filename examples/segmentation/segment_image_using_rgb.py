@@ -21,7 +21,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_rgb_example():
     """Segments an image using RGB color space range."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/cylinder_on_conveyor.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/cylinder_on_conveyor.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

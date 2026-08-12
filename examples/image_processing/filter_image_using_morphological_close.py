@@ -21,7 +21,7 @@ from telekinesis import pupil
 def filter_image_using_morphological_close_example():
     """Applies close morphological operation to fill holes and close gaps."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/nuts_scattered.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

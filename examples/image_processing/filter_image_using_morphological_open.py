@@ -21,7 +21,7 @@ from telekinesis import pupil
 def filter_image_using_morphological_open_example():
     """Applies open morphological operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/broken_cables.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/broken_cables.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

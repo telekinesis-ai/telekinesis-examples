@@ -19,7 +19,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_slic_superpixel_example():
     """Segments an image into compact superpixels using the SLIC algorithm."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/nuts.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

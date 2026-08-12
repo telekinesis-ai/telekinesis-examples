@@ -20,7 +20,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_watershed_example():
     """Segments an image using the watershed algorithm."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/water_coins.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/water_coins.jpg"
     original_image = fetch_image(image_url)
     original_np = original_image.to_numpy()
 

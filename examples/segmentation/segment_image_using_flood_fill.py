@@ -19,7 +19,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_flood_fill_example():
     """Segments an image using flood fill from a seed point."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/erode.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/erode.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

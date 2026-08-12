@@ -21,7 +21,7 @@ from telekinesis import pupil
 def transform_mask_using_blob_thinning_example():
     """Applies blob thinning transformation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/handwriting_mask.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/handwriting_mask.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

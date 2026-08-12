@@ -19,7 +19,7 @@ from telekinesis import cornea, pupil
 def segment_image_using_otsu_threshold_example():
     """Applies Otsu's method to find a global threshold for the image."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/buttons_arranged.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/buttons_arranged.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

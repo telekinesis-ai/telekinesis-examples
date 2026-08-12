@@ -22,7 +22,7 @@ from telekinesis import pupil
 def overlay_images_using_weighted_overlay_example():
     """Blends two images using weighted overlay."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/rusted_metal_gear.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/rusted_metal_gear.jpg"
     image_a = fetch_image(image_url)
     image_a = pupil.resize_image_with_aspect_fit(
         image=image_a,

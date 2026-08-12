@@ -19,11 +19,11 @@ def detect_circle_using_classic_hough_example():
 
     Runs Hough circle detection on a grayscale image and returns circles using datatype `Circles`.
     """
-    # Load image
+    # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/metal_gears.jpg"
     image = datatypes.Image.from_url(url=image_url).to_grayscale()
 
-    # Detect circles
+    # ===================== Run Skill ==========================================
     circles = retina.detect_circle_using_classic_hough(
         image=image,
         inverse_resolution_ratio=1,
@@ -45,7 +45,7 @@ def detect_circle_using_classic_hough_example():
             f"First detected circle center: {first_circle.centers}, radius: {first_circle.radii}"
         )
 
-    # Visualize results using Rerun
+    # ===================== Visualization  (Optional) ======================
     rr.init("classic_hough_circle_detector_example", spawn=True)
     datatypes.visualize(
         image,

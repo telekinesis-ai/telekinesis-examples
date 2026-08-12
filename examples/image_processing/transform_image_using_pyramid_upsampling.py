@@ -21,7 +21,7 @@ from telekinesis import pupil
 def transform_image_using_pyramid_upsampling_example():
     """Applies pyramid upsampling transformation."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/buttons_arranged_downsampled.png"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/buttons_arranged_downsampled.png"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================

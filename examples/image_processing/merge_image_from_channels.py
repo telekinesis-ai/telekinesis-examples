@@ -22,7 +22,7 @@ from telekinesis import pupil
 def merge_image_from_channels_example():
     """Splits and merges image channels."""
     # ===================== Load Image ==========================================
-    image_url = "https://telekinesis-public-assets.s3.us-east-1.amazonaws.com/examples/v1/images/fruits_carts.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/fruits_carts.jpg"
     image = fetch_image(image_url)
 
     # ===================== Run Skill ==========================================
