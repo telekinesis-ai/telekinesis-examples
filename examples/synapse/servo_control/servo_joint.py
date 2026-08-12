@@ -6,10 +6,10 @@ the current joint configuration using ``servo_joint`` — a smooth sinusoidal
 motion of small amplitude. Only the base moves; all other joints are held
 at their starting values.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for real hardware from Universal Robots.
 
 Usage:
-    python servo_joint.py --ip <ROBOT_IP>
+    python servo_joint.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -83,7 +83,7 @@ def main(robot_ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="UR10e servo_joint example")
-    parser.add_argument("--ip", type=str, required=True, help="IP address of the UR robot")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(args.ip)

@@ -1,0 +1,39 @@
+"""
+Read robot status example for the Synapse SDK.
+
+Returns the controller's high-level robot status flags (e.g. whether the robot
+is powered on, whether a program is running, and whether an emergency or
+protective stop is active). This is distinct from the safety mode reported by
+``get_safety_mode`` (see get_safety_mode.py).
+
+Currently supported only for real hardware from Universal Robots.
+
+Usage:
+    python get_robot_status.py [--ip <ROBOT_IP>]
+"""
+
+import argparse
+from loguru import logger
+
+from telekinesis.synapse.robots.manipulators import universal_robots
+
+
+def main(ip: str):
+    """Log the current robot status."""
+
+    # Create and connect to the robot
+    robot = universal_robots.UniversalRobotsUR10E()
+    robot.connect(ip=ip)
+
+    try:
+        logger.success(f"Robot status: {robot.get_robot_status()}")
+    finally:
+        robot.disconnect()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Read robot status Synapse example")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)

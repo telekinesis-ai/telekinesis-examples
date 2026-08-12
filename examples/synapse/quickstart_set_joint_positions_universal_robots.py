@@ -2,12 +2,9 @@
 Telekinesis quickstart: drive a Universal Robots robot in joint space along a sweeping trajectory.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Sweeps the base 320° around home while the elbow oscillates ±30°. The
-TCP traces the resulting wavy circle, drawn live as a connected line
+Sweeps the base 360° around home while the elbow oscillates ±30°. The
+TCP traces the resulting wavy path, drawn live as a connected line
 with a hue gradient (older segments blue, newest red).
-
-Install:
-    pip install rerun-sdk==0.31  # tested on 0.31
 
 Run:
     python examples/synapse/quickstart_set_joint_positions_universal_robots.py
@@ -21,31 +18,6 @@ import rerun as rr
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
-
-
-def visualize_robot(robot, static_meshes: bool = False) -> None:
-    """Log per-link transforms to rerun, plus the static meshes on the first call."""
-
-    # Log static meshes once
-    if static_meshes:
-        for link, m in robot.get_visual_meshes_data().items():
-            if m["vertices"] is None:
-                continue
-            kwargs: dict = {
-                "vertex_positions": m["vertices"],
-                "triangle_indices": m["triangles"],
-                "vertex_normals": m["vertex_normals"],
-            }
-            if m["vertex_colors"] is not None:
-                kwargs["vertex_colors"] = m["vertex_colors"]
-            else:
-                kwargs["albedo_factor"] = m["color"] or [179, 179, 179]
-            rr.log(f"/robot/{link}", rr.Mesh3D(**kwargs), static=True)
-
-    # Log per-link transforms on every update
-    for link, T in robot.get_visual_mesh_transforms().items():
-        rr.log(f"/robot/{link}", rr.Transform3D(translation=T[:3, 3], mat3x3=T[:3, :3]))
-
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
@@ -76,11 +48,11 @@ def main():
     base_joint_span = 360.0
     base_joint_speed = 60.0
 
-    # Number of full elbow oscillations per base revolution.
+    # Elbow oscillation: amplitude (deg) and number of full cycles per base sweep.
     elbow_amplitude_deg = 30.0
     elbow_cycles = 4
 
-    # Total number of waypointsin trajectory
+    # Total number of waypoints in trajectory
     n_steps = int(base_joint_span / (base_joint_speed * dt))
 
     # ----------------------------------------------------------------------------
@@ -92,7 +64,7 @@ def main():
 
     # Initialize Rerun and log the static meshes once.
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
-    visualize_robot(robot, static_meshes=True)
+    robot.visualize_rerun(axis_length=0.1, recording_stream=rr.get_global_data_recording())
     time.sleep(2.0)
 
     # ---------------------------------------------------------------------------
@@ -127,7 +99,7 @@ def main():
             continue
 
         # Visualize robot
-        visualize_robot(robot)
+        robot.visualize_rerun()
 
         # Visualize the TCP path
         pose = robot.get_cartesian_pose()

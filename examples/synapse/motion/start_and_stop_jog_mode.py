@@ -8,10 +8,10 @@ button on the teach pendant. ``feature`` selects the frame:
 ``0`` = base, ``1`` = tool, ``2`` = custom (provide ``custom_frame``).
 This is Cartesian jogging — there is no joint-jog API.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for real hardware from Universal Robots
 
 Usage:
-    python start_and_stop_jog_mode.py --ip <ROBOT_IP>
+    python start_and_stop_jog_mode.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -21,14 +21,12 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
-    """Jog the TCP -Z at 5 cm/s in the base frame for 5 seconds, then stop."""
+def main(ip: str):
+    """Jog the TCP +Z (upward) at 5 cm/s in the base frame for 5 seconds, then stop."""
 
-    # Create robot instance
+    # Create and connect to the robot
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
-    robot.connect(ip=robot_ip)
+    robot.connect(ip=ip)
 
     # Cartesian twist [vx, vy, vz (m/s), ωx, ωy, ωz (deg/s)] in the base frame
     cartesian_velocity = [0.0, 0.0, 0.05, 0.0, 0.0, 0.0]
@@ -49,8 +47,9 @@ def main(robot_ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="UR robot start and stop jog mode example")
-    parser.add_argument("--ip", type=str, required=True, help="IP address of the UR robot")
+    parser = argparse.ArgumentParser(description="Start Cartesian jog mode, then stop it")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    main(args.ip)
+    main(ip=args.ip)
+

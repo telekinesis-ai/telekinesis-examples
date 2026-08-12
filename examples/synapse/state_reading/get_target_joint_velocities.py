@@ -1,11 +1,11 @@
 """
 Read target (commanded) joint velocities example for the Synapse SDK.
 
-Returns the manipulator's target/commanded joint velocities [deg/s]. With
-``--ip``, reads live hardware state. Without ``--ip``, reads from the
-internal commanded cache (no connection made) and logs a warning.
+Returns the manipulator's target/commanded joint velocities [deg/s]. Connects to ``--ip`` (default ``192.168.1.100``) and reads the live state.
 
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Currently supported only for real hardware from Universal Robots.
+
+For offline, refer to get_target_joint_velocities in state_reading/offline/
 
 Usage:
     python get_target_joint_velocities.py [--ip <ROBOT_IP>]
@@ -17,29 +17,22 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str | None = None):
+def main(ip: str):
     """Log the current target joint velocities [deg/s]."""
 
     robot = universal_robots.UniversalRobotsUR10E()
 
-    if ip is not None:
-        robot.connect(ip=ip)
-    else:
-        logger.warning(
-            "No --ip provided; reading offline commanded-cache state, "
-            "not live hardware readings."
-        )
+    robot.connect(ip=ip)
 
     try:
         logger.success(f"target_joint_velocities [deg/s]: {robot.get_target_joint_velocities()}")
     finally:
-        if ip is not None:
-            robot.disconnect()
+        robot.disconnect()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Read target joint velocities Synapse example")
-    parser.add_argument("--ip", type=str, default=None, help="UR robot IP address (optional)")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)

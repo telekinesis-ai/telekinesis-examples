@@ -5,10 +5,10 @@ Starts a brief ``servo_joint`` streaming move and then interrupts it with
 ``servo_stop``. ``deceleration`` controls how quickly the controller ramps
 the joints down [deg/s²].
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for real hardware from Universal Robots.
 
 Usage:
-    python servo_stop.py --ip <ROBOT_IP>
+    python servo_stop.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -26,7 +26,9 @@ def main(robot_ip: str):
     # Servo-loop and trajectory parameters
     dt = 0.008          # 125 Hz servo loop
     amplitude = 2.0     # ±2 deg base oscillation
-    period = 4.0        # seconds per full oscillation
+    period = 4.0        # seconds for one complete sine cycle
+    # Only stream for a fraction of ``period``, so the motion is interrupted
+    # partway through the cycle (~1/4 cycle here) rather than completing it.
     stream_duration = 1.0  # stream servo targets for this long before stopping
     deceleration = 10.0    # deg/s² for servo_stop
 
@@ -77,7 +79,7 @@ def main(robot_ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="UR10e servo_stop example")
-    parser.add_argument("--ip", type=str, required=True, help="IP address of the UR robot")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(args.ip)

@@ -1,15 +1,16 @@
 """
 Connection and disconnection example for the Synapse SDK.
 
-Connection and disconnection are to real robot hardware. Currently supported only
-for Universal Robots.
+Currently supported only for connecting to real hardware,
+and only Universal Robots.
 
 Usage:
-    python connection_and_disconnection.py --ip <ROBOT_IP>
+    python connection_and_disconnection.py [--ip <ROBOT_IP>]
 """
 
 import argparse
 import time
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
@@ -35,7 +36,7 @@ def main(ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Connection Synapse example")
-    parser.add_argument("--ip", type=str, required=True, help="UR robot IP address")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)

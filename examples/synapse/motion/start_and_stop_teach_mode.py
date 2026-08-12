@@ -6,10 +6,10 @@ There is no built-in "save waypoint" feature in teach mode — but combining
 gives the standard teach-and-repeat pattern: hand-guide the arm, press
 Enter to bookmark the current TCP pose, Ctrl-C to finish.
 
-Currently supported only for Universal Robots (UR10e).
+Currently supported only for real hardware from Universal Robots
 
 Usage:
-    python teach_and_record_waypoints.py --ip <ROBOT_IP>
+    python start_and_stop_teach_mode.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -18,14 +18,12 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main(ip: str):
     """Enter teach mode, capture TCP poses on each Enter press, exit on Ctrl-C."""
 
-    # Create robot instance
+    # Create and connect to the robot
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
-    robot.connect(ip=robot_ip)
+    robot.connect(ip=ip)
 
     # Enter teach mode (zero-gravity back-drive, all axes free)
     logger.info("Starting teach mode")
@@ -49,10 +47,9 @@ def main(robot_ip: str):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="UR robot teach mode + manual waypoint capture example"
-    )
-    parser.add_argument("--ip", type=str, required=True, help="IP address of the UR robot")
+    parser = argparse.ArgumentParser(description="Teach mode with manual TCP waypoint capture")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    main(args.ip)
+    main(ip=args.ip)
+

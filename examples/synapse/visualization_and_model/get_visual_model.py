@@ -2,9 +2,11 @@
 Read the Pinocchio visual geometry model for the Synapse SDK.
 
 ``get_visual_model`` returns the Python Pinocchio ``GeometryModel``
-populated with the robot's visual geometries from the URDF. 
+populated with the robot's visual geometries from the URDF.
 
-Universal Robots (UR10e) is used here purely for illustration. It supports all robots.
+Universal Robots (UR10e) is used here purely for illustration; the same API
+works for all supported robots. Runs on the kinematic model only — no
+hardware connection and no ``--ip`` required.
 
 Usage:
     python get_visual_model.py
@@ -23,7 +25,7 @@ def main():
 
     # Read the Pinocchio visual GeometryModel
     visual_model = robot.get_visual_model()
-    
+
     logger.info(f"Number of visual geometries: {len(visual_model.geometryObjects)}")
     for geom in visual_model.geometryObjects:
         logger.info(f"  - {geom.name}")

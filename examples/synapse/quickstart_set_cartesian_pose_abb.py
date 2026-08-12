@@ -2,12 +2,9 @@
 Telekinesis quickstart: drive an ABB robot along a YZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Traces a closed circle of radius 0.5m in the YZ plane around the home TCP pose. The TCP
+Traces a closed circle of radius 0.50m in the YZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
-
-Install:
-    pip install rerun-sdk==0.31  # tested on 0.31
 
 Run:
     python examples/synapse/quickstart_set_cartesian_pose_abb.py
@@ -21,31 +18,6 @@ import rerun as rr
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import abb
-
-
-def visualize_robot(robot, static_meshes: bool = False) -> None:
-    """Log per-link transforms to rerun, plus the static meshes on the first call."""
-
-    # Log static meshes once
-    if static_meshes:
-        for link, m in robot.get_visual_meshes_data().items():
-            if m["vertices"] is None:
-                continue
-            kwargs: dict = {
-                "vertex_positions": m["vertices"],
-                "triangle_indices": m["triangles"],
-                "vertex_normals": m["vertex_normals"],
-            }
-            if m["vertex_colors"] is not None:
-                kwargs["vertex_colors"] = m["vertex_colors"]
-            else:
-                kwargs["albedo_factor"] = m["color"] or [179, 179, 179]
-            rr.log(f"/robot/{link}", rr.Mesh3D(**kwargs), static=True)
-
-    # Log per-link transforms on every update
-    for link, T in robot.get_visual_mesh_transforms().items():
-        rr.log(f"/robot/{link}", rr.Transform3D(translation=T[:3, 3], mat3x3=T[:3, :3]))
-
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
@@ -77,8 +49,8 @@ def main():
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
-    visualize_robot(robot, static_meshes=True)
-    time.sleep(2.0)
+    robot.visualize_rerun(axis_length=0.1,
+                          recording_stream=rr.get_global_data_recording())
 
     # Get home pose (default configuration)
     home_pose = robot.get_cartesian_pose()
@@ -102,7 +74,7 @@ def main():
             continue  # outside reach / joint limits
 
         # Visualize robot and path
-        visualize_robot(robot)
+        robot.visualize_rerun()
         actual = robot.get_cartesian_pose()
         path.append([float(actual[0]), float(actual[1]), float(actual[2])])
         visualize_path(path)
