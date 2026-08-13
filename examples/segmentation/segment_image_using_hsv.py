@@ -7,68 +7,28 @@ This example:
 - Visualizes the result using Rerun.
 """
 
-import numpy as np
-import requests
-import cv2
 from loguru import logger
 import rerun as rr
-import rerun.blueprint as rrb
 
-from datatypes import datatypes
-from telekinesis import cornea, pupil
-
+from telekinesis import cornea, datatypes
 
 def segment_image_using_hsv_example():
     """Segments an image using HSV color space range."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/wires_rgb.png"
-    image = fetch_image(image_url)
+    image = datatypes.Image.from_url(url=image_url)
+    logger.info(f"Loaded {image} from the URL: {image_url}")
 
     # ===================== Run Skill ==========================================
-    annotations = cornea.segment_image_using_hsv(
+    segmented_image = cornea.segment_image_using_hsv(
         image=image, lower_bound=(0, 50, 50), upper_bound=(180, 255, 255)
     )
-    annotations_dict = annotations.to_dict()
     logger.success("Segmentation completed.")
 
     # ===================== Visualization  (Optional) ======================
-    visualize(image, annotations_dict)
-
-
-def fetch_image(image_url: str) -> datatypes.Image:
-    """
-    Downloads an image from a given URL and returns it as a telekinesis.datatypes.Image object.
-    """
-    response = requests.get(image_url, timeout=60)
-    response.raise_for_status()
-    image_bgr = cv2.imdecode(
-        np.frombuffer(response.content, dtype=np.uint8), cv2.IMREAD_COLOR,
-    )
-    image = datatypes.Image(image=image_bgr, color_model="BGR")
-    image = pupil.convert_image_color_space(
-        image, source_color_space="BGR", target_color_space="RGB"
-    )
-    logger.success(f"Loaded image from {image_url}")
-    return image
-
-def visualize(image: datatypes.Image, annotations_dict: dict) -> None:
-    """Visualizes the original image and the segmentation mask using Rerun."""
-    rr.init("cornea_hsv_segmentation", spawn=True)
-    rr.send_blueprint(
-        rrb.Blueprint(
-            rrb.Grid(
-                rrb.Spatial2DView(name="Original", origin="input"),
-                rrb.Spatial2DView(name="Mask", origin="segmented_mask"),
-            ),
-            rrb.SelectionPanel(),
-            rrb.TimePanel(),
-        ),
-        make_active=True,
-    )
-    image_np = image.to_numpy()
-    mask_np = annotations_dict["labeled_mask"]
-    rr.log("input", rr.Image(image_np))
-    rr.log("segmented_mask", rr.Image(mask_np))
+    rr.init("segment_image_using_hsv_example", spawn=True)
+    datatypes.visualize(image, entity_path="/Image/original_image")
+    datatypes.visualize(segmented_image, entity_path="/SegmentedImage/segmented_image")
 
 
 if __name__ == "__main__":

@@ -40,14 +40,6 @@ def detect_objects_using_qwen_example():
     logger.info(f"All detected object scores: {all_scores}")
     logger.info(f"All detected object category IDs: {all_category_ids}")
 
-    # Access the underlying grouped data
-    all_bboxes = detection_results.bboxes
-    all_scores = detection_results.scores
-    all_category_ids = detection_results.category_ids
-    logger.info(f"All detected object bounding boxes: {all_bboxes}")
-    logger.info(f"All detected object scores: {all_scores}")
-    logger.info(f"All detected object category IDs: {all_category_ids}")
-
     # Access the first detected object and print its details
     # Indexed object is of type `COCOObjectDetectionResult`
     index = 0
