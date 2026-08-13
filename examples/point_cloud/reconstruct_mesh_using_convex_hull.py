@@ -31,6 +31,15 @@ def reconstruct_mesh_using_convex_hull_example():
     )
     logger.success(f"Reconstructed convex hull mesh from {len(point_cloud)} points")
 
+    # Access result_mesh data and properties
+    result_mesh_vertex_positions = result_mesh.vertex_positions
+    result_mesh_triangle_indices = result_mesh.triangle_indices
+    result_mesh_vertex_normals = result_mesh.vertex_normals
+    result_mesh_vertex_colors = result_mesh.vertex_colors
+    logger.info(f"Result mesh has {len(result_mesh)} vertices and {len(result_mesh_triangle_indices)} triangles")
+    logger.info(f"Result mesh has vertex normals: {result_mesh.has_vertex_normals()}")
+    logger.info(f"Result mesh has vertex colors: {result_mesh.has_vertex_colors()}")
+
     # ===================== Visualization  (Optional) ======================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("reconstruct_mesh_using_convex_hull_example", spawn=True)

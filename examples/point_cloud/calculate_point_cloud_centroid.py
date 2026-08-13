@@ -25,9 +25,17 @@ def calculate_point_cloud_centroid_example():
     logger.success(f"Loaded point cloud with {len(point_cloud)} points")
 
     # ===================== Run Skill ==========================================
-    # `calculate_point_cloud_centroid` returns a plain numpy array, not a datatype instance.
+    # `calculate_point_cloud_centroid` returns a Point3D datatype instance.
     centroid = vitreous.calculate_point_cloud_centroid(point_cloud=point_cloud)
     logger.success(f"Calculated centroid {centroid} for {len(point_cloud)} points")
+
+    # Access centroid data and properties
+    centroid_data = centroid.data
+    centroid_shape = centroid.shape
+    centroid_dtype = centroid.dtype
+    logger.info(f"Centroid data: {centroid_data}")
+    logger.info(f"Centroid shape: {centroid_shape}")
+    logger.info(f"Centroid dtype: {centroid_dtype}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("calculate_point_cloud_centroid_example", spawn=True)

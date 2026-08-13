@@ -33,6 +33,14 @@ def segment_point_cloud_using_color_example():
     )
     logger.success(f"Segmented {len(segmented_point_cloud)} points using color")
 
+    # Access segmented_point_cloud data and properties
+    segmented_point_cloud_positions = segmented_point_cloud.positions
+    segmented_point_cloud_normals = segmented_point_cloud.normals
+    segmented_point_cloud_colors = segmented_point_cloud.colors
+    logger.info(f"Segmented point cloud positions shape: {segmented_point_cloud_positions.shape}")
+    logger.info(f"Segmented point cloud has normals: {segmented_point_cloud_normals is not None}")
+    logger.info(f"Segmented point cloud has colors: {segmented_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_point_cloud_using_color_example", spawn=True)
     # datatypes.visualize(point_cloud, entity_path="/input_point_cloud")

@@ -31,7 +31,15 @@ def create_cylinder_mesh_example():
         compute_vertex_normals=True,
     )
     logger.success("Created cylinder mesh")
-    
+
+    # Access cylinder_mesh data and properties
+    cylinder_mesh_vertex_positions = cylinder_mesh.vertex_positions
+    cylinder_mesh_triangle_indices = cylinder_mesh.triangle_indices
+    cylinder_mesh_vertex_normals = cylinder_mesh.vertex_normals
+    cylinder_mesh_vertex_colors = cylinder_mesh.vertex_colors
+    logger.info(f"Cylinder mesh has {len(cylinder_mesh)} vertices and {len(cylinder_mesh_triangle_indices)} triangles")
+    logger.info(f"Cylinder mesh has vertex normals: {cylinder_mesh.has_vertex_normals()}")
+    logger.info(f"Cylinder mesh has vertex colors: {cylinder_mesh.has_vertex_colors()}")
 
     # ===================== Visualization  (Optional) ======================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.

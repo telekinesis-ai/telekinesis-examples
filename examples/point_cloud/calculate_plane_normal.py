@@ -28,6 +28,13 @@ def calculate_plane_normal_example():
     normal_vector_arr = normal_vector.data
     logger.info(f"Normal vector as numpy array: {normal_vector_arr}")
 
+    normal_vector_shape = normal_vector.shape
+    normal_vector_ndim = normal_vector.ndim
+    normal_vector_dtype = normal_vector.dtype
+    logger.info(f"Normal vector shape: {normal_vector_shape}")
+    logger.info(f"Normal vector ndim: {normal_vector_ndim}")
+    logger.info(f"Normal vector dtype: {normal_vector_dtype}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("calculate_plane_normal_example", spawn=True)
     datatypes.visualize(normal_vector, entity_path="/PlaneNormal/normal_vector", label="Normal Vector")

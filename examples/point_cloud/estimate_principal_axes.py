@@ -31,7 +31,15 @@ def estimate_principal_axes_example():
     )
     logger.success("Estimated principal axes")
 
-    logger.info(f"Principal axes: {principal_axes}")
+    # Access principal_axes data and properties
+    principal_axes_data = principal_axes.data
+    principal_axes_shape = principal_axes.shape
+    principal_axes_dtype = principal_axes.dtype
+    principal_axes_is_orthonormal = principal_axes.is_orthonormal()
+    logger.info(f"Principal axes data (columns are the principal axis vectors): {principal_axes_data}")
+    logger.info(f"Principal axes shape: {principal_axes_shape}")
+    logger.info(f"Principal axes dtype: {principal_axes_dtype}")
+    logger.info(f"Principal axes columns are orthonormal: {principal_axes_is_orthonormal}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("estimate_principal_axes_example", spawn=True)

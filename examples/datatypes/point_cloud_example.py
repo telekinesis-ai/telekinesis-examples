@@ -72,16 +72,15 @@ def point_cloud_example():
     # if a viewer from a previous run is still open, it already has one active, so force it.
     rr.send_blueprint(blueprint, make_active=True)
     datatypes.visualize(
-        my_uncompressed_point_cloud, entity_path="/PointCloud/my_pointcloud", label="My PointCloud"
+        my_uncompressed_point_cloud, 
+        entity_path="/PointCloud/my_pointcloud", 
+        label="My PointCloud"
     )
 
     # Update the PointCloud data
     updated_positions = np.random.randn(N, 3).astype(np.float32)
     my_uncompressed_point_cloud.positions = updated_positions
     logger.info(f"Updated PointCloud: {my_uncompressed_point_cloud}")
-    datatypes.visualize(
-        my_uncompressed_point_cloud, entity_path="/PointCloud/updated", label="Updated PointCloud"
-    )
 
     updated_colors = np.random.randint(0, 255, (N, 3), dtype=np.uint8)
     my_uncompressed_point_cloud.colors = updated_colors
@@ -100,11 +99,17 @@ def point_cloud_example():
     logger.info(f"Updated PointCloud compression settings: {my_uncompressed_point_cloud}")
 
     # Create from .ply file from path
-    my_point_cloud_from_ply = datatypes.PointCloud.from_path(ROOT_PATH / "data/my_point_cloud.ply")
-    logger.info(f"My new PointCloud from .ply: {my_point_cloud_from_ply}")
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/zivid_bottles_10_preprocessed.ply"
+    my_point_cloud_from_url = datatypes.PointCloud.from_url(url=point_cloud_url)
+    logger.info(f"My new PointCloud from .ply: {my_point_cloud_from_url}")
+    datatypes.visualize(
+        my_point_cloud_from_url, 
+        entity_path="/PointCloud/from_url", 
+        label="URL PointCloud"
+    )
 
     # Save to .ply file to disk
-    my_uncompressed_point_cloud.save_to_path("results/my_point_cloud_saved.ply")
+    my_point_cloud_from_url.save_to_path("results/my_point_cloud_saved.ply")
     logger.info("Saved PointCloud to disk as .ply file.")
 
     # Operate with numpy arrays directly
@@ -148,17 +153,15 @@ def point_cloud_example():
     compressed_deserialized_time = (deserialization_end_time - deserialization_start_time) * 1000
 
     logger.info(f"Uncompressed Serialization time: {uncompressed_serialized_time:.6f} ms")
-    logger.info(f"Compressed Serialization time: {compressed_serialized_time:.6f} ms")
-
     logger.info(f"Uncompressed Serialized size: {uncompressed_serialized_size / 1024 / 1024} MB")
-    logger.info(f"Compressed Serialized size: {compressed_serialized_size / 1024 / 1024} MB")
-
     logger.info(f"Uncompressed Deserialization time: {uncompressed_deserialized_time:.6f} ms")
-    logger.info(f"Compressed Deserialization time: {compressed_deserialized_time:.6f} ms")
-
     logger.info(
         f"Uncompressed Deserialized size: {uncompressed_deserialized_size / 1024 / 1024} MB"
     )
+
+    logger.info(f"Compressed Serialization time: {compressed_serialized_time:.6f} ms")
+    logger.info(f"Compressed Serialized size: {compressed_serialized_size / 1024 / 1024} MB")
+    logger.info(f"Compressed Deserialization time: {compressed_deserialized_time:.6f} ms")
     logger.info(f"Compressed Deserialized size: {compressed_deserialized_size / 1024 / 1024} MB")
 
 

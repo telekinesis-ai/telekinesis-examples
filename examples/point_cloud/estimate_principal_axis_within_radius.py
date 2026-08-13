@@ -26,7 +26,7 @@ def estimate_principal_axis_within_radius_example():
     logger.success(f"Loaded point cloud with {len(point_cloud)} points")
 
     # ===================== Run Skill ==========================================
-    # `estimate_principal_axis_within_radius` returns a plain numpy array, not a datatype instance.
+    # `estimate_principal_axis_within_radius` returns a Vector3D datatype instance.
     local_principal_axis = vitreous.estimate_principal_axis_within_radius(
         point_cloud=point_cloud,
         neighborhood_radius=0.25,
@@ -34,12 +34,18 @@ def estimate_principal_axis_within_radius_example():
     )
     logger.success("Estimated principal axis within radius")
 
+    # Access local_principal_axis data and properties
+    local_principal_axis_data = local_principal_axis.data
+    local_principal_axis_shape = local_principal_axis.shape
+    local_principal_axis_dtype = local_principal_axis.dtype
+    logger.info(f"Local principal axis data: {local_principal_axis_data}")
+    logger.info(f"Local principal axis shape: {local_principal_axis_shape}")
+    logger.info(f"Local principal axis dtype: {local_principal_axis_dtype}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("estimate_principal_axis_within_radius_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/point_cloud")
-    datatypes.visualize(
-        datatypes.Vector3D(local_principal_axis), entity_path="/local_principal_axis", label="Principal Axis"
-    )
+    datatypes.visualize(local_principal_axis, entity_path="/local_principal_axis", label="Principal Axis")
 
 
 if __name__ == "__main__":

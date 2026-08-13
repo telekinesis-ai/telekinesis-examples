@@ -35,6 +35,20 @@ def segment_point_cloud_using_plane_example():
     )
     logger.success(f"Segmented {len(segmented_point_cloud)} points using plane, plane model: {plane_model.data}")
 
+    # Access segmented_point_cloud data and properties
+    segmented_point_cloud_positions = segmented_point_cloud.positions
+    segmented_point_cloud_normals = segmented_point_cloud.normals
+    segmented_point_cloud_colors = segmented_point_cloud.colors
+    logger.info(f"Segmented point cloud positions shape: {segmented_point_cloud_positions.shape}")
+    logger.info(f"Segmented point cloud has normals: {segmented_point_cloud_normals is not None}")
+    logger.info(f"Segmented point cloud has colors: {segmented_point_cloud_colors is not None}")
+
+    # Access plane_model data and properties (plane coefficients [a, b, c, d] for ax+by+cz+d=0)
+    plane_model_data = plane_model.data
+    plane_model_shape = plane_model.shape
+    logger.info(f"Plane model coefficients [a, b, c, d]: {plane_model_data}")
+    logger.info(f"Plane model shape: {plane_model_shape}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_point_cloud_using_plane_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/input_point_cloud")

@@ -30,6 +30,15 @@ def create_torus_mesh_example():
     )
     logger.success("Created torus mesh")
 
+    # Access torus_mesh data and properties
+    torus_mesh_vertex_positions = torus_mesh.vertex_positions
+    torus_mesh_triangle_indices = torus_mesh.triangle_indices
+    torus_mesh_vertex_normals = torus_mesh.vertex_normals
+    torus_mesh_vertex_colors = torus_mesh.vertex_colors
+    logger.info(f"Torus mesh has {len(torus_mesh)} vertices and {len(torus_mesh_triangle_indices)} triangles")
+    logger.info(f"Torus mesh has vertex normals: {torus_mesh.has_vertex_normals()}")
+    logger.info(f"Torus mesh has vertex colors: {torus_mesh.has_vertex_colors()}")
+
     # ===================== Visualization  (Optional) ======================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("create_torus_mesh_example", spawn=True)

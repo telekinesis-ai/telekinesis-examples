@@ -28,6 +28,15 @@ def create_sphere_mesh_example():
     )
     logger.success("Created sphere mesh")
 
+    # Access sphere_mesh data and properties
+    sphere_mesh_vertex_positions = sphere_mesh.vertex_positions
+    sphere_mesh_triangle_indices = sphere_mesh.triangle_indices
+    sphere_mesh_vertex_normals = sphere_mesh.vertex_normals
+    sphere_mesh_vertex_colors = sphere_mesh.vertex_colors
+    logger.info(f"Sphere mesh has {len(sphere_mesh)} vertices and {len(sphere_mesh_triangle_indices)} triangles")
+    logger.info(f"Sphere mesh has vertex normals: {sphere_mesh.has_vertex_normals()}")
+    logger.info(f"Sphere mesh has vertex colors: {sphere_mesh.has_vertex_colors()}")
+
     # ===================== Visualization  (Optional) ======================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("create_sphere_mesh_example", spawn=True)

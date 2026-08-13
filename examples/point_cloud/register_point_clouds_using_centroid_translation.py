@@ -37,6 +37,16 @@ def register_point_clouds_using_centroid_translation_example():
     )
     logger.success(f"Registered point clouds using centroid translation, transformation_matrix: {transformation_matrix.data}")
 
+    # Access transformation_matrix data and properties
+    transformation_matrix_data = transformation_matrix.data
+    transformation_matrix_shape = transformation_matrix.shape
+    transformation_matrix_ndim = transformation_matrix.ndim
+    transformation_matrix_dtype = transformation_matrix.dtype
+    logger.info(f"Transformation matrix data: {transformation_matrix_data}")
+    logger.info(f"Transformation matrix shape: {transformation_matrix_shape}")
+    logger.info(f"Transformation matrix ndim: {transformation_matrix_ndim}")
+    logger.info(f"Transformation matrix dtype: {transformation_matrix_dtype}")
+
     # ===================== Visualization  (Optional) ======================
     aligned_source_point_cloud = vitreous.apply_transform_to_point_cloud(
         point_cloud=source_point_cloud,

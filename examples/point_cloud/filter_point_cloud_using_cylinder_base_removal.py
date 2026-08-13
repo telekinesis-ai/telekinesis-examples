@@ -43,8 +43,8 @@ def filter_point_cloud_using_cylinder_base_removal_example():
     filtered_vertex_positions = filtered_mesh.vertex_positions
     filtered_triangle_indices = filtered_mesh.triangle_indices
 
-    filtered_vertex_normals = filtered_mesh.vertex_normals if filtered_mesh.has_vertex_normals else None
-    filtered_vertex_colors = filtered_mesh.vertex_colors if filtered_mesh.has_vertex_colors else None
+    filtered_vertex_normals = filtered_mesh.vertex_normals if filtered_mesh.has_vertex_normals() else None
+    filtered_vertex_colors = filtered_mesh.vertex_colors if filtered_mesh.has_vertex_colors() else None
 
     logger.info(f"Filtered mesh: {filtered_mesh}")
     logger.info(f"Filtered mesh has {len(filtered_vertex_positions)} vertices "

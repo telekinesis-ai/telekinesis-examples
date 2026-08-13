@@ -33,6 +33,14 @@ def add_point_clouds_example():
     )
     logger.success(f"Added point clouds: {len(point_cloud1)} + {len(point_cloud2)} points")
 
+    # Access added_point_cloud data and properties
+    added_point_cloud_positions = added_point_cloud.positions
+    added_point_cloud_normals = added_point_cloud.normals
+    added_point_cloud_colors = added_point_cloud.colors
+    logger.info(f"Added point cloud positions shape: {added_point_cloud_positions.shape}")
+    logger.info(f"Added point cloud has normals: {added_point_cloud_normals is not None}")
+    logger.info(f"Added point cloud has colors: {added_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("add_point_clouds_example", spawn=True)
     datatypes.visualize(point_cloud1, entity_path="/point_cloud_1")

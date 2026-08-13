@@ -32,6 +32,15 @@ def reconstruct_mesh_using_poisson_example():
     )
     logger.success(f"Reconstructed mesh from {len(point_cloud)} points using Poisson")
 
+    # Access reconstructed_mesh data and properties
+    reconstructed_mesh_vertex_positions = reconstructed_mesh.vertex_positions
+    reconstructed_mesh_triangle_indices = reconstructed_mesh.triangle_indices
+    reconstructed_mesh_vertex_normals = reconstructed_mesh.vertex_normals
+    reconstructed_mesh_vertex_colors = reconstructed_mesh.vertex_colors
+    logger.info(f"Reconstructed mesh has {len(reconstructed_mesh)} vertices and {len(reconstructed_mesh_triangle_indices)} triangles")
+    logger.info(f"Reconstructed mesh has vertex normals: {reconstructed_mesh.has_vertex_normals()}")
+    logger.info(f"Reconstructed mesh has vertex colors: {reconstructed_mesh.has_vertex_colors()}")
+
     # ===================== Visualization  (Optional) ======================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("reconstruct_mesh_using_poisson_example", spawn=True)

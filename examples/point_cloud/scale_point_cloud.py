@@ -33,6 +33,14 @@ def scale_point_cloud_example():
     )
     logger.success(f"Scaled point cloud to {len(scaled_point_cloud)} points")
 
+    # Access scaled_point_cloud data and properties
+    scaled_point_cloud_positions = scaled_point_cloud.positions
+    scaled_point_cloud_normals = scaled_point_cloud.normals
+    scaled_point_cloud_colors = scaled_point_cloud.colors
+    logger.info(f"Scaled point cloud positions shape: {scaled_point_cloud_positions.shape}")
+    logger.info(f"Scaled point cloud has normals: {scaled_point_cloud_normals is not None}")
+    logger.info(f"Scaled point cloud has colors: {scaled_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("scale_point_cloud_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/input_point_cloud")

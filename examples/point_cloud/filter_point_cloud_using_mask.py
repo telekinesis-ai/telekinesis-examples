@@ -36,6 +36,14 @@ def filter_point_cloud_using_mask_example():
     )
     logger.success(f"Filtered point cloud to {len(result_point_cloud)} points using mask")
 
+    # Access result_point_cloud data and properties
+    result_point_cloud_positions = result_point_cloud.positions
+    result_point_cloud_normals = result_point_cloud.normals
+    result_point_cloud_colors = result_point_cloud.colors
+    logger.info(f"Result point cloud positions shape: {result_point_cloud_positions.shape}")
+    logger.info(f"Result point cloud has normals: {result_point_cloud_normals is not None}")
+    logger.info(f"Result point cloud has colors: {result_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_point_cloud_using_mask_example", spawn=True)
     rr.send_blueprint(

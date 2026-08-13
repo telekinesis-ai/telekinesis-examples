@@ -32,6 +32,14 @@ def apply_transform_to_point_cloud_example():
     )
     logger.success(f"Applied transform to {len(transformed_point_cloud)} points")
 
+    # Access transformed_point_cloud data and properties
+    transformed_point_cloud_positions = transformed_point_cloud.positions
+    transformed_point_cloud_normals = transformed_point_cloud.normals
+    transformed_point_cloud_colors = transformed_point_cloud.colors
+    logger.info(f"Transformed point cloud positions shape: {transformed_point_cloud_positions.shape}")
+    logger.info(f"Transformed point cloud has normals: {transformed_point_cloud_normals is not None}")
+    logger.info(f"Transformed point cloud has colors: {transformed_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("apply_transform_to_point_cloud_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/source_point_cloud")

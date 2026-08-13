@@ -36,6 +36,14 @@ def subtract_point_clouds_example():
     )
     logger.success(f"Subtracted point clouds to {len(subtracted_point_cloud)} points")
 
+    # Access subtracted_point_cloud data and properties
+    subtracted_point_cloud_positions = subtracted_point_cloud.positions
+    subtracted_point_cloud_normals = subtracted_point_cloud.normals
+    subtracted_point_cloud_colors = subtracted_point_cloud.colors
+    logger.info(f"Subtracted point cloud positions shape: {subtracted_point_cloud_positions.shape}")
+    logger.info(f"Subtracted point cloud has normals: {subtracted_point_cloud_normals is not None}")
+    logger.info(f"Subtracted point cloud has colors: {subtracted_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("subtract_point_clouds_example", spawn=True)
     datatypes.visualize(point_cloud1, entity_path="/point_cloud_1")

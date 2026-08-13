@@ -31,6 +31,14 @@ def filter_point_cloud_using_voxel_downsampling_example():
     )
     logger.success(f"Filtered point cloud to {len(filtered_point_cloud)} points using voxel downsampling")
 
+    # Access filtered_point_cloud data and properties
+    filtered_point_cloud_positions = filtered_point_cloud.positions
+    filtered_point_cloud_normals = filtered_point_cloud.normals
+    filtered_point_cloud_colors = filtered_point_cloud.colors
+    logger.info(f"Filtered point cloud positions shape: {filtered_point_cloud_positions.shape}")
+    logger.info(f"Filtered point cloud has normals: {filtered_point_cloud_normals is not None}")
+    logger.info(f"Filtered point cloud has colors: {filtered_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_point_cloud_using_voxel_downsampling_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/input_point_cloud")

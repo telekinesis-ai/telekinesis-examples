@@ -35,6 +35,14 @@ def cluster_point_cloud_based_on_density_jump_example():
     )
     logger.success(f"Split point cloud with {len(point_cloud)} points into {len(clusters)} density-based clusters")
 
+    # Access clusters data and properties
+    clusters_positions = clusters.positions
+    clusters_sizes = [len(p) for p in clusters_positions]
+    first_cluster = clusters[0]
+    logger.info(f"Number of density-based clusters: {len(clusters)}")
+    logger.info(f"Points per cluster: {clusters_sizes}")
+    logger.info(f"First cluster is a PointCloud with {len(first_cluster)} points")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("cluster_point_cloud_based_on_density_jump_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/input_point_cloud")

@@ -28,6 +28,14 @@ def reconstruct_octomap_example():
         f"Reconstructed OctoMap with {len(occupied_cells)} occupied and {len(free_cells)} free cells"
     )
 
+    # Access occupied_cells and free_cells data and properties
+    occupied_cells_centers = occupied_cells.center
+    occupied_cells_volumes = occupied_cells.volume
+    free_cells_centers = free_cells.center
+    free_cells_volumes = free_cells.volume
+    logger.info(f"Occupied cells centers shape: {occupied_cells_centers.shape}, volumes shape: {occupied_cells_volumes.shape}")
+    logger.info(f"Free cells centers shape: {free_cells_centers.shape}, volumes shape: {free_cells_volumes.shape}")
+
     # ===================== Visualization (Optional) ===========================
     rr.init("reconstruct_octomap_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/input_point_cloud")

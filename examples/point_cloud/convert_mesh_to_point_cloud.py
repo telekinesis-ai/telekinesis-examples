@@ -41,6 +41,14 @@ def convert_mesh_to_point_cloud_example():
     )
     logger.success(f"Converted mesh with {len(mesh.vertex_positions)} vertices to point cloud with {len(point_cloud)} points")
 
+    # Access point_cloud data and properties
+    point_cloud_positions = point_cloud.positions
+    point_cloud_normals = point_cloud.normals
+    point_cloud_colors = point_cloud.colors
+    logger.info(f"Point cloud positions shape: {point_cloud_positions.shape}")
+    logger.info(f"Point cloud has normals: {point_cloud_normals is not None}")
+    logger.info(f"Point cloud has colors: {point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("convert_mesh_to_point_cloud_example", spawn=True)
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.

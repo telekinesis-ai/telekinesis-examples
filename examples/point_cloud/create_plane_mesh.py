@@ -29,6 +29,15 @@ def create_plane_mesh_example():
     )
     logger.success("Created plane mesh")
 
+    # Access plane_mesh data and properties
+    plane_mesh_vertex_positions = plane_mesh.vertex_positions
+    plane_mesh_triangle_indices = plane_mesh.triangle_indices
+    plane_mesh_vertex_normals = plane_mesh.vertex_normals
+    plane_mesh_vertex_colors = plane_mesh.vertex_colors
+    logger.info(f"Plane mesh has {len(plane_mesh)} vertices and {len(plane_mesh_triangle_indices)} triangles")
+    logger.info(f"Plane mesh has vertex normals: {plane_mesh.has_vertex_normals()}")
+    logger.info(f"Plane mesh has vertex colors: {plane_mesh.has_vertex_colors()}")
+
     # ===================== Visualization  (Optional) ======================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("create_plane_mesh_example", spawn=True)

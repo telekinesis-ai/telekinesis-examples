@@ -34,6 +34,14 @@ def project_point_cloud_to_plane_defined_by_point_normal_example():
     )
     logger.success(f"Projected {len(projected_point_cloud)} points to plane (point+normal)")
 
+    # Access projected_point_cloud data and properties
+    projected_point_cloud_positions = projected_point_cloud.positions
+    projected_point_cloud_normals = projected_point_cloud.normals
+    projected_point_cloud_colors = projected_point_cloud.colors
+    logger.info(f"Projected point cloud positions shape: {projected_point_cloud_positions.shape}")
+    logger.info(f"Projected point cloud has normals: {projected_point_cloud_normals is not None}")
+    logger.info(f"Projected point cloud has colors: {projected_point_cloud_colors is not None}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("project_point_cloud_to_plane_defined_by_point_normal_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
