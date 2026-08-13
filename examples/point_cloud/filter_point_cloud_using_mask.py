@@ -9,6 +9,7 @@ This example:
 
 from loguru import logger
 import rerun as rr
+import rerun.blueprint as rrb
 
 from telekinesis import vitreous, datatypes
 
@@ -25,7 +26,7 @@ def filter_point_cloud_using_mask_example():
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     mask_url = "https://assets.telekinesis.ai/examples/v1/images/can_vertical_6_mask.png"
-    mask = datatypes.Image.from_url(url=mask_url).to_grayscale()
+    mask = datatypes.Image.from_url(url=mask_url).to_binary_mask(threshold=127)
     logger.success(f"Loaded point cloud with {len(point_cloud)} points and mask")
 
     # ===================== Run Skill ==========================================
@@ -37,6 +38,24 @@ def filter_point_cloud_using_mask_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_point_cloud_using_mask_example", spawn=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Horizontal(
+                rrb.Spatial3DView(
+                    name="Input Point Cloud",
+                    origin="/input_point_cloud",
+                ),
+                rrb.Spatial2DView(
+                    name="Binary Mask",
+                    origin="/binary_mask",
+                ),
+                rrb.Spatial3DView(
+                    name="Masked Point Cloud",
+                    origin="/masked_point_cloud",
+                ),
+            )
+        )
+    )
     datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
     datatypes.visualize(mask, entity_path="/binary_mask")
     datatypes.visualize(result_point_cloud, entity_path="/masked_point_cloud")

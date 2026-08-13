@@ -31,8 +31,7 @@ def calculate_point_cloud_centroid_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("calculate_point_cloud_centroid_example", spawn=True)
-    datatypes.visualize(point_cloud, entity_path="/point_cloud")
-    datatypes.visualize(datatypes.Position3D(centroid), entity_path="/centroid", label="Centroid")
+    datatypes.visualize(point_cloud, centroid, entity_path="/point_cloud")
 
 
 if __name__ == "__main__":

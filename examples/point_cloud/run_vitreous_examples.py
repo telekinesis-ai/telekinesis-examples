@@ -12,7 +12,6 @@ logger.add(sys.stderr, format="<level>{level: <8}</level> | <level>{message}</le
 
 # Helper names in each example module that we time separately. Everything else
 # in the example function (chiefly the vitreous skill call) counts as "algorithm".
-FETCH_HELPERS = ("fetch_point_cloud", "fetch_mesh", "fetch_mask")
 VISUALIZE_HELPER = "visualize"
 
 
@@ -27,9 +26,6 @@ def _instrument(module, accum):
                 accum[key] += time.perf_counter() - start
         return wrapper
 
-    for name in FETCH_HELPERS:
-        if callable(getattr(module, name, None)):
-            setattr(module, name, make_timer("fetch", getattr(module, name)))
     if callable(getattr(module, VISUALIZE_HELPER, None)):
         setattr(module, VISUALIZE_HELPER, make_timer("visualize", getattr(module, VISUALIZE_HELPER)))
 

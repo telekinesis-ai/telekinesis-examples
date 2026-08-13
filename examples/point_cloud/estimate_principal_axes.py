@@ -25,17 +25,17 @@ def estimate_principal_axes_example():
     logger.success(f"Loaded point cloud with {len(point_cloud)} points")
 
     # ===================== Run Skill ==========================================
-    # `estimate_principal_axes` returns a plain (3, 3) numpy array whose columns are the axes.
     principal_axes = vitreous.estimate_principal_axes(
         point_cloud=point_cloud,
         method="obb",
     )
     logger.success("Estimated principal axes")
 
+    logger.info(f"Principal axes: {principal_axes}")
+
     # ===================== Visualization  (Optional) ======================
     rr.init("estimate_principal_axes_example", spawn=True)
-    datatypes.visualize(point_cloud, entity_path="/point_cloud")
-    datatypes.visualize(principal_axes.T, entity_path="/principal_axes")
+    datatypes.visualize(point_cloud, principal_axes, entity_path="/point_cloud")
 
 
 if __name__ == "__main__":

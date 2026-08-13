@@ -35,7 +35,7 @@ def segment_point_cloud_using_color_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_point_cloud_using_color_example", spawn=True)
-    datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
+    # datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
     datatypes.visualize(segmented_point_cloud, entity_path="/segmented_point_cloud")
 
 
