@@ -36,13 +36,18 @@ def detect_circle_using_classic_hough_example():
     logger.info(
         f"Detected {len(circles)} circles using classic Hough transform."
     )
+    # Access all the detected circles and log their details
+    all_centers = circles.centers
+    all_radii = circles.radii
+    logger.info(f"All detected circle centers: {all_centers.shape}")
+    logger.info(f"All detected circle radii: {all_radii.shape}")
 
     # Access the first detected circle and log its details
     if circles:
         first_circle = circles[0]
         logger.info(f"First detected circle: {first_circle}")
         logger.info(
-            f"First detected circle center: {first_circle.centers}, radius: {first_circle.radii}"
+            f"First detected circle center: {first_circle.center}, radius: {first_circle.radius}"
         )
 
     # ===================== Visualization  (Optional) ======================
@@ -50,7 +55,7 @@ def detect_circle_using_classic_hough_example():
     datatypes.visualize(
         image,
         circles,
-        entity_path="/Image",
+        entity_path="/Image/overlayed_circles",
         label=[f"Circle {i}" for i in range(len(circles))],
     )
 

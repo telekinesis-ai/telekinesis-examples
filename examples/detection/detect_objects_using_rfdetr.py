@@ -44,7 +44,7 @@ def detect_objects_using_rfdetr_example():
     logger.info(f"All detected object category IDs: {all_category_ids}")
 
     # Access the first detected object and print its details
-    # Indexed object is of type `COCOObjectDetectionAnnotation`
+    # Indexed object is of type the single `COCOObjectDetectionResult`
     index = 0
     detection_at_index = detection_results[index]
     detection_at_index_bbox = detection_at_index.bbox
@@ -60,7 +60,7 @@ def detect_objects_using_rfdetr_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("detect_objects_using_rfdetr_example", spawn=True)
-    datatypes.visualize(image, detection_results, categories, entity_path="/Image")
+    datatypes.visualize(image, detection_results, entity_path="/Image/overlayed_detections")
 
 
 

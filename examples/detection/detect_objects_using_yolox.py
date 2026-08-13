@@ -45,7 +45,7 @@ def detect_objects_using_yolox_example():
     logger.info(f"All detected object category IDs: {all_category_ids}")
 
     # Access individual detect objects at an index and log their details
-    # Indexed objects are of type `COCOObjectDetectionAnnotation`
+    # Indexed objects are of type the single `COCOObjectDetectionResult`
     index = 0
     detection_at_index = detection_results[index]
     detection_at_index_bbox = detection_at_index.bbox
@@ -61,7 +61,7 @@ def detect_objects_using_yolox_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("detect_objects_using_yolox_example", spawn=True)
-    datatypes.visualize(image, detection_results, categories, entity_path="/Image")
+    datatypes.visualize(image, detection_results, entity_path="/Image/overlayed_detections")
 
 
 if __name__ == "__main__":

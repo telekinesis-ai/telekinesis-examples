@@ -33,12 +33,16 @@ def detect_contours_example():
     )
     logger.info(f"Detected Contours: {contours}")
 
+    # Access the underlying grouped data
+    all_contour_points = contours.data
+    logger.info(f"All detected contour points: {all_contour_points}")
+
     # Access the first detected contour and log its details
     if contours:
         first_contour = contours[0]
         logger.info(f"First detected contour: {first_contour}")
         first_contour_points_list = first_contour.data
-        logger.info(f"First detected contour points: {first_contour_points_list}")
+        logger.info(f"First detected contour points shape: {first_contour_points_list.shape}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("detect_contours_example", spawn=True)
@@ -46,7 +50,7 @@ def detect_contours_example():
     datatypes.visualize(
         image,
         contours,
-        entity_path="/Image",
+        entity_path="/Image/overlayed_contours",
         label=[f"Contour {i}" for i in range(len(contours))],
     )
 

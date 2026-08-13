@@ -11,53 +11,54 @@ import rerun as rr
 from telekinesis import datatypes
 
 
-def circle_detection_annotations_example():
+def circles_example():
     """
     Example function to demonstrate usage of Circles datatype.
         - Create a Circles data
-        - Access the underlying annotations data
+        - Access the underlying data
         - Visualize the Circles data using Rerun
-        - Index a single circle and a sub-batch with __getitem__
+        - Index a single circle
         - Translate and scale the batch, each returning a new Circles
         - Serialize to PyArrow and back
     """
     # Create a Circles data
-    my_circle_detection_annotations = datatypes.Circles(
+    my_circles = datatypes.Circles(
         centers=np.array([[50.0, 60.0], [120.0, 80.0], [200.0, 150.0]], dtype=np.float32),
         radii=np.array([10.0, 15.5, 7.25], dtype=np.float32),
     )
-    logger.info(f"Original Circles: {my_circle_detection_annotations}")
+    logger.info(f"Original Circles: {my_circles}")
 
     # Access the underlying annotations data
-    my_circle_detection_annotations_centers = my_circle_detection_annotations.centers
-    my_circle_detection_annotations_radii = my_circle_detection_annotations.radii
-    logger.info(f"Underlying Circles centers data: {my_circle_detection_annotations_centers}")
-    logger.info(f"Underlying Circles radii data: {my_circle_detection_annotations_radii}")
+    my_circle_centers = my_circles.centers
+    my_circle_radii = my_circles.radii
+    logger.info(f"Underlying Circles centers data: {my_circle_centers}")
+    logger.info(f"Underlying Circles radii data: {my_circle_radii}")
 
     # Visualize the Circles data using Rerun
     logger.info("Visualizing with Rerun...")
-    rr.init("circle_detection_example", spawn=True)
+    rr.init("circles_example", spawn=True)
     datatypes.visualize(
-        my_circle_detection_annotations,
+        my_circles,
         entity_path="/Circles",
         label=["My Circle 1", "My Circle 2", "My Circle 3"],
     )
 
-    # Index a single circle (returns a length-1 Circles) and a sub-batch with __getitem__
-    first_circle = my_circle_detection_annotations[0]
-    logger.info(f"First circle: center={first_circle.centers[0]}, radius={first_circle.radii[0]}")
-    sub_batch = my_circle_detection_annotations[1:]
+    # Index a single circle (returns a Circle) and
+    first_circle = my_circles[0]
+    logger.info(f"First circle: center={first_circle.center}, radius={first_circle.radius}")
+
+    # Index a sub-batch of circles (returns a Circles)
+    sub_batch = my_circles[1:]
     logger.info(f"Sub-batch [1:]: centers={sub_batch.centers}, radii={sub_batch.radii}")
 
-    # Circles is immutable after construction (no `centers`/`radii`
-    # setter) -- translate/scale each return a new instance instead.
-    my_circle_detection_annotations = my_circle_detection_annotations.translate(
+    # Translate and scale the batch, each returning a new Circles
+    my_circles = my_circles.translate(
         [[5.0, 5.0], [10.0, 0.0], [-5.0, -5.0]]
     ).scale(1.5)
-    logger.info(f"Updated Circles centers data: {my_circle_detection_annotations.centers}")
-    logger.info(f"Updated Circles radii data: {my_circle_detection_annotations.radii}")
+    logger.info(f"Updated Circles centers data: {my_circles.centers}")
+    logger.info(f"Updated Circles radii data: {my_circles.radii}")
     datatypes.visualize(
-        my_circle_detection_annotations,
+        my_circles,
         entity_path="/Circles/updated",
         label=["Updated Circle 1", "Updated Circle 2", "Updated Circle 3"],
     )
@@ -70,7 +71,7 @@ def circle_detection_annotations_example():
 
     # Serialize to PyArrow and back
     serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_circle_detection_annotations)
+    serialized = datatypes.serialize(my_circles)
     serialization_end_time = time.perf_counter()
 
     deserialization_start_time = time.perf_counter()
@@ -78,7 +79,7 @@ def circle_detection_annotations_example():
     deserialization_end_time = time.perf_counter()
 
     logger.info(
-        f"Deserialized Circles matches Original: {deserialized == my_circle_detection_annotations}"
+        f"Deserialized Circles matches Original: {deserialized == my_circles}"
     )
     logger.info(
         f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
@@ -89,4 +90,4 @@ def circle_detection_annotations_example():
 
 
 if __name__ == "__main__":
-    circle_detection_annotations_example()
+    circles_example()
