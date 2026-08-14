@@ -21,16 +21,24 @@ def reconstruct_mesh_using_poisson_example():
 
     # ===================== Run Skill ==========================================
     reconstructed_mesh = vitreous.reconstruct_mesh_using_poisson(
-        octree_depth=7, octree_width=0, scale_factor=1.1,
+        octree_depth=7,
+        octree_width=0,
+        scale_factor=1.1,
         point_cloud=point_cloud,
     )
 
     # ===================== Log ================================================
     logger.success(f"Reconstructed mesh from {point_cloud} using Poisson")
     logger.success(f"Results: {reconstructed_mesh}")
-    logger.info(f"Reconstructed mesh has {len(reconstructed_mesh.vertex_positions)} vertices and {len(reconstructed_mesh.triangle_indices)} triangles")
-    logger.info(f"Reconstructed mesh has vertex normals: {reconstructed_mesh.has_vertex_normals}")
-    logger.info(f"Reconstructed mesh has vertex colors: {reconstructed_mesh.has_vertex_colors}")
+    logger.info(
+        f"Reconstructed mesh has {len(reconstructed_mesh.vertex_positions)} vertices and {len(reconstructed_mesh.triangle_indices)} triangles"
+    )
+    logger.info(
+        f"Reconstructed mesh has vertex normals: {reconstructed_mesh.has_vertex_normals}"
+    )
+    logger.info(
+        f"Reconstructed mesh has vertex colors: {reconstructed_mesh.has_vertex_colors}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("reconstruct_mesh_using_poisson_example", spawn=True)

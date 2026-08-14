@@ -22,18 +22,23 @@ def add_point_clouds_example():
 
     # ===================== Run Skill ==========================================
     added_point_cloud = vitreous.add_point_clouds(
-        point_cloud1=point_cloud1, 
-        point_cloud2=point_cloud2
+        point_cloud1=point_cloud1, point_cloud2=point_cloud2
     )
 
     # ===================== Log ================================================
     logger.success(f"Added {point_cloud1} and {point_cloud2}")
     logger.success(f"Results: {added_point_cloud}")
-    logger.info(f"Added point cloud positions shape: {added_point_cloud.positions.shape}")
-    logger.info(f"Added point cloud normals shape: "
-                f"{added_point_cloud.normals.shape if added_point_cloud.has_normals else None}")
-    logger.info(f"Added point cloud colors shape: "
-                f"{added_point_cloud.colors.shape if added_point_cloud.has_colors else None}")
+    logger.info(
+        f"Added point cloud positions shape: {added_point_cloud.positions.shape}"
+    )
+    logger.info(
+        f"Added point cloud normals shape: "
+        f"{added_point_cloud.normals.shape if added_point_cloud.has_normals else None}"
+    )
+    logger.info(
+        f"Added point cloud colors shape: "
+        f"{added_point_cloud.colors.shape if added_point_cloud.has_colors else None}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("add_point_clouds_example", spawn=True)

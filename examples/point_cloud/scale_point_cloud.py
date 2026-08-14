@@ -15,7 +15,9 @@ def scale_point_cloud_example():
     Multiplies all point coordinates by a scale factor relative to a center.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/relay_2_raw.ply"
+    point_cloud_url = (
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/relay_2_raw.ply"
+    )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
@@ -27,13 +29,21 @@ def scale_point_cloud_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Scaled {point_cloud} about center point [0.0, 0.0, 0.0] with scale factor 0.3")
+    logger.success(
+        f"Scaled {point_cloud} about center point [0.0, 0.0, 0.0] with scale factor 0.3"
+    )
     logger.success(f"Results: {scaled_point_cloud}")
-    logger.info(f"Scaled point cloud positions shape: {scaled_point_cloud.positions.shape}")
-    logger.info(f"Scaled point cloud has normals shape: "
-                f"{scaled_point_cloud.normals.shape if scaled_point_cloud.has_normals else None}")
-    logger.info(f"Scaled point cloud has colors shape: "
-                f"{scaled_point_cloud.colors.shape if scaled_point_cloud.has_colors else None}")
+    logger.info(
+        f"Scaled point cloud positions shape: {scaled_point_cloud.positions.shape}"
+    )
+    logger.info(
+        f"Scaled point cloud has normals shape: "
+        f"{scaled_point_cloud.normals.shape if scaled_point_cloud.has_normals else None}"
+    )
+    logger.info(
+        f"Scaled point cloud has colors shape: "
+        f"{scaled_point_cloud.colors.shape if scaled_point_cloud.has_colors else None}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("scale_point_cloud_example", spawn=True)

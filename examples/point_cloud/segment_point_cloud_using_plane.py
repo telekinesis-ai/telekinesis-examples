@@ -29,13 +29,21 @@ def segment_point_cloud_using_plane_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Segmented {point_cloud} using plane, plane model: {plane_model.data}")
+    logger.success(
+        f"Segmented {point_cloud} using plane, plane model: {plane_model.data}"
+    )
     logger.success(f"Results: {segmented_point_cloud}, {plane_model}")
-    logger.info(f"Segmented point cloud positions shape: {segmented_point_cloud.positions.shape}")
-    logger.info(f"Segmented point cloud has normals shape: "
-                f"{segmented_point_cloud.normals.shape if segmented_point_cloud.has_normals else None}")
-    logger.info(f"Segmented point cloud has colors shape: "
-                f"{segmented_point_cloud.colors.shape if segmented_point_cloud.has_colors else None}")
+    logger.info(
+        f"Segmented point cloud positions shape: {segmented_point_cloud.positions.shape}"
+    )
+    logger.info(
+        f"Segmented point cloud has normals shape: "
+        f"{segmented_point_cloud.normals.shape if segmented_point_cloud.has_normals else None}"
+    )
+    logger.info(
+        f"Segmented point cloud has colors shape: "
+        f"{segmented_point_cloud.colors.shape if segmented_point_cloud.has_colors else None}"
+    )
     logger.info(f"Plane model coefficients [a, b, c, d]: {plane_model.data}")
     logger.info(f"Plane model shape: {plane_model.shape}")
 

@@ -35,8 +35,6 @@ def detect_circle_using_classic_hough_example():
 
     logger.info(f"All detected circle centers shape: {circles.centers.shape}")
     logger.info(f"All detected circle radii shape: {circles.radii.shape}")
-
-    # Access the first detected circle and log its details
     logger.info(f"First detected circle: {circles[0]}")
     logger.info(
         f"First detected circle center: {circles[0].center}, radius: {circles[0].radius}"
@@ -45,7 +43,12 @@ def detect_circle_using_classic_hough_example():
     # ===================== Visualization  (Optional) ===========================
     rr.init("classic_hough_circle_detector_example", spawn=True)
     datatypes.visualize(image, entity_path="/image")
-    datatypes.visualize(circles, entity_path="/image/detected-circles", label=[f"Circle {i}" for i in range(len(circles))])
+    datatypes.visualize(
+        circles,
+        entity_path="/image/detected-circles",
+        label=[f"Circle {i}" for i in range(len(circles))],
+    )
+
 
 if __name__ == "__main__":
     detect_circle_using_classic_hough_example()

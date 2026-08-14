@@ -1,16 +1,12 @@
 """
 Detect objects using YOLOX.
-
-Runs YOLOX object detection on an image and returns COCO-like annotations
-with category names from the COCO 80-class label set.
-
-The annotations and categories are used for visualization overlays.
 """
 
 from loguru import logger
 import rerun as rr
 
 from telekinesis import retina, constants, datatypes
+
 
 def detect_objects_using_yolox_example():
     """
@@ -30,38 +26,33 @@ def detect_objects_using_yolox_example():
         score_threshold=0.80,
         nms_threshold=0.45,
     )
-    logger.info(f"YOLOX detected {len(detection_results)} object detections.")
 
-    # Get COCO categories for YOLOX
+    # ===================== Log ================================================
+    logger.success(f"Detected objects in {image} using YOLOX.")
+    logger.success(f"Results: {detection_results}")
+
     categories = constants.get_coco_categories(model="yolox")
     logger.info(f"YOLOX categories: {categories}")
 
-    # Access the underlying grouped data
-    all_bboxes = detection_results.bboxes
-    all_scores = detection_results.scores
-    all_category_ids = detection_results.category_ids
-    logger.info(f"All detected object bounding boxes: {all_bboxes}")
-    logger.info(f"All detected object scores: {all_scores}")
-    logger.info(f"All detected object category IDs: {all_category_ids}")
+    logger.info(f"All detected object bounding boxes: {detection_results.bboxes}")
+    logger.info(f"All detected object scores: {detection_results.scores}")
+    logger.info(f"All detected object category IDs: {detection_results.category_ids}")
 
-    # Access individual detect objects at an index and log their details
     # Indexed objects are of type the single `COCOObjectDetectionResult`
-    index = 0
-    detection_at_index = detection_results[index]
-    detection_at_index_bbox = detection_at_index.bbox
-    detection_at_index_score = detection_at_index.score
-    detection_at_index_category_id = detection_at_index.category_id
-    detection_at_index_category_name = categories[detection_at_index_category_id]
-
-    logger.info(f"Detected object at index {index}: {detection_at_index}")
-    logger.info(f"Detected object at index {index} bounding box: {detection_at_index_bbox}")
-    logger.info(f"Detected object at index {index} score: {detection_at_index_score}")
-    logger.info(f"Detected object at index {index} category ID: {detection_at_index_category_id}")
-    logger.info(f"Detected object at index {index} category name: {detection_at_index_category_name}")
+    logger.info(f"Detected object at index 0: {detection_results[0]}")
+    logger.info(f"Detected object at index 0 bounding box: {detection_results[0].bbox}")
+    logger.info(f"Detected object at index 0 score: {detection_results[0].score}")
+    logger.info(
+        f"Detected object at index 0 category ID: {detection_results[0].category_id}"
+    )
+    logger.info(
+        f"Detected object at index 0 category name: {categories[detection_results[0].category_id]}"
+    )
 
     # ===================== Visualization  (Optional) ======================
     rr.init("detect_objects_using_yolox_example", spawn=True)
-    datatypes.visualize(image, detection_results, entity_path="/Image/overlayed_detections")
+    datatypes.visualize(image, entity_path="/image")
+    datatypes.visualize(detection_results, entity_path="/image/overlayed_detections")
 
 
 if __name__ == "__main__":

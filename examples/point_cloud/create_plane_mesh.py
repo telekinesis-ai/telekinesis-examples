@@ -27,7 +27,9 @@ def create_plane_mesh_example():
     # ===================== Log ================================================
     logger.success("Created plane mesh")
     logger.success(f"Results: {plane_mesh}")
-    logger.info(f"Plane mesh has {len(plane_mesh)} vertices and {len(plane_mesh.triangle_indices)} triangles")
+    logger.info(
+        f"Plane mesh has {len(plane_mesh)} vertices and {len(plane_mesh.triangle_indices)} triangles"
+    )
     logger.info(f"Plane mesh has vertex normals: {plane_mesh.has_vertex_normals}")
     logger.info(f"Plane mesh has vertex colors: {plane_mesh.has_vertex_colors}")
 

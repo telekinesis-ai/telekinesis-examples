@@ -30,7 +30,9 @@ def create_cylinder_mesh_example():
     # ===================== Log ================================================
     logger.success("Created cylinder mesh")
     logger.success(f"Results: {cylinder_mesh}")
-    logger.info(f"Cylinder mesh has {len(cylinder_mesh.vertex_positions)} vertices and {len(cylinder_mesh.triangle_indices)} triangles")
+    logger.info(
+        f"Cylinder mesh has {len(cylinder_mesh.vertex_positions)} vertices and {len(cylinder_mesh.triangle_indices)} triangles"
+    )
     logger.info(f"Cylinder mesh has vertex normals: {cylinder_mesh.has_vertex_normals}")
     logger.info(f"Cylinder mesh has vertex colors: {cylinder_mesh.has_vertex_colors}")
 

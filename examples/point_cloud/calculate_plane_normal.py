@@ -17,7 +17,9 @@ def calculate_plane_normal_example():
     """
     # ===================== Run Skill ==========================================
     plane_coefficients = [0.0, 0.0, 1.0, 0.0]
-    normal_vector = vitreous.calculate_plane_normal(plane_coefficients=plane_coefficients)
+    normal_vector = vitreous.calculate_plane_normal(
+        plane_coefficients=plane_coefficients
+    )
 
     # ===================== Log ================================================
     logger.success(f"Calculated normal vector to {plane_coefficients}")

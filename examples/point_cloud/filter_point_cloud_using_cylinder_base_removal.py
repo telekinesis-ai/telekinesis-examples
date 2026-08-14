@@ -29,10 +29,14 @@ def filter_point_cloud_using_cylinder_base_removal_example():
     # ===================== Log ================================================
     logger.success(f"Filtered {mesh} using cylinder base removal")
     logger.success(f"Results: {filtered_mesh}")
-    logger.info(f"Filtered mesh has {len(filtered_mesh.vertex_positions)} vertices "
-                f"and {len(filtered_mesh.triangle_indices)} triangles")
-    logger.info(f"Filtered mesh has vertex normals: {filtered_mesh.has_vertex_normals}, "
-                f"vertex colors: {filtered_mesh.has_vertex_colors}")
+    logger.info(
+        f"Filtered mesh has {len(filtered_mesh.vertex_positions)} vertices "
+        f"and {len(filtered_mesh.triangle_indices)} triangles"
+    )
+    logger.info(
+        f"Filtered mesh has vertex normals: {filtered_mesh.has_vertex_normals}, "
+        f"vertex colors: {filtered_mesh.has_vertex_colors}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("filter_point_cloud_using_cylinder_base_removal_example", spawn=True)

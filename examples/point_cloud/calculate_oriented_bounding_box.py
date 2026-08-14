@@ -31,10 +31,12 @@ def calculate_oriented_bounding_box_example():
     logger.info(f"Oriented bounding box data: {oriented_bounding_box.data}")
     logger.info(f"Oriented bounding box shape: {oriented_bounding_box.shape}")
     logger.info(f"Oriented bounding box center: {oriented_bounding_box.center}")
-    logger.info(f"Oriented bounding box size (height, width, depth): "
-                f"{oriented_bounding_box.height}, "
-                f"{oriented_bounding_box.width}, "
-                f"{oriented_bounding_box.depth}")
+    logger.info(
+        f"Oriented bounding box size (height, width, depth): "
+        f"{oriented_bounding_box.height}, "
+        f"{oriented_bounding_box.width}, "
+        f"{oriented_bounding_box.depth}"
+    )
     logger.info(f"Oriented bounding box volume: {oriented_bounding_box.volume}")
 
     # ===================== Visualization  (Optional) ===========================

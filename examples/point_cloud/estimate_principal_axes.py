@@ -27,10 +27,14 @@ def estimate_principal_axes_example():
     # ===================== Log ================================================
     logger.success(f"Estimated principal axes for {point_cloud}")
     logger.success(f"Results: {principal_axes}")
-    logger.info(f"Principal axes data (columns are the principal axis vectors): {principal_axes.data}")
+    logger.info(
+        f"Principal axes data (columns are the principal axis vectors): {principal_axes.data}"
+    )
     logger.info(f"Principal axes shape: {principal_axes.shape}")
     logger.info(f"Principal axes dtype: {principal_axes.dtype}")
-    logger.info(f"Principal axes columns are orthonormal: {principal_axes.is_orthonormal()}")
+    logger.info(
+        f"Principal axes columns are orthonormal: {principal_axes.is_orthonormal()}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("estimate_principal_axes_example", spawn=True)

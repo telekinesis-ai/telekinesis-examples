@@ -1,12 +1,6 @@
 """
 Detect objects using Grounding DINO (zero-shot).
-
-Uses a free-form text prompt to detect objects in an RGB image.
-Returns COCO-like annotations with bounding boxes.
-
-The annotations and categories are used for visualization overlays.
 """
-
 
 from loguru import logger
 import rerun as rr
@@ -24,7 +18,6 @@ def detect_objects_using_grounding_dino_example():
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/palletizing.jpg"
     image = datatypes.Image.from_url(url=image_url)
-    logger.info(f"Loaded {image} from the URL: {image_url}")
 
     # ===================== Run Skill ==========================================
     detection_results, categories = retina.detect_objects_using_grounding_dino(
@@ -33,35 +26,31 @@ def detect_objects_using_grounding_dino_example():
         box_threshold=0.5,
         text_threshold=0.5,
     )
-    logger.info(f"Grounding DINO detected {len(detection_results)} objects.")
+
+    # ===================== Log ================================================
+    logger.success(f"Detected objects in {image} using Grounding DINO (zero-shot).")
+    logger.success(f"Results: {detection_results}")
+
     logger.info(f"Categories available: {categories}")
+    logger.info(f"All detected object bounding boxes: {detection_results.bboxes}")
+    logger.info(f"All detected object scores: {detection_results.scores}")
+    logger.info(f"All detected object category IDs: {detection_results.category_ids}")
 
-    # Access the underlying grouped data
-    all_bboxes = detection_results.bboxes
-    all_scores = detection_results.scores
-    all_category_ids = detection_results.category_ids
-
-    logger.info(f"All detected object bounding boxes: {all_bboxes}")
-    logger.info(f"All detected object scores: {all_scores}")
-    logger.info(f"All detected object category IDs: {all_category_ids}")
-
-    # Access the first detected object, which is COCOObjectDetectionAnnotation
-    index = 0
-    detection_at_index = detection_results[index]
-    detection_at_index_bbox = detection_at_index.bbox
-    detection_at_index_score = detection_at_index.score
-    detection_at_index_category_id = detection_at_index.category_id
-    detection_at_index_category_name = categories[detection_at_index_category_id]
-
-    logger.info(f"Detected object at index {index}: {detection_at_index}")
-    logger.info(f"Detected object at index {index} bounding box: {detection_at_index_bbox}")
-    logger.info(f"Detected object at index {index} score: {detection_at_index_score}")
-    logger.info(f"Detected object at index {index} category ID: {detection_at_index_category_id}")
-    logger.info(f"Detected object at index {index} category name: {detection_at_index_category_name}")
+    # Indexed object is of type `COCOObjectDetectionResult`
+    logger.info(f"Detected object at index 1: {detection_results[1]}")
+    logger.info(f"Detected object at index 1 bounding box: {detection_results[1].bbox}")
+    logger.info(f"Detected object at index 1 score: {detection_results[1].score}")
+    logger.info(
+        f"Detected object at index 1 category ID: {detection_results[1].category_id}"
+    )
+    logger.info(
+        f"Detected object at index 1 category name: {categories[detection_results[1].category_id]}"
+    )
 
     # ===================== Visualization  (Optional) ======================
     rr.init("detect_objects_using_grounding_dino_example", spawn=True)
-    datatypes.visualize(image, detection_results, entity_path="/Image/overlayed_detections")
+    datatypes.visualize(image, entity_path="/image/")
+    datatypes.visualize(detection_results, entity_path="/image/overlayed_detections")
 
 
 if __name__ == "__main__":

@@ -34,7 +34,9 @@ def register_point_clouds_using_point_to_point_icp_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Registered {source_point_cloud} to {target_point_cloud} using point-to-point ICP")
+    logger.success(
+        f"Registered {source_point_cloud} to {target_point_cloud} using point-to-point ICP"
+    )
     logger.success(f"Results: {transformation_matrix}")
     logger.info(f"Transformation matrix data: {transformation_matrix.data}")
     logger.info(f"Transformation matrix shape: {transformation_matrix.shape}")
@@ -51,7 +53,9 @@ def register_point_clouds_using_point_to_point_icp_example():
     rr.init("register_point_clouds_using_point_to_point_icp_example", spawn=True)
     datatypes.visualize(source_point_cloud, entity_path="/1-before_registration_source")
     datatypes.visualize(target_point_cloud, entity_path="/2-before_registration_target")
-    datatypes.visualize(aligned_source_point_cloud, entity_path="/3-after_registration_source_aligned")
+    datatypes.visualize(
+        aligned_source_point_cloud, entity_path="/3-after_registration_source_aligned"
+    )
 
 
 if __name__ == "__main__":

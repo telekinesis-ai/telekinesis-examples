@@ -16,7 +16,9 @@ def segment_point_cloud_using_color_example():
     RGB space) of a target color.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_0.ply"
+    point_cloud_url = (
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_0.ply"
+    )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
@@ -27,13 +29,21 @@ def segment_point_cloud_using_color_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Segmented {point_cloud} by color similarity to target color [50, 75, 200] with distance threshold 60.0")
+    logger.success(
+        f"Segmented {point_cloud} by color similarity to target color [50, 75, 200] with distance threshold 60.0"
+    )
     logger.success(f"Results: {segmented_point_cloud}")
-    logger.info(f"Segmented point cloud positions shape: {segmented_point_cloud.positions.shape}")
-    logger.info(f"Segmented point cloud has normals shape: "
-                f"{segmented_point_cloud.normals.shape if segmented_point_cloud.has_normals else None}")
-    logger.info(f"Segmented point cloud has colors shape: "
-                f"{segmented_point_cloud.colors.shape if segmented_point_cloud.has_colors else None}")
+    logger.info(
+        f"Segmented point cloud positions shape: {segmented_point_cloud.positions.shape}"
+    )
+    logger.info(
+        f"Segmented point cloud has normals shape: "
+        f"{segmented_point_cloud.normals.shape if segmented_point_cloud.has_normals else None}"
+    )
+    logger.info(
+        f"Segmented point cloud has colors shape: "
+        f"{segmented_point_cloud.colors.shape if segmented_point_cloud.has_colors else None}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("segment_point_cloud_using_color_example", spawn=True)

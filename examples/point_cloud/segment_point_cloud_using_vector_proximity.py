@@ -31,11 +31,17 @@ def segment_point_cloud_using_vector_proximity_example():
     # ===================== Log ================================================
     logger.success(f"Segmented {point_cloud} using vector proximity.")
     logger.success(f"Results: {result_point_cloud}")
-    logger.info(f"Result point cloud positions shape: {result_point_cloud.positions.shape}")
-    logger.info(f"Result point cloud has normals shape: "
-                f"{result_point_cloud.normals.shape if result_point_cloud.has_normals else None}")
-    logger.info(f"Result point cloud has colors shape: "
-                f"{result_point_cloud.colors.shape if result_point_cloud.has_colors else None}")
+    logger.info(
+        f"Result point cloud positions shape: {result_point_cloud.positions.shape}"
+    )
+    logger.info(
+        f"Result point cloud has normals shape: "
+        f"{result_point_cloud.normals.shape if result_point_cloud.has_normals else None}"
+    )
+    logger.info(
+        f"Result point cloud has colors shape: "
+        f"{result_point_cloud.colors.shape if result_point_cloud.has_colors else None}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("segment_point_cloud_using_vector_proximity_example", spawn=True)

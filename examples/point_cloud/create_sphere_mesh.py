@@ -26,7 +26,9 @@ def create_sphere_mesh_example():
     # ===================== Log ================================================
     logger.success("Created sphere mesh")
     logger.success(f"Results: {sphere_mesh}")
-    logger.info(f"Sphere mesh has {len(sphere_mesh)} vertices and {len(sphere_mesh.triangle_indices)} triangles")
+    logger.info(
+        f"Sphere mesh has {len(sphere_mesh)} vertices and {len(sphere_mesh.triangle_indices)} triangles"
+    )
     logger.info(f"Sphere mesh has vertex normals: {sphere_mesh.has_vertex_normals}")
     logger.info(f"Sphere mesh has vertex colors: {sphere_mesh.has_vertex_colors}")
 

@@ -29,13 +29,21 @@ def subtract_point_clouds_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Subtracted {point_cloud2} from {point_cloud1} using distance threshold 0.1")
+    logger.success(
+        f"Subtracted {point_cloud2} from {point_cloud1} using distance threshold 0.1"
+    )
     logger.success(f"Results: {subtracted_point_cloud}")
-    logger.info(f"Subtracted point cloud positions shape: {subtracted_point_cloud.positions.shape}")
-    logger.info(f"Subtracted point cloud has normals shape: "
-                f"{subtracted_point_cloud.normals.shape if subtracted_point_cloud.has_normals else None}")
-    logger.info(f"Subtracted point cloud has colors shape: "
-                f"{subtracted_point_cloud.colors.shape if subtracted_point_cloud.has_colors else None}")
+    logger.info(
+        f"Subtracted point cloud positions shape: {subtracted_point_cloud.positions.shape}"
+    )
+    logger.info(
+        f"Subtracted point cloud has normals shape: "
+        f"{subtracted_point_cloud.normals.shape if subtracted_point_cloud.has_normals else None}"
+    )
+    logger.info(
+        f"Subtracted point cloud has colors shape: "
+        f"{subtracted_point_cloud.colors.shape if subtracted_point_cloud.has_colors else None}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("subtract_point_clouds_example", spawn=True)

@@ -13,7 +13,13 @@ logger.add(sys.stderr, format="<level>{level: <8}</level> | <level>{message}</le
 def run_examples():
     """Discover and run all retina examples."""
     examples_dir = pathlib.Path(__file__).parent
-    examples = sorted([f for f in examples_dir.glob("*.py") if not f.name.startswith("_") and f.name != "run_retina_examples.py"])
+    examples = sorted(
+        [
+            f
+            for f in examples_dir.glob("*.py")
+            if not f.name.startswith("_") and f.name != "run_retina_examples.py"
+        ]
+    )
 
     if not examples:
         logger.error("No examples found")
@@ -37,7 +43,9 @@ def run_examples():
 
             # Find and call the example function
             for attr_name in dir(module):
-                if attr_name.endswith("_example") and callable(getattr(module, attr_name)):
+                if attr_name.endswith("_example") and callable(
+                    getattr(module, attr_name)
+                ):
                     getattr(module, attr_name)()
                     break
 
@@ -50,7 +58,9 @@ def run_examples():
         logger.info("-" * 60)
 
     logger.info("=" * 60)
-    logger.info(f"Summary: {successful} successful, {failed} failed out of {len(examples)}")
+    logger.info(
+        f"Summary: {successful} successful, {failed} failed out of {len(examples)}"
+    )
 
     return 0 if failed == 0 else 1
 

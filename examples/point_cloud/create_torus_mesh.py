@@ -28,7 +28,9 @@ def create_torus_mesh_example():
     # ===================== Log ================================================
     logger.success("Created torus mesh")
     logger.success(f"Results: {torus_mesh}")
-    logger.info(f"Torus mesh has {len(torus_mesh)} vertices and {len(torus_mesh.triangle_indices)} triangles")
+    logger.info(
+        f"Torus mesh has {len(torus_mesh)} vertices and {len(torus_mesh.triangle_indices)} triangles"
+    )
     logger.info(f"Torus mesh has vertex normals: {torus_mesh.has_vertex_normals}")
     logger.info(f"Torus mesh has vertex colors: {torus_mesh.has_vertex_colors}")
 

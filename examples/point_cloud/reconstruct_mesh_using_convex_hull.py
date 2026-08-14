@@ -27,7 +27,9 @@ def reconstruct_mesh_using_convex_hull_example():
     # ===================== Log ================================================
     logger.success(f"Reconstructed convex hull mesh from {point_cloud}")
     logger.success(f"Results: {result_mesh}")
-    logger.info(f"Result mesh has {len(result_mesh.vertex_positions)} vertices and {len(result_mesh.triangle_indices)} triangles")
+    logger.info(
+        f"Result mesh has {len(result_mesh.vertex_positions)} vertices and {len(result_mesh.triangle_indices)} triangles"
+    )
     logger.info(f"Result mesh has vertex normals: {result_mesh.has_vertex_normals}")
     logger.info(f"Result mesh has vertex colors: {result_mesh.has_vertex_colors}")
 

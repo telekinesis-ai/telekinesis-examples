@@ -16,7 +16,9 @@ def project_point_cloud_to_plane_example():
     the cloud onto a 2D surface in 3D space.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_0.ply"
+    point_cloud_url = (
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_0.ply"
+    )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
@@ -30,11 +32,17 @@ def project_point_cloud_to_plane_example():
     # ===================== Log ================================================
     logger.success(f"Projected {point_cloud} to plane")
     logger.success(f"Results: {projected_point_cloud}")
-    logger.info(f"Projected point cloud positions shape: {projected_point_cloud.positions.shape}")
-    logger.info(f"Projected point cloud has normals shape: "
-                f"{projected_point_cloud.normals.shape if projected_point_cloud.has_normals else None}")
-    logger.info(f"Projected point cloud has colors shape: "
-                f"{projected_point_cloud.colors.shape if projected_point_cloud.has_colors else None}")
+    logger.info(
+        f"Projected point cloud positions shape: {projected_point_cloud.positions.shape}"
+    )
+    logger.info(
+        f"Projected point cloud has normals shape: "
+        f"{projected_point_cloud.normals.shape if projected_point_cloud.has_normals else None}"
+    )
+    logger.info(
+        f"Projected point cloud has colors shape: "
+        f"{projected_point_cloud.colors.shape if projected_point_cloud.has_colors else None}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("project_point_cloud_to_plane_example", spawn=True)
