@@ -1,10 +1,5 @@
 """
 Detect circles using the classic Hough Circle Transform.
-
-Runs Hough circle detection on a grayscale image and returns
-coco-style annotations.
-
-The annotations are used for visualization overlays.
 """
 
 from loguru import logger
@@ -33,32 +28,24 @@ def detect_circle_using_classic_hough_example():
         canny_detector_upper_threshold=300,
         accumulator_threshold=30,
     )
-    logger.info(
-        f"Detected {len(circles)} circles using classic Hough transform."
-    )
-    # Access all the detected circles and log their details
-    all_centers = circles.centers
-    all_radii = circles.radii
-    logger.info(f"All detected circle centers: {all_centers.shape}")
-    logger.info(f"All detected circle radii: {all_radii.shape}")
+
+    # ===================== Log ================================================
+    logger.success(f"Detected circles in {image} using classic Hough transform.")
+    logger.success(f"Result: {circles}")
+
+    logger.info(f"All detected circle centers shape: {circles.centers.shape}")
+    logger.info(f"All detected circle radii shape: {circles.radii.shape}")
 
     # Access the first detected circle and log its details
-    if circles:
-        first_circle = circles[0]
-        logger.info(f"First detected circle: {first_circle}")
-        logger.info(
-            f"First detected circle center: {first_circle.center}, radius: {first_circle.radius}"
-        )
-
-    # ===================== Visualization  (Optional) ======================
-    rr.init("classic_hough_circle_detector_example", spawn=True)
-    datatypes.visualize(
-        image,
-        circles,
-        entity_path="/Image/overlayed_circles",
-        label=[f"Circle {i}" for i in range(len(circles))],
+    logger.info(f"First detected circle: {circles[0]}")
+    logger.info(
+        f"First detected circle center: {circles[0].center}, radius: {circles[0].radius}"
     )
 
+    # ===================== Visualization  (Optional) ===========================
+    rr.init("classic_hough_circle_detector_example", spawn=True)
+    datatypes.visualize(image, entity_path="/image")
+    datatypes.visualize(circles, entity_path="/image/detected-circles", label=[f"Circle {i}" for i in range(len(circles))])
 
 if __name__ == "__main__":
     detect_circle_using_classic_hough_example()

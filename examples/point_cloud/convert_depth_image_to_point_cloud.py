@@ -1,10 +1,5 @@
 """
 Demonstrates converting a depth image to a point cloud using camera intrinsics.
-
-This example:
-- Downloads an example depth image.
-- Projects the image into a 3D point cloud using camera intrinsics.
-- Visualizes the depth image and point cloud using Rerun.
 """
 
 import cv2
@@ -17,11 +12,15 @@ from telekinesis import vitreous, datatypes
 
 
 def convert_depth_image_to_point_cloud_example():
-    """Converts a metric depth image to a point cloud using camera intrinsics."""
+    """
+    Converts a metric depth image to a point cloud using camera intrinsics.
+
+    Projects the image into a 3D point cloud using the provided camera
+    intrinsic matrix.
+    """
     # ===================== Load Data ==========================================
     depth_image_url = "https://assets.telekinesis.ai/examples/v1/depth_images/bin_picking.png"
     depth_image = fetch_depth_image(depth_image_url)
-    logger.success(f"Loaded depth image from {depth_image_url}")
 
     # ===================== Run Skill ==========================================
     # Define the camera intrinsic matrix
@@ -38,20 +37,20 @@ def convert_depth_image_to_point_cloud_example():
         depth_image=depth_image,
         intrinsic_matrix=intrinsic_matrix,
     )
-    logger.success(f"Converted depth image to {len(point_cloud)} points")
 
-    # Access point_cloud data and properties
-    point_cloud_positions = point_cloud.positions
-    point_cloud_normals = point_cloud.normals
-    point_cloud_colors = point_cloud.colors
-    logger.info(f"Point cloud positions shape: {point_cloud_positions.shape}")
-    logger.info(f"Point cloud has normals: {point_cloud_normals is not None}")
-    logger.info(f"Point cloud has colors: {point_cloud_colors is not None}")
+    # ===================== Log ================================================
+    logger.success(f"Converted {depth_image} to point cloud")
+    logger.success(f"Results: {point_cloud}")
+    logger.info(f"Point cloud positions shape: {point_cloud.positions.shape}")
+    logger.info(f"Point cloud has normals shape: "
+                f"{point_cloud.normals.shape if point_cloud.has_normals else None}")
+    logger.info(f"Point cloud has colors shape: "
+                f"{point_cloud.colors.shape if point_cloud.has_colors else None}")
 
-    # ===================== Visualization (Optional) ===========================
+    # ===================== Visualization  (Optional) ===========================
     rr.init("convert_depth_image_to_point_cloud_example", spawn=True)
-    datatypes.visualize(depth_image, entity_path="/input_depth_image")
-    datatypes.visualize(point_cloud, entity_path="/output_point_cloud")
+    datatypes.visualize(depth_image, entity_path="/1-input_depth_image")
+    datatypes.visualize(point_cloud, entity_path="/2-output_point_cloud")
 
 
 def fetch_depth_image(url: str) -> datatypes.Image:

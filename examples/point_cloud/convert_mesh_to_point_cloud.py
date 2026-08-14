@@ -1,18 +1,7 @@
 """
 Demonstrates converting a triangle mesh to a point cloud via surface sampling.
-
-This example:
-- Downloads an example mesh.
-- Samples points on the mesh surface using uniform or Poisson disk sampling.
-- Visualizes the result using Rerun.
 """
 
-import pathlib
-import tempfile
-
-import numpy as np
-import requests
-import trimesh
 from loguru import logger
 import rerun as rr
 
@@ -28,7 +17,6 @@ def convert_mesh_to_point_cloud_example():
     # ===================== Load Data ==========================================
     mesh_url = "https://assets.telekinesis.ai/examples/v1/meshes/gear_box.glb"
     mesh = datatypes.Mesh3D.from_url(url=mesh_url, use_cache=True)
-    logger.success(f"Loaded mesh with {len(mesh.vertex_positions)} vertices")
 
     # ===================== Run Skill ==========================================
     point_cloud = vitreous.convert_mesh_to_point_cloud(
@@ -39,27 +27,20 @@ def convert_mesh_to_point_cloud_example():
         initial_point_cloud=None,
         use_triangle_normal=False,
     )
-    logger.success(f"Converted mesh with {len(mesh.vertex_positions)} vertices to point cloud with {len(point_cloud)} points")
 
-    # Access point_cloud data and properties
-    point_cloud_positions = point_cloud.positions
-    point_cloud_normals = point_cloud.normals
-    point_cloud_colors = point_cloud.colors
-    logger.info(f"Point cloud positions shape: {point_cloud_positions.shape}")
-    logger.info(f"Point cloud has normals: {point_cloud_normals is not None}")
-    logger.info(f"Point cloud has colors: {point_cloud_colors is not None}")
+    # ===================== Log ================================================
+    logger.success(f"Converted {mesh} to point cloud")
+    logger.success(f"Results: {point_cloud}")
+    logger.info(f"Point cloud positions shape: {point_cloud.positions.shape}")
+    logger.info(f"Point cloud has normals shape: "
+                f"{point_cloud.normals.shape if point_cloud.has_normals else None}")
+    logger.info(f"Point cloud has colors shape: "
+                f"{point_cloud.colors.shape if point_cloud.has_colors else None}")
 
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ===========================
     rr.init("convert_mesh_to_point_cloud_example", spawn=True)
-    # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
-    rr.log("/input_mesh", rr.Mesh3D(
-        vertex_positions=mesh.vertex_positions,
-        triangle_indices=mesh.triangle_indices,
-        vertex_colors=mesh.vertex_colors,
-        vertex_normals=mesh.vertex_normals,
-        albedo_factor=[0.8, 0.8, 0.8, 1.0],
-    ))
-    datatypes.visualize(point_cloud, entity_path="/output_point_cloud")
+    datatypes.visualize(mesh, entity_path="/1-input_mesh", label="Input Mesh")
+    datatypes.visualize(point_cloud, entity_path="/2-output_point_cloud", label="Output Point Cloud")
 
 
 if __name__ == "__main__":

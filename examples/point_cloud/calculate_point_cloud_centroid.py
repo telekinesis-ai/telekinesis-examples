@@ -1,10 +1,5 @@
 """
 Demonstrates computing the geometric center (centroid) of a point cloud.
-
-This example:
-- Downloads an example point cloud.
-- Calculates the mean position of all points in the cloud.
-- Visualizes the result using Rerun.
 """
 
 from loguru import logger
@@ -22,22 +17,19 @@ def calculate_point_cloud_centroid_example():
     # ===================== Load Data ==========================================
     point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/zivid_large_pcb_inspection_cropped_preprocessed.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
-    logger.success(f"Loaded point cloud with {len(point_cloud)} points")
 
     # ===================== Run Skill ==========================================
     # `calculate_point_cloud_centroid` returns a Point3D datatype instance.
     centroid = vitreous.calculate_point_cloud_centroid(point_cloud=point_cloud)
-    logger.success(f"Calculated centroid {centroid} for {len(point_cloud)} points")
 
-    # Access centroid data and properties
-    centroid_data = centroid.data
-    centroid_shape = centroid.shape
-    centroid_dtype = centroid.dtype
-    logger.info(f"Centroid data: {centroid_data}")
-    logger.info(f"Centroid shape: {centroid_shape}")
-    logger.info(f"Centroid dtype: {centroid_dtype}")
+    # ===================== Log ================================================
+    logger.success(f"Calculated centroid for {point_cloud}")
+    logger.success(f"Results: {centroid}")
+    logger.info(f"Centroid data: {centroid.data}")
+    logger.info(f"Centroid shape: {centroid.shape}")
+    logger.info(f"Centroid dtype: {centroid.dtype}")
 
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ===========================
     rr.init("calculate_point_cloud_centroid_example", spawn=True)
     datatypes.visualize(point_cloud, centroid, entity_path="/point_cloud")
 

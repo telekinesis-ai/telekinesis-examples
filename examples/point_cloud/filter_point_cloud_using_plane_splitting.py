@@ -1,10 +1,5 @@
 """
 Demonstrates splitting a point cloud by a plane, keeping one side.
-
-This example:
-- Downloads an example point cloud.
-- Divides a point cloud using a plane and keeps points on either the positive or negative side.
-- Visualizes the result using Rerun.
 """
 
 from loguru import logger
@@ -23,7 +18,6 @@ def filter_point_cloud_using_plane_splitting_example():
     # ===================== Load Data ==========================================
     point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/mounts_3_raw.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
-    logger.success(f"Loaded point cloud with {len(point_cloud)} points")
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = vitreous.filter_point_cloud_using_plane_splitting(
@@ -31,20 +25,20 @@ def filter_point_cloud_using_plane_splitting_example():
         point_cloud=point_cloud,
         plane_coefficients=[0, 0, 1, -547],
     )
-    logger.success(f"Filtered point cloud to {len(filtered_point_cloud)} points using plane splitting")
 
-    # Access filtered_point_cloud data and properties
-    filtered_point_cloud_positions = filtered_point_cloud.positions
-    filtered_point_cloud_normals = filtered_point_cloud.normals
-    filtered_point_cloud_colors = filtered_point_cloud.colors
-    logger.info(f"Filtered point cloud positions shape: {filtered_point_cloud_positions.shape}")
-    logger.info(f"Filtered point cloud has normals: {filtered_point_cloud_normals is not None}")
-    logger.info(f"Filtered point cloud has colors: {filtered_point_cloud_colors is not None}")
+    # ===================== Log ================================================
+    logger.success(f"Filtered {point_cloud} using plane splitting")
+    logger.success(f"Results: {filtered_point_cloud}")
+    logger.info(f"Filtered point cloud positions shape: {filtered_point_cloud.positions.shape}")
+    logger.info(f"Filtered point cloud has normals shape: "
+                f"{filtered_point_cloud.normals.shape if filtered_point_cloud.has_normals else None}")
+    logger.info(f"Filtered point cloud has colors shape: "
+                f"{filtered_point_cloud.colors.shape if filtered_point_cloud.has_colors else None}")
 
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ===========================
     rr.init("filter_point_cloud_using_plane_splitting_example", spawn=True)
-    datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
-    datatypes.visualize(filtered_point_cloud, entity_path="/output_point_cloud")
+    datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
+    datatypes.visualize(filtered_point_cloud, entity_path="/2-output_point_cloud")
 
 
 if __name__ == "__main__":

@@ -1,10 +1,5 @@
 """
 Demonstrates aligning point clouds using Point-to-Point Iterative Closest Point (ICP).
-
-This example:
-- Downloads two example point clouds (source and target).
-- Iteratively refines alignment by minimizing point-to-point distances.
-- Visualizes the result using Rerun.
 """
 
 import numpy as np
@@ -26,8 +21,6 @@ def register_point_clouds_using_point_to_point_icp_example():
     target_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/gusset_0_preprocessed.ply"
     source_point_cloud = datatypes.PointCloud.from_url(url=source_url, use_cache=True)
     target_point_cloud = datatypes.PointCloud.from_url(url=target_url, use_cache=True)
-    logger.success(f"Loaded source point cloud with {len(source_point_cloud)} points")
-    logger.success(f"Loaded target point cloud with {len(target_point_cloud)} points")
 
     # ===================== Run Skill ==========================================
     transformation_matrix = vitreous.register_point_clouds_using_point_to_point_icp(
@@ -39,19 +32,16 @@ def register_point_clouds_using_point_to_point_icp_example():
         target_point_cloud=target_point_cloud,
         initial_transformation_matrix=np.eye(4),
     )
+
+    # ===================== Log ================================================
     logger.success(f"Registered point clouds using point-to-point ICP, transformation_matrix: {transformation_matrix.data}")
+    logger.success(f"Results: {transformation_matrix}")
+    logger.info(f"Transformation matrix data: {transformation_matrix.data}")
+    logger.info(f"Transformation matrix shape: {transformation_matrix.shape}")
+    logger.info(f"Transformation matrix ndim: {transformation_matrix.ndim}")
+    logger.info(f"Transformation matrix dtype: {transformation_matrix.dtype}")
 
-    # Access transformation_matrix data and properties
-    transformation_matrix_data = transformation_matrix.data
-    transformation_matrix_shape = transformation_matrix.shape
-    transformation_matrix_ndim = transformation_matrix.ndim
-    transformation_matrix_dtype = transformation_matrix.dtype
-    logger.info(f"Transformation matrix data: {transformation_matrix_data}")
-    logger.info(f"Transformation matrix shape: {transformation_matrix_shape}")
-    logger.info(f"Transformation matrix ndim: {transformation_matrix_ndim}")
-    logger.info(f"Transformation matrix dtype: {transformation_matrix_dtype}")
-
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ===========================
     aligned_source_point_cloud = vitreous.apply_transform_to_point_cloud(
         point_cloud=source_point_cloud,
         transformation_matrix=transformation_matrix,
@@ -59,10 +49,10 @@ def register_point_clouds_using_point_to_point_icp_example():
     )
 
     rr.init("register_point_clouds_using_point_to_point_icp_example", spawn=True)
-    datatypes.visualize(source_point_cloud, entity_path="/before_registration/source")
-    datatypes.visualize(target_point_cloud, entity_path="/before_registration/target")
-    datatypes.visualize(aligned_source_point_cloud, entity_path="/after_registration/source_aligned")
-    datatypes.visualize(target_point_cloud, entity_path="/after_registration/target")
+    datatypes.visualize(source_point_cloud, entity_path="/1-before_registration/source")
+    datatypes.visualize(target_point_cloud, entity_path="/2-before_registration/target")
+    datatypes.visualize(aligned_source_point_cloud, entity_path="/3-after_registration/source_aligned")
+    datatypes.visualize(target_point_cloud, entity_path="/4-after_registration/target")
 
 
 if __name__ == "__main__":

@@ -1,10 +1,5 @@
 """
-Demonstrates filtering a structured point cloud using a 2D binary mask.
-
-This example:
-- Downloads an example point cloud and a binary mask image.
-- Applies the 2D image mask to the organized point cloud, keeping only points where the mask is True.
-- Visualizes the result using Rerun.
+Demonstrates filtering a structured point cloud using a 2D binary mask, keeping only points where the mask is True.
 """
 
 from loguru import logger
@@ -27,46 +22,45 @@ def filter_point_cloud_using_mask_example():
 
     mask_url = "https://assets.telekinesis.ai/examples/v1/images/can_vertical_6_mask.png"
     mask = datatypes.Image.from_url(url=mask_url).to_binary_mask(threshold=127)
-    logger.success(f"Loaded point cloud with {len(point_cloud)} points and mask")
 
     # ===================== Run Skill ==========================================
     result_point_cloud = vitreous.filter_point_cloud_using_mask(
         point_cloud=point_cloud,
         mask=mask,
     )
-    logger.success(f"Filtered point cloud to {len(result_point_cloud)} points using mask")
 
-    # Access result_point_cloud data and properties
-    result_point_cloud_positions = result_point_cloud.positions
-    result_point_cloud_normals = result_point_cloud.normals
-    result_point_cloud_colors = result_point_cloud.colors
-    logger.info(f"Result point cloud positions shape: {result_point_cloud_positions.shape}")
-    logger.info(f"Result point cloud has normals: {result_point_cloud_normals is not None}")
-    logger.info(f"Result point cloud has colors: {result_point_cloud_colors is not None}")
+    # ===================== Log ================================================
+    logger.success(f"Filtered {point_cloud} using mask")
+    logger.success(f"Results: {result_point_cloud}")
+    logger.info(f"Result point cloud positions shape: {result_point_cloud.positions.shape}")
+    logger.info(f"Result point cloud has normals shape: "
+                f"{result_point_cloud.normals.shape if result_point_cloud.has_normals else None}")
+    logger.info(f"Result point cloud has colors shape: "
+                f"{result_point_cloud.colors.shape if result_point_cloud.has_colors else None}")
 
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ===========================
     rr.init("filter_point_cloud_using_mask_example", spawn=True)
     rr.send_blueprint(
         rrb.Blueprint(
             rrb.Horizontal(
                 rrb.Spatial3DView(
                     name="Input Point Cloud",
-                    origin="/input_point_cloud",
+                    origin="/1-input_point_cloud",
                 ),
                 rrb.Spatial2DView(
                     name="Binary Mask",
-                    origin="/binary_mask",
+                    origin="/2-binary_mask",
                 ),
                 rrb.Spatial3DView(
                     name="Masked Point Cloud",
-                    origin="/masked_point_cloud",
+                    origin="/3-masked_point_cloud",
                 ),
             )
         )
     )
-    datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
-    datatypes.visualize(mask, entity_path="/binary_mask")
-    datatypes.visualize(result_point_cloud, entity_path="/masked_point_cloud")
+    datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
+    datatypes.visualize(mask, entity_path="/2-binary_mask")
+    datatypes.visualize(result_point_cloud, entity_path="/3-masked_point_cloud")
 
 
 if __name__ == "__main__":

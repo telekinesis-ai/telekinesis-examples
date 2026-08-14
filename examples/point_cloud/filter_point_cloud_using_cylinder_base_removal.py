@@ -1,18 +1,7 @@
 """
-Demonstrates removing the base faces from a cylindrical mesh.
-
-This example:
-- Downloads an example mesh.
-- Identifies and removes triangles that form the flat base(s) of a cylinder.
-- Visualizes the result using Rerun.
+Demonstrates removing the base faces from a cylindrical mesh, leaving only the curved side surface.
 """
 
-import pathlib
-import tempfile
-
-import numpy as np
-import requests
-import trimesh
 from loguru import logger
 import rerun as rr
 
@@ -29,7 +18,6 @@ def filter_point_cloud_using_cylinder_base_removal_example():
     # ===================== Load Data ==========================================
     mesh_url = "https://assets.telekinesis.ai/examples/v1/meshes/beer_can.glb"
     mesh = datatypes.Mesh3D.from_url(url=mesh_url, use_cache=True)
-    logger.success(f"Loaded mesh with {len(mesh.vertex_positions)} vertices")
 
     # ===================== Run Skill ==========================================
     filtered_mesh = vitreous.filter_point_cloud_using_cylinder_base_removal(
@@ -37,7 +25,10 @@ def filter_point_cloud_using_cylinder_base_removal_example():
         compute_vertex_normals=True,
         distance_threshold=0.005,
     )
-    logger.success("Filtered mesh using cylinder base removal")
+
+    # ===================== Log ================================================
+    logger.success(f"Filtered {mesh} using cylinder base removal")
+    logger.success(f"Results: {filtered_mesh}")
 
     # Access the filtered mesh data
     filtered_vertex_positions = filtered_mesh.vertex_positions
@@ -52,11 +43,11 @@ def filter_point_cloud_using_cylinder_base_removal_example():
     logger.info(f"Filtered mesh has vertex normals: {filtered_vertex_normals}, "
                 f"vertex colors: {filtered_vertex_colors}")
 
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ===========================
     # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("filter_point_cloud_using_cylinder_base_removal_example", spawn=True)
-    datatypes.visualize(mesh, entity_path="/OriginalMesh/mesh", label="Original Mesh")
-    datatypes.visualize(filtered_mesh, entity_path="/FilteredMesh/filtered_mesh", label="Filtered Mesh")
+    datatypes.visualize(mesh, entity_path="/1-OriginalMesh/mesh", label="Original Mesh")
+    datatypes.visualize(filtered_mesh, entity_path="/2-FilteredMesh/filtered_mesh", label="Filtered Mesh")
 
 
 if __name__ == "__main__":

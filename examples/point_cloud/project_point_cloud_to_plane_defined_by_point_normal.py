@@ -1,10 +1,5 @@
 """
 Demonstrates projecting a point cloud onto a plane defined by a point and normal.
-
-This example:
-- Downloads an example point cloud.
-- Projects points onto a plane defined by a point and normal (alternative parameterization).
-- Visualizes the result using Rerun.
 """
 
 from loguru import logger
@@ -22,7 +17,6 @@ def project_point_cloud_to_plane_defined_by_point_normal_example():
     # ===================== Load Data ==========================================
     point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_0.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
-    logger.success(f"Loaded point cloud with {len(point_cloud)} points")
 
     # ===================== Run Skill ==========================================
     projected_point_cloud = vitreous.project_point_cloud_to_plane_defined_by_point_normal(
@@ -32,20 +26,20 @@ def project_point_cloud_to_plane_defined_by_point_normal_example():
         point=[0.0, 0.0, 0.0],
         plane_normal=[0.0, 0.0, 1.0],
     )
-    logger.success(f"Projected {len(projected_point_cloud)} points to plane (point+normal)")
 
-    # Access projected_point_cloud data and properties
-    projected_point_cloud_positions = projected_point_cloud.positions
-    projected_point_cloud_normals = projected_point_cloud.normals
-    projected_point_cloud_colors = projected_point_cloud.colors
-    logger.info(f"Projected point cloud positions shape: {projected_point_cloud_positions.shape}")
-    logger.info(f"Projected point cloud has normals: {projected_point_cloud_normals is not None}")
-    logger.info(f"Projected point cloud has colors: {projected_point_cloud_colors is not None}")
+    # ===================== Log ================================================
+    logger.success(f"Projected {point_cloud} to plane defined by point and normal")
+    logger.success(f"Results: {projected_point_cloud}")
+    logger.info(f"Projected point cloud positions shape: {projected_point_cloud.positions.shape}")
+    logger.info(f"Projected point cloud has normals shape: "
+                f"{projected_point_cloud.normals.shape if projected_point_cloud.has_normals else None}")
+    logger.info(f"Projected point cloud has colors shape: "
+                f"{projected_point_cloud.colors.shape if projected_point_cloud.has_colors else None}")
 
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ===========================
     rr.init("project_point_cloud_to_plane_defined_by_point_normal_example", spawn=True)
-    datatypes.visualize(point_cloud, entity_path="/input_point_cloud")
-    datatypes.visualize(projected_point_cloud, entity_path="/projected_point_cloud")
+    datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
+    datatypes.visualize(projected_point_cloud, entity_path="/2-projected_point_cloud")
 
 
 if __name__ == "__main__":
