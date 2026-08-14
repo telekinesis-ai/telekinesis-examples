@@ -15,7 +15,10 @@ def segment_image_using_threshold_example():
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_threshold(
-        image=image, min_value=45, max_value=255, threshold_type="binary"
+        image=image,
+        min_value=45,
+        max_value=255,
+        threshold_type="binary"
     )
 
     # ===================== Log ================================================
