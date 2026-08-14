@@ -38,11 +38,7 @@ def detect_contours_example():
     # ===================== Visualization  (Optional) ======================
     rr.init("detect_contours_example", spawn=True)
     datatypes.visualize(image, entity_path="/image")
-    datatypes.visualize(
-        contours,
-        entity_path="/image/overlayed_contours",
-        label=[f"Contour {i}" for i in range(len(contours))],
-    )
+    datatypes.visualize(contours, entity_path="/image/overlayed_contours")
 
 
 if __name__ == "__main__":
