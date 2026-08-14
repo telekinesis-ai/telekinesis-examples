@@ -28,13 +28,12 @@ def create_plane_mesh_example():
     logger.success("Created plane mesh")
     logger.success(f"Results: {plane_mesh}")
     logger.info(f"Plane mesh has {len(plane_mesh)} vertices and {len(plane_mesh.triangle_indices)} triangles")
-    logger.info(f"Plane mesh has vertex normals: {plane_mesh.has_vertex_normals()}")
-    logger.info(f"Plane mesh has vertex colors: {plane_mesh.has_vertex_colors()}")
+    logger.info(f"Plane mesh has vertex normals: {plane_mesh.has_vertex_normals}")
+    logger.info(f"Plane mesh has vertex colors: {plane_mesh.has_vertex_colors}")
 
     # ===================== Visualization  (Optional) ===========================
-    # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("create_plane_mesh_example", spawn=True)
-    datatypes.visualize(plane_mesh, entity_path="/plane_mesh", label="Plane Mesh")
+    datatypes.visualize(plane_mesh, entity_path="/plane_mesh")
 
 
 if __name__ == "__main__":

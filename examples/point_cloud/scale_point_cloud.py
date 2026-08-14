@@ -27,7 +27,7 @@ def scale_point_cloud_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Scaled point cloud to {len(scaled_point_cloud)} points")
+    logger.success(f"Scaled {point_cloud} about center point [0.0, 0.0, 0.0] with scale factor 0.3")
     logger.success(f"Results: {scaled_point_cloud}")
     logger.info(f"Scaled point cloud positions shape: {scaled_point_cloud.positions.shape}")
     logger.info(f"Scaled point cloud has normals shape: "

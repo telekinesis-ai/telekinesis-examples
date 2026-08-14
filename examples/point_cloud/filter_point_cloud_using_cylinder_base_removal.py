@@ -29,25 +29,15 @@ def filter_point_cloud_using_cylinder_base_removal_example():
     # ===================== Log ================================================
     logger.success(f"Filtered {mesh} using cylinder base removal")
     logger.success(f"Results: {filtered_mesh}")
-
-    # Access the filtered mesh data
-    filtered_vertex_positions = filtered_mesh.vertex_positions
-    filtered_triangle_indices = filtered_mesh.triangle_indices
-
-    filtered_vertex_normals = filtered_mesh.vertex_normals if filtered_mesh.has_vertex_normals() else None
-    filtered_vertex_colors = filtered_mesh.vertex_colors if filtered_mesh.has_vertex_colors() else None
-
-    logger.info(f"Filtered mesh: {filtered_mesh}")
-    logger.info(f"Filtered mesh has {len(filtered_vertex_positions)} vertices "
-                f"and {len(filtered_triangle_indices)} triangles")
-    logger.info(f"Filtered mesh has vertex normals: {filtered_vertex_normals}, "
-                f"vertex colors: {filtered_vertex_colors}")
+    logger.info(f"Filtered mesh has {len(filtered_mesh.vertex_positions)} vertices "
+                f"and {len(filtered_mesh.triangle_indices)} triangles")
+    logger.info(f"Filtered mesh has vertex normals: {filtered_mesh.has_vertex_normals}, "
+                f"vertex colors: {filtered_mesh.has_vertex_colors}")
 
     # ===================== Visualization  (Optional) ===========================
-    # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("filter_point_cloud_using_cylinder_base_removal_example", spawn=True)
-    datatypes.visualize(mesh, entity_path="/1-OriginalMesh/mesh", label="Original Mesh")
-    datatypes.visualize(filtered_mesh, entity_path="/2-FilteredMesh/filtered_mesh", label="Filtered Mesh")
+    datatypes.visualize(mesh, entity_path="/1-original_mesh")
+    datatypes.visualize(filtered_mesh, entity_path="/2-filtered_mesh")
 
 
 if __name__ == "__main__":

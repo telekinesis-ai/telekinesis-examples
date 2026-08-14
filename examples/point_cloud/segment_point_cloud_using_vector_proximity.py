@@ -29,7 +29,7 @@ def segment_point_cloud_using_vector_proximity_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Segmented {len(result_point_cloud)} points using vector proximity")
+    logger.success(f"Segmented {point_cloud} using vector proximity.")
     logger.success(f"Results: {result_point_cloud}")
     logger.info(f"Result point cloud positions shape: {result_point_cloud.positions.shape}")
     logger.info(f"Result point cloud has normals shape: "

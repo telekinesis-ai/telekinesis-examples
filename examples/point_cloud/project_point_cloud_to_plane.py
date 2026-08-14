@@ -39,7 +39,7 @@ def project_point_cloud_to_plane_example():
     # ===================== Visualization  (Optional) ===========================
     rr.init("project_point_cloud_to_plane_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
-    datatypes.visualize(projected_point_cloud, entity_path="/2-projected_point_cloud")
+    datatypes.visualize(projected_point_cloud, entity_path="/2-filtered_point_cloud")
 
 
 if __name__ == "__main__":

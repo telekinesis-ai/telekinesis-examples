@@ -29,12 +29,12 @@ def create_torus_mesh_example():
     logger.success("Created torus mesh")
     logger.success(f"Results: {torus_mesh}")
     logger.info(f"Torus mesh has {len(torus_mesh)} vertices and {len(torus_mesh.triangle_indices)} triangles")
-    logger.info(f"Torus mesh has vertex normals: {torus_mesh.has_vertex_normals()}")
-    logger.info(f"Torus mesh has vertex colors: {torus_mesh.has_vertex_colors()}")
+    logger.info(f"Torus mesh has vertex normals: {torus_mesh.has_vertex_normals}")
+    logger.info(f"Torus mesh has vertex colors: {torus_mesh.has_vertex_colors}")
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("create_torus_mesh_example", spawn=True)
-    datatypes.visualize(torus_mesh, entity_path="/torus_mesh", label="Torus Mesh")
+    datatypes.visualize(torus_mesh, entity_path="/torus_mesh")
 
 
 if __name__ == "__main__":

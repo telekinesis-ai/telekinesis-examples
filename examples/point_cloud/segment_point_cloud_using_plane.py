@@ -29,7 +29,7 @@ def segment_point_cloud_using_plane_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Segmented {len(segmented_point_cloud)} points using plane, plane model: {plane_model.data}")
+    logger.success(f"Segmented {point_cloud} using plane, plane model: {plane_model.data}")
     logger.success(f"Results: {segmented_point_cloud}, {plane_model}")
     logger.info(f"Segmented point cloud positions shape: {segmented_point_cloud.positions.shape}")
     logger.info(f"Segmented point cloud has normals shape: "

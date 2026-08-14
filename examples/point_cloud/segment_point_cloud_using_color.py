@@ -27,7 +27,7 @@ def segment_point_cloud_using_color_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Segmented {len(segmented_point_cloud)} points using color")
+    logger.success(f"Segmented {point_cloud} by color similarity to target color [50, 75, 200] with distance threshold 60.0")
     logger.success(f"Results: {segmented_point_cloud}")
     logger.info(f"Segmented point cloud positions shape: {segmented_point_cloud.positions.shape}")
     logger.info(f"Segmented point cloud has normals shape: "
@@ -37,7 +37,7 @@ def segment_point_cloud_using_color_example():
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("segment_point_cloud_using_color_example", spawn=True)
-    # datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
+    datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
     datatypes.visualize(segmented_point_cloud, entity_path="/2-segmented_point_cloud")
 
 

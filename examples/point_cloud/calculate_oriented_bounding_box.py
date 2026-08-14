@@ -16,7 +16,6 @@ def calculate_oriented_bounding_box_example():
     """
     # ===================== Load Data ==========================================
     point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_1_raw_obb_preprocessed.ply"
-    # By default, the point cloud will be cached in the user cache directory for future runs.
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
@@ -40,7 +39,8 @@ def calculate_oriented_bounding_box_example():
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("calculate_oriented_bounding_box_example", spawn=True)
-    datatypes.visualize(point_cloud, oriented_bounding_box, entity_path="/PointCloud")
+    datatypes.visualize(point_cloud, entity_path="/1-point_cloud")
+    datatypes.visualize(oriented_bounding_box, entity_path="/2-oriented_bounding_box")
 
 
 if __name__ == "__main__":

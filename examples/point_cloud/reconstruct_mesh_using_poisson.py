@@ -26,22 +26,16 @@ def reconstruct_mesh_using_poisson_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Reconstructed mesh from {len(point_cloud)} points using Poisson")
+    logger.success(f"Reconstructed mesh from {point_cloud} using Poisson")
     logger.success(f"Results: {reconstructed_mesh}")
-    logger.info(f"Reconstructed mesh has {len(reconstructed_mesh)} vertices and {len(reconstructed_mesh.triangle_indices)} triangles")
-    logger.info(f"Reconstructed mesh has vertex normals: {reconstructed_mesh.has_vertex_normals()}")
-    logger.info(f"Reconstructed mesh has vertex colors: {reconstructed_mesh.has_vertex_colors()}")
+    logger.info(f"Reconstructed mesh has {len(reconstructed_mesh.vertex_positions)} vertices and {len(reconstructed_mesh.triangle_indices)} triangles")
+    logger.info(f"Reconstructed mesh has vertex normals: {reconstructed_mesh.has_vertex_normals}")
+    logger.info(f"Reconstructed mesh has vertex colors: {reconstructed_mesh.has_vertex_colors}")
 
     # ===================== Visualization  (Optional) ===========================
-    # Mesh3D has no telekinesis visualize() handler yet, so it is logged directly with Rerun.
     rr.init("reconstruct_mesh_using_poisson_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
-    rr.log("/2-poisson_mesh", rr.Mesh3D(
-        vertex_positions=reconstructed_mesh.vertex_positions,
-        triangle_indices=reconstructed_mesh.triangle_indices,
-        vertex_normals=reconstructed_mesh.vertex_normals,
-        albedo_factor=[0.8, 0.8, 0.8, 1.0],
-    ))
+    datatypes.visualize(reconstructed_mesh, entity_path="/2-poisson_mesh")
 
 
 if __name__ == "__main__":

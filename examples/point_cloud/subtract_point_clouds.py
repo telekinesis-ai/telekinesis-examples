@@ -29,7 +29,7 @@ def subtract_point_clouds_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Subtracted point clouds to {len(subtracted_point_cloud)} points")
+    logger.success(f"Subtracted {point_cloud2} from {point_cloud1} using distance threshold 0.1")
     logger.success(f"Results: {subtracted_point_cloud}")
     logger.info(f"Subtracted point cloud positions shape: {subtracted_point_cloud.positions.shape}")
     logger.info(f"Subtracted point cloud has normals shape: "

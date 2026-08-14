@@ -37,7 +37,7 @@ def estimate_principal_axis_within_radius_example():
     # ===================== Visualization  (Optional) ===========================
     rr.init("estimate_principal_axis_within_radius_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/1-point_cloud")
-    datatypes.visualize(local_principal_axis, entity_path="/2-local_principal_axis", label="Principal Axis")
+    datatypes.visualize(local_principal_axis, entity_path="/2-local_principal_axis")
 
 
 if __name__ == "__main__":

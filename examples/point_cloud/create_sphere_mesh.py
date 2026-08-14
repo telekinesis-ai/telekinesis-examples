@@ -27,12 +27,12 @@ def create_sphere_mesh_example():
     logger.success("Created sphere mesh")
     logger.success(f"Results: {sphere_mesh}")
     logger.info(f"Sphere mesh has {len(sphere_mesh)} vertices and {len(sphere_mesh.triangle_indices)} triangles")
-    logger.info(f"Sphere mesh has vertex normals: {sphere_mesh.has_vertex_normals()}")
-    logger.info(f"Sphere mesh has vertex colors: {sphere_mesh.has_vertex_colors()}")
+    logger.info(f"Sphere mesh has vertex normals: {sphere_mesh.has_vertex_normals}")
+    logger.info(f"Sphere mesh has vertex colors: {sphere_mesh.has_vertex_colors}")
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("create_sphere_mesh_example", spawn=True)
-    datatypes.visualize(sphere_mesh, entity_path="/SphereMesh/sphere_mesh", label="Sphere Mesh")
+    datatypes.visualize(sphere_mesh, entity_path="/sphere_mesh")
 
 
 if __name__ == "__main__":

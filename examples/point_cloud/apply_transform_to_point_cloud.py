@@ -26,7 +26,7 @@ def apply_transform_to_point_cloud_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Applied transform to {transformed_point_cloud}")
+    logger.success(f"Applied transform to {point_cloud}")
     logger.success(f"Results: {transformed_point_cloud}")
     logger.info(f"Transformed point cloud positions shape: {transformed_point_cloud.positions.shape}")
     logger.info(f"Transformed point cloud has normals shape: "

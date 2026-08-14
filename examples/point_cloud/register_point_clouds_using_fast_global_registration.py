@@ -35,7 +35,7 @@ def register_point_clouds_using_fast_global_registration_example():
     )
 
     # ===================== Log ================================================
-    logger.success(f"Registered point clouds using fast global registration, transformation_matrix: {transformation_matrix.data}")
+    logger.success(f"Registered {source_point_cloud} to {target_point_cloud} using fast global registration")
     logger.success(f"Results: {transformation_matrix}")
     logger.info(f"Transformation matrix data: {transformation_matrix.data}")
     logger.info(f"Transformation matrix shape: {transformation_matrix.shape}")
@@ -50,10 +50,9 @@ def register_point_clouds_using_fast_global_registration_example():
     )
 
     rr.init("register_point_clouds_using_fast_global_registration_example", spawn=True)
-    datatypes.visualize(source_point_cloud, entity_path="/1-before_registration/source")
-    datatypes.visualize(target_point_cloud, entity_path="/2-before_registration/target")
-    datatypes.visualize(aligned_source_point_cloud, entity_path="/3-after_registration/source_aligned")
-    datatypes.visualize(target_point_cloud, entity_path="/4-after_registration/target")
+    datatypes.visualize(source_point_cloud, entity_path="/1-before_registration_source")
+    datatypes.visualize(target_point_cloud, entity_path="/2-before_registration_target")
+    datatypes.visualize(aligned_source_point_cloud, entity_path="/3-after_registration_source_aligned")
 
 
 if __name__ == "__main__":

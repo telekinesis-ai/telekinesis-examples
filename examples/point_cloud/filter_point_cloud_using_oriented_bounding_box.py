@@ -30,7 +30,8 @@ def filter_point_cloud_using_oriented_bounding_box_example():
     oriented_bbox = datatypes.OrientedBoxes3D([[*center, *size, *quat_xyzw]])
 
     filtered_point_cloud = vitreous.filter_point_cloud_using_oriented_bounding_box(
-        point_cloud=point_cloud, oriented_bbox=oriented_bbox
+        point_cloud=point_cloud, 
+        oriented_bbox=oriented_bbox
     )
 
     # ===================== Log ================================================
@@ -44,8 +45,9 @@ def filter_point_cloud_using_oriented_bounding_box_example():
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("filter_point_cloud_using_oriented_bounding_box_example", spawn=True)
-    datatypes.visualize(point_cloud, oriented_bbox, entity_path="/1-input_point_cloud")
-    datatypes.visualize(filtered_point_cloud, entity_path="/2-filtered_point_cloud")
+    datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
+    datatypes.visualize(oriented_bbox, entity_path="/2-oriented_bounding_box")
+    datatypes.visualize(filtered_point_cloud, entity_path="/3-filtered_point_cloud")
 
 
 if __name__ == "__main__":

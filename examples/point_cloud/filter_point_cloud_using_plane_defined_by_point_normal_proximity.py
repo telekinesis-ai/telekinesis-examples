@@ -39,7 +39,7 @@ def filter_point_cloud_using_plane_defined_by_point_normal_proximity_example():
     # ===================== Visualization  (Optional) ===========================
     rr.init("filter_point_cloud_using_plane_defined_by_point_normal_proximity_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
-    datatypes.visualize(filtered_point_cloud, entity_path="/2-output_point_cloud")
+    datatypes.visualize(filtered_point_cloud, entity_path="/2-filtered_point_cloud")
 
 
 if __name__ == "__main__":

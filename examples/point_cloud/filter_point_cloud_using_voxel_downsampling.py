@@ -21,7 +21,8 @@ def filter_point_cloud_using_voxel_downsampling_example():
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = vitreous.filter_point_cloud_using_voxel_downsampling(
-        voxel_size=0.005, point_cloud=point_cloud
+        voxel_size=0.005, 
+        point_cloud=point_cloud
     )
 
     # ===================== Log ================================================
@@ -36,7 +37,7 @@ def filter_point_cloud_using_voxel_downsampling_example():
     # ===================== Visualization  (Optional) ===========================
     rr.init("filter_point_cloud_using_voxel_downsampling_example", spawn=True)
     datatypes.visualize(point_cloud, entity_path="/1-input_point_cloud")
-    datatypes.visualize(filtered_point_cloud, entity_path="/2-output_point_cloud")
+    datatypes.visualize(filtered_point_cloud, entity_path="/2-filtered_point_cloud")
 
 
 if __name__ == "__main__":
