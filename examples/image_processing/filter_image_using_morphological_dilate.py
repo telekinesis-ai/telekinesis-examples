@@ -7,22 +7,17 @@ This example:
 - Visualizes the result using Rerun.
 """
 
-import numpy as np
-import requests
-import cv2
 from loguru import logger
 import rerun as rr
-import rerun.blueprint as rrb
 
-from datatypes import datatypes
-from telekinesis import pupil
+from telekinesis import pupil, datatypes
 
 
 def filter_image_using_morphological_dilate_example():
     """Applies dilation to expand bright regions and fill holes."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/spanners_arranged.jpg"
-    image = fetch_image(image_url)
+    image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_dilate(
@@ -34,49 +29,15 @@ def filter_image_using_morphological_dilate_example():
         border_value=0,
     )
 
-    filtered_image_np = filtered_image.to_numpy()
     logger.success(
         "Applied dilation morphological operation. Output image shape: {}",
-        filtered_image_np.shape,
+        filtered_image.shape,
     )
 
     # ===================== Visualization  (Optional) ======================
-    visualize(image, filtered_image)
-
-
-def fetch_image(image_url: str) -> datatypes.Image:
-    """
-    Downloads an image from a given URL and returns it as a telekinesis.datatypes.Image object.
-    """
-    response = requests.get(image_url, timeout=60)
-    response.raise_for_status()
-    image_bgr = cv2.imdecode(
-        np.frombuffer(response.content, dtype=np.uint8), cv2.IMREAD_GRAYSCALE,
-    )
-    image = datatypes.Image(image=image_bgr, color_model="L")
-    logger.success(f"Loaded image from {image_url}")
-    return image
-
-
-def visualize(image: datatypes.Image, filtered_image: datatypes.Image) -> None:
-    """Visualizes the original and filtered images using Rerun."""
-    rr.init("filter_image_using_morphological_dilate", spawn=True)
-    rr.send_blueprint(
-        rrb.Blueprint(
-            rrb.Grid(
-                rrb.Spatial2DView(name="Original", origin="input"),
-                rrb.Spatial2DView(name="Filtered", origin="filtered_image"),
-            ),
-            rrb.SelectionPanel(),
-            rrb.TimePanel(),
-        ),
-        make_active=True,
-    )
-    image_np = image.to_numpy()
-    filtered_image_np = filtered_image.to_numpy()
-    rr.log("input", rr.Image(image_np))
-    rr.log("filtered_image", rr.Image(filtered_image_np))
-
+    rr.init("filter_image_using_morphological_dilate_example", spawn=True)
+    datatypes.visualize(image, entity_path="1-Original")
+    datatypes.visualize(filtered_image, entity_path="2-Dilated")
 
 if __name__ == "__main__":
     filter_image_using_morphological_dilate_example()

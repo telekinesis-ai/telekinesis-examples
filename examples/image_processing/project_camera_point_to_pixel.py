@@ -10,21 +10,26 @@ This example:
 import numpy as np
 from loguru import logger
 import rerun as rr
-import rerun.blueprint as rrb
 
-from telekinesis import pupil
+from telekinesis import pupil, datatypes
 
 
 def project_camera_point_to_pixel_example():
     """Projects a 3D camera point to pixel coordinates."""
     # ===================== Create Parameters ==========================================
+    # Camera_intrinsics: [[fx, 0, cx], [0, fy, cy], [0, 0, 1]]
     camera_intrinsics = np.array(
-        [[500.0, 0, 320.0], [0, 500.0, 240.0], [0, 0, 1.0]],
+        [[500.0, 0, 320.0],
+         [0, 500.0, 240.0],
+         [0, 0, 1.0]],
         dtype=np.float64,
     )
+    # Distortion coefficients: [k1, k2, p1, p2, k3]
     distortion_coefficients = np.array(
         [0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64
     )
+
+    # Point: [x, y, z] in camera coordinates
     point = np.array([0.0, 0.0, 1.0], dtype=np.float64)
 
     # ===================== Run Skill ==========================================
@@ -34,35 +39,12 @@ def project_camera_point_to_pixel_example():
         point=point,
     )
 
-    positions = pixel.to_numpy().reshape(-1, 2)
-    logger.success("Projected camera point to pixel. Pixel: {}", positions)
+    logger.success("Projected camera point to pixel. Pixel: {}", pixel.data)
 
     # ===================== Visualization  (Optional) ======================
-    visualize(positions)
-
-
-def visualize(positions) -> None:
-    """Visualizes the projected pixel using Rerun."""
-    rr.init("project_camera_point_to_pixel", spawn=True)
-    rr.send_blueprint(
-        rrb.Blueprint(
-            rrb.Grid(rrb.Spatial2DView(name="Pixel", origin="pixel")),
-            rrb.SelectionPanel(),
-            rrb.TimePanel(),
-        ),
-        make_active=True,
-    )
-
-    canvas = np.ones((480, 640, 3), dtype=np.uint8)
-    rr.log("pixel", rr.Image(canvas))
-    rr.log(
-        "pixel/projected_point",
-        rr.Points2D(
-            positions=positions,
-            radii=6,
-        ),
-    )
-
+    rr.init("project_camera_point_to_pixel_example", spawn=True)
+    datatypes.visualize(point, entity_path="0-Point in 3D Space")
+    datatypes.visualize(pixel, entity_path="1-Pixel")
 
 if __name__ == "__main__":
     project_camera_point_to_pixel_example()

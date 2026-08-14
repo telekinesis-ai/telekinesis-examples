@@ -10,27 +10,38 @@ This example:
 import numpy as np
 from loguru import logger
 import rerun as rr
-import rerun.blueprint as rrb
 
-from telekinesis import pupil
+from telekinesis import pupil, datatypes
 
 
 def project_pixel_to_world_point_example():
     """Projects a pixel and depth to a 3D world point."""
     # ===================== Create Parameters ==========================================
+    # Camera_intrinsics: [[fx, 0, cx], [0, fy, cy], [0, 0, 1]]
     camera_intrinsics = np.array(
-        [[500.0, 0, 320.0], [0, 500.0, 240.0], [0, 0, 1.0]],
+        [[500.0, 0, 320.0],
+         [0, 500.0, 240.0],
+         [0, 0, 1.0]],
         dtype=np.float64,
     )
+
+    # Distortion coefficients: [k1, k2, p1, p2, k3]
     distortion_coefficients = np.array(
         [0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64
     )
+
+    # Pixel: [u, v] in pixel coordinates
     pixel = np.array([320.0, 240.0], dtype=np.float64)
+
+    # Depth: scalar value representing the distance from the camera to the point
     depth = 1.0
+
+    # World-to-camera transformation matrix (4x4)
     world_T_camera = np.eye(4, dtype=np.float64)
     world_T_camera[2, 3] = 1.0
 
     # ===================== Run Skill ==========================================
+    # Returns 4x4 transformation matrix representing the world-to-point transformation
     world_T_point = pupil.project_pixel_to_world_point(
         camera_intrinsics=camera_intrinsics,
         distortion_coefficients=distortion_coefficients,
@@ -40,36 +51,13 @@ def project_pixel_to_world_point_example():
     )
 
     logger.success(
-        "Projected pixel to world point. world_T_point shape: {}",
-        np.asarray(world_T_point.matrix).shape
-        if hasattr(world_T_point, "matrix")
-        else "N/A",
+        "Projected pixel to world point. world_T_point: {}",
+        world_T_point.data,
     )
 
     # ===================== Visualization  (Optional) ======================
-    visualize(world_T_point)
-
-
-def visualize(world_T_point) -> None:
-    """Visualizes the 3D world point using Rerun."""
-    rr.init("project_pixel_to_world_point", spawn=True)
-    rr.send_blueprint(
-        rrb.Blueprint(
-            rrb.Grid(rrb.Spatial3DView(name="World Point", origin="result")),
-            rrb.SelectionPanel(),
-            rrb.TimePanel(),
-        ),
-        make_active=True,
-    )
-
-    matrix = (
-        world_T_point.matrix
-        if hasattr(world_T_point, "matrix")
-        else np.asarray(world_T_point)
-    )
-    point_3d = matrix[:3, 3].reshape(1, 3).astype(np.float32)
-    rr.log("result", rr.Points3D(positions=point_3d, colors=(0, 255, 0)))
-
+    rr.init("project_pixel_to_world_point_example", spawn=True)
+    datatypes.visualize(world_T_point, entity_path="1-World Point")
 
 if __name__ == "__main__":
     project_pixel_to_world_point_example()
