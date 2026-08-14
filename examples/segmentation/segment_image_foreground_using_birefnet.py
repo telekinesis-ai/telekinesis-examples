@@ -1,14 +1,10 @@
 """
 Demonstrates foreground segmentation using BiRefNet.
-
-This example:
-- Downloads an example image.
-- Segments the foreground using a pretrained BiRefNet model.
-- Visualizes the result using Rerun.
 """
 
 from loguru import logger
 import rerun as rr
+
 from telekinesis import cornea, datatypes
 
 def segment_image_foreground_using_birefnet_example():
@@ -16,17 +12,24 @@ def segment_image_foreground_using_birefnet_example():
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/screws_standing.jpg"
     image = datatypes.Image.from_url(url=image_url)
-    logger.info(f"Loaded {image} from the URL: {image_url}")
 
     # ===================== Run Skill ==========================================
-    segmentation_image = cornea.segment_image_foreground_using_birefnet(
+    segmented_image = cornea.segment_image_foreground_using_birefnet(
         image=image, mask_threshold=0
     )
-    logger.success("Segmentation completed.")
+
+    # ===================== Log ================================================
+    logger.success(f"Segmented {image} using BiRefNet.")
+    logger.success(f"Results: {segmented_image}")
+    logger.info(f"Segmented image label codes: {segmented_image.label_codes}")
+    logger.info(f"Segmented image number of labels: {segmented_image.number_of_labels}")
+    logger.info(f"Segmented image shape: {segmented_image.shape}")
+    logger.info(f"Segmented image dtype: {segmented_image.dtype}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_image_foreground_using_birefnet_example", spawn=True)
-    datatypes.visualize(image, segmentation_image)
+    datatypes.visualize(image, entity_path="/input_image")
+    datatypes.visualize(segmented_image, entity_path="/segmented_image")
 
 
 if __name__ == "__main__":

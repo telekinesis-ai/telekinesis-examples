@@ -1,10 +1,5 @@
 """
 Demonstrates HSV color space segmentation.
-
-This example:
-- Downloads an example image.
-- Segments it using HSV color space range.
-- Visualizes the result using Rerun.
 """
 
 from loguru import logger
@@ -17,18 +12,26 @@ def segment_image_using_hsv_example():
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/wires_rgb.png"
     image = datatypes.Image.from_url(url=image_url)
-    logger.info(f"Loaded {image} from the URL: {image_url}")
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_hsv(
-        image=image, lower_bound=(0, 50, 50), upper_bound=(180, 255, 255)
+        image=image, 
+        lower_bound=(0, 50, 50), 
+        upper_bound=(180, 255, 255)
     )
-    logger.success("Segmentation completed.")
+
+    # ===================== Log ================================================
+    logger.success(f"Segmented {image} using HSV color space range.")
+    logger.success(f"Results: {segmented_image}")
+    logger.info(f"Segmented image label codes: {segmented_image.label_codes}")
+    logger.info(f"Segmented image number of labels: {segmented_image.number_of_labels}")
+    logger.info(f"Segmented image shape: {segmented_image.shape}")
+    logger.info(f"Segmented image dtype: {segmented_image.dtype}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_image_using_hsv_example", spawn=True)
-    datatypes.visualize(image, entity_path="/Image/original_image")
-    datatypes.visualize(segmented_image, entity_path="/SegmentedImage/segmented_image")
+    datatypes.visualize(image, entity_path="/input_image")
+    datatypes.visualize(segmented_image, entity_path="/segmented_image")
 
 
 if __name__ == "__main__":

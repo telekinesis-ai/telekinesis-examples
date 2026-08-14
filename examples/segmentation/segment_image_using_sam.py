@@ -1,10 +1,5 @@
 """
 Demonstrates segmentation using SAM (Segment Anything Model).
-
-This example:
-- Downloads an example image.
-- Segments objects using SAM with bounding box prompts.
-- Processes and visualizes the segmentation masks using Rerun.
 """
 
 from loguru import logger
@@ -23,12 +18,15 @@ def segment_image_using_sam_example():
     segmentation_results = cornea.segment_image_using_sam(
         image=image, bboxes=bboxes, mask_threshold=0.5
     )
-    logger.success(f"Segmented {len(segmentation_results)} objects.")
+
+    # ===================== Log ================================================
+    logger.success(f"Segmented {image} using SAM.")
+    logger.success(f"Results: {segmentation_results}")
+    logger.info(f"Number of segmented objects: {len(segmentation_results)}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_image_using_sam_example", spawn=True)
     datatypes.visualize(image, segmentation_results, entity_path="/Image/overlayed_segmentations")
-
 
 
 if __name__ == "__main__":
