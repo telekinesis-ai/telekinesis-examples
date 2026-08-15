@@ -61,8 +61,8 @@ def mesh3d_example():
     logger.info(f"Underlying Mesh3D vertex_normals: {my_mesh_vertex_normals}")
     logger.info(f"Underlying Mesh3D vertex_colors (packed RGBA uint32): {my_mesh_vertex_colors}")
     logger.info(f"Number of vertices: {len(my_mesh)}")
-    logger.info(f"Has vertex normals: {my_mesh.has_vertex_normals()}")
-    logger.info(f"Has vertex colors: {my_mesh.has_vertex_colors()}")
+    logger.info(f"Has vertex normals: {my_mesh.has_vertex_normals}")
+    logger.info(f"Has vertex colors: {my_mesh.has_vertex_colors}")
 
     # Mesh3D has no `datatypes.visualize()` handler yet, so it is logged directly with Rerun.
     rr.init("mesh3d_example", spawn=True)
