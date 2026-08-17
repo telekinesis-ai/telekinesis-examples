@@ -423,6 +423,7 @@ Robotics (Synapse) and hardware (Medulla) examples are organized as standalone s
 ```bash
 ls examples/synapse/             # Synapse: kinematics/, motion/, servo_control/, state_reading/, tools/, ...
 ls examples/medulla/             # Medulla: ids/, webcam/
+ls examples/calibration/         # Camera calibration: eye-in-hand, multi-camera
 ```
 
 ### Run a Specific Example

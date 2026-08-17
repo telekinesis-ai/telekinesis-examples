@@ -1,7 +1,7 @@
 """
 Eye-in-hand calibration from a previously collected dataset.
 
-Loads images + robot TCP poses saved by collect_calibration_dataset.py and
+Loads images + robot TCP poses saved by collect_calibration_dataset_eye_in_hand.py and
 solves for the tcp_T_camera hand-eye transform.
 """
 
@@ -26,7 +26,7 @@ def parse_args():
         "--data-dir",
         type=pathlib.Path,
         default=DATA_DIR,
-        help="Directory containing cam_00/ from collect_calibration_dataset.py",
+        help="Directory containing cam_00/ from collect_calibration_dataset_eye_in_hand.py",
     )
     parser.add_argument(
         "--output-dir",
