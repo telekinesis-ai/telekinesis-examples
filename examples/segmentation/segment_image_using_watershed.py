@@ -17,7 +17,7 @@ def segment_image_using_watershed_example():
     image_np = image.to_numpy()
 
     # ===================== Run Skill ==========================================
-    markers = _build_watershed_markers(image_np.copy())
+    markers = datatypes.Image(_build_watershed_markers(image_np.copy()))
 
     gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
     gray_image = datatypes.Image(gray)

@@ -23,7 +23,7 @@ def detect_objects_using_grounding_dino_example():
     detection_results, categories = retina.detect_objects_using_grounding_dino(
         image=image,
         objects=["carton"],
-        box_threshold=0.5,
+        box_threshold=0.45,
         text_threshold=0.5,
     )
 
@@ -37,14 +37,14 @@ def detect_objects_using_grounding_dino_example():
     logger.info(f"All detected object category IDs: {detection_results.category_ids}")
 
     # Indexed object is of type `COCOObjectDetectionResult`
-    logger.info(f"Detected object at index 1: {detection_results[1]}")
-    logger.info(f"Detected object at index 1 bounding box: {detection_results[1].bbox}")
-    logger.info(f"Detected object at index 1 score: {detection_results[1].score}")
+    logger.info(f"Detected object at index 0: {detection_results[0]}")
+    logger.info(f"Detected object at index 0 bounding box: {detection_results[0].bbox}")
+    logger.info(f"Detected object at index 0 score: {detection_results[0].score}")
     logger.info(
-        f"Detected object at index 1 category ID: {detection_results[1].category_id}"
+        f"Detected object at index 0 category ID: {detection_results[0].category_id}"
     )
     logger.info(
-        f"Detected object at index 1 category name: {categories[detection_results[1].category_id]}"
+        f"Detected object at index 0 category name: {categories[detection_results[0].category_id]}"
     )
 
     # ===================== Visualization  (Optional) ======================
