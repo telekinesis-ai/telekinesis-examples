@@ -1,11 +1,4 @@
-"""
-Demonstrates enhance_image_using_white_balance operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates enhance_image_using_white_balance operation."""
 
 from loguru import logger
 import rerun as rr
@@ -24,10 +17,9 @@ def enhance_image_using_white_balance_example():
         image=image,
     )
 
-    logger.success(
-        "Applied enhance_image_using_white_balance. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied enhance_image_using_white_balance on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("enhance_image_using_white_balance_example", spawn=True)

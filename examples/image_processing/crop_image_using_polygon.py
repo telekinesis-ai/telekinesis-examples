@@ -1,11 +1,4 @@
-"""
-Demonstrates cropping an image using a polygon mask.
-
-This example:
-- Downloads an example image.
-- Crops a polygonal region from the image.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates cropping an image using a polygon mask."""
 
 from loguru import logger
 import rerun as rr
@@ -43,10 +36,9 @@ def crop_image_using_polygon_example():
         polygon_vertices=polygon_vertices,
     )
 
-    logger.success(
-        "Cropped image (polygon). Output shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Cropped {image} using polygon")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("crop_image_using_polygon_example", spawn=True)

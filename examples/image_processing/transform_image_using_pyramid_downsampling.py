@@ -1,11 +1,4 @@
-"""
-Demonstrates pyramid downsampling transformation.
-
-This example:
-- Downloads an example image.
-- Applies pyramid downsampling multiple times.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates pyramid downsampling transformation."""
 
 from loguru import logger
 import rerun as rr
@@ -33,12 +26,9 @@ def transform_image_using_pyramid_downsampling_example():
         scale_factor=0.5,
     )
 
-    logger.success(
-        "Applied pyramid downsampling. Transformed output image shapes: {}, {}, {}",
-        filtered_image.shape,
-        filtered_image_1.shape,
-        filtered_image_2.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied pyramid downsampling on {image}")
+    logger.success(f"Result: {filtered_image}, {filtered_image_1}, {filtered_image_2}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("transform_image_using_pyramid_downsampling_example", spawn=True)

@@ -1,12 +1,4 @@
-"""
-Demonstrates bitwise AND operation between two images.
-
-This example:
-- Downloads an example image.
-- Creates a mask from the image.
-- Performs bitwise AND operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates bitwise AND operation between two images."""
 
 import numpy as np
 from loguru import logger
@@ -24,19 +16,22 @@ def bitwise_and_images_example():
     # ===================== Create Mask ==========================================
     bbox = [450, 210, 1040, 616]
     x1, y1, x2, y2 = bbox
-    mask = np.zeros(image.shape[:2], dtype=np.uint8)
-    mask[y1:y2, x1:x2] = 255
+    mask_data = np.zeros(image.shape[:2], dtype=np.uint8)
+    mask_data[y1:y2, x1:x2] = 255
+    mask = datatypes.Image(mask_data)
 
     # ===================== Run Skill ==========================================
-    filtered_image = pupil.bitwise_and_images(image_a=image, image_b=mask)
+    result_image = pupil.bitwise_and_images(image_a=image, image_b=mask)
 
-    logger.success("Bitwise AND. Output shape: {}", filtered_image.shape)
+    # ===================== Log ================================================
+    logger.success(f"Bitwise AND between {image} and {mask} completed.")
+    logger.success(f"Result: {result_image}")
 
-    # ===================== Visualization  (Optional) ======================
+    # ===================== Visualization  (Optional) ==========================
     rr.init("bitwise_and_images_example", spawn=True)
     datatypes.visualize(image, entity_path="1-Original")
     datatypes.visualize(mask, entity_path="2-Mask")
-    datatypes.visualize(filtered_image, entity_path="3-Filtered")
+    datatypes.visualize(result_image, entity_path="3-Filtered")
 
 if __name__ == "__main__":
     bitwise_and_images_example()

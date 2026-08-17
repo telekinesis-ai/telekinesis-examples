@@ -1,11 +1,4 @@
-"""
-Demonstrates translate_image operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates translate_image operation."""
 
 from loguru import logger
 import rerun as rr
@@ -29,10 +22,9 @@ def translate_image_example():
         interpolation_method="linear",
     )
 
-    logger.success(
-        "Applied translate_image. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied translate_image on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("translate_image_example", spawn=True)

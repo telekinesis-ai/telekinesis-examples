@@ -1,12 +1,4 @@
-"""
-Demonstrates merging color channels into an image.
-
-This example:
-- Downloads an example image.
-- Splits the image into channels.
-- Merges the channels back into an image.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates merging color channels into an image."""
 
 from loguru import logger
 import rerun as rr
@@ -21,30 +13,17 @@ def merge_image_from_channels_example():
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================
-    # Split image into channels
     image_channels = pupil.split_image_into_channels(image=image)
+    filtered_image = pupil.merge_image_from_channels(channels=image_channels)
 
-    # Convert ImageBatch to list[Image]
-    channel_images = image_channels.to_list()
-
-    logger.success(
-        "Split channels. Number of channels: {}",
-        len(channel_images),
-    )
-
-    # Merge channels back into an image
-    filtered_image = pupil.merge_image_from_channels(channels=channel_images)
-
-    logger.success(
-        "Merged {} channels. Output image shape: {}",
-        len(channel_images),
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Split and merged channels of {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("merge_image_from_channels_example", spawn=True)
     channel_names = ["Red", "Green", "Blue"]
-    for i, channel_image in enumerate(channel_images):
+    for i, channel_image in enumerate(image_channels):
         datatypes.visualize(channel_image, entity_path=f"{i + 1}-{channel_names[i]}")
     datatypes.visualize(filtered_image, entity_path="4-Merged")
 

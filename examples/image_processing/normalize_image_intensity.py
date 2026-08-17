@@ -1,11 +1,4 @@
-"""
-Demonstrates normalize_image_intensity operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates normalize_image_intensity operation."""
 
 from loguru import logger
 import rerun as rr
@@ -28,10 +21,9 @@ def normalize_image_intensity_example():
         output_format="8bit",
     )
 
-    logger.success(
-        "Applied normalize_image_intensity. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied normalize_image_intensity on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("normalize_image_intensity_example", spawn=True)

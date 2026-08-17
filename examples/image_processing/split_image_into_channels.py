@@ -1,11 +1,4 @@
-"""
-Demonstrates splitting an image into color channels.
-
-This example:
-- Downloads an example image.
-- Splits the image into its color channels.
-- Visualizes each channel using Rerun.
-"""
+"""Demonstrates splitting an image into color channels."""
 
 from loguru import logger
 import rerun as rr
@@ -22,19 +15,15 @@ def split_image_into_channels_example():
     # ===================== Run Skill ==========================================
     image_channels = pupil.split_image_into_channels(image=image)
 
-    # Convert ImageBatch to list[Image]
-    channel_images = image_channels.to_list()
-
-    logger.success(
-        "Split channels. Number of channels: {}",
-        len(channel_images),
-    )
+    # ===================== Log ================================================
+    logger.success(f"Split {image} into channels")
+    logger.success(f"Result: {image_channels}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("split_image_into_channels_example", spawn=True)
     datatypes.visualize(image, entity_path="1-Original")
     channel_names = ["Red", "Green", "Blue"]
-    for i, channel_image in enumerate(channel_images):
+    for i, channel_image in enumerate(image_channels):
         datatypes.visualize(channel_image, entity_path=f"{i + 2}-{channel_names[i]}")
 
 if __name__ == "__main__":

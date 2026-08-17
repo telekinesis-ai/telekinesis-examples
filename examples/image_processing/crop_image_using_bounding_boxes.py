@@ -1,11 +1,4 @@
-"""
-Demonstrates cropping an image using multiple bounding boxes.
-
-This example:
-- Downloads an example image.
-- Crops regions using multiple bounding boxes.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates cropping an image using multiple bounding boxes."""
 
 from loguru import logger
 import rerun as rr
@@ -33,13 +26,14 @@ def crop_image_using_bounding_boxes_example():
         retain_coordinates=True,
     )
 
-    cropped_image_list = cropped_images.to_list()
-    logger.success("Cropped {} regions", len(cropped_image_list))
+    # ===================== Log ================================================
+    logger.success(f"Cropped {image} using bounding boxes")
+    logger.success(f"Result: {cropped_images} into {len(cropped_images)} regions")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("crop_image_using_bounding_boxes_example", spawn=True)
     datatypes.visualize(image, entity_path="1-Original")
-    for i, cropped_image in enumerate(cropped_image_list):
+    for i, cropped_image in enumerate(cropped_images):
         datatypes.visualize(cropped_image, entity_path=f"{i + 2}-Crop {i + 1}")
 
 if __name__ == "__main__":

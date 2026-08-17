@@ -1,11 +1,4 @@
-"""
-Demonstrates pyramid upsampling transformation.
-
-This example:
-- Downloads an example image.
-- Applies pyramid upsampling multiple times.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates pyramid upsampling transformation."""
 
 from loguru import logger
 import rerun as rr
@@ -33,12 +26,9 @@ def transform_image_using_pyramid_upsampling_example():
         scale_factor=2.0,
     )
 
-    logger.success(
-        "Applied pyramid upsampling. Transformed output image shapes: {}, {}, {}",
-        filtered_image.shape,
-        filtered_image_1.shape,
-        filtered_image_2.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied pyramid upsampling on {image}")
+    logger.success(f"Result: {filtered_image}, {filtered_image_1}, {filtered_image_2}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("transform_image_using_pyramid_upsampling_example", spawn=True)

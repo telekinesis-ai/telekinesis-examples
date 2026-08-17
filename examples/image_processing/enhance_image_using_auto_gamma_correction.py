@@ -1,11 +1,4 @@
-"""
-Demonstrates enhance_image_using_auto_gamma_correction operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates enhance_image_using_auto_gamma_correction operation."""
 
 from loguru import logger
 import rerun as rr
@@ -24,10 +17,9 @@ def enhance_image_using_auto_gamma_correction_example():
         image=image,
     )
 
-    logger.success(
-        "Applied enhance_image_using_auto_gamma_correction. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied enhance_image_using_auto_gamma_correction on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("enhance_image_using_auto_gamma_correction_example", spawn=True)

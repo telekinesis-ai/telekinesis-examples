@@ -1,11 +1,4 @@
-"""
-Demonstrates projecting a 3D world point to pixel coordinates.
-
-This example:
-- Creates camera intrinsics, distortion, and world-to-camera transformation.
-- Projects a 3D point in world coordinates to pixel coordinates.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates projecting a 3D world point to pixel coordinates."""
 
 import numpy as np
 from loguru import logger
@@ -17,6 +10,13 @@ from telekinesis import pupil, datatypes
 def project_world_point_to_pixel_example():
     """Projects a 3D world point to pixel coordinates."""
     # ===================== Create Parameters ==========================================
+    # Point: [x, y, z] in world coordinates
+    point = np.array([0.0, 0.0, 1.0], dtype=np.float64)
+
+    # World-to-camera transformation matrix (4x4)
+    world_T_camera = np.eye(4, dtype=np.float64)
+    world_T_camera[2, 3] = 1.0
+
     # Camera_intrinsics: [[fx, 0, cx], [0, fy, cy], [0, 0, 1]]
     camera_intrinsics = np.array(
         [[500.0, 0, 320.0], [0, 500.0, 240.0], [0, 0, 1.0]],
@@ -26,22 +26,18 @@ def project_world_point_to_pixel_example():
     distortion_coefficients = np.array(
         [0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64
     )
-    # Point: [x, y, z] in world coordinates
-    point = np.array([0.0, 0.0, 1.0], dtype=np.float64)
-
-    # World-to-camera transformation matrix (4x4)
-    world_T_camera = np.eye(4, dtype=np.float64)
-    world_T_camera[2, 3] = 1.0
 
     # ===================== Run Skill ==========================================
     pixel = pupil.project_world_point_to_pixel(
-        camera_intrinsics=camera_intrinsics,
-        distortion_coefficients=distortion_coefficients,
         point=point,
         world_T_camera=world_T_camera,
+        camera_intrinsics=camera_intrinsics,
+        distortion_coefficients=distortion_coefficients,
     )
 
-    logger.success("Projected world point to pixel. Pixel: {}", pixel.data)
+    # ===================== Log ================================================
+    logger.success(f"Projected world point to pixel using {point}")
+    logger.success(f"Result: {pixel}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("project_world_point_to_pixel_example", spawn=True)

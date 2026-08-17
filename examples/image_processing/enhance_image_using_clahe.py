@@ -1,11 +1,4 @@
-"""
-Demonstrates enhance_image_using_clahe operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates enhance_image_using_clahe operation."""
 
 from loguru import logger
 import rerun as rr
@@ -27,10 +20,9 @@ def enhance_image_using_clahe_example():
         color_space="lab",
     )
 
-    logger.success(
-        "Applied enhance_image_using_clahe. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied enhance_image_using_clahe on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("enhance_image_using_clahe_example", spawn=True)

@@ -1,11 +1,4 @@
-"""
-Demonstrates morphological dilation to expand bright regions and fill holes.
-
-This example:
-- Downloads an example image.
-- Applies dilation morphological operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates morphological dilation to expand bright regions and fill holes."""
 
 from loguru import logger
 import rerun as rr
@@ -29,10 +22,9 @@ def filter_image_using_morphological_dilate_example():
         border_value=0,
     )
 
-    logger.success(
-        "Applied dilation morphological operation. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied dilation morphological operation on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_morphological_dilate_example", spawn=True)

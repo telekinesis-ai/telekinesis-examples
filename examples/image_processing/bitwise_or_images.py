@@ -1,11 +1,4 @@
-"""
-Demonstrates bitwise OR operation between two images.
-
-This example:
-- Downloads two example images.
-- Performs bitwise OR operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates bitwise OR operation between two images."""
 
 from loguru import logger
 import rerun as rr
@@ -27,12 +20,15 @@ def bitwise_or_images_example():
         resize_width=image_a.width,
         resize_height=image_a.height,
         pad_color=(0, 0, 0),
-    )
+    ).drop_alpha()
+    logger.info(f"Resized {image_b} to match dimensions of {image_a}")
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.bitwise_or_images(image_a=image_a, image_b=image_b)
 
-    logger.success("Bitwise OR. Output shape: {}", filtered_image.shape)
+    # ===================== Log ================================================
+    logger.success(f"Bitwise OR between {image_a} and {image_b}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("bitwise_or_images_example", spawn=True)

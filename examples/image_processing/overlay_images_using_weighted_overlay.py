@@ -1,12 +1,4 @@
-"""
-Demonstrates weighted overlay blending of two images.
-
-This example:
-- Downloads an example image.
-- Creates a rotated version for blending.
-- Performs weighted overlay operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates weighted overlay blending of two images."""
 
 from loguru import logger
 import rerun as rr
@@ -38,7 +30,9 @@ def overlay_images_using_weighted_overlay_example():
         weight_b=0.5,
     )
 
-    logger.success("Weighted overlay. Output shape: {}", filtered_image.shape)
+    # ===================== Log ================================================
+    logger.success(f"Weighted overlay between {image_a} and {image_b}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("overlay_images_using_weighted_overlay_example", spawn=True)

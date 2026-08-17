@@ -1,11 +1,4 @@
-"""
-Demonstrates morphological opening transformation.
-
-This example:
-- Downloads an example image.
-- Applies open morphological operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates morphological opening transformation."""
 
 from loguru import logger
 import rerun as rr
@@ -29,10 +22,9 @@ def filter_image_using_morphological_open_example():
         border_value=0,
     )
 
-    logger.success(
-        "Applied open morphological operation. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied open morphological operation on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_morphological_open_example", spawn=True)

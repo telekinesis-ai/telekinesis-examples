@@ -1,11 +1,4 @@
-"""
-Demonstrates crop_image_center operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates crop_image_center operation."""
 
 from loguru import logger
 import rerun as rr
@@ -27,10 +20,9 @@ def crop_image_center_example():
         pad_color=(0, 0, 0),
     )
 
-    logger.success(
-        "Applied crop_image_center. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied crop_image_center on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("crop_image_center_example", spawn=True)

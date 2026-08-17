@@ -1,16 +1,9 @@
-"""
-Demonstrates filter_image_using_morphological_hitmiss operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates filter_image_using_morphological_hitmiss operation."""
 
 from loguru import logger
 import rerun as rr
 
-from telekinesis import pupil, datatypes
+from telekinesis import pupil, datatypes, cornea
 
 
 def filter_image_using_morphological_hitmiss_example():
@@ -19,9 +12,11 @@ def filter_image_using_morphological_hitmiss_example():
     image_url = "https://assets.telekinesis.ai/examples/v1/images/spanners_arranged.jpg"
     image = datatypes.Image.from_url(image_url)
 
+    segmented_image = cornea.segment_image_using_threshold(image=image)
+
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_hitmiss(
-        image=image,
+        image=segmented_image,
         kernel_size=5,
         kernel_shape="ellipse",
         iterations=1,
@@ -29,10 +24,9 @@ def filter_image_using_morphological_hitmiss_example():
         border_value=0,
     )
 
-    logger.success(
-        "Applied filter_image_using_morphological_hitmiss. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied filter_image_using_morphological_hitmiss on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_morphological_hitmiss_example", spawn=True)

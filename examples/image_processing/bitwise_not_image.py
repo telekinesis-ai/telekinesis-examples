@@ -1,11 +1,4 @@
-"""
-Demonstrates bitwise NOT operation on an image.
-
-This example:
-- Downloads an example image.
-- Performs bitwise NOT (inversion) operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates bitwise NOT operation on an image."""
 
 from loguru import logger
 import rerun as rr
@@ -22,7 +15,9 @@ def bitwise_not_image_example():
     # ===================== Run Skill ==========================================
     filtered_image = pupil.bitwise_not_image(image=image)
 
-    logger.success("Bitwise NOT. Output shape: {}", filtered_image.shape)
+    # ===================== Log ================================================
+    logger.success(f"Bitwise NOT on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("bitwise_not_image_example", spawn=True)

@@ -1,11 +1,4 @@
-"""
-Demonstrates bitwise XOR operation between two images.
-
-This example:
-- Downloads two example images.
-- Performs bitwise XOR operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates bitwise XOR operation between two images."""
 
 from loguru import logger
 import rerun as rr
@@ -31,7 +24,9 @@ def bitwise_xor_images_example():
     # ===================== Run Skill ==========================================
     filtered_image = pupil.bitwise_xor_images(image_a=image_a, image_b=image_b_resized)
 
-    logger.success("Bitwise XOR. Output shape: {}", filtered_image.shape)
+    # ===================== Log ================================================
+    logger.success(f"Bitwise XOR between {image_a} and {image_b_resized}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("bitwise_xor_images_example", spawn=True)

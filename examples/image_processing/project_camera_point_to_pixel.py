@@ -1,11 +1,4 @@
-"""
-Demonstrates projecting a 3D camera point to pixel coordinates.
-
-This example:
-- Creates camera intrinsics and distortion coefficients.
-- Projects a 3D point in camera coordinates to pixel coordinates.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates projecting a 3D camera point to pixel coordinates."""
 
 import numpy as np
 from loguru import logger
@@ -17,6 +10,9 @@ from telekinesis import pupil, datatypes
 def project_camera_point_to_pixel_example():
     """Projects a 3D camera point to pixel coordinates."""
     # ===================== Create Parameters ==========================================
+    # Point: [x, y, z] in camera coordinates
+    point = datatypes.Point3D(np.array([0.0, 0.0, 1.0], dtype=np.float64))
+    
     # Camera_intrinsics: [[fx, 0, cx], [0, fy, cy], [0, 0, 1]]
     camera_intrinsics = np.array(
         [[500.0, 0, 320.0],
@@ -29,17 +25,16 @@ def project_camera_point_to_pixel_example():
         [0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64
     )
 
-    # Point: [x, y, z] in camera coordinates
-    point = np.array([0.0, 0.0, 1.0], dtype=np.float64)
-
     # ===================== Run Skill ==========================================
     pixel = pupil.project_camera_point_to_pixel(
+        point=point,
         camera_intrinsics=camera_intrinsics,
         distortion_coefficients=distortion_coefficients,
-        point=point,
     )
 
-    logger.success("Projected camera point to pixel. Pixel: {}", pixel.data)
+    # ===================== Log ================================================
+    logger.success(f"Projected camera point to pixel using {point}")
+    logger.success(f"Result: {pixel}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("project_camera_point_to_pixel_example", spawn=True)

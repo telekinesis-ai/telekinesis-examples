@@ -1,11 +1,4 @@
-"""
-Demonstrates convert_image_color_space operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates convert_image_color_space operation."""
 
 from loguru import logger
 import rerun as rr
@@ -26,10 +19,9 @@ def convert_image_color_space_example():
     target_color_space="GRAY",
     )
 
-    logger.success(
-        "Applied convert_image_color_space. Output image shape: {}", 
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied convert_image_color_space on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("convert_image_color_space_example", spawn=True)

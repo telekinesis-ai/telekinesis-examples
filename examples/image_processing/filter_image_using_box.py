@@ -1,11 +1,4 @@
-"""
-Demonstrates filter_image_using_box operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates filter_image_using_box operation."""
 
 from loguru import logger
 import rerun as rr
@@ -28,10 +21,9 @@ def filter_image_using_box_example():
         border_type="reflect",
     )
 
-    logger.success(
-        "Applied filter_image_using_box. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied filter_image_using_box on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_box_example", spawn=True)

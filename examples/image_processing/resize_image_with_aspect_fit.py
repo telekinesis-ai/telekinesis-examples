@@ -1,11 +1,4 @@
-"""
-Demonstrates resize_image_with_aspect_fit operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates resize_image_with_aspect_fit operation."""
 
 from loguru import logger
 import rerun as rr
@@ -27,10 +20,9 @@ def resize_image_with_aspect_fit_example():
         interpolation_method="linear",
     )
 
-    logger.success(
-        "Applied resize_image_with_aspect_fit. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied resize_image_with_aspect_fit on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("resize_image_with_aspect_fit_example", spawn=True)

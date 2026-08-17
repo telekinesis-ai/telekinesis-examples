@@ -1,11 +1,4 @@
-"""
-Demonstrates filter_image_using_frangi operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates filter_image_using_frangi operation."""
 
 from loguru import logger
 import rerun as rr
@@ -32,10 +25,9 @@ def filter_image_using_frangi_example():
         border_value=0.0,
     )
 
-    logger.success(
-        "Applied filter_image_using_frangi. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied filter_image_using_frangi on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_frangi_example", spawn=True)

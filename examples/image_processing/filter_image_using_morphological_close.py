@@ -1,11 +1,4 @@
-"""
-Demonstrates morphological closing to fill small holes and close gaps.
-
-This example:
-- Downloads an example image.
-- Applies close morphological operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates morphological closing to fill small holes and close gaps."""
 
 from loguru import logger
 import rerun as rr
@@ -28,10 +21,9 @@ def filter_image_using_morphological_close_example():
         border_type="default",
     )
 
-    logger.success(
-        "Applied close morphological operation. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied close morphological operation on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_morphological_close_example", spawn=True)

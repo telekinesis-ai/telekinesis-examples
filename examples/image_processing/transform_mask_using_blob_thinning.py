@@ -1,16 +1,9 @@
-"""
-Demonstrates blob thinning (skeletonization) transformation.
-
-This example:
-- Downloads an example image.
-- Applies blob thinning operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates blob thinning (skeletonization) transformation."""
 
 from loguru import logger
 import rerun as rr
 
-from telekinesis import pupil, datatypes
+from telekinesis import pupil, datatypes, cornea
 
 
 def transform_mask_using_blob_thinning_example():
@@ -19,16 +12,17 @@ def transform_mask_using_blob_thinning_example():
     image_url = "https://assets.telekinesis.ai/examples/v1/images/handwriting_mask.png"
     image = datatypes.Image.from_url(image_url)
 
+    mask = cornea.segment_image_using_otsu_threshold(image=image)
+
     # ===================== Run Skill ==========================================
     filtered_image = pupil.transform_mask_using_blob_thinning(
-        image=image,
+        mask=mask,
         thinning_type="thinning guohall",
     )
 
-    logger.success(
-        "Applied blob thinning. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied blob thinning on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("transform_mask_using_blob_thinning_example", spawn=True)

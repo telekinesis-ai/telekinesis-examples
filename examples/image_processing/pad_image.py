@@ -1,11 +1,4 @@
-"""
-Demonstrates pad_image operation.
-
-This example:
-- Downloads an example image.
-- Applies the operation.
-- Visualizes the result using Rerun.
-"""
+"""Demonstrates pad_image operation."""
 
 from loguru import logger
 import rerun as rr
@@ -30,10 +23,9 @@ def pad_image_example():
         border_value=0.0,
     )
 
-    logger.success(
-        "Applied pad_image. Output image shape: {}",
-        filtered_image.shape,
-    )
+    # ===================== Log ================================================
+    logger.success(f"Applied pad_image on {image}")
+    logger.success(f"Result: {filtered_image}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("pad_image_example", spawn=True)
