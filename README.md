@@ -473,14 +473,23 @@ python examples/medulla/webcam/capture_image_example.py                         
 ```
 telekinesis-examples/
 ├── examples/
-│   ├── cornea_examples.py             # Cornea: image segmentation Skills
-│   ├── retina_examples.py             # Retina: object detection Skills
-│   ├── pupil_examples.py              # Pupil: 2D image processing Skills
-│   ├── vitreous_examples.py           # Vitreous: 3D point cloud & mesh Skills
 │   ├── datatypes_examples.py          # Data types & transformations
 │   ├── use_cases_examples.py          # End-to-end Skill compositions
+│   ├── quickstart_birefnet.py         # No-hardware BiRefNet segmentation quickstart
+│   ├── datatypes/                     # Data types & transformations (per-type examples)
+│   ├── segmentation/                  # Cornea: image segmentation Skills
+│   ├── detection/                     # Retina: object detection Skills (classical, Grounding DINO, Qwen, RF-DETR, YOLOX)
+│   ├── image_processing/              # Pupil: 2D image processing Skills
+│   ├── point_cloud/                   # Vitreous: 3D point cloud & mesh Skills
+│   ├── calibration/                   # Camera & eye-in-hand/multi-camera calibration
+│   ├── dataengine/                    # Data logging, conversion, MCAP tutorials
+│   │   ├── detection/
+│   │   └── mcap/
+│   ├── applications/                  # End-to-end application examples
+│   │   ├── robotics_applications/
+│   │   └── vision_ai_applications/
 │   ├── synapse/                       # Synapse: robotics Skills
-│   │   ├── quickstart_set_cartesian_pose_*.py   # No-hardware quickstarts (ABB, Fanuc, Franka, KUKA, Motoman, Neura, UR)
+│   │   ├── quickstart_set_cartesian_pose_*.py   # No-hardware quickstarts (ABB, Epson, Fanuc, Franka, KUKA, Motoman, Neura, UR)
 │   │   ├── quickstart_set_joint_positions_*.py  # No-hardware quickstarts (per vendor)
 │   │   ├── connection_and_disconnection/
 │   │   ├── kinematics/                # FK, IK, collision-free IK, solver setup
@@ -488,11 +497,16 @@ telekinesis-examples/
 │   │   ├── servo_control/             # Cartesian, joint, circular servoing
 │   │   ├── force_control/             # Contact detection
 │   │   ├── state_reading/             # TCP pose/force/speed, joint positions/torques
-│   │   ├── statuses/            # Mode, safety, runtime state, controller frequency
+│   │   ├── status/                    # Mode, safety, runtime state, controller frequency
 │   │   ├── diagnostics/               # Speed scaling, target speed fraction
 │   │   ├── tools/                     # Gripper control: open/close/move/force/speed
+│   │   ├── attach_tool/
+│   │   ├── controllers/
+│   │   ├── tcp/
+│   │   ├── trajectory_generation/
+│   │   ├── virtual_controllers/
 │   │   └── visualization_and_model/   # Visual & collision meshes, link transforms
-│   └── medulla/                       # Medulla: hardware communication Skills
+│   └── sensors/                       # Hardware communication Skills
 │       ├── ids/                       # IDS industrial cameras
 │       └── webcam/                    # USB/integrated webcams
 ├── telekinesis-data/                  # Git submodule (sample data)
