@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Int datatype.
-"""
+"""Demonstrates the Telekinesis Int datatype."""
 
 import time
 
@@ -9,111 +7,82 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def int_example():
-    """
-    Example function to demonstrate usage of Int datatype.
-        - Create an Int data
-        - Access the underlying native int through ``.data``
-        - Visualize the Int data using Rerun
-        - Update the value via the validated setter
-        - Arithmetic operations: `+`, `-`, `*`, `/`, `%`
-        - Convert to native `int`/`float`/`bool` and use as a list index
-        - Unary operations: negation and abs
-        - f-string alignment and hex formatting
-        - Serialize to PyArrow and back
-    """
+    """Demonstrate creation, access, arithmetic, conversion, and serialization."""
 
-    # Create an Int data
-    my_int = datatypes.Int(42)
-    logger.info(f"Original Int: {my_int}")
+    # ======================= Create ============================================
+    value = datatypes.Int(42)
 
-    # Access the underlying data
-    my_int_data = my_int.data
-    logger.info(f"Original Int data: {my_int_data}")
+    logger.info(f"Created Int: {value}")
 
-    logger.info("Visualizing with Rerun...")
+    # ======================= Inspect ===========================================
+    logger.info(f"data={value.data}")
+
+    # ======================= Visualize =========================================
     rr.init("int_example", spawn=True)
-    datatypes.visualize(my_int, entity_path="/Int")
+    datatypes.visualize(value, entity_path="/Int")
 
-    # Update the value of Int
-    my_int.data = 100
-    logger.info(f"Updated Int: {my_int}")
+    # ======================= Update ============================================
+    value.data = 100
 
-    # Operation on Int with another Int resulting in a new Int/Float object
-    my_other_int = datatypes.Int(58)
+    logger.info(f"Updated Int: {value}")
 
-    # Arithmetic operations on Int
-    # Addition operation
-    my_sum_int = my_int + my_other_int
-    logger.info(f"Int Addition operation: {my_int} + {my_other_int} = {my_sum_int}")
+    # ======================= Arithmetic ========================================
+    other = datatypes.Int(58)
 
-    # Subtraction operation
-    my_diff_int = my_int - my_other_int
-    logger.info(f"Int Subtraction operation: {my_int} - {my_other_int} = {my_diff_int}")
+    total = value + other
+    difference = value - other
+    product = value * other
+    quotient = value / other
+    remainder = value % other
 
-    # Multiplication operation
-    my_prod_int = my_int * my_other_int
-    logger.info(f"Int Multiplication operation: {my_int} * {my_other_int} = {my_prod_int}")
+    logger.info(f"{value} + {other} = {total}")
+    logger.info(f"{value} - {other} = {difference}")
+    logger.info(f"{value} * {other} = {product}")
+    logger.info(f"{value} / {other} = {quotient}")
+    logger.info(f"{value} % {other} = {remainder}")
 
-    # Division operation resulting in a new Float object
-    my_div_int = my_int / my_other_int
-    logger.info(f"Int Division operation: {my_int} / {my_other_int} = {my_div_int}")
+    # ======================= Convert ===========================================
+    native_int = int(value)
+    native_float = float(value)
+    native_bool = bool(value)
 
-    # Modulus operation
-    my_mod_int = my_int % my_other_int
-    logger.info(f"Int Modulus operation: {my_int} % {my_other_int} = {my_mod_int}")
+    logger.info(f"int={native_int}, float={native_float}, bool={native_bool}")
 
-    # Convert to native int
-    native_int = int(my_int)
-    logger.info(f"Converted to native int: {native_int}")
+    # ======================= Index =============================================
+    items = [1, 2, 3, 4, 5]
+    index = value % len(items)
 
-    # Convert to native float
-    native_float = float(my_int)
-    logger.info(f"Converted to native float: {native_float}")
+    logger.info(f"items[{index}] = {items[index]}")
 
-    # Convert to native bool
-    native_bool = bool(my_int)
-    logger.info(f"Converted to native bool: {native_bool}")
+    # ======================= Unary =============================================
+    negated = -value
+    absolute = abs(value)
 
-    # Use as a list index
-    my_list = [1, 2, 3, 4, 5]
-    index = my_int % len(my_list)  # Use the underlying int value for indexing
-    logger.info(f"Accessing list with Int as index: my_list[{index}] = {my_list[index]}")
+    logger.info(f"negated={negated}, absolute={absolute}")
 
-    # Unary operations on Int
-    negated_int = -my_int
-    logger.info(f"Negated Int: -{my_int} = {negated_int}")
+    # ======================= Compare ===========================================
+    comparison = value > other
 
-    # Absolute value operation
-    abs_int = abs(my_int)
-    logger.info(f"Absolute Int: abs({my_int}) = {abs_int}")
+    logger.info(f"{value} > {other} = {comparison}")
 
-    # Compare Int with another Int
-    comparison_result = my_int > my_other_int
-    logger.info(f"Comparison operation: {my_int} > {my_other_int} = {comparison_result}")
+    # ======================= Format ============================================
+    logger.info(f"id={datatypes.Int(42):05d}")
+    logger.info(f"hex={datatypes.Int(255):x}")
 
-    # fstring usage
-    logger.info(f"f-string format: id={datatypes.Int(42):05d}")
-    logger.info(f"f-string format: hex={datatypes.Int(255):x}")
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(value)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    # Serialize to pyarrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_int)
-    serialization_end_time = time.perf_counter()
-
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Deserialized Int matches Original: {deserialized == my_int}")
-
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized Int: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized == value}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

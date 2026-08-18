@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Float datatype.
-"""
+"""Demonstrates the Telekinesis Float datatype."""
 
 import time
 
@@ -9,108 +7,72 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def float_example():
-    """
-    Example function to demonstrate usage of Float datatype.
-        - Create a Float data
-        - Access the underlying native float through ``.data``
-        - Visualize the Float data using Rerun
-        - Update the value via the validated setter
-        - Arithmetic operations: `+`, `-`, `*`, `/`, `//`, `%`
-        - Convert to native `int`/`float`/`bool`
-        - Unary operations: negation and ``abs``
-        - f-string formatting via ``__format__``
-        - Serialize to PyArrow and back
-    """
+    """Demonstrate creation, inspection, visualization, update, arithmetic, native conversion, unary ops, formatting, and serialization."""
 
-    # Create a Float data
-    my_float = datatypes.Float(3.14)
-    logger.info(f"Original Float: {my_float}")
+    # ======================= Create ============================================
+    value = datatypes.Float(3.14)
+    logger.info(f"Original Float: {value}")
 
-    # Access the underlying data
-    my_float_data = my_float.data
-    logger.info(f"Original Float data: {my_float_data}")
+    # ======================= Inspect ===========================================
+    data = value.data
+    logger.info(f"Data: {data}")
 
-    logger.info("Visualizing with Rerun...")
+    # ======================= Visualize =========================================
     rr.init("float_example", spawn=True)
-    datatypes.visualize(my_float, entity_path="/Float")
+    datatypes.visualize(value, entity_path="/Float")
 
-    # Update the value via the validated setter
-    my_float.data = 2.71
-    logger.info(f"Updated Float: {my_float}")
+    # ======================= Update ============================================
+    value.data = 2.71
+    logger.info(f"Updated Float: {value}")
 
-    # Operation on Float with another Float resulting in a new Float object
-    my_other_float = datatypes.Float(1.5)
+    # ======================= Arithmetic ========================================
+    other = datatypes.Float(1.5)
+    sum_value = value + other
+    diff_value = value - other
+    prod_value = value * other
+    div_value = value / other
+    floordiv_value = value // other
+    mod_value = value % other
 
-    # Arithmetic operations on Float
-    # Addition operation
-    my_sum_float = my_float + my_other_float
-    logger.info(f"Float Addition operation: {my_float} + {my_other_float} = {my_sum_float}")
+    logger.info(f"{value} + {other} = {sum_value}")
+    logger.info(f"{value} - {other} = {diff_value}")
+    logger.info(f"{value} * {other} = {prod_value}")
+    logger.info(f"{value} / {other} = {div_value}")
+    logger.info(f"{value} // {other} = {floordiv_value}")
+    logger.info(f"{value} % {other} = {mod_value}")
 
-    # Subtraction operation
-    my_diff_float = my_float - my_other_float
-    logger.info(f"Float Subtraction operation: {my_float} - {my_other_float} = {my_diff_float}")
+    # ======================= Convert ===========================================
+    native_int = int(value)
+    native_float = float(value)
+    native_bool = bool(value)
 
-    # Multiplication operation
-    my_prod_float = my_float * my_other_float
-    logger.info(f"Float Multiplication operation: {my_float} * {my_other_float} = {my_prod_float}")
+    logger.info(f"int={native_int}, float={native_float}, bool={native_bool}")
 
-    # Division operation
-    my_div_float = my_float / my_other_float
-    logger.info(f"Float Division operation: {my_float} / {my_other_float} = {my_div_float}")
+    # ======================= Unary =============================================
+    negated = -value
+    abs_value = abs(value)
 
-    # Floor division operation
-    my_floordiv_float = my_float // my_other_float
-    logger.info(
-        f"Float Floor division operation: {my_float} // {my_other_float} = {my_floordiv_float}"
-    )
+    logger.info(f"-{value} = {negated}")
+    logger.info(f"abs({value}) = {abs_value}")
 
-    # Modulus operation
-    my_mod_float = my_float % my_other_float
-    logger.info(f"Float Modulus operation: {my_float} % {my_other_float} = {my_mod_float}")
-
-    # Convert to native int
-    native_int = int(my_float)
-    logger.info(f"Converted to native int: {native_int}")
-
-    # Convert to native float
-    native_float = float(my_float)
-    logger.info(f"Converted to native float: {native_float}")
-
-    # Convert to native bool
-    native_bool = bool(my_float)
-    logger.info(f"Converted to native bool: {native_bool}")
-
-    # Unary operations on Float
-    negated_float = -my_float
-    logger.info(f"Negated Float: -{my_float} = {negated_float}")
-
-    # Absolute value operation
-    abs_float = abs(my_float)
-    logger.info(f"Absolute Float: abs({my_float}) = {abs_float}")
-
-    # fstring usage
+    # ======================= Format ============================================
     logger.info(f"f-string format: pose={datatypes.Float(3.14159):.3f}")
     logger.info(f"f-string format: percent={datatypes.Float(0.5):.1%}")
 
-    # Serialize to pyarrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_float)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(value)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Deserialized Float matches Original: {deserialized == my_float}")
-
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized Float: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized == value}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

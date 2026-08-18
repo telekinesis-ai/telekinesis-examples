@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of OrientedBox3D datatype.
-"""
+"""Demonstrates the Telekinesis OrientedBox3D datatype."""
 
 import time
 
@@ -9,124 +7,83 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def oriented_box3d_example():
-    """
-    Example function to demonstrate usage of OrientedBox3D datatype.
-        - Create an OrientedBox3D data
-        - Access the underlying box data
-        - Visualize the OrientedBox3D data using Rerun
-        - Update the underlying box data
-        - Translate the box, returns a new OrientedBox3D object with updated center
-        - Scale the box, returns a new OrientedBox3D object with updated size
-        - Rotate the box, returns a new OrientedBox3D object with updated quaternion
-        - Serialize to PyArrow and back
-    """
-    # Create an OrientedBox3D data: [x, y, z, w, h, l, qx, qy, qz, qw], identity rotation
-    my_oriented_box3d = datatypes.OrientedBox3D([0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0])
-    logger.info(f"Original OrientedBox3D: {my_oriented_box3d}")
+    """Demonstrate creation, access, visualization, translate/scale/rotate, and serialization."""
 
-    # Access the underlying box data
-    my_oriented_box3d_data = my_oriented_box3d.data
-    my_oriented_box3d_shape = my_oriented_box3d.shape
-    my_oriented_box3d_dtype = my_oriented_box3d.dtype
-    my_oriented_box3d_ndim = my_oriented_box3d.ndim
-    my_oriented_box3d_numpy = my_oriented_box3d.to_numpy()
-    my_oriented_box3d_center = my_oriented_box3d.center
-    my_oriented_box3d_volume = my_oriented_box3d.volume
-    my_oriented_box3d_width = my_oriented_box3d.width
-    my_oriented_box3d_height = my_oriented_box3d.height
-    my_oriented_box3d_depth = my_oriented_box3d.depth
-    my_oriented_box3d_quaternion = my_oriented_box3d.data[6:]  # [qx, qy, qz, qw]
+    # ======================= Create ============================================
+    box = datatypes.OrientedBox3D([0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0])
 
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"Created OrientedBox3D: {box}")
+
+    # ======================= Visualize =========================================
     rr.init("oriented_box3d_example", spawn=True)
     datatypes.visualize(
-        my_oriented_box3d, entity_path="/OrientedBox3D/my_oriented_box3d", label="My Oriented Box3D"
+        box, entity_path="/OrientedBox3D/my_oriented_box3d", label="My Oriented Box3D"
     )
 
-    logger.info(f"Underlying OrientedBox3D data: {my_oriented_box3d_data}")
-    logger.info(f"Underlying OrientedBox3D data shape: {my_oriented_box3d_shape}")
-    logger.info(f"Underlying OrientedBox3D data dtype: {my_oriented_box3d_dtype}")
-    logger.info(f"Underlying OrientedBox3D data ndim: {my_oriented_box3d_ndim}")
-    logger.info(f"Underlying OrientedBox3D data as numpy array: {my_oriented_box3d_numpy}")
-    logger.info(f"Underlying OrientedBox3D center: {my_oriented_box3d_center}")
-    logger.info(f"Underlying OrientedBox3D volume: {my_oriented_box3d_volume}")
-    logger.info(f"Underlying OrientedBox3D width: {my_oriented_box3d_width}")
-    logger.info(f"Underlying OrientedBox3D height: {my_oriented_box3d_height}")
-    logger.info(f"Underlying OrientedBox3D depth: {my_oriented_box3d_depth}")
+    # ======================= Inspect ===========================================
+    logger.info(f"shape={box.shape}, dtype={box.dtype}, ndim={box.ndim}")
+    logger.info(f"NumPy array: {box.to_numpy()}")
     logger.info(
-        f"Underlying OrientedBox3D quaternion [qx, qy, qz, qw]: {my_oriented_box3d_quaternion}"
+        f"center={box.center}, volume={box.volume}, width={box.width}, "
+        f"height={box.height}, depth={box.depth}"
+    )
+    logger.info(f"Quaternion [qx, qy, qz, qw]: {box.data[6:]}")
+
+    # ======================= Update ============================================
+    box.data = [2.0, 2.0, 2.0, 3.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+
+    logger.info(f"Updated OrientedBox3D: {box}")
+    datatypes.visualize(
+        box, entity_path="/OrientedBox3D/my_updated_oriented_box3d", label="Updated Oriented Box3D"
     )
 
-    # Update the my_oriented_box3d data -- markedly longer along x than y/z, so a
-    # 90-degree rotation about z is unmistakable in the viewer
-    my_oriented_box3d.data = [2.0, 2.0, 2.0, 3.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0]
-    logger.info(f"Updated OrientedBox3D: {my_oriented_box3d}")
-    datatypes.visualize(
-        my_oriented_box3d,
-        entity_path="/OrientedBox3D/my_updated_oriented_box3d",
-        label="Updated Oriented Box3D",
-    )
+    # ======================= Translate =========================================
+    translated_box = box.translate([1.0, 1.0, 1.0])
 
-    # Translate the box, returns a new OrientedBox3D object with updated center
-    translated_oriented_box3d = my_oriented_box3d.translate([1.0, 1.0, 1.0])
-    logger.info(
-        f"Translated OrientedBox3D center: {translated_oriented_box3d.center} "
-        f"(was {my_oriented_box3d.center})"
-    )
+    logger.info(f"Translated center: {translated_box.center} (was {box.center})")
     datatypes.visualize(
-        translated_oriented_box3d,
+        translated_box,
         entity_path="/OrientedBox3D/my_translated_oriented_box3d",
         label="Translated Oriented Box3D",
     )
 
-    # Scale the box, returns a new OrientedBox3D object with updated size
-    scaled_oriented_box3d = my_oriented_box3d.scale(1.5)
+    # ======================= Scale =============================================
+    scaled_box = box.scale(1.5)
+
     logger.info(
-        f"Scaled OrientedBox3D width, height, and depth: {scaled_oriented_box3d.width} x {scaled_oriented_box3d.height} x {scaled_oriented_box3d.depth} "
-        f"(was {my_oriented_box3d.width} x {my_oriented_box3d.height} x {my_oriented_box3d.depth})"
+        f"Scaled width, height, and depth: {scaled_box.width} x {scaled_box.height} x "
+        f"{scaled_box.depth} (was {box.width} x {box.height} x {box.depth})"
     )
     datatypes.visualize(
-        scaled_oriented_box3d,
-        entity_path="/OrientedBox3D/my_scaled_oriented_box3d",
-        label="Scaled Oriented Box3D",
+        scaled_box, entity_path="/OrientedBox3D/my_scaled_oriented_box3d", label="Scaled Oriented Box3D"
     )
 
-    # Rotate the box by a 90-degree turn about Z, returns a new OrientedBox3D object
-    # with the composed quaternion (rotation is [qx, qy, qz, qw], this class's quat_order)
-    delta_quaternion = [0.0, 0.0, 0.70710678, 0.70710678]  # 90 degrees about Z
-    rotated_oriented_box3d = my_oriented_box3d.rotate(delta_quaternion)
-    logger.info(
-        f"Rotated OrientedBox3D quaternion: {rotated_oriented_box3d.data[6:]} "
-        f"(was {my_oriented_box3d.data[6:]})"
-    )
-    # rotate() keeps the box's center in place, so it would otherwise sit exactly on
-    # top of my_updated_oriented_box3d -- translate it aside purely for visualization,
-    # so the reoriented long axis (now along y instead of x) is easy to see on its own
-    rotated_oriented_box3d_display = rotated_oriented_box3d.translate([4.0, 0.0, 0.0])
+    # ======================= Rotate ============================================
+    delta_quaternion = [0.0, 0.0, 0.70710678, 0.70710678]
+    rotated_box = box.rotate(delta_quaternion)
+
+    logger.info(f"Rotated quaternion: {rotated_box.data[6:]} (was {box.data[6:]})")
+    rotated_box_display = rotated_box.translate([4.0, 0.0, 0.0])
     datatypes.visualize(
-        rotated_oriented_box3d_display,
+        rotated_box_display,
         entity_path="/OrientedBox3D/my_rotated_oriented_box3d",
         label="Rotated Oriented Box3D",
     )
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_oriented_box3d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(box)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Deserialized OrientedBox3D matches Original: {deserialized == my_oriented_box3d}")
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized OrientedBox3D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized == box}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

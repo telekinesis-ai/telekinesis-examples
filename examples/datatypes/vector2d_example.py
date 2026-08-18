@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Vector2D datatype.
-"""
+"""Demonstrates the Telekinesis Vector2D datatype."""
 
 import time
 
@@ -10,71 +8,58 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def vector2d_example():
-    """
-    Example function to demonstrate usage of Vector2D datatype.
-        - Create a Vector2D data
-        - Access the underlying vector data
-        - Visualize the Vector2D data using Rerun
-        - Update the underlying vector data
-        - Operate on the underlying data with numpy
-        - Serialize to PyArrow and back
-    """
-    # Create a Vector2D data can be list or numpy array of shape (2,)
+    """Demonstrate creation, access, visualization, update, NumPy interop, and serialization."""
+
+    # ======================= Create ============================================
     vector = [1.0, 2.0]
-    my_vector2d = datatypes.Vector2D(vector)
-    logger.info(f"Original Vector2D: {my_vector2d}")
+    vector2d = datatypes.Vector2D(vector)
 
-    # Access the underlying vector data
-    my_vector2d_data = my_vector2d.data
-    my_vector2d_shape = my_vector2d.shape
-    my_vector2d_size = my_vector2d.size
-    my_vector2d_dtype = my_vector2d.dtype
-    my_vector2d_ndim = my_vector2d.ndim
-    my_vector2d_numpy = my_vector2d.to_numpy()
-    my_vector2d_copy = my_vector2d.copy()
+    logger.info(f"Created Vector2D: {vector2d}")
 
-    logger.info(f"Underlying Vector2D data: {my_vector2d_data}")
-    logger.info(f"Underlying Vector2D shape: {my_vector2d_shape}")
-    logger.info(f"Underlying Vector2D size: {my_vector2d_size}")
-    logger.info(f"Underlying Vector2D dtype: {my_vector2d_dtype}")
-    logger.info(f"Underlying Vector2D ndim: {my_vector2d_ndim}")
-    logger.info(f"Underlying Vector2D numpy array: {my_vector2d_numpy}")
-    logger.info(f"Underlying Vector2D object: {my_vector2d_copy}")
+    # ======================= Inspect ===========================================
+    data = vector2d.data
+    shape = vector2d.shape
+    size = vector2d.size
+    dtype = vector2d.dtype
+    ndim = vector2d.ndim
+    numpy_array = vector2d.to_numpy()
+    vector2d_copy = vector2d.copy()
 
-    # Visualize the Vector2D data using Rerun
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"Vector2D data: {data}")
+    logger.info(f"NumPy array: {numpy_array}")
+    logger.info(f"Copied Vector2D: {vector2d_copy}")
+
+    # ======================= Visualize =========================================
     rr.init("vector2d_example", spawn=True)
-    datatypes.visualize(my_vector2d, entity_path="/Vector2D", label="My Vector2D")
+    datatypes.visualize(vector2d, entity_path="/Vector2D", label="My Vector2D")
 
-    # Update the my_vector2d_data
-    new_vector2d_data = [3.0, 4.0]
-    my_vector2d.data = new_vector2d_data
-    logger.info(f"Updated Vector2D: {my_vector2d}")
-    datatypes.visualize(my_vector2d, entity_path="/Vector2D/updated", label="Updated Vector2D")
+    # ======================= Update ============================================
+    new_data = [3.0, 4.0]
+    vector2d.data = new_data
 
-    # Operate on the underlying data with numpy - Add to the vector
-    my_vector2d_sum = my_vector2d + np.array([1.0, 1.0])
-    logger.info(f"Sum of Vector2D with numpy array: {my_vector2d_sum}")
+    logger.info(f"Updated Vector2D: {vector2d}")
+    datatypes.visualize(vector2d, entity_path="/Vector2D/updated", label="Updated Vector2D")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_vector2d)
-    serialization_end_time = time.perf_counter()
+    # ======================= NumPy Interop =====================================
+    sum_result = vector2d + np.array([1.0, 1.0])
 
-    deserialization_start_time = time.perf_counter()
+    logger.info(f"Sum of Vector2D with numpy array: {sum_result}")
+
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(vector2d)
+    serialization_ms = (time.perf_counter() - start) * 1000
+
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Vector2D: {deserialized}")
-    logger.info(f"Deserialized Vector2D data: {deserialized.data == new_vector2d_data}")
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialized Vector2D to PyArrow in {(serialization_end_time - serialization_start_time) * 1000:.6f} ms."
-    )
-    logger.info(
-        f"Deserialized Vector2D from PyArrow in {(deserialization_end_time - deserialization_start_time) * 1000:.6f} ms."
-    )
+    logger.info(f"Deserialized Vector2D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized.data == new_data}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

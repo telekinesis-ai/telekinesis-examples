@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Position2D datatype.
-"""
+"""Demonstrates the Telekinesis Position2D datatype."""
 
 import time
 
@@ -12,71 +10,54 @@ from telekinesis import datatypes
 
 
 def position2d_example():
-    """
-    Example function to demonstrate usage of Position2D datatype.
-        - Create a Position2D data
-        - Access the underlying position data
-        - Visualize the Position2D data using Rerun
-        - Update the underlying position data
-        - Operate on the underlying data with numpy
-        - Serialize to PyArrow and back
-    """
-    # Create a Position2D data can be list or numpy array of shape (2,)
-    position = [10.0, 20.0]
-    my_position2d = datatypes.Position2D(position)
-    logger.info(f"Original Position2D: {my_position2d}")
+    """Demonstrate creation, access, visualization, update, NumPy interop, and serialization."""
 
-    # Access the underlying position data
-    my_position2d_data = my_position2d.data
-    my_position2d_shape = my_position2d.shape
-    my_position2d_size = my_position2d.size
-    my_position2d_dtype = my_position2d.dtype
-    my_position2d_ndim = my_position2d.ndim
-    my_position2d_numpy = my_position2d.to_numpy()
-    my_position2d_copy = my_position2d.copy()
+    # ======================= Create ============================================
+    position2d = datatypes.Position2D([10.0, 20.0])
+    logger.info(f"Original Position2D: {position2d}")
 
-    logger.info(f"Underlying Position2D data: {my_position2d_data}")
-    logger.info(f"Underlying Position2D shape: {my_position2d_shape}")
-    logger.info(f"Underlying Position2D size: {my_position2d_size}")
-    logger.info(f"Underlying Position2D dtype: {my_position2d_dtype}")
-    logger.info(f"Underlying Position2D ndim: {my_position2d_ndim}")
-    logger.info(f"Underlying Position2D numpy array: {my_position2d_numpy}")
-    logger.info(f"Underlying Position2D object: {my_position2d_copy}")
+    # ======================= Inspect ===========================================
+    data = position2d.data
+    shape = position2d.shape
+    size = position2d.size
+    dtype = position2d.dtype
+    ndim = position2d.ndim
+    numpy_array = position2d.to_numpy()
+    copy = position2d.copy()
 
-    # Visualize the Position2D data using Rerun
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"data={data}, shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"NumPy array: {numpy_array}")
+    logger.info(f"Copied Position2D: {copy}")
+
+    # ======================= Visualize =========================================
     rr.init("position2d_example", spawn=True)
-    datatypes.visualize(my_position2d, entity_path="/Position2D", label="My Position2D")
+    datatypes.visualize(position2d, entity_path="/Position2D", label="My Position2D")
 
-    # Update the my_position2d_data
-    new_position2d_data = [30.0, 40.0]
-    my_position2d.data = new_position2d_data
-    logger.info(f"Updated Position2D: {my_position2d}")
+    # ======================= Update ============================================
+    updated_data = [30.0, 40.0]
+    position2d.data = updated_data
+    logger.info(f"Updated Position2D: {position2d}")
     datatypes.visualize(
-        my_position2d, entity_path="/Position2D/updated", label="Updated Position2D"
+        position2d, entity_path="/Position2D/updated", label="Updated Position2D"
     )
 
-    # Operate on the underlying data with numpy - Add to the position
-    my_position2d_sum = my_position2d + np.array([5.0, 10.0])
-    logger.info(f"Sum of Position2D with numpy array: {my_position2d_sum}")
+    # ======================= Arithmetic ========================================
+    total = position2d + np.array([5.0, 10.0])
+    logger.info(f"Sum of Position2D with numpy array: {total}")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_position2d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(position2d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Position2D: {deserialized}")
-    logger.info(f"Deserialized Position2D data: {deserialized.data == new_position2d_data}")
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialized Position2D to PyArrow in {(serialization_end_time - serialization_start_time) * 1000:.6f} ms."
-    )
-    logger.info(
-        f"Deserialized Position2D from PyArrow in {(deserialization_end_time - deserialization_start_time) * 1000:.6f} ms."
-    )
+    logger.info(f"Deserialized Position2D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized.data == updated_data}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

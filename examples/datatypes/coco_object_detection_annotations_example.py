@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of COCOObjectDetectionAnnotations datatype.
-"""
+"""Demonstrates the Telekinesis COCOObjectDetectionAnnotations datatype."""
 
 import time
 
@@ -10,16 +8,12 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def object_detection_annotations_example():
-    """
-    Example function to demonstrate usage of COCOObjectDetectionAnnotations datatype.
-     - Create an COCOObjectDetectionAnnotations data
-     - Print the original data
-    """
-    # Create an COCOObjectDetectionAnnotations data
+    """Demonstrate creation, access, indexing, segmentation format conversion, construction from masks, and serialization."""
+
+    # ======================= Create ============================================
     H, W = 720, 1280
-    my_annotations = datatypes.COCOObjectDetectionAnnotations(
+    annotations = datatypes.COCOObjectDetectionAnnotations(
         ids=np.array([0, 1], dtype=np.int32),
         image_ids=np.array([7, 7], dtype=np.int32),
         category_ids=np.array([1, 2], dtype=np.int32),
@@ -27,102 +21,81 @@ def object_detection_annotations_example():
         image_heights=np.array([H, H], dtype=np.int32),
         image_widths=np.array([W, W], dtype=np.int32),
         segmentations=[
-            [[0, 2, 10, 0, 10, 10, 0, 10]],  # polygon for bbox [0,0,10,10]
-            [[22, 20, 25, 20, 25, 25, 20, 25]],  # polygon for bbox [20,20,5,5]
+            [[0, 2, 10, 0, 10, 10, 0, 10]],
+            [[22, 20, 25, 20, 25, 25, 20, 25]],
         ],
     )
-    logger.info(f"Original COCOObjectDetectionAnnotations: {my_annotations}")
+    logger.info(f"Original COCOObjectDetectionAnnotations: {annotations}")
 
-    # Access the grouped underlying annotations data
-    my_annotations_ids = my_annotations.ids
-    my_annotations_image_ids = my_annotations.image_ids
-    my_annotations_category_ids = my_annotations.category_ids
-    my_annotations_bboxes = my_annotations.bboxes
-    my_annotations_image_heights = my_annotations.image_heights
-    my_annotations_image_widths = my_annotations.image_widths
-    my_annotations_segmentations = my_annotations.segmentations
-
-    logger.info(f"Number of annotations in batch: {len(my_annotations)}")
-    logger.info(f"Underlying ids data: {my_annotations_ids}")
-    logger.info(f"Underlying image_ids data: {my_annotations_image_ids}")
-    logger.info(f"Underlying category_ids data: {my_annotations_category_ids}")
-    logger.info(f"Underlying bboxes data: {my_annotations_bboxes}")
-    logger.info(f"Underlying image_heights data: {my_annotations_image_heights}")
-    logger.info(f"Underlying image_widths data: {my_annotations_image_widths}")
-    logger.info(f"Underlying segmentations data: {my_annotations_segmentations}")
-
-    logger.info("Visualizing with Rerun...")
-    rr.init("object_detection_example", spawn=True)
-    datatypes.visualize(
-        my_annotations, 
-        entity_path="/COCOObjectDetectionAnnotations"
-    )
-
-    # Indexing with an int returns a new COCOObjectDetectionAnnotation
-    index = 0
-    my_single_annotation = my_annotations[index]
+    # ======================= Inspect ===========================================
+    logger.info(f"Number of annotations in batch: {len(annotations)}")
     logger.info(
-        f"Single ObjectDetectionAnnotation at index {index}: "
-        f"{my_single_annotation}"
+        f"ids={annotations.ids}, "
+        f"image_ids={annotations.image_ids}, "
+        f"category_ids={annotations.category_ids}, "
+        f"image_heights={annotations.image_heights}, "
+        f"image_widths={annotations.image_widths}"
     )
-    
-    my_single_annotation_id = my_single_annotation.id
-    my_single_annotation_image_id = my_single_annotation.image_id
-    my_single_annotation_category_id = my_single_annotation.category_id
-    my_single_annotation_bbox = my_single_annotation.bbox
+    logger.info(f"bboxes={annotations.bboxes}")
+    logger.info(f"segmentations={annotations.segmentations}")
 
-    logger.info(f"Single annotation id: {my_single_annotation_id}")
-    logger.info(f"Single annotation image_id: {my_single_annotation_image_id}")   
-    logger.info(f"Single annotation category_id: {my_single_annotation_category_id}")
-    logger.info(f"Single annotation bbox: {my_single_annotation_bbox}")
-    logger.info(f"Single annotation segmentation: {my_single_annotation.segmentation}")
+    # ======================= Visualize =========================================
+    rr.init("object_detection_example", spawn=True)
+    datatypes.visualize(annotations, entity_path="/COCOObjectDetectionAnnotations")
 
-    datatypes.visualize(
-        my_single_annotation, 
-        entity_path="/SingleObjectDetectionAnnotation"
+    # ======================= Index =============================================
+    index = 0
+    single = annotations[index]
+    logger.info(f"Single ObjectDetectionAnnotation at index {index}: {single}")
+    logger.info(
+        f"id={single.id}, "
+        f"image_id={single.image_id}, "
+        f"category_id={single.category_id}, "
+        f"bbox={single.bbox}"
     )
+    logger.info(f"segmentation={single.segmentation}")
+    datatypes.visualize(single, entity_path="/SingleObjectDetectionAnnotation")
 
-    # Convert segmentation to different formats
-    as_rle = my_annotations.segmentations[0]
-    as_polygon = my_annotations.get_segmentation(0, "polygon")
-    as_mask = my_annotations.get_segmentation(0, "mask")
+    # ======================= Convert ===========================================
+    as_rle = annotations.segmentations[0]
+    as_polygon = annotations.get_segmentation(0, "polygon")
+    as_mask = annotations.get_segmentation(0, "mask")
     logger.info(f"Segmentation 0 as RLE: {as_rle}")
     logger.info(f"Segmentation 0 as polygon: {as_polygon}")
     logger.info(f"Segmentation 0 as mask: shape={as_mask.shape}, dtype={as_mask.dtype}")
 
-    # Convert_segmentation is the same conversion, usable standalone on any
     mask_back_to_rle = datatypes.COCOObjectDetectionAnnotations.convert_segmentation(
         as_mask, "mask", "rle"
     )
     logger.info(f"Mask converted back to RLE: {mask_back_to_rle}")
 
-    # Create from binary masks
+    # ======================= From Masks ========================================
     masks = [
-        my_annotations.get_segmentation(i, datatypes.SegmentationFormat.MASK)
-        for i in range(len(my_annotations))
+        annotations.get_segmentation(i, datatypes.SegmentationFormat.MASK)
+        for i in range(len(annotations))
     ]
     from_masks = datatypes.COCOObjectDetectionAnnotations.from_binary_masks(
-        ids=my_annotations.ids,
-        image_ids=my_annotations.image_ids,
-        category_ids=my_annotations.category_ids,
-        bboxes=my_annotations.bboxes,
+        ids=annotations.ids,
+        image_ids=annotations.image_ids,
+        category_ids=annotations.category_ids,
+        bboxes=annotations.bboxes,
         masks=masks,
     )
     logger.info(f"Built from binary masks: {from_masks}")
 
-    # Serialize to pyarrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_annotations)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(annotations)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized COCOObjectDetectionAnnotations: {deserialized}")
-    logger.info(f"Deserialized COCOObjectDetectionAnnotations data matches Original: {deserialized == my_annotations}")
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms")
-    logger.info(f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms")
+    logger.info(f"Deserialized COCOObjectDetectionAnnotations: {deserialized}")
+    logger.info(f"Round-trip successful: {annotations == deserialized}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

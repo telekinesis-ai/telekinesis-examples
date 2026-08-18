@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Box3D datatype.
-"""
+"""Demonstrates the Telekinesis Box3D datatype."""
 
 import time
 
@@ -10,96 +8,74 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def box3d_example():
-    """
-    Example function to demonstrate usage of Box3D datatype.
-        - Create a Box3D data
-        - Access the underlying box data
-        - Visualize the Box3D data using Rerun
-        - Update the Box3D data, which will update the underlying data and visualization
-        - Translate the box, returns a new Box3D object with translated coordinates
-        - Scale the box, returns a new Box3D object with scaled dimensions
-        - Use with numpy for further operation for eg multiplying the box dimensions
-        - Serialize to PyArrow and back
-    """
-    # Create a Box3D data
-    input_box3d = [1, 2, 2.5, 5, 3, 5]  # [x, y, z, width, height, depth]
-    my_box3d = datatypes.Box3D(input_box3d)
-    logger.info(f"Original Box3D: {my_box3d}")
+    """Demonstrate creation, access, update, translation, scaling, NumPy interop, format conversion, and serialization."""
 
-    # Access the underlying box data
-    my_box3d_data = my_box3d.data
-    my_box3d_shape = my_box3d.shape
-    my_box3d_width = my_box3d.width
-    my_box3d_height = my_box3d.height
-    my_box3d_depth = my_box3d.depth
-    my_box3d_volume = my_box3d.volume
-    my_box3d_center = my_box3d.center
+    # ======================= Create ============================================
+    coords = [1, 2, 2.5, 5, 3, 5]
+    box3d = datatypes.Box3D(coords)
+    logger.info(f"Original Box3D: {box3d}")
 
-    logger.info(f"Underlying Box3D data: {my_box3d_data}")
-    logger.info(f"Underlying Box3D shape: {my_box3d_shape}")
-    logger.info(f"Underlying Box3D width: {my_box3d_width}")
-    logger.info(f"Underlying Box3D height: {my_box3d_height}")
-    logger.info(f"Underlying Box3D depth: {my_box3d_depth}")
-    logger.info(f"Underlying Box3D volume: {my_box3d_volume}")
-    logger.info(f"Underlying Box3D center: {my_box3d_center}")
+    # ======================= Inspect ===========================================
+    logger.info(f"Box3D data: {box3d.data}")
+    logger.info(
+        f"shape={box3d.shape}, "
+        f"width={box3d.width}, "
+        f"height={box3d.height}, "
+        f"depth={box3d.depth}, "
+        f"volume={box3d.volume}, "
+        f"center={box3d.center}"
+    )
 
-    logger.info("Visualizing with Rerun...")
+    # ======================= Visualize =========================================
     rr.init("box3d_example", spawn=True)
-    datatypes.visualize(my_box3d, entity_path="/Box3D/my_box3d", label="Original Box3D")
+    datatypes.visualize(box3d, entity_path="/Box3D/my_box3d", label="Original Box3D")
 
-    # Update the Box3D data
-    new_box3d_data = [1, 4, 2.5, 5, 2, 7]  # New [x, y, z, width, height, depth]
-    my_box3d.data = new_box3d_data
-    logger.info(f"Updated Box3D: {my_box3d}")
-    datatypes.visualize(my_box3d, entity_path="/Box3D/my_updated_box3d", label="Updated Box3D")
+    # ======================= Update ============================================
+    updated_coords = [1, 4, 2.5, 5, 2, 7]
+    box3d.data = updated_coords
+    logger.info(f"Updated Box3D: {box3d}")
+    datatypes.visualize(box3d, entity_path="/Box3D/my_updated_box3d", label="Updated Box3D")
 
-    # Translate the box
-    # Returns a new box3d with the translation applied, does not modify the original box3d
-    translation_vector = [3, 3, 1]  # [dx, dy, dz]
-    translated_box3d = my_box3d.translate(translation_vector)
+    # ======================= Translate =========================================
+    translation = [3, 3, 1]
+    translated_box3d = box3d.translate(translation)
     logger.info(f"Translated Box3D: {translated_box3d}")
     datatypes.visualize(
         translated_box3d, entity_path="/Box3D/my_translated_box3d", label="Translated Box3D"
     )
 
-    # Scale the box
-    # Returns a new box3d with the scaling applied, does not modify the original box3d
-    scaling_factors = [2, 0.5, 1.5]  # [sx, sy, sz]
-    scaled_box3d = my_box3d.scale(scaling_factors)
+    # ======================= Scale =============================================
+    scale_factors = [2, 0.5, 1.5]
+    scaled_box3d = box3d.scale(scale_factors)
     logger.info(f"Scaled Box3D: {scaled_box3d}")
     datatypes.visualize(scaled_box3d, entity_path="/Box3D/my_scaled_box3d", label="Scaled Box3D")
 
-    # Operate with Numpy on the underlying data
-    multipy_factor = 1
-    new_box3d_dimensions = np.multiply(my_box3d, multipy_factor)
+    # ======================= NumPy Interop =====================================
+    multiply_factor = 1
+    scaled_dimensions = np.multiply(box3d, multiply_factor)
     logger.info(
-        f"Box3D dimensions multiplied by {multipy_factor} using numpy: {new_box3d_dimensions}"
+        f"Box3D dimensions multiplied by {multiply_factor} using numpy: {scaled_dimensions}"
     )
 
-    # Create from different input formats
-    input_box3d_xyzxyz = [1, 2, 2.5, 5, 3, 5]
-    box3d_from_xyzxyz = datatypes.Box3D.from_format(input_box3d_xyzxyz, source_format="xyzxyz")
+    # ======================= Convert ===========================================
+    xyzxyz_coords = [1, 2, 2.5, 5, 3, 5]
+    box3d_from_xyzxyz = datatypes.Box3D.from_format(xyzxyz_coords, source_format="xyzxyz")
     logger.info(f"Box3D created from xyzxyz format: {box3d_from_xyzxyz}")
 
-    # Serialize to pyarrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_box3d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(box3d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
-    deserialized_box3d = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Box3D: {deserialized_box3d}")
-    logger.info(f"Deserialized Box3D data matches Original: {deserialized_box3d == my_box3d}")
+    start = time.perf_counter()
+    deserialized = datatypes.deserialize(serialized)["param_0"]
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized Box3D: {deserialized}")
+    logger.info(f"Round-trip successful: {box3d == deserialized}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Point3D datatype.
-"""
+"""Demonstrates the Telekinesis Point3D datatype."""
 
 import time
 
@@ -10,77 +8,60 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def point3d_example():
-    """
-    Example function to demonstrate usage of Point3D datatype.
-        - Create a Point3D data
-        - Access the underlying point data
-        - Visualize the Point3D data using Rerun
-        - Update the underlying point data
-        - Operate on the underlying data with numpy
-        - Serialize to PyArrow and back
-    """
-    # Create a Point3D data can be list or numpy array of shape (3,)
+    """Demonstrate creation, access, visualization, update, NumPy arithmetic, and serialization."""
+
+    # ======================= Create ============================================
     point = [1.0, 2.0, 3.0]
-    my_point3d = datatypes.Point3D(point)
-    logger.info(f"Original Point3D: {my_point3d}")
+    point3d = datatypes.Point3D(point)
 
-    # Access the underlying point data
-    my_point3d_data = my_point3d.data
-    my_point3d_shape = my_point3d.shape
-    my_point3d_size = my_point3d.size
-    my_point3d_dtype = my_point3d.dtype
-    my_point3d_ndim = my_point3d.ndim
-    my_point3d_numpy = my_point3d.to_numpy()
-    my_point3d_copy = my_point3d.copy()
+    logger.info(f"Original Point3D: {point3d}")
 
-    logger.info(f"Underlying Point3D data: {my_point3d_data}")
-    logger.info(f"Underlying Point3D shape: {my_point3d_shape}")
-    logger.info(f"Underlying Point3D size: {my_point3d_size}")
-    logger.info(f"Underlying Point3D dtype: {my_point3d_dtype}")
-    logger.info(f"Underlying Point3D ndim: {my_point3d_ndim}")
-    logger.info(f"Underlying Point3D numpy array: {my_point3d_numpy}")
-    logger.info(f"Underlying Point3D object: {my_point3d_copy}")
+    # ======================= Inspect ===========================================
+    data = point3d.data
+    shape = point3d.shape
+    size = point3d.size
+    dtype = point3d.dtype
+    ndim = point3d.ndim
+    numpy_point3d = point3d.to_numpy()
+    point3d_copy = point3d.copy()
 
-    # Visualize the Point3D data using Rerun
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"Underlying data: {data}")
+    logger.info(f"NumPy array: {numpy_point3d}")
+    logger.info(f"Copy: {point3d_copy}")
+
+    # ======================= Visualize =========================================
     rr.init("point3d_example", spawn=True)
-    datatypes.visualize(my_point3d, entity_path="/Point3D", label="My Point3D")
+    datatypes.visualize(point3d, entity_path="/Point3D", label="My Point3D")
 
-    # Update the my_point3d_data
-    new_point3d_data = [4.0, 5.0, 6.0]
-    my_point3d.data = new_point3d_data
-    logger.info(f"Updated Point3D: {my_point3d}")
-    datatypes.visualize(my_point3d, entity_path="/Point3D/updated", label="Updated Point3D")
+    # ======================= Update ============================================
+    new_data = [4.0, 5.0, 6.0]
+    point3d.data = new_data
+    logger.info(f"Updated Point3D: {point3d}")
+    datatypes.visualize(point3d, entity_path="/Point3D/updated", label="Updated Point3D")
 
-    # Operate on the underlying data with numpy - add, subtract, multiply, divide
-    my_point3d_sum = my_point3d + np.array([1.0, 1.0, 1.0])
-    my_point3d_diff = my_point3d - np.array([1.0, 1.0, 1.0])
-    my_point3d_prod = my_point3d * np.array(2.0)
-    my_point3d_quot = my_point3d / np.array(2.0)
-    logger.info(f"Sum of Point3D with numpy array: {my_point3d_sum}")
-    logger.info(f"Difference of Point3D with numpy array: {my_point3d_diff}")
-    logger.info(f"Product of Point3D with scalar: {my_point3d_prod}")
-    logger.info(f"Quotient of Point3D with scalar: {my_point3d_quot}")
+    # ======================= Arithmetic ========================================
+    point_sum = point3d + np.array([1.0, 1.0, 1.0])
+    point_diff = point3d - np.array([1.0, 1.0, 1.0])
+    point_prod = point3d * np.array(2.0)
+    point_quot = point3d / np.array(2.0)
+    logger.info(f"Sum: {point_sum}, Difference: {point_diff}")
+    logger.info(f"Product: {point_prod}, Quotient: {point_quot}")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_point3d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(point3d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Point3D: {deserialized}")
-    logger.info(f"Deserialized Point3D data: {deserialized.data == new_point3d_data}")
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialized Point3D to PyArrow in {(serialization_end_time - serialization_start_time) * 1000:.6f} ms."
-    )
-    logger.info(
-        f"Deserialized Point3D from PyArrow in {(deserialization_end_time - deserialization_start_time) * 1000:.6f} ms."
-    )
+    logger.info(f"Deserialized Point3D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized.data == new_data}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

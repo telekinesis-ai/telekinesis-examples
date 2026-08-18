@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of OrientedBox2D datatype.
-"""
+"""Demonstrates the Telekinesis OrientedBox2D datatype."""
 
 import time
 
@@ -10,133 +8,96 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def oriented_box2d_example():
-    """
-    Example function to demonstrate usage of OrientedBox2D datatype.
-        - Create an OrientedBox2D data
-        - Access the underlying box data
-        - Visualize the OrientedBox2D data using Rerun
-        - Update the underlying box data
-        - Translate the box, returns a new OrientedBox2D object with updated center
-        - Scale the box, returns a new OrientedBox2D object with updated size
-        - Rotate the box, returns a new OrientedBox2D object with updated theta
-        - Use with numpy to compute the box's rotated corner points
-        - Serialize to PyArrow and back
-    """
-    # Create an OrientedBox2D data
-    my_oriented_box2d = datatypes.OrientedBox2D([0.5, 0.5, 0.5, 0.5, 0.5])
-    logger.info(f"Original OrientedBox2D: {my_oriented_box2d}")
+    """Demonstrate creation, access, visualization, translate/scale/rotate, NumPy interop, and serialization."""
 
-    # Access the underlying box data
-    my_oriented_box2d_data = my_oriented_box2d.data
-    my_oriented_box2d_shape = my_oriented_box2d.shape
-    my_oriented_box2d_dtype = my_oriented_box2d.dtype
-    my_oriented_box2d_ndim = my_oriented_box2d.ndim
-    my_oriented_box2d_numpy = my_oriented_box2d.to_numpy()
-    my_oriented_box2d_center = my_oriented_box2d.center
-    my_oriented_box2d_area = my_oriented_box2d.area
-    my_oriented_box2d_width = my_oriented_box2d.width
-    my_oriented_box2d_height = my_oriented_box2d.height
-    my_oriented_box2d_theta = my_oriented_box2d.theta
+    # ======================= Create ============================================
+    box = datatypes.OrientedBox2D([0.5, 0.5, 0.5, 0.5, 0.5])
 
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"Created OrientedBox2D: {box}")
+
+    # ======================= Visualize =========================================
     rr.init("oriented_box2d_example", spawn=True)
     datatypes.visualize(
-        my_oriented_box2d,
-        entity_path="/OrientedBox2D/my_oriented_box2d",
-        label="My Oriented Box2D",
+        box, entity_path="/OrientedBox2D/my_oriented_box2d", label="My Oriented Box2D"
     )
 
-    logger.info(f"Underlying OrientedBox2D data: {my_oriented_box2d_data}")
-    logger.info(f"Underlying OrientedBox2D data shape: {my_oriented_box2d_shape}")
-    logger.info(f"Underlying OrientedBox2D data dtype: {my_oriented_box2d_dtype}")
-    logger.info(f"Underlying OrientedBox2D data ndim: {my_oriented_box2d_ndim}")
-    logger.info(f"Underlying OrientedBox2D data as numpy array: {my_oriented_box2d_numpy}")
-    logger.info(f"Underlying OrientedBox2D center: {my_oriented_box2d_center}")
-    logger.info(f"Underlying OrientedBox2D area: {my_oriented_box2d_area}")
-    logger.info(f"Underlying OrientedBox2D width: {my_oriented_box2d_width}")
-    logger.info(f"Underlying OrientedBox2D height: {my_oriented_box2d_height}")
-    logger.info(f"Underlying OrientedBox2D theta: {my_oriented_box2d_theta}")
-
-    # Update the my_oriented_box2d data
-    my_oriented_box2d.data = [2.0, 2.0, 1.5, 1.0, 1.0]
-    logger.info(f"Updated OrientedBox2D: {my_oriented_box2d}")
-    datatypes.visualize(
-        my_oriented_box2d,
-        entity_path="/OrientedBox2D/my_updated_oriented_box2d",
-        label="Updated Oriented Box2D",
-    )
-
-    # Translate the box, returns a new OrientedBox2D object with updated center
-    translated_oriented_box2d = my_oriented_box2d.translate([1.0, 1.0])
+    # ======================= Inspect ===========================================
+    logger.info(f"shape={box.shape}, dtype={box.dtype}, ndim={box.ndim}")
+    logger.info(f"NumPy array: {box.to_numpy()}")
     logger.info(
-        f"Translated OrientedBox2D center: {translated_oriented_box2d.center} "
-        f"(was {my_oriented_box2d.center})"
+        f"center={box.center}, area={box.area}, width={box.width}, "
+        f"height={box.height}, theta={box.theta}"
     )
+
+    # ======================= Update ============================================
+    box.data = [2.0, 2.0, 1.5, 1.0, 1.0]
+
+    logger.info(f"Updated OrientedBox2D: {box}")
     datatypes.visualize(
-        translated_oriented_box2d,
+        box, entity_path="/OrientedBox2D/my_updated_oriented_box2d", label="Updated Oriented Box2D"
+    )
+
+    # ======================= Translate =========================================
+    translated_box = box.translate([1.0, 1.0])
+
+    logger.info(f"Translated center: {translated_box.center} (was {box.center})")
+    datatypes.visualize(
+        translated_box,
         entity_path="/OrientedBox2D/my_translated_oriented_box2d",
         label="Translated Oriented Box2D",
     )
 
-    # Scale the box, returns a new OrientedBox2D object with updated size
-    scaled_oriented_box2d = my_oriented_box2d.scale(1.5)
+    # ======================= Scale =============================================
+    scaled_box = box.scale(1.5)
+
     logger.info(
-        f"Scaled OrientedBox2D width and height: {scaled_oriented_box2d.width} x {scaled_oriented_box2d.height} "
-        f"(was {my_oriented_box2d.width} x {my_oriented_box2d.height})"
+        f"Scaled width and height: {scaled_box.width} x {scaled_box.height} "
+        f"(was {box.width} x {box.height})"
     )
     datatypes.visualize(
-        scaled_oriented_box2d,
-        entity_path="/OrientedBox2D/my_scaled_oriented_box2d",
-        label="Scaled Oriented Box2D",
+        scaled_box, entity_path="/OrientedBox2D/my_scaled_oriented_box2d", label="Scaled Oriented Box2D"
     )
 
-    # Rotate the box, returns a new OrientedBox2D object with theta increased by the delta
-    rotated_oriented_box2d = my_oriented_box2d.rotate(0.25)
-    logger.info(
-        f"Rotated OrientedBox2D theta: {rotated_oriented_box2d.theta} "
-        f"(was {my_oriented_box2d.theta})"
-    )
+    # ======================= Rotate ============================================
+    rotated_box = box.rotate(0.25)
+
+    logger.info(f"Rotated theta: {rotated_box.theta} (was {box.theta})")
     datatypes.visualize(
-        rotated_oriented_box2d,
+        rotated_box,
         entity_path="/OrientedBox2D/my_rotated_oriented_box2d",
         label="Rotated Oriented Box2D",
     )
 
-    # Use with numpy to compute the box's rotated corner points.
-    cx, cy, w, h, theta = np.asarray(rotated_oriented_box2d)
+    # ======================= NumPy Interop =====================================
+    cx, cy, w, h, theta = np.asarray(rotated_box)
     local_corners = np.array(
         [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]], dtype=np.float32
     )
     cos_t, sin_t = np.cos(theta), np.sin(theta)
     rotation_matrix = np.array([[cos_t, -sin_t], [sin_t, cos_t]], dtype=np.float32)
     corners = local_corners @ rotation_matrix.T + np.array([cx, cy], dtype=np.float32)
-    logger.info(f"Rotated OrientedBox2D corners (world space, [x, y] per row):\n{corners}")
 
-    # Sanity-check the numpy corner math against the box's own `.area`
+    logger.info(f"Corners (world space, [x, y] per row):\n{corners}")
+
     edge_w = np.linalg.norm(corners[1] - corners[0])
     edge_h = np.linalg.norm(corners[2] - corners[1])
-    logger.info(
-        f"Area from numpy corners: {edge_w * edge_h} (matches .area: {rotated_oriented_box2d.area})"
-    )
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_oriented_box2d)
-    serialization_end_time = time.perf_counter()
+    logger.info(f"Area from corners: {edge_w * edge_h} (matches .area: {rotated_box.area})")
 
-    deserialization_start_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(box)
+    serialization_ms = (time.perf_counter() - start) * 1000
+
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Deserialized OrientedBox2D matches Original: {deserialized == my_oriented_box2d}")
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized OrientedBox2D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized == box}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

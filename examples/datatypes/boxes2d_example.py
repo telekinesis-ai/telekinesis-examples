@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Boxes2D datatype.
-"""
+"""Demonstrates the Telekinesis Boxes2D datatype."""
 
 import time
 
@@ -10,56 +8,47 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def boxes2d_example():
-    """
-    Example function to demonstrate usage of Boxes2D datatype.
-     - Create a Boxes2D data
-     - Print the original data
-    """
-    # Create a Boxes2D data
-    input_box2d_1 = [[1, 2.5, 3, 3]]  # [[x, y, width, height], ...]
-    input_box2d_2 = [[4, 5, 2, 1]]  # [[x, y, width, height], ...]
-    input_boxes2d = np.concatenate([input_box2d_1, input_box2d_2], axis=0)
-    my_boxes2d = datatypes.Boxes2D(input_boxes2d)
-    logger.info(f"Original Boxes2D: {my_boxes2d}")
+    """Demonstrate creation, access, in-place update, translation, scaling, and serialization."""
 
-    # Access the underlying box data
-    my_box2d_data = my_boxes2d.data
-    my_box2d_shape = my_boxes2d.shape
-    my_box2d_width = my_boxes2d.width
-    my_box2d_height = my_boxes2d.height
-    my_box2d_area = my_boxes2d.area
-    my_box2d_center = my_boxes2d.center
+    # ======================= Create ============================================
+    box2d_1 = [[1, 2.5, 3, 3]]
+    box2d_2 = [[4, 5, 2, 1]]
+    coords = np.concatenate([box2d_1, box2d_2], axis=0)
+    boxes2d = datatypes.Boxes2D(coords)
+    logger.info(f"Original Boxes2D: {boxes2d}")
 
-    logger.info(f"Underlying Box2D data: {my_box2d_data}")
-    logger.info(f"Underlying Box2D shape: {my_box2d_shape}")
-    logger.info(f"Underlying Box2D width: {my_box2d_width}")
-    logger.info(f"Underlying Box2D height: {my_box2d_height}")
-    logger.info(f"Underlying Box2D area: {my_box2d_area}")
-    logger.info(f"Underlying Box2D center: {my_box2d_center}")
-
-    logger.info("Visualizing with Rerun...")
-    rr.init("boxes2d_example", spawn=True)
-    datatypes.visualize(
-        my_boxes2d, entity_path="/Boxes2D/my_box2d", label=["Original Box2D 1", "Original Box2D 2"]
+    # ======================= Inspect ===========================================
+    logger.info(f"Boxes2D data: {boxes2d.data}")
+    logger.info(
+        f"shape={boxes2d.shape}, "
+        f"width={boxes2d.width}, "
+        f"height={boxes2d.height}, "
+        f"area={boxes2d.area}, "
+        f"center={boxes2d.center}"
     )
 
-    # Update box index 1 in place, keeping box 0 unchanged
-    new_box2d_data = [3, 4, 3, 5]  # New [x, y, width, height]
-    updated_data = my_boxes2d.data
-    updated_data[1] = new_box2d_data
-    my_boxes2d.data = updated_data
-    logger.info(f"Updated Box2D: {my_boxes2d}")
+    # ======================= Visualize =========================================
+    rr.init("boxes2d_example", spawn=True)
     datatypes.visualize(
-        my_boxes2d,
+        boxes2d, entity_path="/Boxes2D/my_box2d", label=["Original Box2D 1", "Original Box2D 2"]
+    )
+
+    # ======================= Update ============================================
+    updated_box = [3, 4, 3, 5]
+    data = boxes2d.data
+    data[1] = updated_box
+    boxes2d.data = data
+    logger.info(f"Updated Box2D: {boxes2d}")
+    datatypes.visualize(
+        boxes2d,
         entity_path="/Boxes2D/my_updated_box2d",
         label=["Original Box2D 1", "Original Box2D 2"],
     )
 
-    # Translate all the boxes, returns a new Boxes2D object with translated coordinates
-    translation_vector = [2, 3]  # [dx, dy]
-    translated_boxes2d = my_boxes2d.translate(translation_vector)
+    # ======================= Translate =========================================
+    translation = [2, 3]
+    translated_boxes2d = boxes2d.translate(translation)
     logger.info(f"Translated Boxes2D: {translated_boxes2d}")
     datatypes.visualize(
         translated_boxes2d,
@@ -67,9 +56,9 @@ def boxes2d_example():
         label=["Translated Box2D 1", "Translated Box2D 2"],
     )
 
-    # Scale all the boxes, returns a new Boxes2D object with scaled dimensions
-    scaling_factors = [0.5, 0.5]  # [sx, sy]
-    scaled_boxes2d = my_boxes2d.scale(scaling_factors)
+    # ======================= Scale =============================================
+    scale_factors = [0.5, 0.5]
+    scaled_boxes2d = boxes2d.scale(scale_factors)
     logger.info(f"Scaled Boxes2D: {scaled_boxes2d}")
     datatypes.visualize(
         scaled_boxes2d,
@@ -77,23 +66,19 @@ def boxes2d_example():
         label=["Scaled Box2D 1", "Scaled Box2D 2"],
     )
 
-    # Serialize to pyarrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_boxes2d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(boxes2d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
-    deserialized_box2d = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Box2D: {deserialized_box2d}")
-    logger.info(f"Deserialized Box2D data matches Original: {deserialized_box2d == my_boxes2d}")
+    start = time.perf_counter()
+    deserialized = datatypes.deserialize(serialized)["param_0"]
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized Boxes2D: {deserialized}")
+    logger.info(f"Round-trip successful: {boxes2d == deserialized}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

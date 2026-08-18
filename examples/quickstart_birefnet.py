@@ -37,12 +37,11 @@ def main() -> None:
     # Wrap pixels in Telekinesis's typed Image object.
     logger.success(f"Loaded image from {IMAGE_URL}")
 
-    # Skill call: BiRefNet returns an annotation object we convert to a plain dict for logging
-    result = cornea.segment_image_using_foreground_birefnet(
+    # Skill call: BiRefNet returns a datatypes.SegmentationImage label map (0 = background, 1 = foreground)
+    segmented_image = cornea.segment_image_foreground_using_birefnet(
         image=image,
         mask_threshold=0,
     )
-    annotation = result.to_dict()
     logger.success("BiRefNet foreground segmentation complete.")
 
     # Opens the Rerun viewer (spawn=True).
@@ -50,7 +49,7 @@ def main() -> None:
 
     # Log input image and segmented image as separate entities.
     rr.log("input", rr.Image(image.to_numpy()))
-    rr.log("segmented_mask", rr.Image(annotation["labeled_mask"]))
+    rr.log("segmented_mask", rr.Image(segmented_image.data))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Pose3D datatype.
-"""
+"""Demonstrates the Telekinesis Pose3D datatype."""
 
 import time
 
@@ -10,67 +8,55 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def pose3d_example():
-    """
-    Example function to demonstrate usage of Pose3D datatype.
-     - Create a Pose3D data
-     - Print the original data
-    """
-    # Create a Pose3D data
-    input_pose3d_data = [0.5, 0.2, 0.5, 0.4619398, 0.1913417, 0.4619398, 0.7325378]
-    logger.info(f"Input Pose3D data: {input_pose3d_data}")
+    """Demonstrate creation, access, visualization, update, transform-matrix conversion, pose-format conversion, NumPy interop, and serialization."""
 
-    my_pose3d = datatypes.Pose3D(input_pose3d_data)
-    logger.info(f"Original Pose3D: {my_pose3d}")
+    # ======================= Create ============================================
+    pose_data = [0.5, 0.2, 0.5, 0.4619398, 0.1913417, 0.4619398, 0.7325378]
+    pose3d = datatypes.Pose3D(pose_data)
 
-    my_pose3d_data = my_pose3d.data
-    my_pose3d_shape = my_pose3d.shape
-    my_pose3d_size = my_pose3d.size
-    my_pose3d_dtype = my_pose3d.dtype
-    my_pose3d_ndim = my_pose3d.ndim
-    my_pose3d_numpy = my_pose3d.to_numpy()
-    my_pose3d_copy = my_pose3d.copy()
+    logger.info(f"Original Pose3D: {pose3d}")
 
-    logger.info(f"Underlying Pose3D data: {my_pose3d_data}")
-    logger.info(f"Underlying Pose3D shape: {my_pose3d_shape}")
-    logger.info(f"Underlying Pose3D size: {my_pose3d_size}")
-    logger.info(f"Underlying Pose3D dtype: {my_pose3d_dtype}")
-    logger.info(f"Underlying Pose3D ndim: {my_pose3d_ndim}")
-    logger.info(f"Underlying Pose3D as numpy array: {my_pose3d_numpy}")
-    logger.info(f"Underlying Pose3D copy: {my_pose3d_copy}")
+    # ======================= Inspect ===========================================
+    data = pose3d.data
+    shape = pose3d.shape
+    size = pose3d.size
+    dtype = pose3d.dtype
+    ndim = pose3d.ndim
+    numpy_pose3d = pose3d.to_numpy()
+    pose3d_copy = pose3d.copy()
 
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"Underlying data: {data}")
+    logger.info(f"NumPy array: {numpy_pose3d}")
+    logger.info(f"Copy: {pose3d_copy}")
+
+    # ======================= Visualize =========================================
     rr.init("pose3d_example", spawn=True)
-    datatypes.visualize(my_pose3d, entity_path="/Pose3D", label="my_pose3d")
+    datatypes.visualize(pose3d, entity_path="/Pose3D", label="my_pose3d")
 
-    # Update the underlying data via the setter
-    my_pose3d.data = [0.1, 0.2, 0.3, 0.0, 0.0, 0.0, 1.0]
-    logger.info(f"Updated Pose3D: {my_pose3d}")
-    datatypes.visualize(my_pose3d, entity_path="/Pose3D/updated", label="updated_pose3d")
+    # ======================= Update ============================================
+    pose3d.data = [0.1, 0.2, 0.3, 0.0, 0.0, 0.0, 1.0]
+    logger.info(f"Updated Pose3D: {pose3d}")
+    datatypes.visualize(pose3d, entity_path="/Pose3D/updated", label="updated_pose3d")
 
-    # Convert to transformation matrix
-    my_pose3d_matrix = my_pose3d.to_transform_matrix()
-    logger.info(f"Pose3D as transformation matrix:\n{my_pose3d_matrix}")
-    my_pose3d_transform = datatypes.Transform3D(my_pose3d_matrix)
-    datatypes.visualize(my_pose3d_transform, entity_path="/Transform3D", label="pose3d_transform")
+    # ======================= Transform Matrix ==================================
+    matrix = pose3d.to_transform_matrix()
+    logger.info(f"Pose3D as transformation matrix:\n{matrix}")
+    transform3d = datatypes.Transform3D(matrix)
+    datatypes.visualize(transform3d, entity_path="/Transform3D", label="pose3d_transform")
 
-    # Convert from transformation matrix back to Pose3D
-    my_pose3d_from_transform = datatypes.Pose3D.from_transform_matrix(my_pose3d_transform.data)
-    logger.info(f"Pose3D from transformation matrix: {my_pose3d_from_transform}")
-    logger.info(
-        f"Converted back to Pose3D is equal to original: {my_pose3d_from_transform == my_pose3d}"
-    )
+    pose3d_from_transform = datatypes.Pose3D.from_transform_matrix(transform3d.data)
+    logger.info(f"Pose3D from transformation matrix: {pose3d_from_transform}")
+    logger.info(f"Converted back to Pose3D is equal to original: {pose3d_from_transform == pose3d}")
 
-    # Create a new Pose3D from a pose in a different rotation representation
-    # Rotation as "deg"
-    my_pose3d_deg = datatypes.Pose3D.from_pose_format(
+    # ======================= Pose Formats ======================================
+    pose3d_deg = datatypes.Pose3D.from_pose_format(
         [30, 45, 60, 0.4619398, 0.1913417, 0.4619398, 0.7325378], rot_type="deg"
     )
-    logger.info(f"Pose3D from pose with rotation in degrees: {my_pose3d_deg}")
+    logger.info(f"Pose3D from pose with rotation in degrees: {pose3d_deg}")
 
-    # Rotation as "rad"
-    my_pose3d_rad = datatypes.Pose3D.from_pose_format(
+    pose3d_rad = datatypes.Pose3D.from_pose_format(
         [
             np.radians(30),
             np.radians(45),
@@ -82,44 +68,41 @@ def pose3d_example():
         ],
         rot_type="rad",
     )
-    logger.info(f"Pose3D from pose with rotation in radians: {my_pose3d_rad}")
+    logger.info(f"Pose3D from pose with rotation in radians: {pose3d_rad}")
 
-    # Rotation as "rotvec"
-    my_pose3d_rotvec = datatypes.Pose3D.from_pose_format(
+    pose3d_rotvec = datatypes.Pose3D.from_pose_format(
         [0.5235988, 0.7853982, 1.0471976, 0.4619398, 0.1913417, 0.4619398, 0.7325378],
         rot_type="rotvec",
     )
-    logger.info(f"Pose3D from pose with rotation as rotation vector: {my_pose3d_rotvec}")
+    logger.info(f"Pose3D from pose with rotation as rotation vector: {pose3d_rotvec}")
 
-    # Get pose as different rotation representations
-    pose_as_deg = my_pose3d.convert_pose_format(rot_type="deg")
+    # ======================= Convert ===========================================
+    pose_as_deg = pose3d.convert_pose_format(rot_type="deg")
     logger.info(f"Pose3D as rotation in degrees: {pose_as_deg}")
 
-    pose_as_rad = my_pose3d.convert_pose_format(rot_type="rad")
+    pose_as_rad = pose3d.convert_pose_format(rot_type="rad")
     logger.info(f"Pose3D as rotation in radians: {pose_as_rad}")
 
-    pose_as_rotvec = my_pose3d.convert_pose_format(rot_type="rotvec")
+    pose_as_rotvec = pose3d.convert_pose_format(rot_type="rotvec")
     logger.info(f"Pose3D as rotation vector: {pose_as_rotvec}")
 
-    # Use with numpy
-    my_pose3d_numpy = np.reshape(my_pose3d, (7,))
-    logger.info(f"Underlying Pose3D with np.reshape: {my_pose3d_numpy}")
+    # ======================= NumPy Interop =====================================
+    reshaped = np.reshape(pose3d, (7,))
+    logger.info(f"Underlying Pose3D with np.reshape: {reshaped}")
 
-    # Serialize with PyArrow and deserialize back
-    serialization_start_time = time.perf_counter()
-    serialized_pose3d = datatypes.serialize(my_pose3d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(pose3d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
-    deserialized_pose3d = datatypes.deserialize(serialized_pose3d)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Pose3D: {deserialized_pose3d}")
-    logger.info(f"Deserialized Pose3D is equal to original: {deserialized_pose3d == my_pose3d}")
+    start = time.perf_counter()
+    deserialized = datatypes.deserialize(serialized)["param_0"]
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Serialization time: {serialization_end_time - serialization_start_time} seconds")
-    logger.info(
-        f"Deserialization time: {deserialization_end_time - deserialization_start_time} seconds"
-    )
+    logger.info(f"Deserialized Pose3D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized == pose3d}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

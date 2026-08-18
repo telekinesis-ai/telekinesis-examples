@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Points3D datatype.
-"""
+"""Demonstrates the Telekinesis Points3D datatype."""
 
 import time
 
@@ -10,89 +8,68 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def points3d_example():
-    """
-    Example function to demonstrate usage of Points3D datatype.
-        - Create a Points3D data
-        - Access the underlying points data
-        - Visualize the Points3D data using Rerun
-        - Update the underlying points data
-        - Operate on the underlying data with numpy
-        - Serialize to PyArrow and back
-        - Construct an empty (zero-row) batch
-    """
-    # Create a Points3D data can be list or numpy array of shape (N, 3)
+    """Demonstrate creation, access, visualization, update, NumPy arithmetic, serialization, and empty-batch construction."""
+
+    # ======================= Create ============================================
     points = [[10.0, 20.0, 30.0], [40.0, 50.0, 60.0]]
-    my_points3d = datatypes.Points3D(points)
-    logger.info(f"Original Points3D: {my_points3d}")
+    points3d = datatypes.Points3D(points)
 
-    # Access the underlying points data
-    my_points3d_data = my_points3d.data
-    my_points3d_shape = my_points3d.shape
-    my_points3d_size = my_points3d.size
-    my_points3d_dtype = my_points3d.dtype
-    my_points3d_ndim = my_points3d.ndim
-    my_points3d_numpy = my_points3d.to_numpy()
-    my_points3d_copy = my_points3d.copy()
+    logger.info(f"Original Points3D: {points3d}")
 
-    logger.info(f"Underlying Points3D data: {my_points3d_data}")
-    logger.info(f"Underlying Points3D shape: {my_points3d_shape}")
-    logger.info(f"Underlying Points3D size: {my_points3d_size}")
-    logger.info(f"Underlying Points3D dtype: {my_points3d_dtype}")
-    logger.info(f"Underlying Points3D ndim: {my_points3d_ndim}")
-    logger.info(f"Underlying Points3D numpy array: {my_points3d_numpy}")
-    logger.info(f"Underlying Points3D object: {my_points3d_copy}")
+    # ======================= Inspect ===========================================
+    data = points3d.data
+    shape = points3d.shape
+    size = points3d.size
+    dtype = points3d.dtype
+    ndim = points3d.ndim
+    numpy_points3d = points3d.to_numpy()
+    points3d_copy = points3d.copy()
 
-    # Visualize the Points3D data using Rerun
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"Underlying data: {data}")
+    logger.info(f"NumPy array: {numpy_points3d}")
+    logger.info(f"Copy: {points3d_copy}")
+
+    # ======================= Visualize =========================================
     rr.init("points3d_example", spawn=True)
-    datatypes.visualize(my_points3d, entity_path="/Points3D", label=["Point 1", "Point 2"])
+    datatypes.visualize(points3d, entity_path="/Points3D", label=["Point 1", "Point 2"])
 
-    # Update the my_points3d_data
-    new_points3d_data = [[70.0, 80.0, 90.0], [100.0, 110.0, 120.0]]
-    my_points3d.data = new_points3d_data
-    logger.info(f"Updated Points3D: {my_points3d}")
+    # ======================= Update ============================================
+    new_data = [[70.0, 80.0, 90.0], [100.0, 110.0, 120.0]]
+    points3d.data = new_data
+    logger.info(f"Updated Points3D: {points3d}")
     datatypes.visualize(
-        my_points3d,
+        points3d,
         entity_path="/Points3D/updated",
         label=["Updated Point 1", "Updated Point 2"],
     )
 
-    # Operate on the underlying data with numpy - add, subtract, multiply, divide
-    my_points3d_sum = my_points3d + np.array([1.0, 1.0, 1.0])
-    my_points3d_diff = my_points3d - np.array([1.0, 1.0, 1.0])
-    my_points3d_prod = my_points3d * np.array(2.0)
-    my_points3d_quot = my_points3d / np.array(2.0)
-    logger.info(f"Sum of Points3D with numpy array: {my_points3d_sum}")
-    logger.info(f"Difference of Points3D with numpy array: {my_points3d_diff}")
-    logger.info(f"Product of Points3D with scalar: {my_points3d_prod}")
-    logger.info(f"Quotient of Points3D with scalar: {my_points3d_quot}")
+    # ======================= Arithmetic ========================================
+    points_sum = points3d + np.array([1.0, 1.0, 1.0])
+    points_diff = points3d - np.array([1.0, 1.0, 1.0])
+    points_prod = points3d * np.array(2.0)
+    points_quot = points3d / np.array(2.0)
+    logger.info(f"Sum: {points_sum}, Difference: {points_diff}")
+    logger.info(f"Product: {points_prod}, Quotient: {points_quot}")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_points3d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(points3d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
+    deserialization_ms = (time.perf_counter() - start) * 1000
+
     logger.info(f"Deserialized Points3D: {deserialized}")
-    logger.info(f"Deserialized Points3D data: {deserialized.data == new_points3d_data}")
+    logger.info(f"Round-trip successful: {deserialized.data == new_data}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
-    logger.info(
-        f"Serialized Points3D to PyArrow in {(serialization_end_time - serialization_start_time) * 1000:.6f} ms."
-    )
-    logger.info(
-        f"Deserialized Points3D from PyArrow in {(deserialization_end_time - deserialization_start_time) * 1000:.6f} ms."
-    )
-
-    # Points3D also accepts an empty (zero-row) batch, since shape_spec's leading
-    # axis (None) allows N=0. A plain `[]` won't work since it has no second axis,
-    # so an explicitly-shaped empty array is required.
-    empty_points3d = datatypes.Points3D(np.empty((0, 3), dtype=np.float32))
-    logger.info(f"Empty Points3D: {empty_points3d}")
-    logger.info(f"Empty Points3D shape: {empty_points3d.shape}")
+    # ======================= Empty Batch =======================================
+    empty = datatypes.Points3D(np.empty((0, 3), dtype=np.float32))
+    logger.info(f"Empty Points3D: {empty}, shape={empty.shape}")
 
 
 if __name__ == "__main__":

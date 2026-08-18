@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Wrench3D datatype.
-"""
+"""Demonstrates the Telekinesis Wrench3D datatype."""
 
 import time
 
@@ -10,82 +8,63 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def wrench3d_example():
-    """
-    Example function to demonstrate usage of Wrench3D datatype.
-        - Create a Wrench3D from force + torque
-        - Access the underlying ndarray through ``.data`` (defensive copy)
-        - Inspect ``shape``, ``ndim``, ``dtype`` and ``size``
-        - Visualize the Wrench3D data using Rerun
-        - Replace the wrapped payload via the ``data`` setter
-        - Use with numpy to split into force/torque components
-        - Serialize to PyArrow and back
-    """
+    """Demonstrate creation, access, visualization, update, NumPy interop, and serialization."""
 
-    # Create a Wrench3D data: [fx, fy, fz, tx, ty, tz]
-    input_wrench3d = np.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.5], dtype=np.float32)
-    logger.info(f"Input wrench: {input_wrench3d}")
-    my_wrench3d = datatypes.Wrench3D(input_wrench3d)
-    logger.info(f"Original Wrench3D: {my_wrench3d}")
+    # ======================= Create ============================================
+    values = np.array([1.0, 0.0, 0.0, 0.0, 0.0, 0.5], dtype=np.float32)
+    wrench3d = datatypes.Wrench3D(values)
 
-    # Access the underlying data
-    my_wrench3d_data = my_wrench3d.data
-    my_wrench3d_shape = my_wrench3d.shape
-    my_wrench3d_size = my_wrench3d.size
-    my_wrench3d_dtype = my_wrench3d.dtype
-    my_wrench3d_ndim = my_wrench3d.ndim
-    my_wrench3d_numpy = my_wrench3d.to_numpy()
-    my_wrench3d_copy = my_wrench3d.copy()
+    logger.info(f"Input values: {values}")
+    logger.info(f"Created Wrench3D: {wrench3d}")
 
-    logger.info(f"Underlying Wrench3D data: {my_wrench3d_data}")
-    logger.info(f"Underlying Wrench3D shape: {my_wrench3d_shape}")
-    logger.info(f"Underlying Wrench3D size: {my_wrench3d_size}")
-    logger.info(f"Underlying Wrench3D dtype: {my_wrench3d_dtype}")
-    logger.info(f"Underlying Wrench3D ndim: {my_wrench3d_ndim}")
-    logger.info(f"Underlying Wrench3D numpy array: {my_wrench3d_numpy}")
-    logger.info(f"Underlying Wrench3D object: {my_wrench3d_copy}")
+    # ======================= Inspect ===========================================
+    data = wrench3d.data
+    shape = wrench3d.shape
+    size = wrench3d.size
+    dtype = wrench3d.dtype
+    ndim = wrench3d.ndim
+    numpy_array = wrench3d.to_numpy()
+    wrench3d_copy = wrench3d.copy()
 
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"Wrench3D data: {data}")
+    logger.info(f"NumPy array: {numpy_array}")
+    logger.info(f"Copied Wrench3D: {wrench3d_copy}")
+
+    # ======================= Visualize =========================================
     rr.init("wrench3d_example", spawn=True)
-    datatypes.visualize(my_wrench3d, entity_path="/Wrench3D", label="Original Wrench3D")
+    datatypes.visualize(wrench3d, entity_path="/Wrench3D", label="Original Wrench3D")
 
-    # Update the underlying data
-    my_wrench3d.data = np.array([0.0, 2.0, 0.0, 0.0, 0.0, 1.5], dtype=np.float32)
-    logger.info(f"Updated Wrench3D: {my_wrench3d}")
-    datatypes.visualize(my_wrench3d, entity_path="/Wrench3D/updated", label="Updated Wrench3D")
+    # ======================= Update ============================================
+    wrench3d.data = np.array([0.0, 2.0, 0.0, 0.0, 0.0, 1.5], dtype=np.float32)
 
-    # Use with numpy: split the flat array into its force/torque halves
-    force = my_wrench3d_numpy[:3]
-    torque = my_wrench3d_numpy[3:]
-    logger.info(f"Force (fx, fy, fz): {force}")
-    logger.info(f"Torque (tx, ty, tz): {torque}")
+    logger.info(f"Updated Wrench3D: {wrench3d}")
+    datatypes.visualize(wrench3d, entity_path="/Wrench3D/updated", label="Updated Wrench3D")
 
-    # Operate on the underlying data with numpy
+    # ======================= NumPy Interop =====================================
+    force = numpy_array[:3]
+    torque = numpy_array[3:]
     force_magnitude = np.linalg.norm(force)
     torque_magnitude = np.linalg.norm(torque)
-    logger.info(f"Force magnitude via numpy: {force_magnitude}")
-    logger.info(f"Torque magnitude via numpy: {torque_magnitude}")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_wrench3d)
-    serialization_end_time = time.perf_counter()
+    logger.info(f"Force (fx, fy, fz): {force}")
+    logger.info(f"Torque (tx, ty, tz): {torque}")
+    logger.info(f"force_magnitude={force_magnitude}, torque_magnitude={torque_magnitude}")
 
-    deserialization_start_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(wrench3d)
+    serialization_ms = (time.perf_counter() - start) * 1000
+
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Wrench3D: {deserialized}")
-    logger.info(
-        f"Deserialized Wrench3D and original Wrench3D are equal: {deserialized == my_wrench3d}"
-    )
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized Wrench3D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized == wrench3d}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

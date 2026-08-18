@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Quaternion datatype.
-"""
+"""Demonstrates the Telekinesis Quaternion datatype."""
 
 import time
 
@@ -13,74 +11,56 @@ from telekinesis import datatypes
 
 
 def quaternion_example():
-    """
-    Example function to demonstrate usage of Quaternion datatype.
-     - Create a Quaternion data (unit quaternion, scalar-last [qx, qy, qz, qw])
-     - Access the underlying ndarray through ``.data`` (defensive copy)
-     - Inspect ``shape``, ``ndim``, ``dtype`` and ``size``
-     - Replace the wrapped payload via the ``data`` setter (must stay unit-norm)
-     - NumPy/SciPy interop: verify unit norm and convert to a rotation matrix
-     - Serialize to PyArrow and back
-    """
+    """Demonstrate creation, access, visualization, update, NumPy/SciPy interop, and serialization."""
 
-    # Create a Quaternion data (identity-adjacent rotation: [qx, qy, qz, qw])
-    my_quaternion = datatypes.Quaternion([0.4619398, 0.1913417, 0.4619398, 0.7325378])
-    logger.info(f"Original Quaternion: {my_quaternion}")
+    # ======================= Create ============================================
+    quaternion = datatypes.Quaternion([0.4619398, 0.1913417, 0.4619398, 0.7325378])
+    logger.info(f"Original Quaternion: {quaternion}")
 
-    # Access the underlying data
-    my_quaternion_data = my_quaternion.data
-    my_quaternion_shape = my_quaternion.shape
-    my_quaternion_size = my_quaternion.size
-    my_quaternion_dtype = my_quaternion.dtype
-    my_quaternion_ndim = my_quaternion.ndim
-    my_quaternion_numpy = my_quaternion.to_numpy()
-    my_quaternion_copy = my_quaternion.copy()
+    # ======================= Inspect ===========================================
+    data = quaternion.data
+    shape = quaternion.shape
+    size = quaternion.size
+    dtype = quaternion.dtype
+    ndim = quaternion.ndim
+    numpy_array = quaternion.to_numpy()
+    copy = quaternion.copy()
 
-    logger.info(f"Underlying Quaternion data: {my_quaternion_data}")
-    logger.info(f"Underlying Quaternion shape: {my_quaternion_shape}")
-    logger.info(f"Underlying Quaternion size: {my_quaternion_size}")
-    logger.info(f"Underlying Quaternion dtype: {my_quaternion_dtype}")
-    logger.info(f"Underlying Quaternion ndim: {my_quaternion_ndim}")
-    logger.info(f"Underlying Quaternion numpy array: {my_quaternion_numpy}")
-    logger.info(f"Underlying Quaternion object: {my_quaternion_copy}")
+    logger.info(f"data={data}, shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"NumPy array: {numpy_array}")
+    logger.info(f"Copied Quaternion: {copy}")
 
-    logger.info("Visualizing with Rerun...")
+    # ======================= Visualize =========================================
     rr.init("quaternion_example", spawn=True)
-    datatypes.visualize(my_quaternion, entity_path="/Quaternion", label="My Quaternion")
+    datatypes.visualize(quaternion, entity_path="/Quaternion", label="My Quaternion")
 
-    # Update the underlying data via the setter (must remain unit-norm)
-    my_quaternion.data = [0.0, 0.0, 0.7071068, 0.7071068]  # 90 deg rotation about Z
-    logger.info(f"Updated Quaternion: {my_quaternion}")
+    # ======================= Update ============================================
+    quaternion.data = [0.0, 0.0, 0.7071068, 0.7071068]
+    logger.info(f"Updated Quaternion: {quaternion}")
     datatypes.visualize(
-        my_quaternion, entity_path="/Quaternion/updated", label="Updated Quaternion"
+        quaternion, entity_path="/Quaternion/updated", label="Updated Quaternion"
     )
 
-    # Use with numpy/scipy - verify unit norm and convert to a rotation matrix
-    quaternion_norm = np.linalg.norm(my_quaternion.data)
-    rotation_matrix = Rotation.from_quat(my_quaternion.data).as_matrix()
-    logger.info(f"Quaternion norm (np.linalg.norm): {quaternion_norm}")
+    # ======================= NumPy Interop =====================================
+    norm = np.linalg.norm(quaternion.data)
+    rotation_matrix = Rotation.from_quat(quaternion.data).as_matrix()
+
+    logger.info(f"Quaternion norm (np.linalg.norm): {norm}")
     logger.info(f"Equivalent rotation matrix (scipy Rotation):\n{rotation_matrix}")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    my_quaternion_arrow = datatypes.serialize(my_quaternion)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(quaternion)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
-    my_quaternion_from_arrow = datatypes.deserialize(my_quaternion_arrow)["param_0"]
-    deserialization_end_time = time.perf_counter()
-    logger.info(f"Deserialized Quaternion from PyArrow: {my_quaternion_from_arrow}")
-    logger.info(
-        f"Deserialized Quaternion and original Quaternion are equal: "
-        f"{my_quaternion == my_quaternion_from_arrow}"
-    )
+    start = time.perf_counter()
+    deserialized = datatypes.deserialize(serialized)["param_0"]
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized Quaternion: {deserialized}")
+    logger.info(f"Round-trip successful: {quaternion == deserialized}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

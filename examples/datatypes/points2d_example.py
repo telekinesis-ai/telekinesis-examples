@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Points2D datatype.
-"""
+"""Demonstrates the Telekinesis Points2D datatype."""
 
 import time
 
@@ -10,91 +8,70 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def points2d_example():
-    """
-    Example function to demonstrate usage of Points2D datatype.
-        - Create a Points2D data
-        - Access the underlying points data
-        - Visualize the Points2D data using Rerun
-        - Update the underlying points data
-        - Operate on the underlying data with numpy
-        - Serialize to PyArrow and back
-        - Construct an empty (zero-row) batch
-    """
-    # Create a Points2D data can be list or numpy array of shape (N, 2)
+    """Demonstrate creation, access, visualization, update, NumPy arithmetic, serialization, and empty-batch construction."""
+
+    # ======================= Create ============================================
     points = [[10.0, 20.0], [30.0, 40.0], [50.0, 60.0]]
-    my_points2d = datatypes.Points2D(points)
-    logger.info(f"Original Points2D: {my_points2d}")
+    points2d = datatypes.Points2D(points)
 
-    # Access the underlying points data
-    my_points2d_data = my_points2d.data
-    my_points2d_shape = my_points2d.shape
-    my_points2d_size = my_points2d.size
-    my_points2d_dtype = my_points2d.dtype
-    my_points2d_ndim = my_points2d.ndim
-    my_points2d_numpy = my_points2d.to_numpy()
-    my_points2d_copy = my_points2d.copy()
+    logger.info(f"Original Points2D: {points2d}")
 
-    logger.info(f"Underlying Points2D data: {my_points2d_data}")
-    logger.info(f"Underlying Points2D shape: {my_points2d_shape}")
-    logger.info(f"Underlying Points2D size: {my_points2d_size}")
-    logger.info(f"Underlying Points2D dtype: {my_points2d_dtype}")
-    logger.info(f"Underlying Points2D ndim: {my_points2d_ndim}")
-    logger.info(f"Underlying Points2D numpy array: {my_points2d_numpy}")
-    logger.info(f"Underlying Points2D object: {my_points2d_copy}")
+    # ======================= Inspect ===========================================
+    data = points2d.data
+    shape = points2d.shape
+    size = points2d.size
+    dtype = points2d.dtype
+    ndim = points2d.ndim
+    numpy_points2d = points2d.to_numpy()
+    points2d_copy = points2d.copy()
 
-    # Visualize the Points2D data using Rerun
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"Underlying data: {data}")
+    logger.info(f"NumPy array: {numpy_points2d}")
+    logger.info(f"Copy: {points2d_copy}")
+
+    # ======================= Visualize =========================================
     rr.init("points2d_example", spawn=True)
     datatypes.visualize(
-        my_points2d, entity_path="/Points2D", label=["Point 1", "Point 2", "Point 3"]
+        points2d, entity_path="/Points2D", label=["Point 1", "Point 2", "Point 3"]
     )
 
-    # Update the my_points2d_data
-    new_points2d_data = [[70.0, 80.0], [90.0, 100.0], [110.0, 120.0]]
-    my_points2d.data = new_points2d_data
-    logger.info(f"Updated Points2D: {my_points2d}")
+    # ======================= Update ============================================
+    new_data = [[70.0, 80.0], [90.0, 100.0], [110.0, 120.0]]
+    points2d.data = new_data
+    logger.info(f"Updated Points2D: {points2d}")
     datatypes.visualize(
-        my_points2d,
+        points2d,
         entity_path="/Points2D/updated",
         label=["Updated Point 1", "Updated Point 2", "Updated Point 3"],
     )
 
-    # Operate on the underlying data with numpy - add, subtract, multiply, divide
-    my_points2d_sum = my_points2d + np.array([1.0, 1.0])
-    my_points2d_diff = my_points2d - np.array([1.0, 1.0])
-    my_points2d_prod = my_points2d * np.array(2.0)
-    my_points2d_quot = my_points2d / np.array(2.0)
-    logger.info(f"Sum of Points2D with numpy array: {my_points2d_sum}")
-    logger.info(f"Difference of Points2D with numpy array: {my_points2d_diff}")
-    logger.info(f"Product of Points2D with scalar: {my_points2d_prod}")
-    logger.info(f"Quotient of Points2D with scalar: {my_points2d_quot}")
+    # ======================= Arithmetic ========================================
+    points_sum = points2d + np.array([1.0, 1.0])
+    points_diff = points2d - np.array([1.0, 1.0])
+    points_prod = points2d * np.array(2.0)
+    points_quot = points2d / np.array(2.0)
+    logger.info(f"Sum: {points_sum}, Difference: {points_diff}")
+    logger.info(f"Product: {points_prod}, Quotient: {points_quot}")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_points2d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(points2d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
+    start = time.perf_counter()
     deserialized = datatypes.deserialize(serialized)["param_0"]
-    deserialization_end_time = time.perf_counter()
+    deserialization_ms = (time.perf_counter() - start) * 1000
+
     logger.info(f"Deserialized Points2D: {deserialized}")
-    logger.info(f"Deserialized Points2D data: {deserialized.data == new_points2d_data}")
+    logger.info(f"Round-trip successful: {deserialized.data == new_data}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
-    logger.info(
-        f"Serialized Points2D to PyArrow in {(serialization_end_time - serialization_start_time) * 1000:.6f} ms."
-    )
-    logger.info(
-        f"Deserialized Points2D from PyArrow in {(deserialization_end_time - deserialization_start_time) * 1000:.6f} ms."
-    )
-
-    # Points2D also accepts an empty (zero-row) batch, since shape_spec's leading
-    # axis (None) allows N=0. A plain `[]` won't work since it has no second axis,
-    # so an explicitly-shaped empty array is required.
-    empty_points2d = datatypes.Points2D(np.empty((0, 2), dtype=np.float32))
-    logger.info(f"Empty Points2D: {empty_points2d}")
-    logger.info(f"Empty Points2D shape: {empty_points2d.shape}")
+    # ======================= Empty Batch =======================================
+    empty = datatypes.Points2D(np.empty((0, 2), dtype=np.float32))
+    logger.info(f"Empty Points2D: {empty}, shape={empty.shape}")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,4 @@
-"""
-Example script to demonstrate usage of Transform3D datatype.
-"""
+"""Demonstrates the Telekinesis Transform3D datatype."""
 
 import time
 
@@ -10,21 +8,10 @@ import rerun as rr
 
 from telekinesis import datatypes
 
-
 def transform3d_example():
-    """
-    Example function to demonstrate usage of Transform3D datatype.
-        - Create a Transform3D data (4x4 homogeneous transform)
-        - Access the underlying transform data
-        - Visualize the Transform3D data using Rerun
-        - Update the underlying transform data
-        - Convert to pose numpy array
-        - Calculate the inverse of the transform
-        - Operate on the underlying data with numpy
-        - Convert back to Transform3D from pose numpy array
-        - Serialize to PyArrow and back
-    """
-    # Create a Transform3D data (4x4 homogeneous transform;)
+    """Demonstrate creation, access, update, inverse, pose conversion, and serialization."""
+
+    # ======================= Create ============================================
     matrix = np.array(
         [
             [0.5000000, -0.5000000, 0.7071068, 1],
@@ -33,31 +20,29 @@ def transform3d_example():
             [0, 0, 0, 1],
         ]
     )
-    my_transform3d = datatypes.Transform3D(matrix)
-    logger.info(f"Original Transform3D: {my_transform3d}")
+    transform3d = datatypes.Transform3D(matrix)
 
-    # Access the underlying transform data
-    my_transform3d_data = my_transform3d.data
-    my_transform3d_shape = my_transform3d.shape
-    my_transform3d_size = my_transform3d.size
-    my_transform3d_dtype = my_transform3d.dtype
-    my_transform3d_ndim = my_transform3d.ndim
-    my_transform3d_numpy = my_transform3d.to_numpy()
-    my_transform3d_copy = my_transform3d.copy()
+    logger.info(f"Created Transform3D: {transform3d}")
 
-    logger.info(f"Underlying Transform3D data: {my_transform3d_data}")
-    logger.info(f"Underlying Transform3D data shape: {my_transform3d_shape}")
-    logger.info(f"Underlying Transform3D data size: {my_transform3d_size}")
-    logger.info(f"Underlying Transform3D data dtype: {my_transform3d_dtype}")
-    logger.info(f"Underlying Transform3D data ndim: {my_transform3d_ndim}")
-    logger.info(f"Underlying Transform3D data as numpy array: {my_transform3d_numpy}")
-    logger.info(f"Underlying Transform3D object: {my_transform3d_copy}")
+    # ======================= Inspect ===========================================
+    data = transform3d.data
+    shape = transform3d.shape
+    size = transform3d.size
+    dtype = transform3d.dtype
+    ndim = transform3d.ndim
+    numpy_array = transform3d.to_numpy()
+    transform3d_copy = transform3d.copy()
 
-    logger.info("Visualizing with Rerun...")
+    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
+    logger.info(f"Transform3D data:\n{data}")
+    logger.info(f"NumPy array:\n{numpy_array}")
+    logger.info(f"Copied Transform3D: {transform3d_copy}")
+
+    # ======================= Visualize =========================================
     rr.init("transform3d_example", spawn=True)
-    datatypes.visualize(my_transform3d, entity_path="/Transform3D/main", label="my_transform3d")
+    datatypes.visualize(transform3d, entity_path="/Transform3D/main", label="transform3d")
 
-    # Update the my_transform3d_data
+    # ======================= Update ============================================
     new_matrix = np.array(
         [
             [0.5000000, -0.5000000, 0.7071068, 1.5],
@@ -66,70 +51,55 @@ def transform3d_example():
             [0, 0, 0, 1],
         ]
     )
-    my_transform3d.data = new_matrix
-    logger.info(f"Updated Transform3D: {my_transform3d}")
+    transform3d.data = new_matrix
+
+    logger.info(f"Updated Transform3D: {transform3d}")
     datatypes.visualize(
-        my_transform3d, entity_path="/Transform3D/updated", label="updated_transform3d"
+        transform3d, entity_path="/Transform3D/updated", label="updated_transform3d"
     )
 
-    # Calculate the inverse of the transform
-    inverse_transform3d_matrix = my_transform3d.inverse()
-    logger.info(f"Inverse Transform3D: {inverse_transform3d_matrix}")
-    inverse_transform3d = datatypes.Transform3D(inverse_transform3d_matrix)
-    datatypes.visualize(
-        inverse_transform3d, entity_path="/Transform3D/inverse", label="inverse_transform3d"
-    )
+    # ======================= Inverse ===========================================
+    inverse_matrix = transform3d.inverse()
+    inverse = datatypes.Transform3D(inverse_matrix)
 
-    # Convert to pose numpy array with rotation type as degrees
-    pose_array = my_transform3d.to_pose(rot_type="deg")
-    logger.info(f"Pose numpy array with rot_type='deg': {pose_array}")
+    logger.info(f"Inverse Transform3D: {inverse_matrix}")
+    datatypes.visualize(inverse, entity_path="/Transform3D/inverse", label="inverse_transform3d")
 
-    # Convert to pose numpy array with rotation type as rotvec
-    pose_array = my_transform3d.to_pose(rot_type="rotvec")
-    logger.info(f"Pose numpy array with rot_type='rotvec': {pose_array}")
+    # ======================= Pose Conversion ===================================
+    pose_deg = transform3d.to_pose(rot_type="deg")
+    pose_rotvec = transform3d.to_pose(rot_type="rotvec")
+    pose_rad = transform3d.to_pose(rot_type="rad")
+    pose_quat = transform3d.to_pose(rot_type="quat")
 
-    # Convert to pose numpy array with rotation type as rad
-    pose_array = my_transform3d.to_pose(rot_type="rad")
-    logger.info(f"Pose numpy array with rot_type='rad': {pose_array}")
+    logger.info(f"Pose (deg): {pose_deg}")
+    logger.info(f"Pose (rotvec): {pose_rotvec}")
+    logger.info(f"Pose (rad): {pose_rad}")
+    logger.info(f"Pose (quat): {pose_quat}")
 
-    # Convert to pose numpy array with quaternion rotation type
-    # Note: The quaternion is returned in the format [qx, qy, qz, qw] (scalar first)
-    # Above quaternion format is followed throughout the Telekinesis library for consistency.
-    pose_array = my_transform3d.to_pose(rot_type="quat")
-    logger.info(f"Pose numpy array with rot_type='quat': {pose_array}")
+    new_transform3d = datatypes.Transform3D.from_pose(pose_quat)
+    error = transform3d.compute_transformation_error(new_transform3d)
 
-    # Convert back to Transform3D from pose numpy array
-    new_transform3d = datatypes.Transform3D.from_pose(pose_array)
     logger.info(f"New Transform3D from pose: {new_transform3d}")
+    logger.info(f"Transformation error: {error}")
 
-    # Check if new transform is equal to original transform
-    # using the compute_transformation_error method
-    my_transform3d_error = my_transform3d.compute_transformation_error(new_transform3d)
-    logger.info(f"Transformation error between original and new transform: {my_transform3d_error}")
+    # ======================= NumPy Interop =====================================
+    sum_result = np.array([1, 1, 1, 0]) + numpy_array
 
-    # Operate on the underlying data with numpy - Add to the last column of the transform matrix
-    my_transform3d_sum = np.array([1, 1, 1, 0]) + my_transform3d_numpy
-    logger.info(f"Sum of Transform3D with numpy array : {my_transform3d_sum}")
+    logger.info(f"Sum of Transform3D with numpy array: {sum_result}")
 
-    # Serialize to PyArrow and back
-    serialization_start_time = time.perf_counter()
-    serialized = datatypes.serialize(my_transform3d)
-    serialization_end_time = time.perf_counter()
+    # ======================= Serialize / Deserialize ===========================
+    start = time.perf_counter()
+    serialized = datatypes.serialize(transform3d)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
-    deserialization_start_time = time.perf_counter()
-    deserialized_transform3d = datatypes.deserialize(serialized)["param_0"]
-    logger.info(f"Deserialized Transform3D: {deserialized_transform3d}")
-    logger.info(
-        f"Deserialized Transform3D is equal to original: {deserialized_transform3d == my_transform3d}"
-    )
-    deserialization_end_time = time.perf_counter()
+    start = time.perf_counter()
+    deserialized = datatypes.deserialize(serialized)["param_0"]
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(
-        f"Serialization time: {(serialization_end_time - serialization_start_time) * 1000} ms"
-    )
-    logger.info(
-        f"Deserialization time: {(deserialization_end_time - deserialization_start_time) * 1000} ms"
-    )
+    logger.info(f"Deserialized Transform3D: {deserialized}")
+    logger.info(f"Round-trip successful: {deserialized == transform3d}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":
