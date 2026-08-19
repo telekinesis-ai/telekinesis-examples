@@ -42,14 +42,14 @@ This repository contains standalone, chainable Python examples of those Skills. 
 
 ## Installation
 
-For a complete walkthrough, refer to the [Quickstart guide](https://docs.telekinesis.ai/getting-started/quickstart.html).
+For a complete walkthrough, refer to the [Installation guide.](https://docs.telekinesis.ai/getting-started/quickstart.html).
 
 ## Quickstart
 
 ```bash
 git clone https://github.com/telekinesis-ai/telekinesis-examples.git
 cd telekinesis-examples
-python examples\segmentation\run_cornea_examples.py
+python examples/segmentation/run_cornea_examples.py
 ```
 
 To run other examples, learn more about each Skill Group and how to use them:
