@@ -36,26 +36,149 @@
 </p>
 </div>
 
-# Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI
+# Telekinesis Examples
 
-<img width="100%" src="assets/application-vitreous-point-cloud-processing.gif" alt="Telekinesis Agentic Skill Library for Computer Vision, Robotics and Physical AI" />
+The **Telekinesis Agentic Skill Library** is a Python library of composable Skills - atomic perception, planning, and control operations - for agentic robotics, computer vision, and Physical AI systems, including LLM/VLM-driven task planning grounded in real perception and control.
 
-The [**Telekinesis Agentic Skill Library**](https://docs.telekinesis.ai/) is the first large-scale Python library for building agentic robotics, computer vision, and Physical AI systems. It provides:
+This repository contains standalone, chainable Python examples of those Skills. Full documentation: [docs.telekinesis.ai](https://docs.telekinesis.ai/).
 
-- **Skills**: a broad set of AI algorithms for perception, motion planning, and control.
-- **Physical AI Agents**: LLM/VLM agents for task planning across industrial, mobile, and humanoid robots.
+Available skills:
 
-The library is intended for robotics, computer vision, and research teams that want to:
+```python
+from telekinesis import synapse    # robotics skills
+from telekinesis import cornea     # image segmentation skills
+from telekinesis import retina     # object detection skills
+from telekinesis import pupil      # image processing skills
+from telekinesis import vitreous   # point cloud processing skills
+from telekinesis import medulla    # sensor interface skills
+from telekinesis import axon       # camera calibrations
+from telekinesis import dataengine # data logging
+from telekinesis import datatypes  # shared data structures
+from telekinesis import babyros    # pub/sub communication interface
+from telekinesis import rlbotics   # reinforcement learning
+```
 
-- Speed up development by integrating production-grade robotics, computer vision, and AI algorithms
-- Add intelligence to robots with LLM/VLM-driven task planning tied to real perception and control systems
-- Iterate quickly on Physical AI systems using a single, consistent Python library
+`babyros` and `rlbotics` are available as separate repos:
 
-This repository provides **Python examples** demonstrating Telekinesis Skills—atomic operations you can chain into pipelines for real-world applications. Each example is standalone, readable, and composable.
+- [telekinesis-rlbotics](https://github.com/telekinesis-ai/telekinesis-rlbotics)
+- [babyros](https://github.com/telekinesis-ai/babyros)
 
-> **Tip:** A free API key is required. Create one at [platform.telekinesis.ai](https://platform.telekinesis.ai/api-keys). See the [Quickstart Guide](https://docs.telekinesis.ai/getting-started/quickstart.html) for details.
+## Requirements
+
+- Python 3.11 or 3.12
+- A free [Telekinesis API key](https://platform.telekinesis.ai/api-keys), exported as `TELEKINESIS_API_KEY`:
+
+  ```bash
+  # macOS / Linux
+  export TELEKINESIS_API_KEY="your_api_key"
+  ```
+
+  ```powershell
+  # Windows (restart your terminal afterward)
+  setx TELEKINESIS_API_KEY "your_api_key"
+  ```
+
+  For guidance on setting up the `TELEKINESIS_API_KEY`, see the [setup video](https://www.youtube.com/watch?v=8HzUZq773mE).
+
+## Quickstart
+
+> **Note:** Make sure you have your `TELEKINESIS_API_KEY` set up first - see [Requirements](#requirements).
+
+Follow the steps below to quickly install and run an example:
+
+```bash
+cd telekinesis-examples
+
+pip install telekinesis-ai
+
+python examples/synapse/quickstart_set_cartesian_pose_abb.py   # Synapse robotics example, no hardware required
+```
+
+For a complete walkthrough, refer to the [Quickstart guide](https://docs.telekinesis.ai/getting-started/quickstart.html).
+
+## Getting Started
+
+Follow below detailed steps to easily integrate the **Telekinesis Agentic Skill Library** into your own application.
+
+### Step 1: Set Up Your API Key
+
+See [Requirements](#requirements) for the API key setup.
+
+### Step 2: Install the Telekinesis Agentic Skill Library
+
+1. Create an isolated environment so there are no dependency conflicts. We recommend installing a `Miniconda` environment by following the instructions [here](https://docs.conda.io/en/latest/miniconda.html#installing).
+
+2. Create a new `conda` environment called `telekinesis` and activate it:
+    ```bash
+    conda create -n telekinesis python=3.11
+    conda activate telekinesis
+    ```
+
+3. Install the library using `pip`:
+
+    We support Python 3.11 and 3.12.
+
+    ```bash
+    pip install telekinesis-ai
+    ```
+
+### Step 3: Run Your First Example
+
+1. Change into the repository directory:
+
+    ```bash
+    cd telekinesis-examples
+    ```
+2. Run the [segment_image_using_sam](https://docs.telekinesis.ai/skills/cornea/segment_image_using_sam.html) example:
+
+    ```bash
+    python examples/segmentation/segment_image_using_sam.py
+    ```
+
+    If the example runs successfully, a **Rerun** visualization window will open showing the input and filtered point cloud.
+
+    <img width="100%" src="assets/sam-input-output.webp" alt="Segmentation using SAM model" />
+
+### Step 4: Run Other Examples
+
+To run other examples, learn more about each Skill Group and how to use them:
+
+| Module | Description | Status |
+|--------|-------------|--------|
+| [**Synapse**](https://docs.telekinesis.ai/skills/synapse/overview.html) | Motion planning, kinematics, control | Released |
+| [**Cornea**](https://docs.telekinesis.ai/skills/cornea/overview.html) | Image segmentation | Released |
+| [**Retina**](https://docs.telekinesis.ai/skills/retina/overview.html) | Object detection (foundation models, classical) | Released |
+| [**Pupil**](https://docs.telekinesis.ai/skills/pupil/overview.html) | 2D image processing | Released |
+| [**Vitreous**](https://docs.telekinesis.ai/skills/vitreous/overview.html) | 3D point cloud & mesh processing | Released |
+| [**Medulla**](https://docs.telekinesis.ai/skills/medulla/overview.html) | Hardware communication (cameras & sensors) | Released |
+| [**Axon**](https://docs.telekinesis.ai/skills/axon/overview.html) | Camera calibrations | Released |
+| [**DataEngine**](https://docs.telekinesis.ai/data-engine/introduction.html) | Data logging & MCAP | Released |
+| [**Datatypes**](https://docs.telekinesis.ai/data-engine/datatypes/overview.html) | Shared data structures | Released |
 
 
+```bash
+# Computer vision (run the script directly)
+python examples/segmentation/segment_image_using_rgb.py                         # Cornea
+python examples/detection/detect_objects_using_grounding_dino.py                # Retina
+python examples/image_processing/filter_image_using_morphological_gradient.py   # Pupil
+python examples/point_cloud/estimate_principal_axes.py                          # Vitreous
+
+# Robotics
+python examples/synapse/motion/set_cartesian_pose/set_cartesian_pose.py         # Synapse motion
+python examples/synapse/kinematics/forward_kinematics.py                        # Synapse kinematics
+
+# Hardware
+python examples/sensors/webcam/capture_image_example.py                         # Medulla (webcam)
+
+# Calibration - NOTE: THIS NEEDS HARDWARE ROBOT and CAMERA
+python examples/calibration/calibrate_eye_in_hand.py                            # Axon (eye-in-hand calibration)
+
+# Data Engine
+python examples/dataengine/detection/tutorial.py                                # DataEngine (logging & MCAP)
+
+# Datatypes
+python examples/datatypes/image_example.py                                      # Datatypes
+```
 
 ## The Telekinesis Community
 
@@ -63,480 +186,11 @@ Telekinesis Agentic Skill Library is just the beginning. We're building a commun
 
 [Join our Discord community](https://discord.gg/S5v8bYAnc6) to connect, share, and build together.
 
-
-
-## Table of Contents
-
-- [What is a Skill?](#what-is-a-skill)
-- [What is a Physical AI Agent?](#what-is-a-physical-ai-agent)
-- [How do Physical AI Agents use Skills?](#how-do-physical-ai-agents-use-skills)
-- [What Can You Build?](#what-can-you-build)
-- [Control Any Robot](#control-any-industrial-robot-mobile-robot--humanoid-with-a-unified-python-interface)
-- [Production-Grade Computer Vision](#production-grade-computer-vision-models-for-robotics-and-physical-ai-systems)
-- [Getting Started](#getting-started)
-- [Example Categories](#example-categories)
-- [Directory Structure](#directory-structure)
-- [Who We Are](#who-we-are)
-
-
-
-## What is a Skill?
-
-A [Skill](https://docs.telekinesis.ai/getting-started/skills.html) is a reusable operation for robotics, computer vision, and Physical AI. Skills span 2D/3D perception (6D pose estimation, 2D/3D detection, segmentation, image processing), motion planning (RRT*, motion generators, trajectory optimization), and motion control (model predictive control, reinforcement learning policies). Skills can be **chained into pipelines** to build real-world robotics applications.
-
-**Example 1: Segment image using SAM** — [docs](https://docs.telekinesis.ai/cornea/segment_image_using_sam.html)
-
-```python
-from telekinesis import cornea                                # Import Cornea - Image segmentation module
-
-# Executing a 2D image segmentation Skill                     
-result = cornea.segment_image_using_sam(                      # Executing Skill - `segment_image_using_sam`
-    image=image,
-    bboxes=[[400, 150, 1200, 450]]
-)
-# Access results
-annotations = result.to_list()                
-```
-
-**Example 2: Detect objects using RF-DETR** — [docs](https://docs.telekinesis.ai/retina/detect_objects_using_rfdetr.html)
-
-```python
-from telekinesis import retina                                   # Import Retina - Object detection module
-
-# Executing a 2D object detection Skill
-annotations, categories = retina.detect_objects_using_rfdetr(    # Executing Skill - `detect_objects_using_rfdetr`
-    image=image,
-    score_threshold=0.5,
-)
-# Access results
-annotations = annotations.to_list()
-categories = categories.to_list()  
-```
-
-Skills are organized in [**Skill Groups**](https://docs.telekinesis.ai/getting-started/skills.html). Each can be imported from the `telekinesis` library:
-
-```python
-from telekinesis import cornea     # image segmentation skills
-from telekinesis import retina     # object detection skills
-from telekinesis import pupil      # image processing skills
-from telekinesis import vitreous   # point cloud processing skills
-from telekinesis import synapse  # robotics skills
-from telekinesis import medulla    # hardware communication skills
-from telekinesis import illusion   # synthetic data generation skills
-from telekinesis import iris       # AI model training skills
-```
-
-### [Cornea: Image segmentation](https://docs.telekinesis.ai/cornea/overview.html)
-```python
-from telekinesis import cornea
-```
-- **Color-based segmentation:** RGB, HSV, LAB, YCrCb
-- **Region-based segmentation:** Focus region, Watershed, Flood fill
-- **Deep learning segmentation:** BiRefNet (foreground), SAM
-- **Graph-based segmentation:** GrabCut
-- **Superpixel segmentation:** Felzenszwalb, SLIC
-- **Filtering:** Filter by area, color, mask
-- **Thresholding:** Global threshold, Otsu, Local, Yen, Adaptive, Laplacian-based
-
-
-### [Retina: Object detection](https://docs.telekinesis.ai/retina/overview.html)
-```python
-from telekinesis import retina
-```
-- **Classical shape detection** - Hough Transform, Contours
-- **2D Object detection** - YOLOX, RF-DETR
-- **Open-Vocabulary detection** - Qwen-VL, Grounding DINO
-
-
-### [Pupil: 2D image processing](https://docs.telekinesis.ai/pupil/overview.html)
-```python
-from telekinesis import pupil
-```
-- **Morphology:** erode, dilate, open/close, gradient, top-hat
-- **Structure:** Frangi, Hessian, Sato, Meijering
-- **Edges:** Sobel, Scharr, Laplacian, Gabor
-- **Denoising:** Gaussian, median, bilateral, box filters
-- **Enhancement:** CLAHE, gamma correction, white balance
-- **Transforms:** pyramids, mask thinning
-
-
-### [Vitreous: 3D point cloud processing](https://docs.telekinesis.ai/vitreous/overview.html)
-```python
-from telekinesis import vitreous
-```
-- **Point cloud:** centroids, normals, bounding boxes, principal axes
-- **Filtering:** masks, outliers, downsampling, plane & cylinder removal
-- **Segmentation:** DBSCAN, density, color, plane-based clustering
-- **Transforms:** rigid transforms, scaling, projection
-- **Registration:** ICP (P2P, P2Plane), global registration, cuboid sampling
-- **Meshes:** shapes, mesh to point cloud, convex hull, Poisson reconstruction
-
-
-### [Illusion: Synthetic data generation](https://docs.telekinesis.ai/illusion/overview.html)
-```python
-from telekinesis import illusion
-```
-- Synthetic image data generation for AI model training
-
-### [Iris: AI model training and deployment](https://docs.telekinesis.ai/iris/overview.html)
-```python
-from telekinesis import iris
-```
-- AI model training pipelines • Fine-tuning and evaluation of foundation models
-
-### [Synapse: Robotics](https://docs.telekinesis.ai/synapse/overview.html)
-```python
-from telekinesis import synapse
-```
-- **Kinematics:** forward & inverse kinematics, collision-free IK, IK with seed/motion profile, solver setup, default joint configuration
-- **Motion:** Cartesian & joint moves, joint-space Cartesian targets, freedrive, teach mode, jog, move-until-contact, motion stop, protective stop
-- **Servo control:** Cartesian, joint, and circular servoing
-- **Force control:** tool-contact detection
-- **State reading:** TCP pose/force/speed, joint positions/velocities/torques, target values, timestamp, connection status
-- **Robot statuses:** robot mode, safety mode, runtime state, controller frequency
-- **Diagnostics:** speed scaling, target speed fraction
-- **Tools (grippers):** open/close, move, set force/speed/position range/unit, read current position
-- **Visualization & model:** visual & collision meshes, link transforms
-- **Supported robots:** ABB, Fanuc, Franka Emika, KUKA, Motoman, Neura, Universal Robots (no-hardware quickstarts included)
-- **Supported tools:** parallel grippers — Robotiq 2F-85, OnRobot RG6
-
-
-## What is a Physical AI Agent?
-
-Recent advances in LLMs and VLMs have shown the potential of learned models to perform semantic reasoning, task decomposition, and high-level planning from vision and language inputs.
-
-In the Telekinesis library, a **Physical AI Agent**—typically a Vision Language Model (VLM) or Large Language Model (LLM)—autonomously interprets natural language instructions and generates high-level **Skill plans**. In autonomous Physical AI systems, Agents continuously produce and execute Skill plans, allowing the system to operate with minimal human intervention.
-
-To learn more, explore [Tzara](https://docs.telekinesis.ai/agents/introduction.html).
-
-
-
-## How do Physical AI Agents use Skills?
-
-![Telekinesis Agentic Skill Library Architecture](assets/skill-composition.png)
-
-*Telekinesis Agentic Skill Library Architecture*
-
-**Flow Overview**
-
-1. A user prompts the robot with a task: *"Hey, can you do a CNC machine loading task?"*
-2. The Agent interprets the intent and reasons over the given task and sequencing.
-3. The Agent constructs a high-level plan and orchestrates the Skills—selecting order and parameters.
-4. Skills are executed on the robot using production-grade **perception, motion, and control algorithms**, with continuous feedback from the environment.
-
-## What Can You Build?
-
-<img width="100%" src="assets/application-automated-relay-soldering.gif" alt="Automated relay soldering powered by Physical AI" />
-
-**Telekinesis Agentic Skill Library** helps you build **real-world robotics and Physical AI applications** for industries such as manufacturing, automotive, aerospace, and others. Below are use cases the Telekinesis team has deployed using the skill library.
-
-| Example Use Case | Description |
-|----------|-------------|
-| **Carton Palletizing** | Vision-guided palletizing that adapts to changing layouts and product variations. Object detection, pose estimation, and motion planning for accurate placement. |
-| **Automated Assembly** | Multi-step assembly combining task planning, coordinated manipulation, and precise motion execution. |
-| **Vision-Based Quality Control** | Industrial computer vision for defect detection, dimensional verification, and surface analysis. |
-| **Automated Basil Harvesting** | Vision-based manipulation for agricultural robotics in unstructured outdoor environments. Detect plants, estimate grasp poses, execute adaptive closed-loop motions. |
-
-| | |
-|:---:|:---:|
-| <img width="100%" src="assets/application-carton-palletizing.gif" alt="Carton Palletizing" />  | <img width="100%" src="assets/application-auto-assemble.gif" alt="Automated Assembly" />  |
-| Carton Palletizing  | Automated Assembly |
-|  <img width="100%" src="assets/application-quality-control.gif" alt="Vision-Based Quality Control" /> |  <img width="100%" src="assets/application-automated-basil-harvesting.gif" alt="Automated Basil Harvesting" /> |
-| Vision-Based Quality Control | Automated Basil Harvesting |
-
-
-## Control Any Industrial Robot, Mobile Robot & Humanoid with a Unified Python Interface
-
-One of the biggest pains of robotics is that each robot provider has their own interface. Telekinesis offers [**Neuroplan**](https://docs.telekinesis.ai/neuroplan/overview.html)—a skill group that provides a unified interface to control any industrial, mobile, or humanoid robot.
-
-**Supported:** Universal Robots, KUKA, ABB, Franka Emika (real & simulation); Boston Dynamics, Anybotics, Unitree (simulation).
-
-```python
-from telekinesis import neuroplan  # robotics skills
-```
-
-**Prototype** on any robot, **perform** any task on the same platform, and **deploy** the same Skill Groups anywhere—*any robot, any task, on one Physical AI platform.*
-
-<img width="100%" src="assets/simulation-robots.gif" alt="Telekinesis supports industrial, mobile and humanoid robots" />
-
-
-## Production-Grade Computer Vision Models for Robotics and Physical AI Systems
-
-The library offers **production-grade computer vision Skill Groups** for object detection, segmentation, pose estimation, synthetic data generation, and AI model training.
-
-```python
-from telekinesis import cornea     # image segmentation skills
-from telekinesis import retina     # object detection skills
-from telekinesis import pupil      # image processing skills
-from telekinesis import vitreous   # point cloud processing skills
-from telekinesis import illusion   # synthetic data generation skills
-from telekinesis import iris       # AI model training skills
-from telekinesis import medulla    # sensor interface skills
-```
-
-| | |
-|:---:|:---|
-| <img width="400" src="assets/computer-vision-capabilities.png" alt="Computer Vision Skill Groups" /> | **2D Image Processing, Object Detection & Segmentation** <br><br> Build reusable 2D vision pipelines using [Pupil](https://docs.telekinesis.ai/pupil_sdk/pupil_overview.html) for low-level image processing, [Retina](https://docs.telekinesis.ai/retina/overview.html) for object detection, and [Cornea](https://docs.telekinesis.ai/cornea/overview.html) for segmentation and mask generation. These Skill Groups can be composed into standalone perception pipelines for images, video, or sensor data. |
-| **3D Point Cloud Processing & Mesh Generation** <br><br> Develop geometric alignment pipelines using [Vitreous](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) to register point clouds or meshes against reference models or scenes. Vitreous provides reusable registration Skills—ICP-based alignment, global registration—enabling precise localization and model-to-scene matching. | <img width="400" src="assets/vision-icp-registration.gif" alt="ICP registration" /> |
-| <img width="400" src="assets/vision-3d-object-detection.gif" alt="3D object detection" /> | **3D Object Detection & 6D Pose Estimation** <br><br> Create 3D object detection and 6D pose estimation pipelines by combining [Retina](https://docs.telekinesis.ai/retina/overview.html) for object detection with [Vitreous](https://docs.telekinesis.ai/vitreous_sdk/vitreous_overview.html) for point cloud filtering, registration, and geometric pose estimation—for grasp planning, inspection, and vision-guided manipulation. |
-| **Synthetic Data Generation & AI Model Training** <br><br> Generate photo-realistic synthetic image datasets for training object detection, segmentation, and classification models using the [Illusion](https://docs.telekinesis.ai/illusion/overview.html) skill group. Train state-of-the-art AI models in the cloud and deploy them to real-world systems using the [Iris](https://docs.telekinesis.ai/iris/overview.html) skill group. | <img width="400" src="assets/synthetic-data-generation.png" alt="Synthetic Data Generation" /> |
-
-
-## Simulation Applications
-
-Develop and simulate digital twin workflows to validate, stress-test, and optimize Skill Groups. Deploy the same Skill Groups to real-world robots using a simulation-to-real transfer pipeline.
-
-| | | |
-|:---:|:---:|:---:|
-| <img width="100%" src="assets/simulation-cnc-machine-tending.gif" alt="CNC Machine Tending" /> | <img width="100%" src="assets/simulation-pick-and-place.gif" alt="Pick and Place" /> | <img width="100%" src="assets/simulation-polishing.gif" alt="Surface Polishing" /> |
-| CNC Machine Tending | Pick and Place | Surface Polishing |
-| <img width="100%" src="assets/simulation-welding.gif" alt="Robotic Welding" /> | <img width="100%" src="assets/simulation-metal-palletizing.gif" alt="Metal Palletizing" /> | <img width="100%" src="assets/simulation-palletizing.gif" alt="Palletizing" /> |
-| Robotic Welding | Metal Palletizing | Palletizing |
-
-## Getting Started
-
-You can easily integrate the **Telekinesis Agentic Skill Library** into your own application. Set up the library in just 4 steps and start building!
-
-### Requirements
-
-- Python 3.11 or 3.12
-- A Telekinesis account and API key
-
-### Step 1: Create an API Key
-
-Since all Skills are hosted in the cloud, you need a free API key to access them securely. Create a Telekinesis account and generate an API key: [Create API Key](https://platform.telekinesis.ai/api-keys)
-
-Store the key in a safe location, such as your shell configuration file (e.g. `.zshrc`, `.bashrc`) or another secure location on your computer.
-
-### Step 2: Configure the API Key
-
-Export the API key as an environment variable. Open a terminal and run the command below for your operating system.
-
-> **Note:** Replace `your_api_key` with the key you generated in Step 1.
-
-```bash
-# macOS / Linux
-export TELEKINESIS_API_KEY="your_api_key"
-```
-
-```powershell
-# Windows
-setx TELEKINESIS_API_KEY "your_api_key"
-```
-
-> **Note:** After running `setx` on Windows, restart your terminal for the changes to take effect.
-
-The Telekinesis Agentic Skill Library uses this API key to authenticate requests and automatically reads it from your system environment.
-
-### Step 3: Install the Telekinesis Agentic Skill Library
-
-1. Create an isolated environment so that there is no dependency conflicts. We recommend installing `Miniconda` environment by following instructions from [here](https://docs.conda.io/en/latest/miniconda.html#installing). 
-
-2. Create a new `conda` environment called `telekinesis`:
-    ```bash
-    conda create -n telekinesis python=3.11
-    ```
-
-3. Activate the environment:
-    ```bash
-    conda activate telekinesis
-    ```
-
-4. Install the library using `pip`:
-
-    We support Python 3.11 and 3.12. Ensure your environment uses one of    these versions.
-
-    ```bash
-    pip install telekinesis-ai
-    ```
-
-### Step 4: Run Your First Example
-
-1. Clone the `telekinesis-examples` repository (including the data submodule):
-
-    ```bash
-    git clone --depth 1 --recurse-submodules --shallow-submodules https://    github.com/telekinesis-ai/telekinesis-examples.git
-    ```
-
-    This also downloads the [telekinesis-data](https://gitlab.com/telekinesis/telekinesis-data) repository, which contains sample point     clouds, meshes, and images. You can replace this with your own data     when using Telekinesis in your projects. Download time may vary     depending on your connection.
-
-2. Change into the repository directory:
-
-    ```bash
-    cd telekinesis-examples
-    ```
-
-3. Install example dependencies:
-
-    ```bash
-    pip install numpy scipy opencv-python rerun-sdk==0.27.3 loguru pycocotools
-    ```
-
-4. Run the [segment_image_using_sam](https://docs.telekinesis.ai/cornea/segment_image_using_sam.html) example:
-
-    ```bash
-    python examples/cornea_examples.py --example segment_image_using_sam
-    ```
-
-    If the example runs successfully, a **Rerun** visualization window  will open showing the input and filtered point cloud. Rerun is a    visualization tool for 3D data and processing results.
-
-    <img width="100%" src="assets/sam-input-output.webp" alt="Segmentation     using SAM model" />
-
-5. (Optional) Run a Synapse robotics quickstart — **no hardware required**:
-
-    The [examples/synapse/](examples/synapse/) directory ships per-vendor quickstarts that drive a robot through a Cartesian-pose circle, visualized live in **Rerun**.
-
-    > **Note:** Synapse quickstarts require the `synapse` extras and a newer Rerun than the vision examples. Install both into your environment before running them:
-    >
-    > ```bash
-    > pip install 'telekinesis-ai[synapse]'
-    > pip install --upgrade rerun-sdk==0.31
-    > ```
-
-    Pick any supported vendor:
-
-    ```bash
-    python examples/synapse/quickstart_set_cartesian_pose_abb.py                # ABB
-    python examples/synapse/quickstart_set_cartesian_pose_fanuc.py              # Fanuc
-    python examples/synapse/quickstart_set_cartesian_pose_franka_robotics.py    # Franka Emika
-    python examples/synapse/quickstart_set_cartesian_pose_kuka.py               # KUKA
-    python examples/synapse/quickstart_set_cartesian_pose_motoman.py            # Motoman
-    python examples/synapse/quickstart_set_cartesian_pose_neura_robotics.py     # Neura
-    python examples/synapse/quickstart_set_cartesian_pose_universal_robots.py   # Universal Robots
-    ```
-
-    Joint-space variants (`quickstart_set_joint_positions_*.py`) are available for each vendor as well. A Rerun window will open and animate the robot tracing a circle in its TCP frame, with a color-gradient trajectory drawn live.
-
-### List Available Examples
-
-Computer vision examples (Cornea, Retina, Pupil, Vitreous) are launched from a single file per Skill Group with `--list`:
-
-```bash
-python examples/cornea_examples.py --list     # Cornea (2D image segmentation)
-python examples/retina_examples.py --list     # Retina (2D image object detection)
-python examples/pupil_examples.py --list      # Pupil (2D image processing)
-python examples/vitreous_examples.py --list   # Vitreous (3D point cloud & mesh)
-```
-
-Robotics (Synapse) and hardware (Medulla) examples are organized as standalone scripts in subdirectories—browse them directly:
-
-```bash
-ls examples/synapse/             # Synapse: kinematics/, motion/, servo_control/, state_reading/, tools/, ...
-ls examples/medulla/             # Medulla: ids/, webcam/
-ls examples/calibration/         # Camera calibration: eye-in-hand, multi-camera
-```
-
-### Run a Specific Example
-
-```bash
-# Computer vision (one launcher per Skill Group)
-python examples/cornea_examples.py --example segment_image_using_rgb                    # Cornea
-python examples/retina_examples.py --example detect_objects_using_grounding_dino        # Retina
-python examples/pupil_examples.py --example filter_image_using_morphological_gradient   # Pupil
-python examples/vitreous_examples.py --example estimate_principal_axes                  # Vitreous
-
-# Robotics (run the script directly)
-python examples/synapse/quickstart_set_cartesian_pose_abb.py                            # Synapse (no hardware required)
-python examples/synapse/motion/set_cartesian_pose.py                                    # Synapse motion
-python examples/synapse/kinematics/forward_kinematics.py                                # Synapse kinematics
-
-# Hardware
-python examples/medulla/webcam/capture_image_example.py                                 # Medulla (webcam)
-```
-
-### Use Your Own Data
-
-1. Create a directory with `images/`, `point_clouds/`, and `meshes/` subdirectories. See the [Skills documentation](https://docs.telekinesis.ai/getting-started/skills.html) for more on data formats.
-2. Update `DATA_DIR` in [vitreous_examples.py](examples/vitreous_examples.py) or [pupil_examples.py](examples/pupil_examples.py) or [cornea_examples.py](examples/cornea_examples.py) or [retina_examples.py](examples/retina_examples.py)
-3. Update the `file_name` variable to your input file.
-4. Run the example.
-
-## Example Categories
-
-### Telekinesis Agentic Skill Library Modules
-
-| Module | Description | Status |
-|--------|-------------|--------|
-| [**Cornea**](https://docs.telekinesis.ai/cornea/overview.html) | Image segmentation | Released |
-| [**Retina**](https://docs.telekinesis.ai/retina/overview.html) | Object detection (foundation models, classical) | Released|
-| [**Pupil**](https://docs.telekinesis.ai/pupil/overview.html) | 2D image processing | Released |
-| [**Vitreous**](https://docs.telekinesis.ai/vitreous/overview.html) | 3D point cloud & mesh processing | Released |
-| [**Synapse**](https://docs.telekinesis.ai/neuroplan/overview.html) | Motion planning, kinematics, control | Released |
-| [**Tzara**](https://docs.telekinesis.ai/agents/introduction.html) | Task planning & skill composition | Released |
-| [**Medulla**](https://docs.telekinesis.ai/medulla/overview.html) | Task planning & skill composition | Released |
-| [**Illusion**](https://docs.telekinesis.ai/illusion/overview.html) | Synthetic data generation | Planned — Apr 2026 |
-| [**Iris**](https://docs.telekinesis.ai/iris/overview.html) | Model training & fine-tuning | Planned — Apr 2026 |
-
-
-
-## Directory Structure
-
-```
-telekinesis-examples/
-├── examples/
-│   ├── datatypes_examples.py          # Data types & transformations
-│   ├── use_cases_examples.py          # End-to-end Skill compositions
-│   ├── quickstart_birefnet.py         # No-hardware BiRefNet segmentation quickstart
-│   ├── datatypes/                     # Data types & transformations (per-type examples)
-│   ├── segmentation/                  # Cornea: image segmentation Skills
-│   ├── detection/                     # Retina: object detection Skills (classical, Grounding DINO, Qwen, RF-DETR, YOLOX)
-│   ├── image_processing/              # Pupil: 2D image processing Skills
-│   ├── point_cloud/                   # Vitreous: 3D point cloud & mesh Skills
-│   ├── calibration/                   # Camera & eye-in-hand/multi-camera calibration
-│   ├── dataengine/                    # Data logging, conversion, MCAP tutorials
-│   │   ├── detection/
-│   │   └── mcap/
-│   ├── applications/                  # End-to-end application examples
-│   │   ├── robotics_applications/
-│   │   └── vision_ai_applications/
-│   ├── synapse/                       # Synapse: robotics Skills
-│   │   ├── quickstart_set_cartesian_pose_*.py   # No-hardware quickstarts (ABB, Epson, Fanuc, Franka, KUKA, Motoman, Neura, UR)
-│   │   ├── quickstart_set_joint_positions_*.py  # No-hardware quickstarts (per vendor)
-│   │   ├── connection_and_disconnection/
-│   │   ├── kinematics/                # FK, IK, collision-free IK, solver setup
-│   │   ├── motion/                    # Cartesian/joint moves, freedrive, teach, jog, contact
-│   │   ├── servo_control/             # Cartesian, joint, circular servoing
-│   │   ├── force_control/             # Contact detection
-│   │   ├── state_reading/             # TCP pose/force/speed, joint positions/torques
-│   │   ├── status/                    # Mode, safety, runtime state, controller frequency
-│   │   ├── diagnostics/               # Speed scaling, target speed fraction
-│   │   ├── tools/                     # Gripper control: open/close/move/force/speed
-│   │   ├── attach_tool/
-│   │   ├── controllers/
-│   │   ├── tcp/
-│   │   ├── trajectory_generation/
-│   │   ├── virtual_controllers/
-│   │   └── visualization_and_model/   # Visual & collision meshes, link transforms
-│   └── sensors/                       # Hardware communication Skills
-│       ├── ids/                       # IDS industrial cameras
-│       └── webcam/                    # USB/integrated webcams
-├── telekinesis-data/                  # Git submodule (sample data)
-│   ├── images/
-│   ├── point_clouds/
-│   └── meshes/
-├── assets/
-├── README.md
-├── DEVELOPMENT.md
-└── LICENSE.txt
-```
-
-
-
-## Who We Are
-
-We're a team of passionate robotics and computer vision experts who care about the details. Industry veterans who know the frustration of systems that just don't work. All of us asking the same question: why is robotics still so hard to use?
-
-[Telekinesis](https://telekinesis.ai/) began as a spin-off from the [Intelligent Autonomous Systems Lab](https://www.ias.informatik.tu-darmstadt.de/Main/LandingPage?from=Main.HomePage) at TU Darmstadt, led by [Prof. Jan Peters](https://scholar.google.com/citations?user=-kIVAcAAAAAJ&hl=en), and is supported by people with years of experience at KUKA and Universal Robots.
-
-
-
-## Next Steps
-
-Ready to go further? Explore the Agentic Skill Library, dive into specific modules, or connect with the community.
-
-- [Documentation](https://docs.telekinesis.ai) — Full Agentic Skill Library reference and guides
-- [Quickstart](https://docs.telekinesis.ai/getting-started/quickstart.html) — Step-by-step setup
-- [Discord](https://discord.gg/S5v8bYAnc6) — Ask questions, share feedback, connect with users
+## Documentation
+
+- Full documentation: [docs.telekinesis.ai](https://docs.telekinesis.ai/)
+- Tutorials: [Tutorials overview](https://docs.telekinesis.ai/getting-started/tutorials/overview.html)
+- API reference: [telekinesis.gitlab.io/telekinesis](https://telekinesis.gitlab.io/telekinesis/)
 
 ## Support
 
