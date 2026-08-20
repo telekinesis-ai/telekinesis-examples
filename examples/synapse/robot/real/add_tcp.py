@@ -1,4 +1,4 @@
-w"""
+"""
 Example: Add a custom TCP to the robot
 
 Usage:
