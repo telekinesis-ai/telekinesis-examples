@@ -1,33 +1,28 @@
 """
-Demonstrates opening a parallel gripper.
+Demonstrates connecting and disconnecting a suction gripper.
 
-Supports OnRobot and Robotiq grippers.
+Supports Piab grippers.
 
 Usage:
-    python open.py --ip <GRIPPER_IP>
-    python open.py --protocol MODBUS_RTU --serial-port COM4
+    python connection_and_disconnection.py --ip <ROBOT_IP>
+    python connection_and_disconnection.py --protocol MODBUS_RTU --serial-port COM3
 """
 
 import argparse
 from loguru import logger
 
-from telekinesis.synapse.tools.parallel_grippers import robotiq
+from telekinesis.synapse.tools.suction_grippers import piab
 
 
 def main(ip: str | None, serial_port: str, protocol: str) -> None:
-    """Opens a Robotiq gripper fully at 100% speed and 50% force."""
+    """Connects and disconnects a Piab gripper."""
 
     #===================== Create Gripper ======================================
-    gripper = robotiq.Robotiq2F85()
+    gripper = piab.PiabPiCobotElectric()
 
     # ==================== Run Skill ===========================================
     try:
         gripper.connect(ip=ip, serial_port=serial_port, protocol=protocol)
-        status = gripper.open(speed=100.0,
-                              force=50.0,
-                              asynchronous=False)
-        logger.success(f"open() status: {status}, "
-                       f"position: {gripper.get_current_position():.2f}")
     except (ConnectionError, OSError) as e:
         logger.error(f"Error occurred: {e}")
     finally:
@@ -35,12 +30,12 @@ def main(ip: str | None, serial_port: str, protocol: str) -> None:
 
 
 if __name__ == "__main__":
-    p = argparse.ArgumentParser(description="Robotiq gripper open")
+    p = argparse.ArgumentParser(description="Piab gripper connect/disconnect")
     p.add_argument("--protocol",
                    choices=["URCAP", "MODBUS_RTU"],
                    default="URCAP")
-    p.add_argument("--ip", default=None, help="IP for Robotiq Gripper")
-    p.add_argument("--serial-port", dest="serial_port", default="COM4",
+    p.add_argument("--ip", default="192.168.2.2", help="IP for Robot Controller")
+    p.add_argument("--serial-port", dest="serial_port", default="COM3",
                    help="Serial port for MODBUS_RTU")
     args = p.parse_args()
 

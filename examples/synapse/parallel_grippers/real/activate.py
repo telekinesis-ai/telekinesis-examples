@@ -1,6 +1,8 @@
 """
 Demonstrates activating a parallel gripper.
 
+Supports only Robotiq grippers.
+
 Usage:
     python activate.py --ip <GRIPPER_IP>
     python activate.py --protocol MODBUS_RTU --serial-port COM4
@@ -15,7 +17,6 @@ from telekinesis.synapse.tools.parallel_grippers import robotiq
 def main(ip: str | None, serial_port: str, protocol: str) -> None:
     """Activates a Robotiq gripper."""
 
-    
     #===================== Create Gripper ======================================
     gripper = robotiq.Robotiq2F85()
 

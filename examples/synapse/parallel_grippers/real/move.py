@@ -1,6 +1,8 @@
 """
 Demonstrates moving a parallel gripper to a target position.
 
+Supports OnRobot and Robotiq grippers.
+
 Usage:
     python move.py --ip <GRIPPER_IP>
     python move.py --protocol MODBUS_RTU --serial-port COM4

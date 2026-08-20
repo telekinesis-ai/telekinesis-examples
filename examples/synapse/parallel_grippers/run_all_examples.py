@@ -1,13 +1,20 @@
 """
 Run ALL parallel gripper example scripts in this folder, one after the other.
 
-Each example is executed in a fresh Python process to avoid global state
-issues (e.g. rerun, serial/socket handles, visualization). The connection
-arguments are forwarded to every example.
+Covers both the model-only examples in this directory and the hardware
+examples in ``real/``. Each example is executed in a fresh Python process to
+avoid global state issues (e.g. rerun, serial/socket handles, visualization).
 
-Examples run in a hardware-safe order: the gripper is activated first,
-defaults are configured, then motion skills are exercised. Any example not
-listed in RUN_ORDER is appended alphabetically.
+The model-only examples run on the kinematic model and take no connection
+arguments, so they are run bare. The ``real/`` examples talk to a physical
+gripper, so the connection arguments are forwarded to those only.
+
+Examples run in a hardware-safe order: the model-only examples first, then the
+gripper is activated, defaults are configured, and motion skills are exercised
+last. Any example not listed in RUN_ORDER is appended alphabetically.
+
+Note: the visualization examples spawn a Rerun viewer window and block until
+it is closed.
 
 Usage:
     python run_all_examples.py --ip <GRIPPER_IP>
@@ -25,19 +32,27 @@ from loguru import logger
 # previous process time to release its connection.
 DELAY_BETWEEN_EXAMPLES_S = 2
 
-# Hardware-safe execution order. Files not listed here run afterwards,
-# in alphabetical order.
+# Directory holding the examples that talk to a physical gripper. Only these
+# receive the connection arguments.
+REAL_DIR_NAME = "real"
+
+# Hardware-safe execution order, relative to this file's directory. Files not
+# listed here run afterwards, in alphabetical order.
 RUN_ORDER = [
-    "connection_and_disconnection",
-    "activate",
-    "set_unit",
-    "set_position_range",
-    "set_speed",
-    "set_force",
-    "get_current_position",
-    "open",
-    "close",
-    "move",
+    "get_visual_meshes_data",
+    "get_link_transforms",
+    "get_visual_mesh_transforms",
+    "visualize_rerun",
+    "real/connection_and_disconnection",
+    "real/activate",
+    "real/set_unit",
+    "real/set_position_range",
+    "real/set_speed",
+    "real/set_force",
+    "real/get_current_position",
+    "real/open",
+    "real/close",
+    "real/move",
 ]
 
 
@@ -62,20 +77,21 @@ def parse_args():
 
 def collect_examples(examples_dir: pathlib.Path) -> list[pathlib.Path]:
     """
-    Collect runnable example scripts, ordered by RUN_ORDER.
+    Collect runnable example scripts from this directory and ``real/``,
+    ordered by RUN_ORDER.
 
     This runner itself, private modules and empty placeholder files are skipped.
     """
     this_file = pathlib.Path(__file__).resolve()
 
     candidates = {}
-    for f in examples_dir.glob("*.py"):
+    for f in [*examples_dir.glob("*.py"), *(examples_dir / REAL_DIR_NAME).glob("*.py")]:
         if f.resolve() == this_file or f.name.startswith("_"):
             continue
         if f.stat().st_size == 0:
-            logger.warning(f"Skipping empty example: {f.name}")
+            logger.warning(f"Skipping empty example: {f.relative_to(examples_dir)}")
             continue
-        candidates[f.stem] = f
+        candidates[f.relative_to(examples_dir).with_suffix("").as_posix()] = f
 
     ordered = [candidates.pop(name) for name in RUN_ORDER if name in candidates]
     ordered.extend(candidates[name] for name in sorted(candidates))
@@ -87,9 +103,14 @@ def run_example_in_subprocess(example_file: pathlib.Path,
     """
     Run a single example script in a fresh Python process.
 
+    Connection arguments are only passed to the ``real/`` examples; the
+    model-only examples do not accept them.
+
     Returns True if successful, False otherwise.
     """
-    cmd = [sys.executable, str(example_file), *connection_args]
+    cmd = [sys.executable, str(example_file)]
+    if example_file.parent.name == REAL_DIR_NAME:
+        cmd += connection_args
 
     logger.info(f"Executing: {' '.join(cmd)}")
 
@@ -122,7 +143,7 @@ def main():
     passed = []
 
     for idx, example_file in enumerate(example_files, start=1):
-        example_name = example_file.stem
+        example_name = example_file.relative_to(examples_dir).with_suffix("").as_posix()
 
         logger.info("=" * 80)
         logger.info(f"[{idx}/{len(example_files)}] Running example: {example_name}")

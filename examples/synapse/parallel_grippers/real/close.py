@@ -1,6 +1,8 @@
 """
 Demonstrates closing a parallel gripper.
 
+Supports OnRobot and Robotiq grippers.
+
 Usage:
     python close.py --ip <GRIPPER_IP>
     python close.py --protocol MODBUS_RTU --serial-port COM4

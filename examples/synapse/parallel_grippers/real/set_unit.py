@@ -1,6 +1,8 @@
 """
 Demonstrates setting the position unit of a parallel gripper.
 
+Supports OnRobot and Robotiq grippers.
+
 Usage:
     python set_unit.py --ip <GRIPPER_IP>
     python set_unit.py --protocol MODBUS_RTU --serial-port COM4
