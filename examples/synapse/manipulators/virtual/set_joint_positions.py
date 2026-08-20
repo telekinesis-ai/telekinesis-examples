@@ -17,9 +17,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Move the robot to a target joint configuration."""
 
-    # Create robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
 
+    # ==================== Run Skill ============================================
     # Target: current joint configuration with the base joint rotated +30 deg
     target_joint_positions = [0, -90, -90, -90, 90, 0]
 
@@ -31,6 +32,9 @@ def main():
         asynchronous=False,
     )
     logger.info(f"Moved to target joint positions: {target_joint_positions}")
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

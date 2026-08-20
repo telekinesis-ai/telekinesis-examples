@@ -106,6 +106,7 @@ def configure_actual_target(path: str, unit: str) -> None:
 
 
 def main():
+    #===================== Create Trajectory Generator ===========================
     robot = UniversalRobotsUR10E()
     def ik_resolver(pose, seed): return robot.inverse_kinematics(pose, q_init=seed)
 
@@ -114,6 +115,8 @@ def main():
     )
 
     seed = robot.inverse_kinematics(START_POSE, q_init=np.asarray(HOME_JOINTS, dtype=float))
+
+    # ==================== Run Skill ============================================
     states = generator.generate(
         start_pose=np.asarray(START_POSE, dtype=float),
         goal_pose=np.asarray(GOAL_POSE, dtype=float),
@@ -125,6 +128,7 @@ def main():
         max_angular_acceleration=MAX_ANGULAR_ACCELERATION,
     )
 
+    # ==================== Visualization (Optional) =============================
     times = np.array([state.time for state in states])
     commanded_poses = np.array([state.cartesian_pose for state in states])
 

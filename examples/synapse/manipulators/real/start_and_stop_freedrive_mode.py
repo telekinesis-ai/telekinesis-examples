@@ -7,7 +7,7 @@ mask ``[x, y, z, rx, ry, rz]`` where ``1`` means the axis is free and ``0``
 means it is locked. ``stop_freedrive_mode`` returns the controller to normal
 motion control.
 
-Currently supported only for real hardware from Universal Robots
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python start_and_stop_freedrive_mode.py [--ip <ROBOT_IP>]
@@ -23,9 +23,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Enter freedrive for 10 seconds, then exit."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     # Enter freedrive with all axes free
     free_axes = [1, 1, 1, 1, 1, 1]
     logger.info(f"Starting freedrive - free axes: {free_axes}")
@@ -37,6 +39,9 @@ def main(ip: str):
     # Exit freedrive
     robot.stop_freedrive_mode()
     logger.success("Freedrive mode stopped.")
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=False)
 
     # Disconnect
     robot.disconnect()

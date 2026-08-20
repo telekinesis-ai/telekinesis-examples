@@ -21,9 +21,10 @@ from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRo
 def main():
     """Observe the active TCP and its transform before and after add_tcp()."""
 
-    # Create a UniversalRobotsUR10E instance (no hardware connection)
+    #===================== Create Robot ==========================================
     robot = UniversalRobotsUR10E()
 
+    # ==================== Run Skill ============================================
     # Current Active TCP, transform w.r.t default tcp, and current TCP pose
     logger.info(f"Active TCP before add_tcp(): {robot.active_tcp}"
                 f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
@@ -39,6 +40,9 @@ def main():
     logger.info(f"Active TCP after add_tcp(): {robot.active_tcp}"
                 f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                 f" \n TCP pose: {robot.get_cartesian_pose()}")
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

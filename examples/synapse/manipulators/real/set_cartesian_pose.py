@@ -4,7 +4,7 @@ Set Cartesian Pose (relative) example for the Synapse SDK.
 Reads the current TCP pose and moves to a target defined *relative* to it
 (an offset applied to the current pose).
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
 
 For an offline version, refer to set_cartesian_pose_relative in motion/offline/set_cartesian_pose/
 
@@ -22,16 +22,20 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Run the set_cartesian_pose Synapse example."""
 
-    # Create robot instance
-    robot = universal_robots.UniversalRobotsUR10E()
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     robot.connect(ip=ip)
+
+    # ==================== Visualization (Optional) =============================
+    # Live: subscribes to the robot's state topic and redraws as it moves.
+    robot.visualize_rerun()
 
     # Define a target relative to the current pose
     current_cartesian_pose = robot.get_cartesian_pose()
     target_cartesian_pose = current_cartesian_pose.copy()
     target_cartesian_pose[2] += 0.1  # Move 10 cm up in Z
 
-    # Command the move, then disconnect cleanly
+    # ==================== Run Skill ============================================
     try:
         robot.set_cartesian_pose(
             cartesian_pose=target_cartesian_pose,

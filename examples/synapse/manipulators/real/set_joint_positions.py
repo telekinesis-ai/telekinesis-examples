@@ -4,7 +4,7 @@ Set Joint Positions (relative) example for the Synapse SDK.
 Reads the current joint configuration and moves to a target defined *relative*
 to it (an offset applied to the current joint angles).
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
 
 For an offline version, refer to set_joint_positions_relative in motion/offline/set_joint_positions/
 
@@ -22,10 +22,15 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Move the robot to a target joint configuration."""
 
-    # Create robot instance
-    robot = universal_robots.UniversalRobotsUR10E()
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     robot.connect(ip=ip)
 
+    # ==================== Visualization (Optional) =============================
+    # Live: subscribes to the robot's state topic and redraws as it moves.
+    robot.visualize_rerun()
+
+    # ==================== Run Skill ============================================
     try:
         # Target: current joint configuration with the base joint rotated +30 deg
         target_joint_positions = robot.get_joint_positions().copy()

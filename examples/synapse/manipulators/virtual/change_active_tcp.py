@@ -20,9 +20,10 @@ from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRo
 def main():
     """Change the active TCP and observe it before and after each change."""
 
-    # Create a UniversalRobotsUR10E instance (no hardware connection)
+    #===================== Create Robot ==========================================
     robot = UniversalRobotsUR10E()
 
+    # ==================== Run Skill ============================================
     # Register a few custom TCP frames
     robot.add_tcp(name="camera_tip",
                   transform=[0.0, 0.0, 0.1, 0.0, 0.0, 0.0],
@@ -50,6 +51,9 @@ def main():
     logger.info(f"Active TCP after changing active TCP again: {robot.active_tcp}"
                 f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                 f" \n TCP pose: {robot.get_cartesian_pose()}")
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

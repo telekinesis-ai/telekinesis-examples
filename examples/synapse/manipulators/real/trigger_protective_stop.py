@@ -1,7 +1,7 @@
 """
 Trigger protective stop example for the Synapse SDK.
 
-Currently supported only for real hardware from Universal Robots
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Immediately halts all motion and puts the robot into a protective stop
 state. The robot remains powered but frozen until the stop is
@@ -21,10 +21,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Trigger a protective stop on the controller."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
-    # Trigger the protective stop and report
+    # ==================== Run Skill ============================================
     try:
         robot.trigger_protective_stop()
         logger.success("Protective stop triggered.")

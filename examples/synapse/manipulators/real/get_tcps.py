@@ -9,7 +9,7 @@ Demonstrates:
 - get_active_tcp_transform()  — read the active TCP offset (metres, Euler-XYZ degrees)
 - active_tcp                  — check which frame is currently active
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
 
 For an offline version, refer to tcp/offline/get_tcps.py
 """
@@ -29,10 +29,11 @@ def main():
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    # Create a UniversalRobotsUR10E instance and connect to the robot
+    #===================== Create Robot ==========================================
     robot = UniversalRobotsUR10E()
     robot.connect(ip=args.ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Get all registered TCPs
         tcps = robot.get_tcps()

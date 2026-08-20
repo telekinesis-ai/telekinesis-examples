@@ -5,7 +5,7 @@ Read controller frequency example for the Synapse SDK.
 polling ``get_timestamp()`` for ``window_s`` seconds and computing
 ``1 / mean_step_time``.
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python get_controller_frequency.py [--ip <ROBOT_IP>]
@@ -20,10 +20,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Log the measured controller update frequency [Hz]."""
 
-    # Create and connect to the robot
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         # window_s defaults to 0.2 s; pass explicitly for clarity
         frequency = robot.get_controller_frequency(window_s=0.2)

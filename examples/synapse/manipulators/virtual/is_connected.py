@@ -18,7 +18,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Log ``is_connected`` for an unconnected robot (always False offline)."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
+
+    # ==================== Run Skill ============================================
     logger.info(f"is_connected: {robot.is_connected()}")
 
 

@@ -5,7 +5,7 @@ Commands a circular-arc move from the current TCP pose to a target pose
 using ``servo_circular`` (UR ``servoC``). The target here is offset 2 cm
 in Y and -2 cm in Z from the current pose so the arc is visually distinct
 from a straight line.
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python servo_circular.py [--ip <ROBOT_IP>]
@@ -22,12 +22,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(robot_ip: str):
     """Drive a circular arc from the current TCP pose to an offset target."""
 
-    # Create robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
     robot.connect(ip=robot_ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Target pose: 2 cm out in Y and 2 cm down in Z from the current pose.
         current = robot.get_cartesian_pose()
@@ -54,6 +53,9 @@ def main(robot_ip: str):
         time.sleep(2.0)
         robot.servo_stop()
         logger.success("servo_circular complete.")
+
+        # ==================== Visualization (Optional) =========================
+        robot.visualize_rerun(live=False)
     finally:
         robot.disconnect()
 

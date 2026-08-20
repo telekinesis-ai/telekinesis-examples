@@ -1,8 +1,8 @@
 """
 Connection and disconnection example for the Synapse SDK.
 
-Currently supported only for connecting to real hardware,
-and only Universal Robots.
+Currently supported only for real hardware. Works on Universal Robots (UR)
+and Epson.
 
 Usage:
     python connection_and_disconnection.py [--ip <ROBOT_IP>]
@@ -19,10 +19,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Connect to a UR10e at `ip` and cleanly disconnect."""
 
-    # Create the robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
 
-    # Connect to the robot with given ip
+    # ==================== Run Skill ============================================
     robot.connect(ip=ip)
     logger.success(f"Connected to UR10e at {ip}.")
 

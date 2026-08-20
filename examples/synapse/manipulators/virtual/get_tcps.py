@@ -21,9 +21,10 @@ from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRo
 def main():
     """List all registered TCPs and the currently active one."""
 
-    # Create a UniversalRobotsUR10E instance (no hardware connection)
+    #===================== Create Robot ==========================================
     robot = UniversalRobotsUR10E()
 
+    # ==================== Run Skill ============================================
     # Get all registered TCPs
     tcps = robot.get_tcps()
     logger.info(f"Registered TCPs: {tcps}")

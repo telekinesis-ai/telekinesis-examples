@@ -18,7 +18,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Log the commanded-cache joint torques [N·m]."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
+
+    # ==================== Run Skill ============================================
     logger.success(f"joint_torques [N·m]: {robot.get_joint_torques()}")
 
 

@@ -18,9 +18,13 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Move the TCP to a target Cartesian pose on the kinematic model."""
 
-    # Create robot instance
-    robot = universal_robots.UniversalRobotsUR10E()
+    # ===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun()
+
+    # ==================== Run Skill ============================================
     # Define target Cartesian pose
     target_cartesian_pose = [0.5, 0.0, 0.5, 180.0, 0.0, 0.0]
 

@@ -18,7 +18,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Log the commanded-cache joint velocities [deg/s]."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
+
+    # ==================== Run Skill ============================================
     logger.success(f"joint_velocities [deg/s]: {robot.get_joint_velocities()}")
 
 

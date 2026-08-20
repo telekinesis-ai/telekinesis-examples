@@ -4,7 +4,7 @@ Servo Cartesian example for the Synapse SDK.
 Streams TCP poses at 500 Hz to trace a small circle in the YZ plane around
 the current TCP pose using ``servo_cartesian``.
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python servo_cartesian.py [--ip <ROBOT_IP>]
@@ -27,12 +27,11 @@ def main(robot_ip: str):
     period = 4.0            # seconds per revolution
     n_revolutions = 2
 
-    # Create robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
     robot.connect(ip=robot_ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Read the current TCP pose as the centre of the circle.
         # The circle is offset so it "kisses" the start pose at t=0.
@@ -68,6 +67,9 @@ def main(robot_ip: str):
 
         robot.servo_stop()
         logger.success("servo_cartesian loop complete.")
+
+        # ==================== Visualization (Optional) =========================
+        robot.visualize_rerun(live=False)
     finally:
         robot.disconnect()
 
