@@ -5,7 +5,7 @@ Commands an asynchronous Cartesian move and interrupts it mid-trajectory
 with ``stop_cartesian_motion``. ``stopping_speed`` controls the
 deceleration profile (m/s).
 
-Currently supported only for real hardware from Universal Robots
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python stop_cartesian_motion.py [--ip <ROBOT_IP>]
@@ -21,10 +21,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Start an async Cartesian move and interrupt it with stop_cartesian_motion."""
 
-    # Create robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Get initial Cartesian pose [x, y, z, rx, ry, rz] (m, deg)
         actual_pose = robot.get_cartesian_pose()

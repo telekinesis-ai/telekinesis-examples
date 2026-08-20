@@ -18,7 +18,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Log the commanded-cache target TCP pose [m, deg]."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
+
+    # ==================== Run Skill ============================================
     logger.success(f"target_tcp_pose [m, deg]: {robot.get_target_tcp_pose()}")
 
 

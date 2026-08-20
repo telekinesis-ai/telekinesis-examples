@@ -18,7 +18,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Log the commanded-cache TCP wrench [N, N·m]."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
+
+    # ==================== Run Skill ============================================
     logger.success(f"tcp_force [N, N·m]: {robot.get_tcp_force()}")
 
 

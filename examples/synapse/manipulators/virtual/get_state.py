@@ -24,8 +24,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Log the full commanded-cache robot state dictionary."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
 
+    # ==================== Run Skill ============================================
     state = robot.get_state()
     for key, value in state.items():
         logger.success(f"{key}: {value}")

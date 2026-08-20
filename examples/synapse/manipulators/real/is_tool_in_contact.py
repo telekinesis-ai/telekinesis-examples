@@ -13,7 +13,7 @@ timeout elapses), it issues ``stop_jog`` to halt the motion.
 For the one-shot equivalent (start a move, block until contact, stop),
 use ``move_until_contact`` instead.
 
-Currently supported only for real hardware, and only Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python is_tool_in_contact.py [--ip <ROBOT_IP>]
@@ -36,10 +36,11 @@ def main(ip: str):
     poll_dt = 0.005          # 200 Hz polling
     safety_timeout = 5.0     # stop after this long even if no contact
 
-    # Create and connect to the robot
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Start the jog. is_tool_in_contact only returns True while moving.
         logger.info(f"Starting jog along -Z at {abs(cartesian_velocity[2])} m/s")

@@ -10,7 +10,7 @@ Demonstrates:
 - `read_contact_detection()`
 - `stop_contact_detection()`
 
-Currently supported only for real hardware from Universal Robots
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python contact_detection.py [--ip <ROBOT_IP>]
@@ -27,9 +27,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Probe downward until contact is detected, then stop and report."""
 
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Move the TCP down by 15 cm, asynchronously, while polling for contact.
         target_pose = robot.get_cartesian_pose()

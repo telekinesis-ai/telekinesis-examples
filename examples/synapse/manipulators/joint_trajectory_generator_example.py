@@ -89,6 +89,7 @@ def configure_series(path: str, name: str, color: list[int]) -> None:
 
 
 def main():
+    #===================== Create Trajectory Generator ===========================
     robot = UniversalRobotsUR10E()
     joint_limits = robot.joint_limits
 
@@ -99,6 +100,8 @@ def main():
     max_joint_acceleration = np.asarray(MAX_JOINT_ACCELERATION, dtype=float)
 
     generator = JointTrajectoryGenerator()
+
+    # ==================== Run Skill ============================================
     states = generator.generate(
         q_start=q_start,
         q_goal=q_goal,
@@ -107,6 +110,7 @@ def main():
         max_joint_acceleration=max_joint_acceleration,
     )
 
+    # ==================== Visualization (Optional) =============================
     times = np.array([state.time for state in states])
     positions = np.array([state.joint_positions for state in states])
     velocities = finite_difference(positions, times)

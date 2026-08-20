@@ -10,10 +10,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Visualize robot in Rerun"""
 
-    # Initialize telekinesis-synapse UR10e robot
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
 
-    # Visualize robot
+    # ==================== Run Skill ============================================
     robot.visualize_rerun()
 
 if __name__ == "__main__":

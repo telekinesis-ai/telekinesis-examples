@@ -23,9 +23,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Pre-initialize the multi_start_clik solver, then solve IK with it."""
 
-    # Create the robot (no connect required — IK runs on the kinematic model)
+    #===================== Create Robot ==========================================
+    # No connect required — IK runs on the kinematic model.
     robot = universal_robots.UniversalRobotsUR10E()
 
+    # ==================== Run Skill ============================================
     # Get all supported kinematics solvers
     solvers = robot.supported_kinematics_solvers
     logger.info(f"Supported solvers: {solvers}")
@@ -42,6 +44,10 @@ def main():
     try:
         q = robot.inverse_kinematics(target_pose=target_pose)
         logger.success(f"IK solution: {q}")
+
+        # ================ Visualization (Optional) ==============================
+        robot.set_joint_positions(joint_positions=q)
+        robot.visualize_rerun(live=False)
     except (RuntimeError, TypeError, ValueError) as e:
         logger.error(f"IK failed: {type(e).__name__}: {e}")
 

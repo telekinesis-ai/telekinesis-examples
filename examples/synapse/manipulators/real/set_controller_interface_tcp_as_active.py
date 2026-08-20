@@ -5,7 +5,7 @@ Demonstrates:
 - get_tcps()                  — retrieve all registered TCP frames from the controller
 - use_controller_interface_tcp()  — set the controller interface TCP as the active TCP
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 For offline TCP examples, refer to tcp/offline/
 
@@ -26,10 +26,11 @@ def main():
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    # Create a UniversalRobotsUR10E instance and connect to the robot
+    #===================== Create Robot ==========================================
     robot = UniversalRobotsUR10E()
     robot.connect(ip=args.ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Get all registered TCPs
         tcps = robot.get_tcps()
@@ -47,6 +48,9 @@ def main():
         logger.info(f"Active TCP after setting controller_interface_tcp: {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
+
+        # ==================== Visualization (Optional) =========================
+        robot.visualize_rerun(live=False)
 
     finally:
         # Disconnect

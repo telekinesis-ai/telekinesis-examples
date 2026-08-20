@@ -4,7 +4,7 @@ Read runtime state example for the Synapse SDK.
 Returns the controller's program runtime state (e.g. ``"PLAYING"``,
 ``"PAUSED"``, ``"STOPPED"``).
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python get_runtime_state.py [--ip <ROBOT_IP>]
@@ -19,10 +19,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Log the current runtime state."""
 
-    # Create and connect to the robot
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         logger.success(f"Runtime state: {robot.get_runtime_state()}")
     finally:

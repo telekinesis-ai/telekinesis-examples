@@ -6,7 +6,7 @@ the current joint configuration using ``servo_joint`` — a smooth sinusoidal
 motion of small amplitude. Only the base moves; all other joints are held
 at their starting values.
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python servo_joint.py [--ip <ROBOT_IP>]
@@ -30,12 +30,11 @@ def main(robot_ip: str):
     period = 4.0        # seconds per full oscillation
     n_cycles = 2
 
-    # Create robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the robot
     robot.connect(ip=robot_ip)
 
+    # ==================== Run Skill ============================================
     try:
         # Hold all joints at their current values; only j0 will be modulated.
         # Sine starts at 0, so the first target equals ``center`` exactly —
@@ -77,6 +76,9 @@ def main(robot_ip: str):
 
         robot.servo_stop()
         logger.success("servo_joint loop complete.")
+
+        # ==================== Visualization (Optional) =========================
+        robot.visualize_rerun(live=False)
     finally:
         robot.disconnect()
 

@@ -4,7 +4,7 @@ Read robot mode example for the Synapse SDK.
 Returns the controller's high-level robot mode (e.g. ``"RUNNING"``,
 ``"IDLE"``, ``"POWER_OFF"``).
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python get_robot_mode.py [--ip <ROBOT_IP>]
@@ -19,10 +19,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Log the current robot mode."""
 
-    # Create and connect to the robot
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         logger.success(f"Robot mode: {robot.get_robot_mode()}")
     finally:

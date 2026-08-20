@@ -8,7 +8,7 @@ Demonstrates:
 - add_tcp()                   — register a custom TCP frame and push it to the controller
 - delete_tcp()                — remove a custom TCP frame from the controller
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
 
 For an offline version, refer to tcp/offline/delete_tcp.py
 """
@@ -28,10 +28,11 @@ def main():
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    # Create a UniversalRobotsUR10E instance and connect to the robot
+    #===================== Create Robot ==========================================
     robot = UniversalRobotsUR10E()
     robot.connect(ip=args.ip)
 
+    # ==================== Run Skill ============================================
     try:
         new_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.1, 0.0, 0.0, 0.0]  # 100 mm along Z-axis
         robot.add_tcp(name="new_tool",
@@ -50,6 +51,9 @@ def main():
         logger.info(f"Active TCP after delete_tcp(): {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
+
+        # ==================== Visualization (Optional) =========================
+        robot.visualize_rerun(live=False)
 
     finally:
         # Disconnect

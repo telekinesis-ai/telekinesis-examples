@@ -19,12 +19,11 @@ def main():
     """
     Connect to a URSim virtual controller and control a UR10e."""
 
-    # Create a UR10e robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
-
-    # Connect to the URSim virtual controller
     robot.connect(URSIM_IP)
 
+    # ==================== Run Skill ============================================
     # Get robot information
     print("Robot mode:   ", robot.get_robot_mode())
     print("Safety mode:  ", robot.get_safety_mode())
@@ -34,6 +33,9 @@ def main():
 
     # Move command
     robot.set_joint_positions(robot.default_joint_configuration)
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=False)
 
     # Disconnect from the URSim virtual controller
     robot.disconnect()

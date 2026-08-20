@@ -20,9 +20,10 @@ from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRo
 def main():
     """Add a TCP, then delete it, observing the active TCP at each step."""
 
-    # Create a UniversalRobotsUR10E instance (no hardware connection)
+    #===================== Create Robot ==========================================
     robot = UniversalRobotsUR10E()
 
+    # ==================== Run Skill ============================================
     # Add new tcp
     new_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.1, 0.0, 0.0, 0.0]  # 100 mm along Z-axis
     robot.add_tcp(name="new_tool",
@@ -41,6 +42,9 @@ def main():
     logger.info(f"Active TCP after delete_tcp(): {robot.active_tcp}"
                 f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                 f" \n TCP pose: {robot.get_cartesian_pose()}")
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

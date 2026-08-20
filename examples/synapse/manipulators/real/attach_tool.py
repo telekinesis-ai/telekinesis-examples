@@ -6,7 +6,8 @@ Demonstrates:
     - ``robot.add_tcp()``
     - ``robot.visualize_rerun()``
 
-    Supported for all robots offline, and Universal Robots in real.
+    Supported for all robots offline, and both Universal Robots (UR) and
+    Epson in real.
 
 Run:
     python examples/synapse/attach_tool/attach_tool.py
@@ -22,17 +23,17 @@ def main():
     Attach an OnRobot RG6 gripper to a UR10e and visualize in Rerun.
     """
 
-    # Create robot and gripper instances
+    #===================== Create Robot and Gripper =============================
     robot = universal_robots.UniversalRobotsUR10E()
     gripper = onrobot.OnRobotRG6()
 
-    # Attach the gripper to the robot and set the active TCP frame
+    # ==================== Run Skill ============================================
     robot.attach_tool(gripper)
     robot.add_tcp(name="gripper_tip",
                   transform=[0.0, 0.0, 0.18, 0.0, 0.0, 0.0],
                   set_active=True)
 
-    # Visualize
+    # ==================== Visualization (Optional) =============================
     robot.visualize_rerun()
 
 

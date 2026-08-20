@@ -4,7 +4,7 @@ Read combined speed scaling example for the Synapse SDK.
 ``get_speed_scaling_combined`` returns the **actual effective** speed
 scaling applied during motion.
 
-Currently supported only for real hardware, and only Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python get_speed_scaling_combined.py [--ip <ROBOT_IP>]
@@ -20,10 +20,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Log the combined runtime speed scaling [0.0, 1.0]."""
 
-    # Create and connect to the robot
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         combined = robot.get_speed_scaling_combined()
         logger.success(f"Combined speed scaling: {combined:.3f}")

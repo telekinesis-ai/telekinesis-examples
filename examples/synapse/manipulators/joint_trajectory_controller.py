@@ -18,17 +18,19 @@ Expected output:
 """
 import numpy as np
 
-from telekinesis.synapse.communication_interfaces import robot_state
+from telekinesis.synapse import robot_state
 from telekinesis.synapse.controllers import joint_trajectory_controller
 
 
 def main():
+    #===================== Create Controller ======================================
     controller = joint_trajectory_controller.JointTrajectoryController(hz=500)
     print("supported_command_types:", controller.supported_command_types)
 
     state = robot_state.RobotState()
     state.joint_positions = np.full(6, 7.0)
 
+    # ==================== Run Skill ============================================
     # With no trajectory set, the controller holds the current joint positions.
     held = controller.compute_control_command(state, 0.01)
     print("no trajectory -> holds state:", held)

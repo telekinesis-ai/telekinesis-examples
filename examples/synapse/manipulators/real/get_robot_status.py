@@ -6,7 +6,7 @@ is powered on, whether a program is running, and whether an emergency or
 protective stop is active). This is distinct from the safety mode reported by
 ``get_safety_mode`` (see get_safety_mode.py).
 
-Currently supported only for real hardware from Universal Robots.
+Currently supported only for real hardware, and only Universal Robots (UR).
 
 Usage:
     python get_robot_status.py [--ip <ROBOT_IP>]
@@ -21,10 +21,11 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main(ip: str):
     """Log the current robot status."""
 
-    # Create and connect to the robot
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
     robot.connect(ip=ip)
 
+    # ==================== Run Skill ============================================
     try:
         logger.success(f"Robot status: {robot.get_robot_status()}")
     finally:

@@ -17,12 +17,17 @@ def main():
     Demonstrates forward kinematics computation for the Universal Robot UR10e
     """
 
-    # Create robot instance
+    #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E()
 
+    # ==================== Run Skill ============================================
     q = [0, -90, 90, 0, 90, 0]
     tcp_pose = robot.forward_kinematics(q=q)
     print("TCP pose: ", tcp_pose)
+
+    # ==================== Visualization (Optional) =============================
+    robot.set_joint_positions(joint_positions=q)
+    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":
