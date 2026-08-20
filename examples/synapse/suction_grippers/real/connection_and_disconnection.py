@@ -7,7 +7,6 @@ Usage:
 """
 
 import argparse
-import time
 from loguru import logger
 
 from telekinesis.synapse.tools.suction_grippers import piab

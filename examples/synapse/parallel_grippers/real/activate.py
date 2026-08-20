@@ -15,7 +15,6 @@ from telekinesis.synapse.tools.parallel_grippers import robotiq
 def main(ip: str | None, serial_port: str, protocol: str) -> None:
     """Activates a Robotiq gripper."""
 
-    
     #===================== Create Gripper ======================================
     gripper = robotiq.Robotiq2F85()
 
