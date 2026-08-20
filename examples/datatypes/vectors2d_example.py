@@ -18,18 +18,15 @@ def vectors2d_example():
     logger.info(f"Created Vectors2D: {vectors2d}")
 
     # ======================= Inspect ===========================================
-    data = vectors2d.data
-    shape = vectors2d.shape
-    size = vectors2d.size
-    dtype = vectors2d.dtype
-    ndim = vectors2d.ndim
-    numpy_array = vectors2d.to_numpy()
-    vectors2d_copy = vectors2d.copy()
-
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Vectors2D data: {data}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Vectors2D: {vectors2d_copy}")
+    logger.info(
+        f"shape={vectors2d.shape}, "
+        f"size={vectors2d.size}, "
+        f"ndim={vectors2d.ndim}, "
+        f"dtype={vectors2d.dtype}"
+    )
+    logger.info(f"Vectors2D data: {vectors2d.data}")
+    logger.info(f"NumPy array: {vectors2d.to_numpy()}")
+    logger.info(f"Copied Vectors2D: {vectors2d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("vectors2d_example", spawn=True)
@@ -47,9 +44,7 @@ def vectors2d_example():
     )
 
     # ======================= NumPy Interop =====================================
-    sum_result = vectors2d + np.array([1.0, 1.0])
-
-    logger.info(f"Sum of Vectors2D with numpy array: {sum_result}")
+    logger.info(f"Sum of Vectors2D with numpy array: {vectors2d + np.array([1.0, 1.0])}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

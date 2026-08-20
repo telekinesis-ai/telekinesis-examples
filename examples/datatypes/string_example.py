@@ -16,8 +16,7 @@ def string_example():
     logger.info(f"Original String: {string}")
 
     # ======================= Inspect ===========================================
-    data = string.data
-    logger.info(f"Underlying String data: {data}")
+    logger.info(f"Underlying String data: {string.data}")
 
     # ======================= Visualize =========================================
     rr.init("string_example", spawn=True)
@@ -29,21 +28,15 @@ def string_example():
 
     # ======================= Operations ========================================
     other = datatypes.String("!")
-    concatenated = string + other
-    repeated = string * 3
-    lower = string.lower()
-    upper = string.upper()
     stripped = datatypes.String("  Hello World  ").strip()
-    contains = "World" in string
-    split = datatypes.String("/topic/ns/name").split("/")
 
-    logger.info(f"Concatenation: {string} + {other} = {concatenated}")
-    logger.info(f"Repeat: {string} * 3 = {repeated}")
-    logger.info(f"Lower: {string}.lower() = {lower}")
-    logger.info(f"Upper: {string}.upper() = {upper}")
+    logger.info(f"Concatenation: {string} + {other} = {string + other}")
+    logger.info(f"Repeat: {string} * 3 = {string * 3}")
+    logger.info(f"Lower: {string}.lower() = {string.lower()}")
+    logger.info(f"Upper: {string}.upper() = {string.upper()}")
     logger.info(f"Strip: '  Hello World  '.strip() = {stripped}")
-    logger.info(f"Contains: 'World' in {string} = {contains}")
-    logger.info(f"Split: {split}")
+    logger.info(f"Contains: 'World' in {string} = {'World' in string}")
+    logger.info(f"Split: {datatypes.String('/topic/ns/name').split('/')}")
     logger.info(f"Format with f-string format: {stripped:>10}")
 
     # ======================= Serialize / Deserialize ===========================

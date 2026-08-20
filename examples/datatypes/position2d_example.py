@@ -17,17 +17,15 @@ def position2d_example():
     logger.info(f"Original Position2D: {position2d}")
 
     # ======================= Inspect ===========================================
-    data = position2d.data
-    shape = position2d.shape
-    size = position2d.size
-    dtype = position2d.dtype
-    ndim = position2d.ndim
-    numpy_array = position2d.to_numpy()
-    copy = position2d.copy()
-
-    logger.info(f"data={data}, shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Position2D: {copy}")
+    logger.info(
+        f"data={position2d.data}, "
+        f"shape={position2d.shape}, "
+        f"size={position2d.size}, "
+        f"ndim={position2d.ndim}, "
+        f"dtype={position2d.dtype}"
+    )
+    logger.info(f"NumPy array: {position2d.to_numpy()}")
+    logger.info(f"Copied Position2D: {position2d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("position2d_example", spawn=True)
@@ -42,8 +40,7 @@ def position2d_example():
     )
 
     # ======================= Arithmetic ========================================
-    total = position2d + np.array([5.0, 10.0])
-    logger.info(f"Sum of Position2D with numpy array: {total}")
+    logger.info(f"Sum of Position2D with numpy array: {position2d + np.array([5.0, 10.0])}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

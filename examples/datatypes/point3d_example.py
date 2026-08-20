@@ -18,18 +18,15 @@ def point3d_example():
     logger.info(f"Original Point3D: {point3d}")
 
     # ======================= Inspect ===========================================
-    data = point3d.data
-    shape = point3d.shape
-    size = point3d.size
-    dtype = point3d.dtype
-    ndim = point3d.ndim
-    numpy_point3d = point3d.to_numpy()
-    point3d_copy = point3d.copy()
-
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Underlying data: {data}")
-    logger.info(f"NumPy array: {numpy_point3d}")
-    logger.info(f"Copy: {point3d_copy}")
+    logger.info(
+        f"shape={point3d.shape}, "
+        f"size={point3d.size}, "
+        f"ndim={point3d.ndim}, "
+        f"dtype={point3d.dtype}"
+    )
+    logger.info(f"Underlying data: {point3d.data}")
+    logger.info(f"NumPy array: {point3d.to_numpy()}")
+    logger.info(f"Copy: {point3d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("point3d_example", spawn=True)
@@ -42,12 +39,11 @@ def point3d_example():
     datatypes.visualize(point3d, entity_path="/Point3D/updated", label="Updated Point3D")
 
     # ======================= Arithmetic ========================================
-    point_sum = point3d + np.array([1.0, 1.0, 1.0])
-    point_diff = point3d - np.array([1.0, 1.0, 1.0])
-    point_prod = point3d * np.array(2.0)
-    point_quot = point3d / np.array(2.0)
-    logger.info(f"Sum: {point_sum}, Difference: {point_diff}")
-    logger.info(f"Product: {point_prod}, Quotient: {point_quot}")
+    logger.info(
+        f"Sum: {point3d + np.array([1.0, 1.0, 1.0])}, "
+        f"Difference: {point3d - np.array([1.0, 1.0, 1.0])}"
+    )
+    logger.info(f"Product: {point3d * np.array(2.0)}, Quotient: {point3d / np.array(2.0)}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

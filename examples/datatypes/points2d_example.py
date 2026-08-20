@@ -18,18 +18,15 @@ def points2d_example():
     logger.info(f"Original Points2D: {points2d}")
 
     # ======================= Inspect ===========================================
-    data = points2d.data
-    shape = points2d.shape
-    size = points2d.size
-    dtype = points2d.dtype
-    ndim = points2d.ndim
-    numpy_points2d = points2d.to_numpy()
-    points2d_copy = points2d.copy()
-
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Underlying data: {data}")
-    logger.info(f"NumPy array: {numpy_points2d}")
-    logger.info(f"Copy: {points2d_copy}")
+    logger.info(
+        f"shape={points2d.shape}, "
+        f"size={points2d.size}, "
+        f"ndim={points2d.ndim}, "
+        f"dtype={points2d.dtype}"
+    )
+    logger.info(f"Underlying data: {points2d.data}")
+    logger.info(f"NumPy array: {points2d.to_numpy()}")
+    logger.info(f"Copy: {points2d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("points2d_example", spawn=True)
@@ -48,12 +45,11 @@ def points2d_example():
     )
 
     # ======================= Arithmetic ========================================
-    points_sum = points2d + np.array([1.0, 1.0])
-    points_diff = points2d - np.array([1.0, 1.0])
-    points_prod = points2d * np.array(2.0)
-    points_quot = points2d / np.array(2.0)
-    logger.info(f"Sum: {points_sum}, Difference: {points_diff}")
-    logger.info(f"Product: {points_prod}, Quotient: {points_quot}")
+    logger.info(
+        f"Sum: {points2d + np.array([1.0, 1.0])}, "
+        f"Difference: {points2d - np.array([1.0, 1.0])}"
+    )
+    logger.info(f"Product: {points2d * np.array(2.0)}, Quotient: {points2d / np.array(2.0)}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

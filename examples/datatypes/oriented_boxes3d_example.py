@@ -21,25 +21,17 @@ def oriented_boxes3d_example():
     logger.info(f"Original OrientedBoxes3D: {boxes3d}")
 
     # ======================= Inspect ===========================================
-    data = boxes3d.data
-    shape = boxes3d.shape
-    dtype = boxes3d.dtype
-    ndim = boxes3d.ndim
-    numpy_boxes3d = boxes3d.to_numpy()
-    center = boxes3d.center
-    volume = boxes3d.volume
-    width = boxes3d.width
-    height = boxes3d.height
-    depth = boxes3d.depth
-    quaternion = boxes3d.data[:, 6:10]
-
-    logger.info(f"shape={shape}, dtype={dtype}, ndim={ndim}")
-    logger.info(f"Underlying data: {data}")
-    logger.info(f"NumPy array: {numpy_boxes3d}")
+    logger.info(f"shape={boxes3d.shape}, dtype={boxes3d.dtype}, ndim={boxes3d.ndim}")
+    logger.info(f"Underlying data: {boxes3d.data}")
+    logger.info(f"NumPy array: {boxes3d.to_numpy()}")
     logger.info(
-        f"center={center}, volume={volume}, width={width}, height={height}, depth={depth}"
+        f"center={boxes3d.center}, "
+        f"volume={boxes3d.volume}, "
+        f"width={boxes3d.width}, "
+        f"height={boxes3d.height}, "
+        f"depth={boxes3d.depth}"
     )
-    logger.info(f"Quaternion: {quaternion}")
+    logger.info(f"Quaternion: {boxes3d.data[:, 6:10]}")
 
     # ======================= Visualize =========================================
     rr.init("oriented_box3d_example", spawn=True)

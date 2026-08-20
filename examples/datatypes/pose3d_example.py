@@ -18,18 +18,15 @@ def pose3d_example():
     logger.info(f"Original Pose3D: {pose3d}")
 
     # ======================= Inspect ===========================================
-    data = pose3d.data
-    shape = pose3d.shape
-    size = pose3d.size
-    dtype = pose3d.dtype
-    ndim = pose3d.ndim
-    numpy_pose3d = pose3d.to_numpy()
-    pose3d_copy = pose3d.copy()
-
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Underlying data: {data}")
-    logger.info(f"NumPy array: {numpy_pose3d}")
-    logger.info(f"Copy: {pose3d_copy}")
+    logger.info(
+        f"shape={pose3d.shape}, "
+        f"size={pose3d.size}, "
+        f"ndim={pose3d.ndim}, "
+        f"dtype={pose3d.dtype}"
+    )
+    logger.info(f"Underlying data: {pose3d.data}")
+    logger.info(f"NumPy array: {pose3d.to_numpy()}")
+    logger.info(f"Copy: {pose3d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("pose3d_example", spawn=True)
@@ -77,14 +74,11 @@ def pose3d_example():
     logger.info(f"Pose3D from pose with rotation as rotation vector: {pose3d_rotvec}")
 
     # ======================= Convert ===========================================
-    pose_as_deg = pose3d.convert_pose_format(rot_type="deg")
-    logger.info(f"Pose3D as rotation in degrees: {pose_as_deg}")
-
-    pose_as_rad = pose3d.convert_pose_format(rot_type="rad")
-    logger.info(f"Pose3D as rotation in radians: {pose_as_rad}")
-
-    pose_as_rotvec = pose3d.convert_pose_format(rot_type="rotvec")
-    logger.info(f"Pose3D as rotation vector: {pose_as_rotvec}")
+    logger.info(f"Pose3D as rotation in degrees: {pose3d.convert_pose_format(rot_type='deg')}")
+    logger.info(f"Pose3D as rotation in radians: {pose3d.convert_pose_format(rot_type='rad')}")
+    logger.info(
+        f"Pose3D as rotation vector: {pose3d.convert_pose_format(rot_type='rotvec')}"
+    )
 
     # ======================= NumPy Interop =====================================
     reshaped = np.reshape(pose3d, (7,))

@@ -19,18 +19,17 @@ def twist3d_example():
     logger.info(f"Created Twist3D: {twist3d}")
 
     # ======================= Inspect ===========================================
-    data = twist3d.data
-    shape = twist3d.shape
-    size = twist3d.size
-    dtype = twist3d.dtype
-    ndim = twist3d.ndim
     numpy_array = twist3d.to_numpy()
-    twist3d_copy = twist3d.copy()
 
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Twist3D data: {data}")
+    logger.info(
+        f"shape={twist3d.shape}, "
+        f"size={twist3d.size}, "
+        f"ndim={twist3d.ndim}, "
+        f"dtype={twist3d.dtype}"
+    )
+    logger.info(f"Twist3D data: {twist3d.data}")
     logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Twist3D: {twist3d_copy}")
+    logger.info(f"Copied Twist3D: {twist3d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("twist3d_example", spawn=True)

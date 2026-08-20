@@ -12,10 +12,9 @@ def bool_example():
 
     # ======================= Create ============================================
     value = datatypes.Bool(True)
-    data = value.data
 
     logger.info(f"Original Bool: {value}")
-    logger.info(f"Bool data: {data}")
+    logger.info(f"Bool data: {value.data}")
 
     # ======================= Visualize =========================================
     rr.init("bool_example", spawn=True)
@@ -27,28 +26,18 @@ def bool_example():
 
     # ======================= Operations ========================================
     other = datatypes.Bool(True)
-    and_result = value & other
-    or_result = value | other
-    xor_result = value ^ other
-    not_result = ~value
-    eq_result = value == other
-    neq_result = value != other
 
-    logger.info(f"AND: {value} & {other} = {and_result}")
-    logger.info(f"OR: {value} | {other} = {or_result}")
-    logger.info(f"XOR: {value} ^ {other} = {xor_result}")
-    logger.info(f"NOT: ~{value} = {not_result}")
-    logger.info(f"EQ: {value} == {other} = {eq_result}")
-    logger.info(f"NEQ: {value} != {other} = {neq_result}")
+    logger.info(f"AND: {value} & {other} = {value & other}")
+    logger.info(f"OR: {value} | {other} = {value | other}")
+    logger.info(f"XOR: {value} ^ {other} = {value ^ other}")
+    logger.info(f"NOT: ~{value} = {~value}")
+    logger.info(f"EQ: {value} == {other} = {value == other}")
+    logger.info(f"NEQ: {value} != {other} = {value != other}")
 
     # ======================= Native Operations =================================
-    and_native = True & value
-    or_native = False | value
-    xor_native = True ^ value
-
-    logger.info(f"AND with native bool: True & {value} = {and_native}")
-    logger.info(f"OR with native bool: False | {value} = {or_native}")
-    logger.info(f"XOR with native bool: True ^ {value} = {xor_native}")
+    logger.info(f"AND with native bool: True & {value} = {True & value}")
+    logger.info(f"OR with native bool: False | {value} = {False | value}")
+    logger.info(f"XOR with native bool: True ^ {value} = {True ^ value}")
 
     # ======================= Format ============================================
     logger.info(f"f-string format: flag={datatypes.Bool(True):>10}")

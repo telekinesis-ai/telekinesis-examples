@@ -16,23 +16,15 @@ def rgba32_example():
     logger.info(f"Original Color: {color}")
 
     # ======================= Inspect ===========================================
-    data = color.data
-    shape = color.shape
-    size = color.size
-    dtype = color.dtype
-    ndim = color.ndim
-    numpy_array = color.to_numpy()
-    color_copy = color.copy()
-
     logger.info(
-        f"shape={shape}, "
-        f"size={size}, "
-        f"ndim={ndim}, "
-        f"dtype={dtype}"
+        f"shape={color.shape}, "
+        f"size={color.size}, "
+        f"ndim={color.ndim}, "
+        f"dtype={color.dtype}"
     )
-    logger.info(f"Color data: {data}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Color: {color_copy}")
+    logger.info(f"Color data: {color.data}")
+    logger.info(f"NumPy array: {color.to_numpy()}")
+    logger.info(f"Copied Color: {color.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("rgba32_example", spawn=True)
@@ -46,10 +38,9 @@ def rgba32_example():
     # ======================= From Hex ==========================================
     hex_color = "#FF00FF80"
     color_from_hex = datatypes.Color.from_hex(hex_color)
-    hex_from_color = color_from_hex.to_hex()
 
     logger.info(f"Color from hex {hex_color}: {color_from_hex}")
-    logger.info(f"Hex round-trip successful: {hex_from_color == hex_color}")
+    logger.info(f"Hex round-trip successful: {color_from_hex.to_hex() == hex_color}")
     datatypes.visualize(color_from_hex, entity_path="/Color/from_hex")
 
     # ======================= Serialize / Deserialize ===========================

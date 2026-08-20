@@ -31,15 +31,10 @@ def point_cloud_example():
     logger.info(f"Original Compressed PointCloud: {compressed}")
 
     # ======================= Inspect ===========================================
-    positions = uncompressed.positions
-    normals = uncompressed.normals
-    colors = uncompressed.colors
-    compression_settings = uncompressed.compression_settings
-
-    logger.info(f"Underlying positions: {positions}")
-    logger.info(f"Underlying normals: {normals}")
-    logger.info(f"Underlying colors: {colors}")
-    logger.info(f"Compression settings: {compression_settings}")
+    logger.info(f"Underlying positions: {uncompressed.positions}")
+    logger.info(f"Underlying normals: {uncompressed.normals}")
+    logger.info(f"Underlying colors: {uncompressed.colors}")
+    logger.info(f"Compression settings: {uncompressed.compression_settings}")
 
     # ======================= Visualize =========================================
     blueprint = rrb.Blueprint(
@@ -86,10 +81,9 @@ def point_cloud_example():
     logger.info("Saved PointCloud to disk as .ply file.")
 
     # ======================= NumPy Interop =====================================
-    numpy_data = uncompressed.to_numpy()
     array_data = np.asarray(uncompressed)
     centroid = np.mean(uncompressed, axis=0)
-    logger.info(f"NumPy array: {numpy_data}")
+    logger.info(f"NumPy array: {uncompressed.to_numpy()}")
     logger.info(f"As array: {array_data}")
     logger.info(f"Centroid: {centroid}")
 

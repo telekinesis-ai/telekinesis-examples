@@ -18,23 +18,15 @@ def covariance6x6_example():
     logger.info(f"Original Covariance6x6: {covariance}")
 
     # ======================= Inspect ===========================================
-    data = covariance.data
-    shape = covariance.shape
-    size = covariance.size
-    dtype = covariance.dtype
-    ndim = covariance.ndim
-    numpy_array = covariance.to_numpy()
-    covariance_copy = covariance.copy()
-
     logger.info(
-        f"shape={shape}, "
-        f"size={size}, "
-        f"ndim={ndim}, "
-        f"dtype={dtype}"
+        f"shape={covariance.shape}, "
+        f"size={covariance.size}, "
+        f"ndim={covariance.ndim}, "
+        f"dtype={covariance.dtype}"
     )
-    logger.info(f"Data:\n{data}")
-    logger.info(f"NumPy array:\n{numpy_array}")
-    logger.info(f"Copied Covariance6x6: {covariance_copy}")
+    logger.info(f"Data:\n{covariance.data}")
+    logger.info(f"NumPy array:\n{covariance.to_numpy()}")
+    logger.info(f"Copied Covariance6x6: {covariance.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("covariance6x6_example", spawn=True)

@@ -20,22 +20,16 @@ def depth_image_example():
     logger.info(f"Original DepthImage: {depth_image}")
 
     # ======================= Inspect ===========================================
-    data = depth_image.depth
-    shape = depth_image.shape
-    height = depth_image.height
-    width = depth_image.width
-    has_colors = depth_image.has_colors
-    compression = depth_image.compression
     numpy_array = np.asarray(depth_image)
 
     logger.info(
-        f"shape={shape}, "
-        f"height={height}, "
-        f"width={width}, "
-        f"has_colors={has_colors}, "
-        f"compression={compression}"
+        f"shape={depth_image.shape}, "
+        f"height={depth_image.height}, "
+        f"width={depth_image.width}, "
+        f"has_colors={depth_image.has_colors}, "
+        f"compression={depth_image.compression}"
     )
-    logger.info(f"Data: {data}")
+    logger.info(f"Data: {depth_image.depth}")
     logger.info(f"NumPy array: {numpy_array}")
 
     # ======================= Visualize =========================================

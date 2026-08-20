@@ -39,15 +39,10 @@ def point_cloud_batch_example():
     )
 
     # ======================= Inspect ===========================================
-    positions = batch.positions
-    normals = batch.normals
-    colors = batch.colors
-    length = len(batch)
-
-    logger.info(f"length={length}")
-    logger.info(f"Underlying positions: {positions}")
-    logger.info(f"Underlying normals: {normals}")
-    logger.info(f"Underlying colors: {colors}")
+    logger.info(f"length={len(batch)}")
+    logger.info(f"Underlying positions: {batch.positions}")
+    logger.info(f"Underlying normals: {batch.normals}")
+    logger.info(f"Underlying colors: {batch.colors}")
 
     # ======================= Index =============================================
     index = 0

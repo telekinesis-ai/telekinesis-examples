@@ -25,18 +25,17 @@ def transform2d_example():
     logger.info(f"Original Transform2D: {transform2d}")
 
     # ======================= Inspect ===========================================
-    data = transform2d.data
-    shape = transform2d.shape
-    size = transform2d.size
-    dtype = transform2d.dtype
-    ndim = transform2d.ndim
     numpy_array = transform2d.to_numpy()
-    copy = transform2d.copy()
 
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Transform2D data:\n{data}")
+    logger.info(
+        f"shape={transform2d.shape}, "
+        f"size={transform2d.size}, "
+        f"ndim={transform2d.ndim}, "
+        f"dtype={transform2d.dtype}"
+    )
+    logger.info(f"Transform2D data:\n{transform2d.data}")
     logger.info(f"NumPy array:\n{numpy_array}")
-    logger.info(f"Copied Transform2D: {copy}")
+    logger.info(f"Copied Transform2D: {transform2d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("transform2d_example", spawn=True)

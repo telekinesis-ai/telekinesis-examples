@@ -19,23 +19,17 @@ def contours_example():
     logger.info(f"Original Contours: {contours}")
 
     # ======================= Inspect ===========================================
-    points = contours.points
-    num_contours = len(contours)
-
-    logger.info(f"Points: {points}")
-    logger.info(f"First contour points: {points[0]}")
-    logger.info(f"Number of contours: {num_contours}")
+    logger.info(f"Points: {contours.points}")
+    logger.info(f"First contour points: {contours.points[0]}")
+    logger.info(f"Number of contours: {len(contours)}")
 
     # ======================= Visualize =========================================
     rr.init("contours_example", spawn=True)
     datatypes.visualize(contours, entity_path="/Contours")
 
     # ======================= Index =============================================
-    first_contour = contours[0]
-    sub_batch = contours[1:]
-
-    logger.info(f"First contour: {first_contour}")
-    logger.info(f"Sub-batch of contours [1:]: {sub_batch}")
+    logger.info(f"First contour: {contours[0]}")
+    logger.info(f"Sub-batch of contours [1:]: {contours[1:]}")
 
     # ======================= Empty Contours ====================================
     empty_points = np.empty((0, 2), dtype=np.int64)

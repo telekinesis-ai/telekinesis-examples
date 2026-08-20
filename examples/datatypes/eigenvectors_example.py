@@ -21,22 +21,16 @@ def eigenvectors_example():
 
     # ======================= Inspect ===========================================
     data = eigenvectors.data
-    shape = eigenvectors.shape
-    size = eigenvectors.size
-    dtype = eigenvectors.dtype
-    ndim = eigenvectors.ndim
-    numpy_array = eigenvectors.to_numpy()
-    eigenvectors_copy = eigenvectors.copy()
 
     logger.info(
-        f"shape={shape}, "
-        f"size={size}, "
-        f"ndim={ndim}, "
-        f"dtype={dtype}"
+        f"shape={eigenvectors.shape}, "
+        f"size={eigenvectors.size}, "
+        f"ndim={eigenvectors.ndim}, "
+        f"dtype={eigenvectors.dtype}"
     )
     logger.info(f"Data:\n{data}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied EigenVectors: {eigenvectors_copy}")
+    logger.info(f"NumPy array: {eigenvectors.to_numpy()}")
+    logger.info(f"Copied EigenVectors: {eigenvectors.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("eigenvectors_example", spawn=True)
