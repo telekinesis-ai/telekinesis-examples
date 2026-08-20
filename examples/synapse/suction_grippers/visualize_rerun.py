@@ -6,9 +6,7 @@ Usage:
     python visualize_rerun.py
 """
 
-import numpy as np
 import rerun as rr
-from loguru import logger
 
 from telekinesis.synapse.tools.suction_grippers import piab
 
