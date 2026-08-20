@@ -23,8 +23,12 @@ def main(robot_ip: str):
     """Drive a circular arc from the current TCP pose to an offset target."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     robot.connect(ip=robot_ip)
+
+    # ==================== Visualization (Optional) =============================
+    # Live: subscribes to the robot's state topic and redraws as it moves.
+    robot.visualize_rerun()
 
     # ==================== Run Skill ============================================
     try:
@@ -53,9 +57,6 @@ def main(robot_ip: str):
         time.sleep(2.0)
         robot.servo_stop()
         logger.success("servo_circular complete.")
-
-        # ==================== Visualization (Optional) =========================
-        robot.visualize_rerun(live=False)
     finally:
         robot.disconnect()
 

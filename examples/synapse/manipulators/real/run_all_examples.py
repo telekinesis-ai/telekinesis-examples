@@ -14,8 +14,13 @@ listed in RUN_ORDER is appended alphabetically. ``ur10e_virtual_controller``
 always targets a local URSim instance regardless of ``--ip`` and is left to
 run last.
 
+By default, the name of the next example is printed and execution pauses
+until Enter is pressed, so you can watch each one individually and keep the
+real robot supervised. Pass ``--non-interactive`` to run straight through
+instead.
+
 Usage:
-    python run_all_examples.py --ip <ROBOT_IP>
+    python run_all_examples.py --ip <ROBOT_IP> [--non-interactive]
 """
 
 import argparse
@@ -103,6 +108,11 @@ def parse_args():
         help="Directory containing example scripts (defaults to this file's directory)",
     )
     parser.add_argument("--ip", default=None, help="UR robot IP address")
+    parser.add_argument(
+        "--non-interactive",
+        action="store_true",
+        help="Run straight through without pausing for Enter before each example",
+    )
     return parser.parse_args()
 
 
@@ -170,6 +180,11 @@ def main():
         example_name = example_file.stem
 
         logger.info("=" * 80)
+        logger.info(f"[{idx}/{len(example_files)}] Next example: {example_name}")
+
+        if not args.non_interactive:
+            input("Press Enter to run it (Ctrl+C to abort)... ")
+
         logger.info(f"[{idx}/{len(example_files)}] Running example: {example_name}")
 
         ok = run_example_in_subprocess(example_file, connection_args)

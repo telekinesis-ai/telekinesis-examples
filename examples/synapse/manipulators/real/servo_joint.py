@@ -31,8 +31,12 @@ def main(robot_ip: str):
     n_cycles = 2
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     robot.connect(ip=robot_ip)
+
+    # ==================== Visualization (Optional) =============================
+    # Live: subscribes to the robot's state topic and redraws as it moves.
+    robot.visualize_rerun()
 
     # ==================== Run Skill ============================================
     try:
@@ -76,9 +80,6 @@ def main(robot_ip: str):
 
         robot.servo_stop()
         logger.success("servo_joint loop complete.")
-
-        # ==================== Visualization (Optional) =========================
-        robot.visualize_rerun(live=False)
     finally:
         robot.disconnect()
 

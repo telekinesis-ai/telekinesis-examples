@@ -33,8 +33,12 @@ def main(robot_ip: str):
     deceleration = 10.0    # deg/s² for servo_stop
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     robot.connect(ip=robot_ip)
+
+    # ==================== Visualization (Optional) =============================
+    # Live: subscribes to the robot's state topic and redraws as it moves.
+    robot.visualize_rerun()
 
     # ==================== Run Skill ============================================
     try:
@@ -72,9 +76,6 @@ def main(robot_ip: str):
         # Interrupt the servo stream — controller ramps the joints down.
         robot.servo_stop(deceleration=deceleration)
         logger.success(f"servo_stop issued (deceleration={deceleration} deg/s²).")
-
-        # ==================== Visualization (Optional) =========================
-        robot.visualize_rerun(live=False)
     finally:
         robot.disconnect()
 
