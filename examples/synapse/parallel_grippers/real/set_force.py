@@ -1,7 +1,7 @@
 """
 Demonstrates setting the default grip force of a parallel gripper.
 
-The default force (percent of max) is used by subsequent open/close/move calls.
+Supports OnRobot and Robotiq grippers.
 
 Usage:
     python set_force.py --ip <GRIPPER_IP>

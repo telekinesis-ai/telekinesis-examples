@@ -2,6 +2,8 @@
 Demonstrates how to visualize the meshes of a suction gripper kinematics model
 in Rerun for the Synapse SDK.
 
+Supports Piab grippers.
+
 Usage:
     python visualize_rerun.py
 """

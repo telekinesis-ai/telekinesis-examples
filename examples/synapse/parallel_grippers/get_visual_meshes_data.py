@@ -2,6 +2,8 @@
 Demonstrates how to read the per-link visual mesh data of a gripper URDF for
 the Synapse SDK.
 
+Supports all.
+
 Usage:
     python get_visual_meshes_data.py
 """

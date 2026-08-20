@@ -1,7 +1,7 @@
 """
 Demonstrates setting the vacuum level of a suction gripper.
 
-The vacuum level is used by subsequent grasp calls that do not name one.
+Supports Piab grippers.
 
 Usage:
     python set_vacuum_level.py --ip <ROBOT_IP>

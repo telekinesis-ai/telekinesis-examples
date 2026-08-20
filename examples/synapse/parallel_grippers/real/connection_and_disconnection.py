@@ -1,6 +1,8 @@
 """"
 Demonstrates connecting and disconnecting a parallel gripper.
 
+Supports OnRobot and Robotiq grippers.
+
 Usage:
     python connection_and_disconnection.py --ip <GRIPPER_IP>
     python connection_and_disconnection.py --protocol MODBUS_RTU --serial-port COM4
@@ -17,7 +19,7 @@ def main(ip: str | None, serial_port: str, protocol: str) -> None:
 
     #===================== Create Gripper ======================================
     gripper = robotiq.Robotiq2F85()
-    
+
     # ==================== Run Skill ===========================================
     try:
         gripper.connect(ip=ip, serial_port=serial_port, protocol=protocol)

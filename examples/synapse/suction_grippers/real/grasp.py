@@ -1,6 +1,8 @@
 """
 Demonstrates grasping an object with a suction gripper.
 
+Supports Piab grippers.
+
 Usage:
     python grasp.py --ip <ROBOT_IP>
     python grasp.py --protocol MODBUS_RTU --serial-port COM3

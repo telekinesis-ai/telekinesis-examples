@@ -2,6 +2,8 @@
 Demonstrates how to read the world transforms of every visual mesh of a
 gripper kinematics model for the Synapse SDK.
 
+Supports all.
+
 Usage:
     python get_visual_mesh_transforms.py
 """
