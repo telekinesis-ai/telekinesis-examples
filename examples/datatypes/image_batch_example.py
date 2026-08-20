@@ -21,13 +21,8 @@ def image_batch_example():
     logger.info(f"Original ImageBatch: {image_batch}")
 
     # ======================= Inspect ===========================================
-    dtypes = image_batch.dtypes
-    shapes = image_batch.shapes
-    compressions = image_batch.compressions
-    numpy_array = image_batch.to_numpy()
-
-    logger.info(f"dtypes={dtypes}, shapes={shapes}, compressions={compressions}")
-    logger.info(f"NumPy array: {numpy_array}")
+    logger.info(f"dtypes={image_batch.dtypes}, shapes={image_batch.shapes}, compressions={image_batch.compressions}")
+    logger.info(f"NumPy array: {image_batch.to_numpy()}")
 
     # ======================= Visualize =========================================
     rr.init("image_batch_example", spawn=True)

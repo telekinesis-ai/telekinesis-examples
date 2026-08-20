@@ -18,18 +18,15 @@ def vector4d_example():
     logger.info(f"Created Vector4D: {vector4d}")
 
     # ======================= Inspect ===========================================
-    data = vector4d.data
-    shape = vector4d.shape
-    size = vector4d.size
-    dtype = vector4d.dtype
-    ndim = vector4d.ndim
-    numpy_array = vector4d.to_numpy()
-    vector4d_copy = vector4d.copy()
-
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Vector4D data: {data}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Vector4D: {vector4d_copy}")
+    logger.info(
+        f"shape={vector4d.shape}, "
+        f"size={vector4d.size}, "
+        f"ndim={vector4d.ndim}, "
+        f"dtype={vector4d.dtype}"
+    )
+    logger.info(f"Vector4D data: {vector4d.data}")
+    logger.info(f"NumPy array: {vector4d.to_numpy()}")
+    logger.info(f"Copied Vector4D: {vector4d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("vector4d_example", spawn=True)
@@ -43,9 +40,7 @@ def vector4d_example():
     datatypes.visualize(vector4d, entity_path="/Vector4D/updated")
 
     # ======================= NumPy Interop =====================================
-    sum_result = vector4d + np.array([1.0, 1.0, 1.0, 1.0])
-
-    logger.info(f"Sum of Vector4D with numpy array: {sum_result}")
+    logger.info(f"Sum of Vector4D with numpy array: {vector4d + np.array([1.0, 1.0, 1.0, 1.0])}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

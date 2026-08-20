@@ -29,8 +29,7 @@ def categories_example():
 
     # ======================= Index =============================================
     category_id = 2
-    indexed = categories[category_id]
-    logger.info(f"Indexed category for id {category_id}: {indexed}")
+    logger.info(f"Indexed category for id {category_id}: {categories[category_id]}")
 
     # ======================= Visualize =========================================
     rr.init("categories_example", spawn=True)

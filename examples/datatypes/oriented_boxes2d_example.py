@@ -19,22 +19,15 @@ def oriented_boxes2d_example():
     logger.info(f"Original OrientedBoxes2D: {boxes2d}")
 
     # ======================= Inspect ===========================================
-    data = boxes2d.data
-    shape = boxes2d.shape
-    dtype = boxes2d.dtype
-    ndim = boxes2d.ndim
-    numpy_boxes2d = boxes2d.to_numpy()
-    center = boxes2d.center
-    area = boxes2d.area
-    width = boxes2d.width
-    height = boxes2d.height
-    theta = boxes2d.theta
-
-    logger.info(f"shape={shape}, dtype={dtype}, ndim={ndim}")
-    logger.info(f"Underlying data: {data}")
-    logger.info(f"NumPy array: {numpy_boxes2d}")
+    logger.info(f"shape={boxes2d.shape}, dtype={boxes2d.dtype}, ndim={boxes2d.ndim}")
+    logger.info(f"Underlying data: {boxes2d.data}")
+    logger.info(f"NumPy array: {boxes2d.to_numpy()}")
     logger.info(
-        f"center={center}, area={area}, width={width}, height={height}, theta={theta}"
+        f"center={boxes2d.center}, "
+        f"area={boxes2d.area}, "
+        f"width={boxes2d.width}, "
+        f"height={boxes2d.height}, "
+        f"theta={boxes2d.theta}"
     )
 
     # ======================= Visualize =========================================

@@ -30,24 +30,14 @@ def int_example():
     # ======================= Arithmetic ========================================
     other = datatypes.Int(58)
 
-    total = value + other
-    difference = value - other
-    product = value * other
-    quotient = value / other
-    remainder = value % other
-
-    logger.info(f"{value} + {other} = {total}")
-    logger.info(f"{value} - {other} = {difference}")
-    logger.info(f"{value} * {other} = {product}")
-    logger.info(f"{value} / {other} = {quotient}")
-    logger.info(f"{value} % {other} = {remainder}")
+    logger.info(f"{value} + {other} = {value + other}")
+    logger.info(f"{value} - {other} = {value - other}")
+    logger.info(f"{value} * {other} = {value * other}")
+    logger.info(f"{value} / {other} = {value / other}")
+    logger.info(f"{value} % {other} = {value % other}")
 
     # ======================= Convert ===========================================
-    native_int = int(value)
-    native_float = float(value)
-    native_bool = bool(value)
-
-    logger.info(f"int={native_int}, float={native_float}, bool={native_bool}")
+    logger.info(f"int={int(value)}, float={float(value)}, bool={bool(value)}")
 
     # ======================= Index =============================================
     items = [1, 2, 3, 4, 5]
@@ -56,15 +46,10 @@ def int_example():
     logger.info(f"items[{index}] = {items[index]}")
 
     # ======================= Unary =============================================
-    negated = -value
-    absolute = abs(value)
-
-    logger.info(f"negated={negated}, absolute={absolute}")
+    logger.info(f"negated={-value}, absolute={abs(value)}")
 
     # ======================= Compare ===========================================
-    comparison = value > other
-
-    logger.info(f"{value} > {other} = {comparison}")
+    logger.info(f"{value} > {other} = {value > other}")
 
     # ======================= Format ============================================
     logger.info(f"id={datatypes.Int(42):05d}")

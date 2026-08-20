@@ -25,18 +25,17 @@ def transform3d_example():
     logger.info(f"Created Transform3D: {transform3d}")
 
     # ======================= Inspect ===========================================
-    data = transform3d.data
-    shape = transform3d.shape
-    size = transform3d.size
-    dtype = transform3d.dtype
-    ndim = transform3d.ndim
     numpy_array = transform3d.to_numpy()
-    transform3d_copy = transform3d.copy()
 
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Transform3D data:\n{data}")
+    logger.info(
+        f"shape={transform3d.shape}, "
+        f"size={transform3d.size}, "
+        f"ndim={transform3d.ndim}, "
+        f"dtype={transform3d.dtype}"
+    )
+    logger.info(f"Transform3D data:\n{transform3d.data}")
     logger.info(f"NumPy array:\n{numpy_array}")
-    logger.info(f"Copied Transform3D: {transform3d_copy}")
+    logger.info(f"Copied Transform3D: {transform3d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("transform3d_example", spawn=True)
@@ -66,21 +65,19 @@ def transform3d_example():
     datatypes.visualize(inverse, entity_path="/Transform3D/inverse", label="inverse_transform3d")
 
     # ======================= Pose Conversion ===================================
-    pose_deg = transform3d.to_pose(rot_type="deg")
-    pose_rotvec = transform3d.to_pose(rot_type="rotvec")
-    pose_rad = transform3d.to_pose(rot_type="rad")
     pose_quat = transform3d.to_pose(rot_type="quat")
 
-    logger.info(f"Pose (deg): {pose_deg}")
-    logger.info(f"Pose (rotvec): {pose_rotvec}")
-    logger.info(f"Pose (rad): {pose_rad}")
+    logger.info(f"Pose (deg): {transform3d.to_pose(rot_type='deg')}")
+    logger.info(f"Pose (rotvec): {transform3d.to_pose(rot_type='rotvec')}")
+    logger.info(f"Pose (rad): {transform3d.to_pose(rot_type='rad')}")
     logger.info(f"Pose (quat): {pose_quat}")
 
     new_transform3d = datatypes.Transform3D.from_pose(pose_quat)
-    error = transform3d.compute_transformation_error(new_transform3d)
 
     logger.info(f"New Transform3D from pose: {new_transform3d}")
-    logger.info(f"Transformation error: {error}")
+    logger.info(
+        f"Transformation error: {transform3d.compute_transformation_error(new_transform3d)}"
+    )
 
     # ======================= NumPy Interop =====================================
     sum_result = np.array([1, 1, 1, 0]) + numpy_array

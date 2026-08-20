@@ -20,23 +20,15 @@ def eigenvalues_example():
     logger.info(f"Original EigenValues: {eigenvalues}")
 
     # ======================= Inspect ===========================================
-    data = eigenvalues.data
-    shape = eigenvalues.shape
-    size = eigenvalues.size
-    dtype = eigenvalues.dtype
-    ndim = eigenvalues.ndim
-    numpy_array = eigenvalues.to_numpy()
-    eigenvalues_copy = eigenvalues.copy()
-
     logger.info(
-        f"shape={shape}, "
-        f"size={size}, "
-        f"ndim={ndim}, "
-        f"dtype={dtype}"
+        f"shape={eigenvalues.shape}, "
+        f"size={eigenvalues.size}, "
+        f"ndim={eigenvalues.ndim}, "
+        f"dtype={eigenvalues.dtype}"
     )
-    logger.info(f"Data: {data}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied EigenValues: {eigenvalues_copy}")
+    logger.info(f"Data: {eigenvalues.data}")
+    logger.info(f"NumPy array: {eigenvalues.to_numpy()}")
+    logger.info(f"Copied EigenValues: {eigenvalues.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("eigenvalues_example", spawn=True)
@@ -51,14 +43,10 @@ def eigenvalues_example():
     )
 
     # ======================= Checks ============================================
-    positive_definite = eigenvalues.is_positive_definite()
-    positive_semidefinite = eigenvalues.is_positive_semidefinite()
-    condition_number = eigenvalues.condition_number
-
     logger.info(
-        f"is_positive_definite={positive_definite}, "
-        f"is_positive_semidefinite={positive_semidefinite}, "
-        f"condition_number={condition_number}"
+        f"is_positive_definite={eigenvalues.is_positive_definite()}, "
+        f"is_positive_semidefinite={eigenvalues.is_positive_semidefinite()}, "
+        f"condition_number={eigenvalues.condition_number}"
     )
 
     # ======================= NumPy Interop =====================================

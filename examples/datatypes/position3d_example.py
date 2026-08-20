@@ -17,17 +17,15 @@ def position3d_example():
     logger.info(f"Original Position3D: {position3d}")
 
     # ======================= Inspect ===========================================
-    data = position3d.data
-    shape = position3d.shape
-    size = position3d.size
-    dtype = position3d.dtype
-    ndim = position3d.ndim
-    numpy_array = position3d.to_numpy()
-    copy = position3d.copy()
-
-    logger.info(f"data={data}, shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Position3D: {copy}")
+    logger.info(
+        f"data={position3d.data}, "
+        f"shape={position3d.shape}, "
+        f"size={position3d.size}, "
+        f"ndim={position3d.ndim}, "
+        f"dtype={position3d.dtype}"
+    )
+    logger.info(f"NumPy array: {position3d.to_numpy()}")
+    logger.info(f"Copied Position3D: {position3d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("position3d_example", spawn=True)
@@ -42,8 +40,9 @@ def position3d_example():
     )
 
     # ======================= Arithmetic ========================================
-    diff = position3d - np.array([1.0, 1.0, 1.0])
-    logger.info(f"Difference of Position3D with numpy array: {diff}")
+    logger.info(
+        f"Difference of Position3D with numpy array: {position3d - np.array([1.0, 1.0, 1.0])}"
+    )
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

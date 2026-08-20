@@ -15,8 +15,7 @@ def float_example():
     logger.info(f"Original Float: {value}")
 
     # ======================= Inspect ===========================================
-    data = value.data
-    logger.info(f"Data: {data}")
+    logger.info(f"Data: {value.data}")
 
     # ======================= Visualize =========================================
     rr.init("float_example", spawn=True)
@@ -28,33 +27,20 @@ def float_example():
 
     # ======================= Arithmetic ========================================
     other = datatypes.Float(1.5)
-    sum_value = value + other
-    diff_value = value - other
-    prod_value = value * other
-    div_value = value / other
-    floordiv_value = value // other
-    mod_value = value % other
 
-    logger.info(f"{value} + {other} = {sum_value}")
-    logger.info(f"{value} - {other} = {diff_value}")
-    logger.info(f"{value} * {other} = {prod_value}")
-    logger.info(f"{value} / {other} = {div_value}")
-    logger.info(f"{value} // {other} = {floordiv_value}")
-    logger.info(f"{value} % {other} = {mod_value}")
+    logger.info(f"{value} + {other} = {value + other}")
+    logger.info(f"{value} - {other} = {value - other}")
+    logger.info(f"{value} * {other} = {value * other}")
+    logger.info(f"{value} / {other} = {value / other}")
+    logger.info(f"{value} // {other} = {value // other}")
+    logger.info(f"{value} % {other} = {value % other}")
 
     # ======================= Convert ===========================================
-    native_int = int(value)
-    native_float = float(value)
-    native_bool = bool(value)
-
-    logger.info(f"int={native_int}, float={native_float}, bool={native_bool}")
+    logger.info(f"int={int(value)}, float={float(value)}, bool={bool(value)}")
 
     # ======================= Unary =============================================
-    negated = -value
-    abs_value = abs(value)
-
-    logger.info(f"-{value} = {negated}")
-    logger.info(f"abs({value}) = {abs_value}")
+    logger.info(f"-{value} = {-value}")
+    logger.info(f"abs({value}) = {abs(value)}")
 
     # ======================= Format ============================================
     logger.info(f"f-string format: pose={datatypes.Float(3.14159):.3f}")

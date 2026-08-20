@@ -18,12 +18,10 @@ def mat2x2_example():
     logger.info(f"Created Mat2x2: {mat}")
 
     # ======================= Inspect ===========================================
-    mat_copy = mat.copy()
-
     logger.info(f"shape={mat.shape}, size={mat.size}, dtype={mat.dtype}, ndim={mat.ndim}")
     logger.info(f"Mat2x2 data: {mat.data}")
     logger.info(f"NumPy array: {mat.to_numpy()}")
-    logger.info(f"Copied Mat2x2: {mat_copy}")
+    logger.info(f"Copied Mat2x2: {mat.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("mat2x2_example", spawn=True)

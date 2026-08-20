@@ -18,18 +18,15 @@ def pose2d_example():
     logger.info(f"Original Pose2D: {pose2d}")
 
     # ======================= Inspect ===========================================
-    data = pose2d.data
-    shape = pose2d.shape
-    size = pose2d.size
-    dtype = pose2d.dtype
-    ndim = pose2d.ndim
-    numpy_pose2d = pose2d.to_numpy()
-    pose2d_copy = pose2d.copy()
-
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Underlying data: {data}")
-    logger.info(f"NumPy array: {numpy_pose2d}")
-    logger.info(f"Copy: {pose2d_copy}")
+    logger.info(
+        f"shape={pose2d.shape}, "
+        f"size={pose2d.size}, "
+        f"ndim={pose2d.ndim}, "
+        f"dtype={pose2d.dtype}"
+    )
+    logger.info(f"Underlying data: {pose2d.data}")
+    logger.info(f"NumPy array: {pose2d.to_numpy()}")
+    logger.info(f"Copy: {pose2d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("pose2d_example", spawn=True)
@@ -42,8 +39,7 @@ def pose2d_example():
     datatypes.visualize(pose2d, entity_path="/Pose2D/updated", label="Updated Pose2D")
 
     # ======================= Translate =========================================
-    translated = pose2d + np.array([1.0, 1.0, 0.0])
-    logger.info(f"Translated Pose2D: {translated}")
+    logger.info(f"Translated Pose2D: {pose2d + np.array([1.0, 1.0, 0.0])}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

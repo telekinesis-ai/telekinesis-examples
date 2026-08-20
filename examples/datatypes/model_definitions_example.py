@@ -49,14 +49,12 @@ def model_definitions_example():
     logger.info(f"created_ats={definitions.created_ats}, updated_ats={definitions.updated_ats}")
 
     # ======================= Index =============================================
-    first = definitions[0]
     subset = definitions[0:1]
     mask = definitions.model_statuses == "uploaded"
-    uploaded_only = definitions[mask]
 
-    logger.info(f"definitions[0] = {first}")
+    logger.info(f"definitions[0] = {definitions[0]}")
     logger.info(f"definitions[0:1] = {len(subset)} record(s), names={subset.model_names}")
-    logger.info(f"definitions[uploaded mask] = {len(uploaded_only)} record(s)")
+    logger.info(f"definitions[uploaded mask] = {len(definitions[mask])} record(s)")
 
     # ======================= Empty Batch =======================================
     empty = datatypes.ModelDefinitions(

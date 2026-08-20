@@ -14,8 +14,7 @@ def poses2d_example():
     logger.info(f"Original Poses2D: {poses2d}")
 
     # ======================= Inspect ===========================================
-    data = poses2d.data
-    logger.info(f"Underlying Poses2D data: {data}")
+    logger.info(f"Underlying Poses2D data: {poses2d.data}")
 
     # ======================= Visualize =========================================
     rr.init("poses2d_example", spawn=True)

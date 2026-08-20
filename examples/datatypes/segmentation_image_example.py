@@ -18,26 +18,17 @@ def segmentation_image_example():
     logger.info(f"Original SegmentationImage: {image}")
 
     # ======================= Inspect ===========================================
-    label_codes = image.label_codes
-    number_of_labels = image.number_of_labels
-    shape = image.data.shape
-    dtype = image.data.dtype
-    height = image.height
-    width = image.width
-    compression = image.compression
-    numpy_array = image.to_numpy()
-
     logger.info(
-        f"label_codes={label_codes}, "
-        f"number_of_labels={number_of_labels}, "
-        f"shape={shape}, "
-        f"dtype={dtype}, "
-        f"height={height}, "
-        f"width={width}, "
-        f"compression={compression}"
+        f"label_codes={image.label_codes}, "
+        f"number_of_labels={image.number_of_labels}, "
+        f"shape={image.data.shape}, "
+        f"dtype={image.data.dtype}, "
+        f"height={image.height}, "
+        f"width={image.width}, "
+        f"compression={image.compression}"
     )
     logger.info(f"SegmentationImage data:\n{image.data}")
-    logger.info(f"NumPy array:\n{numpy_array}")
+    logger.info(f"NumPy array:\n{image.to_numpy()}")
 
     # ======================= Visualize =========================================
     rr.init("segmentation_image_example", spawn=True)

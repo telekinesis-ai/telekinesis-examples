@@ -18,17 +18,15 @@ def quaternion_example():
     logger.info(f"Original Quaternion: {quaternion}")
 
     # ======================= Inspect ===========================================
-    data = quaternion.data
-    shape = quaternion.shape
-    size = quaternion.size
-    dtype = quaternion.dtype
-    ndim = quaternion.ndim
-    numpy_array = quaternion.to_numpy()
-    copy = quaternion.copy()
-
-    logger.info(f"data={data}, shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Quaternion: {copy}")
+    logger.info(
+        f"data={quaternion.data}, "
+        f"shape={quaternion.shape}, "
+        f"size={quaternion.size}, "
+        f"ndim={quaternion.ndim}, "
+        f"dtype={quaternion.dtype}"
+    )
+    logger.info(f"NumPy array: {quaternion.to_numpy()}")
+    logger.info(f"Copied Quaternion: {quaternion.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("quaternion_example", spawn=True)

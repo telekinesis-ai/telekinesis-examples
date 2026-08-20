@@ -19,10 +19,9 @@ def contour_example():
 
     # ======================= Inspect ===========================================
     points = contour.points
-    num_points = len(contour)
 
     logger.info(f"Points: {points}")
-    logger.info(f"Number of points: {num_points}")
+    logger.info(f"Number of points: {len(contour)}")
 
     # ======================= Visualize =========================================
     rr.init("contour_example", spawn=True)

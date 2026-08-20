@@ -19,18 +19,17 @@ def wrench3d_example():
     logger.info(f"Created Wrench3D: {wrench3d}")
 
     # ======================= Inspect ===========================================
-    data = wrench3d.data
-    shape = wrench3d.shape
-    size = wrench3d.size
-    dtype = wrench3d.dtype
-    ndim = wrench3d.ndim
     numpy_array = wrench3d.to_numpy()
-    wrench3d_copy = wrench3d.copy()
 
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Wrench3D data: {data}")
+    logger.info(
+        f"shape={wrench3d.shape}, "
+        f"size={wrench3d.size}, "
+        f"ndim={wrench3d.ndim}, "
+        f"dtype={wrench3d.dtype}"
+    )
+    logger.info(f"Wrench3D data: {wrench3d.data}")
     logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Wrench3D: {wrench3d_copy}")
+    logger.info(f"Copied Wrench3D: {wrench3d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("wrench3d_example", spawn=True)

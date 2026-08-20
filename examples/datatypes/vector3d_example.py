@@ -18,18 +18,15 @@ def vector3d_example():
     logger.info(f"Created Vector3D: {vector3d}")
 
     # ======================= Inspect ===========================================
-    data = vector3d.data
-    shape = vector3d.shape
-    size = vector3d.size
-    dtype = vector3d.dtype
-    ndim = vector3d.ndim
-    numpy_array = vector3d.to_numpy()
-    vector3d_copy = vector3d.copy()
-
-    logger.info(f"shape={shape}, size={size}, ndim={ndim}, dtype={dtype}")
-    logger.info(f"Vector3D data: {data}")
-    logger.info(f"NumPy array: {numpy_array}")
-    logger.info(f"Copied Vector3D: {vector3d_copy}")
+    logger.info(
+        f"shape={vector3d.shape}, "
+        f"size={vector3d.size}, "
+        f"ndim={vector3d.ndim}, "
+        f"dtype={vector3d.dtype}"
+    )
+    logger.info(f"Vector3D data: {vector3d.data}")
+    logger.info(f"NumPy array: {vector3d.to_numpy()}")
+    logger.info(f"Copied Vector3D: {vector3d.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("vector3d_example", spawn=True)
@@ -43,9 +40,7 @@ def vector3d_example():
     datatypes.visualize(vector3d, entity_path="/Vector3D/updated", label="Updated Vector3D")
 
     # ======================= NumPy Interop =====================================
-    sum_result = vector3d + np.array([1.0, 1.0, 1.0])
-
-    logger.info(f"Sum of Vector3D with numpy array: {sum_result}")
+    logger.info(f"Sum of Vector3D with numpy array: {vector3d + np.array([1.0, 1.0, 1.0])}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
