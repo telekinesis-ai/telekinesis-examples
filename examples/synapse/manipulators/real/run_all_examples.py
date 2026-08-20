@@ -88,12 +88,11 @@ RUN_ORDER = [
     "stop_cartesian_motion",
     "start_and_stop_jog_mode",
     "start_and_stop_freedrive_mode",
-    "start_and_stop_teach_mode",
+    # "start_and_stop_teach_mode",
     "is_tool_in_contact",
     "move_until_contact",
     "contact_detection",
     "trigger_protective_stop",
-    "ur10e_virtual_controller",
 ]
 
 
