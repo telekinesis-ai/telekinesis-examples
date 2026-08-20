@@ -7,10 +7,6 @@ issues (e.g. rerun). The ``--prim`` argument is forwarded to every example;
 scripts that don't take it (nearly all of them run purely offline on the
 kinematic model) simply ignore it.
 
-By default, the name of the next example is printed and execution pauses
-until Enter is pressed, so you can watch each one individually. Pass
-``--non-interactive`` to run straight through instead.
-
 Examples run in a settle-friendly order: read-only state getters first,
 then TCP and tool setup, then motion skills. Any example not listed in
 RUN_ORDER is appended alphabetically.
@@ -20,7 +16,7 @@ connection to make. See ``real/connection_and_disconnection.py`` for real
 hardware; a simulation-mode equivalent will be added separately.
 
 Usage:
-    python run_all_examples.py [--prim <ROBOT_PRIM_PATH>] [--non-interactive]
+    python run_all_examples.py [--prim <ROBOT_PRIM_PATH>]
 """
 
 import argparse
@@ -75,11 +71,6 @@ def parse_args():
         help="Directory containing example scripts (defaults to this file's directory)",
     )
     parser.add_argument("--prim", default=None, help="UR robot primitive path in isaacsim")
-    parser.add_argument(
-        "--non-interactive",
-        action="store_true",
-        help="Run straight through without pausing for Enter before each example",
-    )
     return parser.parse_args()
 
 
@@ -147,11 +138,6 @@ def main():
         example_name = example_file.stem
 
         logger.info("=" * 80)
-        logger.info(f"[{idx}/{len(example_files)}] Next example: {example_name}")
-
-        if not args.non_interactive:
-            input("Press Enter to run it (Ctrl+C to abort)... ")
-
         logger.info(f"[{idx}/{len(example_files)}] Running example: {example_name}")
 
         ok = run_example_in_subprocess(example_file, connection_args)

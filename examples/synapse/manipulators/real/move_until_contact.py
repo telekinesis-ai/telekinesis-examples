@@ -20,8 +20,12 @@ def main(ip: str):
     """Move the TCP down in -Z until contact is detected, then report and disconnect."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     robot.connect(ip=ip)
+
+    # ==================== Visualization (Optional) =============================
+    # Live: subscribes to the robot's state topic and redraws as it moves.
+    robot.visualize_rerun()
 
     # ==================== Run Skill ============================================
     try:
