@@ -1,14 +1,15 @@
 """
-Set Joint Positions example for the Synapse SDK.
+Set Joint Positions (relative) example for the Synapse SDK.
 
-Drives the robot to a target joint configuration.
+Reads the current joint configuration and moves to a target defined *relative*
+to it (an offset applied to the current joint angles).
 
-Currently supported only for Universal Robots (UR10e) for real hardware.
+Currently supported only for real hardware from Universal Robots.
 
-For offline, refer to motion/offline/set_joint_positions/
+For an offline version, refer to set_joint_positions_relative in motion/offline/set_joint_positions/
 
 Usage:
-    python set_joint_positions.py [--ip <ROBOT_IP>]
+    python set_joint_positions_relative.py [--ip <ROBOT_IP>]
 """
 
 import argparse
@@ -27,7 +28,8 @@ def main(ip: str):
 
     try:
         # Target: current joint configuration with the base joint rotated +30 deg
-        target_joint_positions = [0, -90, -90, -90, 90, 0]
+        target_joint_positions = robot.get_joint_positions().copy()
+        target_joint_positions[0] += 5
 
         # Move to target joint positions
         robot.set_joint_positions(
@@ -44,8 +46,8 @@ def main(ip: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Move the robot to a target joint configuration")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    parser.add_argument("--ip", type=str, default="192.168.1.100",
+                        help="UR robot IP address (default: 192.168.1.100)")
     args = parser.parse_args()
 
     main(ip=args.ip)
-
