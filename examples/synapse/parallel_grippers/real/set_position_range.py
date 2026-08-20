@@ -1,7 +1,7 @@
 """
 Demonstrates setting the stroke range of a parallel gripper.
 
-85 mm is the maximum stroke of the Robotiq 2F-85.
+Supports OnRobot and Robotiq grippers.
 
 Usage:
     python set_position_range.py --ip <GRIPPER_IP>

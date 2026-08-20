@@ -1,7 +1,7 @@
 """
 Demonstrates setting the default speed of a parallel gripper.
 
-The default speed (percent of max) is used by subsequent open/close/move calls.
+Supports only Robotiq grippers.
 
 Usage:
     python set_speed.py --ip <GRIPPER_IP>
@@ -19,7 +19,7 @@ def main(ip: str | None, serial_port: str, protocol: str) -> None:
 
     #===================== Create Gripper ======================================
     gripper = robotiq.Robotiq2F85()
-    
+
     # ==================== Run Skill ===========================================
     try:
         gripper.connect(ip=ip, serial_port=serial_port, protocol=protocol)

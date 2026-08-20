@@ -1,6 +1,8 @@
 """
 Demonstrates activating a parallel gripper.
 
+Supports only Robotiq grippers.
+
 Usage:
     python activate.py --ip <GRIPPER_IP>
     python activate.py --protocol MODBUS_RTU --serial-port COM4

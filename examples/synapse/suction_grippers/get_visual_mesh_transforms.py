@@ -2,6 +2,8 @@
 Demonstrates how to read the world transforms of every visual mesh of a suction
 gripper kinematics model for the Synapse SDK.
 
+Supports Piab grippers.
+
 Usage:
     python get_visual_mesh_transforms.py
 """

@@ -2,6 +2,8 @@
 Demonstrates how to visualize the meshes of a gripper kinematics model in
 Rerun for the Synapse SDK.
 
+Supports all.
+
 Usage:
     python visualize_rerun.py
 """

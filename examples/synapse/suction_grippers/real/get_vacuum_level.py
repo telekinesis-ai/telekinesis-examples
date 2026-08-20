@@ -1,6 +1,8 @@
 """
 Demonstrates reading the last commanded vacuum level of a suction gripper.
 
+Supports Piab grippers.
+
 Usage:
     python get_vacuum_level.py --ip <ROBOT_IP>
     python get_vacuum_level.py --protocol MODBUS_RTU --serial-port COM3

@@ -1,6 +1,8 @@
 """
 Demonstrates opening a parallel gripper.
 
+Supports OnRobot and Robotiq grippers.
+
 Usage:
     python open.py --ip <GRIPPER_IP>
     python open.py --protocol MODBUS_RTU --serial-port COM4

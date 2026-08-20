@@ -2,6 +2,8 @@
 Demonstrates how to read the base-frame transforms of every link in a gripper
 kinematics model for the Synapse SDK.
 
+Supports all.
+
 Usage:
     python get_link_transforms.py
 """

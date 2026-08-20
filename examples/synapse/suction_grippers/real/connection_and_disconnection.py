@@ -1,6 +1,8 @@
 """
 Demonstrates connecting and disconnecting a suction gripper.
 
+Supports Piab grippers.
+
 Usage:
     python connection_and_disconnection.py --ip <ROBOT_IP>
     python connection_and_disconnection.py --protocol MODBUS_RTU --serial-port COM3

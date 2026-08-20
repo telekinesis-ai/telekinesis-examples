@@ -1,6 +1,8 @@
 """
 Demonstrates releasing an object held by a suction gripper.
 
+Supports Piab grippers.
+
 Usage:
     python release.py --ip <ROBOT_IP>
     python release.py --protocol MODBUS_RTU --serial-port COM3
