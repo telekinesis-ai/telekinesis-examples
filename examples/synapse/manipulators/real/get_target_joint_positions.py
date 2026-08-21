@@ -1,7 +1,7 @@
 """
 Logs the controller-commanded target joint positions.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_target_joint_positions.py [--ip <ROBOT_IP>]

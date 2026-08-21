@@ -1,7 +1,7 @@
 """
 Connects to a URSim virtual controller, reads robot state, and moves to the default joint configuration.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Prerequisites:
   - URSim running in Docker with ports 30001-30004 and 29999 exposed

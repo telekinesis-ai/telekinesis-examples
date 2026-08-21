@@ -1,7 +1,7 @@
 """
 Pre-initialize an IK solver, then solve IK with it.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python setup_kinematics_solver.py

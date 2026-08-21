@@ -1,7 +1,7 @@
 """
 Measures the controller's update rate by polling get_timestamp() and computing 1 / mean_step_time.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_controller_frequency.py [--ip <ROBOT_IP>]

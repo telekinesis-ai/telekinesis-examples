@@ -1,7 +1,7 @@
 """
 Logs the controller's high-level robot mode.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_robot_mode.py [--ip <ROBOT_IP>]

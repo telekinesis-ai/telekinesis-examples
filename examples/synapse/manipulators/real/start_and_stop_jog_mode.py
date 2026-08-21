@@ -1,7 +1,7 @@
 """
 Jogs the TCP +Z at 5 cm/s in the base frame for 5 seconds, then stops.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python start_and_stop_jog_mode.py [--ip <ROBOT_IP>]

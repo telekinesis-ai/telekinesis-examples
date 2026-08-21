@@ -1,7 +1,7 @@
 """
 Enters freedrive (hand-guiding) mode for 10 seconds, then exits.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python start_and_stop_freedrive_mode.py [--ip <ROBOT_IP>]

@@ -1,7 +1,7 @@
 """
 Logs the controller-commanded target joint accelerations.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_target_joint_accelerations.py [--ip <ROBOT_IP>]

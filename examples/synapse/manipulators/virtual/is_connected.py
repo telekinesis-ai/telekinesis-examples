@@ -1,7 +1,7 @@
 """
 Check the manipulator's connection status.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python is_connected.py

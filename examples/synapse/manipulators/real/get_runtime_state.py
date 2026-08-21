@@ -1,7 +1,7 @@
 """
 Logs the controller's program runtime state.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_runtime_state.py [--ip <ROBOT_IP>]

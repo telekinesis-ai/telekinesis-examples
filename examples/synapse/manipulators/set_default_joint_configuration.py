@@ -1,7 +1,7 @@
 """
 Override the default joint configuration used as the offline commanded state.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python set_default_joint_configuration.py

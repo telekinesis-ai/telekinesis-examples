@@ -1,7 +1,7 @@
 """
 Read the Pinocchio collision geometry model.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_collision_model.py

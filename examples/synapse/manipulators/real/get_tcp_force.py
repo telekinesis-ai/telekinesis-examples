@@ -1,7 +1,7 @@
 """
 Logs the live generalized force/torque at the TCP.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_tcp_force.py [--ip <ROBOT_IP>]

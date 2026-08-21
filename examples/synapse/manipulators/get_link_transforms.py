@@ -1,7 +1,7 @@
 """
 Read per-link world transforms for a manipulator.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_link_transforms.py

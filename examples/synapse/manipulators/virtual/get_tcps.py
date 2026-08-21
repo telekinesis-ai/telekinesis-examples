@@ -1,7 +1,7 @@
 """
 List all registered TCP frames and the active one.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_tcps.py

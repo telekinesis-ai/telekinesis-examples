@@ -1,7 +1,7 @@
 """
 Registers a custom TCP frame and then updates it on the controller.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python update_tcp.py [--ip <ROBOT_IP>]

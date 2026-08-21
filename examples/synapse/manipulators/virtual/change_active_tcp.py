@@ -1,7 +1,7 @@
 """
 Register multiple TCP frames and switch the active one.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python change_active_tcp.py

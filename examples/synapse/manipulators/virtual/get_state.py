@@ -1,7 +1,7 @@
 """
 Log the full robot state dictionary.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_state.py

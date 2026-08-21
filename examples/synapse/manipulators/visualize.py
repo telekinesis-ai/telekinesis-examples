@@ -1,7 +1,7 @@
 """
 Visualize a robot in Rerun.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python visualize.py

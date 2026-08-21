@@ -1,7 +1,7 @@
 """
 Register a custom TCP frame and inspect the active TCP before and after.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python add_tcp.py

@@ -1,7 +1,7 @@
 """
 Logs whether a PolyScope program is currently running on the controller.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python is_program_running_on_controller.py [--ip <ROBOT_IP>]

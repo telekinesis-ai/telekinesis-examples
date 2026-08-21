@@ -1,7 +1,7 @@
 """
 Generate and visualize a LinearCartesianTrajectoryGenerator trajectory in Rerun.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python generate_cartesian_trajectory.py

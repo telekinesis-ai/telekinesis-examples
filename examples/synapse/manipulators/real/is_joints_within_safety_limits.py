@@ -1,7 +1,7 @@
 """
 Checks joint limits, safety plane limits, and TCP orientation deviation limits for a joint configuration.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python is_joints_within_safety_limits.py [--ip <ROBOT_IP>]

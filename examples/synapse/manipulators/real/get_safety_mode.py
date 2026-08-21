@@ -1,7 +1,7 @@
 """
 Logs the controller's safety mode.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_safety_mode.py [--ip <ROBOT_IP>]

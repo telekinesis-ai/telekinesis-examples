@@ -1,7 +1,7 @@
 """
 Registers a custom TCP frame on the controller and inspects the active TCP before and after.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python add_tcp.py [--ip <ROBOT_IP>]

@@ -1,7 +1,7 @@
 """
 Logs the manipulator's live joint positions.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_joint_positions.py [--ip <ROBOT_IP>]

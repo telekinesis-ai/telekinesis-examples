@@ -1,7 +1,7 @@
 """
 Logs the manipulator's live net joint torques.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_joint_torques.py [--ip <ROBOT_IP>]

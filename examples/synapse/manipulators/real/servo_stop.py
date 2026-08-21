@@ -1,7 +1,7 @@
 """
 Streams a brief servo_joint move and interrupts it mid-stream with servo_stop.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python servo_stop.py [--ip <ROBOT_IP>]

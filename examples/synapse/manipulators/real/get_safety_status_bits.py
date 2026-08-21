@@ -1,7 +1,7 @@
 """
 Logs the controller's raw safety status bitmask.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_safety_status_bits.py [--ip <ROBOT_IP>]

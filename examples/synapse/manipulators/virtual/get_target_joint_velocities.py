@@ -1,7 +1,7 @@
 """
 Read the manipulator's target joint velocities.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_target_joint_velocities.py

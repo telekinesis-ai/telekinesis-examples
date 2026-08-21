@@ -1,7 +1,7 @@
 """
 Streams joint targets at 125 Hz to oscillate the base joint (j0) sinusoidally with servo_joint.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python servo_joint.py [--ip <ROBOT_IP>]

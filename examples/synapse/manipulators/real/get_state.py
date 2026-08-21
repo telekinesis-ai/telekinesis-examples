@@ -1,7 +1,7 @@
 """
 Logs the full live robot state dictionary.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_state.py [--ip <ROBOT_IP>]

@@ -1,7 +1,7 @@
 """
 Attaches a gripper and visualizes it, then detaches it from the Rerun visualization again.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR) and Epson.
 
 Usage:
     python detach_tool.py [--ip <ROBOT_IP>]

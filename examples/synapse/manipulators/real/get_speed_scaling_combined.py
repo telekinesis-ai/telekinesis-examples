@@ -1,7 +1,7 @@
 """
 Logs the actual effective speed scaling applied during motion.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_speed_scaling_combined.py [--ip <ROBOT_IP>]

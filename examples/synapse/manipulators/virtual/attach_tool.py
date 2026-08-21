@@ -1,7 +1,7 @@
 """
 Attach an OnRobot RG6 gripper to a manipulator and visualize the result.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python attach_tool.py

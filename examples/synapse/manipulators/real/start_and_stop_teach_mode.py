@@ -1,7 +1,7 @@
 """
 Enters teach mode, captures TCP poses on each Enter press, and exits on Ctrl-C.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python start_and_stop_teach_mode.py [--ip <ROBOT_IP>]

@@ -1,7 +1,7 @@
 """
 Generate and visualize a JointTrajectoryGenerator trajectory in Rerun.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python generate_joint_trajectory.py

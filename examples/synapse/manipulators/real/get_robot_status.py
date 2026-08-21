@@ -1,7 +1,7 @@
 """
 Logs the controller's high-level robot status flags.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_robot_status.py [--ip <ROBOT_IP>]
