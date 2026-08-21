@@ -11,7 +11,7 @@ coordinate frame travelling from the start pose to the goal pose.
 
 Run with the Rerun viewer:
 
-    python examples/cartesian_trajectory_generator_example.py
+    python examples/generate_cartesian_trajectory.py
 """
 
 import numpy as np
@@ -225,7 +225,7 @@ def main():
                 2],
         ))
 
-    rr.init("cartesian_trajectory_generator_example", spawn=True)
+    rr.init("generate_cartesian_trajectory", spawn=True)
     # Force our layout even if the viewer already has a saved blueprint for this recording.
     rr.send_blueprint(blueprint, make_active=True, make_default=True)
 

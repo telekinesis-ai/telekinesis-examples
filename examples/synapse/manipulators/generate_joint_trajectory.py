@@ -8,7 +8,7 @@ sampled joint positions, so the plots reflect exactly what the generator outputs
 
 Run with the Rerun viewer:
 
-    python examples/joint_trajectory_generator_example.py
+    python examples/generate_joint_trajectory.py
 """
 
 import numpy as np
@@ -148,7 +148,7 @@ def main():
     ]
     blueprint = rrb.Blueprint(rrb.Vertical(*rows))
 
-    rr.init("joint_trajectory_generator_example", spawn=True)
+    rr.init("generate_joint_trajectory", spawn=True)
     # Force our layout even if the viewer already has a saved blueprint for this recording.
     rr.send_blueprint(blueprint, make_active=True, make_default=True)
 
