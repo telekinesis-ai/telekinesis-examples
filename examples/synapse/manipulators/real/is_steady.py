@@ -1,10 +1,7 @@
 """
-Check steady status example for the Synapse SDK.
+Logs whether the robot is fully at rest and ready to accept external forces.
 
-``is_steady`` reports whether the robot is fully at rest and ready to
-accept external forces. Always ``False`` in force mode or teach mode.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python is_steady.py [--ip <ROBOT_IP>]
@@ -17,16 +14,20 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log whether the robot is fully at rest."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"is_steady: {robot.is_steady()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

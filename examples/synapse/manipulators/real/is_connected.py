@@ -1,11 +1,7 @@
 """
-Check connection status example for the Synapse SDK.
+Logs whether the manipulator state is being driven by live hardware, before and after connecting.
 
-``is_connected`` reports whether the manipulator state is being driven by
-live hardware. Once ``connect(ip=...)`` succeeds it reports ``True``; after
-``disconnect()`` it reports ``False`` again.
-
-Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python is_connected.py [--ip <ROBOT_IP>]
@@ -18,17 +14,21 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
-    """Log ``is_connected`` before and after connecting to real hardware."""
+def main(ip: str) -> None:
+    """Log is_connected before and after connecting to real hardware."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     logger.info(f"is_connected before connect(): {robot.is_connected()}")
 
-    # ==================== Run Skill ============================================
-    robot.connect(ip=ip)
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"is_connected while connected: {robot.is_connected()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
     logger.info(f"is_connected after disconnect(): {robot.is_connected()}")

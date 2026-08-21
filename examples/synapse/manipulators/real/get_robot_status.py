@@ -1,33 +1,33 @@
 """
-Read robot status example for the Synapse SDK.
+Logs the controller's high-level robot status flags.
 
-Returns the controller's high-level robot status flags (e.g. whether the robot
-is powered on, whether a program is running, and whether an emergency or
-protective stop is active). This is distinct from the safety mode reported by
-``get_safety_mode`` (see get_safety_mode.py).
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_robot_status.py [--ip <ROBOT_IP>]
 """
 
 import argparse
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the current robot status."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"Robot status: {robot.get_robot_status()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

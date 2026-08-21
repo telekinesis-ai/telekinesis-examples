@@ -1,10 +1,7 @@
 """
-Read joint torques example for the Synapse SDK — offline.
+Read the manipulator's joint torques.
 
-Returns the manipulator's joint torques [N·m]. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_joint_torques.py
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache joint torques [N·m]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"joint_torques [N·m]: {robot.get_joint_torques()}")

@@ -1,13 +1,10 @@
 """
-Read target (commanded) TCP velocity example for the Synapse SDK — offline.
+Read the manipulator's target TCP velocity.
 
-Returns the target/commanded TCP twist ``[vx, vy, vz (m/s), ωx, ωy, ωz (deg/s)]``. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
-    python get_target_tcp_speed_offline.py
+    python get_target_tcp_speed.py
 """
 
 from loguru import logger
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache target TCP velocity [m/s, deg/s]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"target_tcp_speed [m/s, deg/s]: {robot.get_target_tcp_speed()}")

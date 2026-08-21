@@ -1,10 +1,7 @@
 """
-Check joint configuration against safety limits example for the Synapse SDK.
+Checks joint limits, safety plane limits, and TCP orientation deviation limits for a joint configuration.
 
-``is_joints_within_safety_limits`` checks joint limits, safety plane limits,
-and TCP orientation deviation limits for a given joint configuration.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python is_joints_within_safety_limits.py [--ip <ROBOT_IP>]
@@ -17,20 +14,24 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Check the robot's current joint configuration against the controller's safety limits."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         current_joint_positions = robot.get_joint_positions()
         logger.success(
             f"is_joints_within_safety_limits({current_joint_positions}): "
             f"{robot.is_joints_within_safety_limits(current_joint_positions)}"
         )
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

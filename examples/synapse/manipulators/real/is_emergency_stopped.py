@@ -1,10 +1,7 @@
 """
-Check emergency stop status example for the Synapse SDK.
+Logs whether the robot is currently in an emergency stop state.
 
-``is_emergency_stopped`` reports whether the robot is currently in an
-emergency stop state.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python is_emergency_stopped.py [--ip <ROBOT_IP>]
@@ -17,16 +14,20 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log whether the robot is in emergency stop."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"is_emergency_stopped: {robot.is_emergency_stopped()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

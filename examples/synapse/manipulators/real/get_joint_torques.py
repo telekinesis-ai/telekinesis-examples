@@ -1,10 +1,7 @@
 """
-Read joint torques example for the Synapse SDK.
+Logs the manipulator's live net joint torques.
 
-Returns net joint torques [N·m]. Reads from ``self.state``, which the
-control loop keeps up to date from the connected backend.
-
-Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_joint_torques.py [--ip <ROBOT_IP>]
@@ -17,16 +14,20 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the live joint torques [N·m]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"joint_torques [N·m]: {robot.get_joint_torques()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

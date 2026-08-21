@@ -1,14 +1,7 @@
 """
-Read per-link world transforms for the Synapse SDK.
+Read per-link world transforms for a manipulator.
 
-``get_link_transforms`` returns ``{frame_name: world_T_link}`` — a 4x4
-homogeneous matrix per frame in the kinematic model. Useful for
-visualization, attaching coordinate axes, or computing relative transforms
-between arbitrary frames without calling ``forward_kinematics`` per frame.
-
-Universal Robots (UR10e) is used here purely for illustration.
-This example runs purely on the kinematic model and does not connect to
-hardware — no ``--ip`` is required.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_link_transforms.py
@@ -23,10 +16,10 @@ from telekinesis.synapse import utils
 def main():
     """Read every link's world transform at the current joint configuration."""
 
-    # Create the robot (no connect required — runs on the kinematic model)
-    robot = universal_robots.UniversalRobotsUR10E()
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # Read world transforms for every frame in the kinematic model
+    # ==================== Run Skill ============================================
     transforms = robot.get_link_transforms()
     logger.info(f"Number of frames: {len(transforms)}")
 

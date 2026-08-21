@@ -1,16 +1,7 @@
 """
-Contact Detection example for the Synapse SDK.
+Drives the TCP slowly downward while polling contact detection, and stops as soon as the tool touches a surface.
 
-Drives the TCP slowly downward (-Z) while polling contact detection, and stops
-as soon as the tool touches a surface. This exercises the lower-level contact
-API (start/read/stop); for the single-call helper see move_until_contact.py.
-
-Demonstrates:
-- `start_contact_detection()`
-- `read_contact_detection()`
-- `stop_contact_detection()`
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR)
 
 Usage:
     python contact_detection.py [--ip <ROBOT_IP>]
@@ -24,19 +15,21 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Probe downward until contact is detected, then stop and report."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
-        # Move the TCP down by 15 cm, asynchronously, while polling for contact.
-        target_pose = robot.get_cartesian_pose()
-        target_pose[2] -= 0.15
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
 
+        #===================== Prepare Target ==========================================
+        target_pose = robot.get_cartesian_pose()
+        target_pose[2] -= 0.15  # Move 15 cm down in Z
+
+        # ==================== Run Skill ============================================
         robot.start_contact_detection()
         robot.set_cartesian_pose(cartesian_pose=target_pose, speed=0.05,
                                  acceleration=0.25, asynchronous=True)
@@ -51,7 +44,8 @@ def main(ip: str):
         robot.stop_cartesian_motion(stopping_speed=0.25)
         robot.stop_contact_detection()
         logger.success(f"Contact: {contact}")
-
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 
@@ -62,4 +56,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(ip=args.ip)
-

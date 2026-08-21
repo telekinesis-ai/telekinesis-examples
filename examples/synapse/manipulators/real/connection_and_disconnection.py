@@ -1,8 +1,7 @@
 """
-Connection and disconnection example for the Synapse SDK.
+Connects to a UR10e, waits briefly, then cleanly disconnects.
 
-Currently supported only for real hardware. Works on Universal Robots (UR)
-and Epson.
+Supports Universal Robots (UR) and Epson
 
 Usage:
     python connection_and_disconnection.py [--ip <ROBOT_IP>]
@@ -16,22 +15,24 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Connect to a UR10e at `ip` and cleanly disconnect."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
-    robot.connect(ip=ip)
-    logger.success(f"Connected to UR10e at {ip}.")
+    try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+        logger.success(f"Connected to UR10e at {ip}.")
 
-    # Sleep for a bit
-    time.sleep(2)
-
-    # Disconnect from the robot
-    robot.disconnect()
-    logger.success("Disconnected.")
+        # ==================== Run Skill ============================================
+        time.sleep(2)
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
+    finally:
+        robot.disconnect()
+        logger.success("Disconnected.")
 
 
 if __name__ == "__main__":

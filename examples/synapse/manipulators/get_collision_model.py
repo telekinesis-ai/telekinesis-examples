@@ -1,12 +1,7 @@
 """
-Read the Pinocchio collision geometry model for the Synapse SDK.
+Read the Pinocchio collision geometry model.
 
-``get_collision_model`` returns the Python Pinocchio ``GeometryModel``
-populated with the robot's collision geometries from the URDF.
-
-Universal Robots (UR10e) is used here purely for illustration; the same API
-works for all supported robots. Runs on the kinematic model only — no
-hardware connection and no ``--ip`` required.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_collision_model.py
@@ -20,10 +15,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Read the Pinocchio collision geometry model and log a summary."""
 
-    # Create the robot (no connect required — runs on the kinematic model)
-    robot = universal_robots.UniversalRobotsUR10E()
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # Read the Pinocchio collision GeometryModel
+    # ==================== Run Skill ============================================
     collision_model = robot.get_collision_model()
 
     logger.info(f"Number of collision geometries: {len(collision_model.geometryObjects)}")

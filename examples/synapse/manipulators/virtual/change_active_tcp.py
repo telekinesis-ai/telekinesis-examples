@@ -1,12 +1,7 @@
 """
-Example: Demonstrates how to change the active TCP — offline.
+Register multiple TCP frames and switch the active one.
 
-Demonstrates:
-- add_tcp()      — register a custom TCP frame
-- active_tcp     — change which frame is currently active
-
-This example runs offline on the commanded-cache state; no hardware
-connection is made.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python change_active_tcp.py
@@ -21,7 +16,10 @@ def main():
     """Change the active TCP and observe it before and after each change."""
 
     #===================== Create Robot ==========================================
-    robot = UniversalRobotsUR10E()
+    robot = UniversalRobotsUR10E(name='UR10e')
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=True)
 
     # ==================== Run Skill ============================================
     # Register a few custom TCP frames
@@ -51,9 +49,6 @@ def main():
     logger.info(f"Active TCP after changing active TCP again: {robot.active_tcp}"
                 f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                 f" \n TCP pose: {robot.get_cartesian_pose()}")
-
-    # ==================== Visualization (Optional) =============================
-    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

@@ -1,54 +1,45 @@
 """
-Example: Get all registered TCPs from the robot
+Reads all registered TCP frames from the controller and reports the active TCP.
+
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_tcps.py [--ip <ROBOT_IP>]
-
-Demonstrates:
-- get_tcps()                  — retrieve all registered TCP frames from the controller
-- get_active_tcp_transform()  — read the active TCP offset (metres, Euler-XYZ degrees)
-- active_tcp                  — check which frame is currently active
-
-Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
-
-For an offline version, refer to tcp/offline/get_tcps.py
 """
 
 import argparse
+
 from loguru import logger
 
-from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
+from telekinesis.synapse.robots.manipulators import universal_robots
 
-def main():
-    """
-    Get all registered TCPs from the robot.
-    """
 
-    # Parse command-line arguments for the UR controller IP address
-    parser = argparse.ArgumentParser(description="List all registered TCPs on a real UR10E.")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
-    args = parser.parse_args()
+def main(ip: str) -> None:
+    """Read all registered TCPs from the robot and report the active TCP."""
 
     #===================== Create Robot ==========================================
-    robot = UniversalRobotsUR10E()
-    robot.connect(ip=args.ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
-        # Get all registered TCPs
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         tcps = robot.get_tcps()
         logger.info(f"Registered TCPs: {tcps}")
 
-        # Current Active TCP, transform w.r.t default tcp, and current TCP pose
         logger.info(f"Active TCP: {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
-
-
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
-        # Disconnect
         robot.disconnect()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="List all registered TCPs on the robot")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)

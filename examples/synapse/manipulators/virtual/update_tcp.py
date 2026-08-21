@@ -1,12 +1,7 @@
 """
-Example: Demonstrates adding and updating a TCP — offline.
+Register a TCP frame, then update its transform.
 
-Demonstrates:
-- add_tcp()       — register a custom TCP frame
-- update_tcp()    — update a custom TCP frame
-
-This example runs offline on the commanded-cache state; no hardware
-connection is made.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python update_tcp.py
@@ -21,13 +16,14 @@ def main():
     """Add a TCP, then update its transform, observing it at each step."""
 
     #===================== Create Robot ==========================================
-    robot = UniversalRobotsUR10E()
+    robot = UniversalRobotsUR10E(name='UR10e')
+
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=True)
 
     # ==================== Run Skill ============================================
-    # Add new tcp
-    new_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.1, 0.0, 0.0, 0.0]  # 100 mm along Z-axis
     robot.add_tcp(name="new_tool",
-                  transform=new_tcp_pose_in_default_tcp_frame,
+                  transform=[0.0, 0.0, 0.1, 0.0, 0.0, 0.0],  # 100 mm along Z-axis
                   set_active=True)
 
     # Active TCP, transform w.r.t default tcp, and TCP pose
@@ -44,9 +40,6 @@ def main():
     logger.info(f"Active TCP after update_tcp(): {robot.active_tcp}"
                 f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                 f" \n TCP pose: {robot.get_cartesian_pose()}")
-
-    # ==================== Visualization (Optional) =============================
-    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

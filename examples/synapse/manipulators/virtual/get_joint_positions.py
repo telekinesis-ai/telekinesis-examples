@@ -1,10 +1,7 @@
 """
-Read joint positions example for the Synapse SDK — offline.
+Read the manipulator's joint positions.
 
-Returns the manipulator's joint positions [deg]. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_joint_positions.py
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache joint positions [deg]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"joint_positions [deg]: {robot.get_joint_positions()}")
