@@ -1,41 +1,48 @@
 """
-Example: attach an OnRobot RG6 gripper to a UR10e and visualize in Rerun.
+Attaches an OnRobot RG6 gripper to a UR10e, registers its TCP, and visualizes it in Rerun.
 
-Demonstrates:
-    - ``robot.attach_tool()``
-    - ``robot.add_tcp()``
-    - ``robot.visualize_rerun()``
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
-    Supported for all robots offline, and both Universal Robots (UR) and
-    Epson in real.
-
-Run:
-    python examples/synapse/attach_tool/attach_tool.py
+Usage:
+    python attach_tool.py [--ip <ROBOT_IP>]
 """
+
+import argparse
+
+from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 from telekinesis.synapse.tools.parallel_grippers import onrobot
 
 
-
-def main():
-    """
-    Attach an OnRobot RG6 gripper to a UR10e and visualize in Rerun.
-    """
+def main(ip: str) -> None:
+    """Attach an OnRobot RG6 gripper to a UR10e and visualize in Rerun."""
 
     #===================== Create Robot and Gripper =============================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
     gripper = onrobot.OnRobotRG6()
 
-    # ==================== Run Skill ============================================
-    robot.attach_tool(gripper)
-    robot.add_tcp(name="gripper_tip",
-                  transform=[0.0, 0.0, 0.18, 0.0, 0.0, 0.0],
-                  set_active=True)
+    try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
 
-    # ==================== Visualization (Optional) =============================
-    robot.visualize_rerun()
+        # ==================== Run Skill ============================================
+        robot.attach_tool(gripper)
+        robot.add_tcp(name="gripper_tip",
+                      transform=[0.0, 0.0, 0.18, 0.0, 0.0, 0.0],
+                      set_active=True)
+
+        # ==================== Visualization (Optional) =============================
+        robot.visualize_rerun(live=False)
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
+    finally:
+        robot.disconnect()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Attach a gripper to a real UR10e and visualize it")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR robot IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)

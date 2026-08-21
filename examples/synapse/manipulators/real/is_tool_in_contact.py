@@ -1,19 +1,7 @@
 """
-Tool contact polling example for the Synapse SDK.
+Jogs the TCP toward -Z and polls is_tool_in_contact each tick, stopping the instant contact is detected.
 
-``is_tool_in_contact`` is the low-level contact-detection primitive which
-only returns ``True`` **while the robot is actively executing
-motion**. On an idle robot it always returns ``False``, so the usual
-pattern is to poll it from inside a streaming-motion loop.
-
-This example starts a slow Cartesian jog toward -Z and polls
-``is_tool_in_contact`` each tick. When contact is detected (or a safety
-timeout elapses), it issues ``stop_jog`` to halt the motion.
-
-For the one-shot equivalent (start a move, block until contact, stop),
-use ``move_until_contact`` instead.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python is_tool_in_contact.py [--ip <ROBOT_IP>]
@@ -27,21 +15,24 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Jog the TCP toward -Z and stop the instant contact is detected."""
-
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
+    
     # Motion parameters
     cartesian_velocity = [0.0, 0.0, -0.05, 0.0, 0.0, 0.0]  # -Z at 5 cm/s in base
     direction = [0.0, 0.0, -1.0, 0.0, 0.0, 0.0]            # contact axis matches motion
     poll_dt = 0.005          # 200 Hz polling
     safety_timeout = 5.0     # stop after this long even if no contact
 
-    #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         # Start the jog. is_tool_in_contact only returns True while moving.
         logger.info(f"Starting jog along -Z at {abs(cartesian_velocity[2])} m/s")
         robot.start_jog(
@@ -65,7 +56,8 @@ def main(ip: str):
             logger.success(f"Contact detected after {time.monotonic() - t0:.3f} s — jog stopped.")
         else:
             logger.warning(f"No contact within {safety_timeout} s — jog stopped on timeout.")
-
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

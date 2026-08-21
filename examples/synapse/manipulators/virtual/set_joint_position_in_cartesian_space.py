@@ -1,13 +1,7 @@
 """
-Set Joint Position in Cartesian space example for the Synapse SDK -- offline.
+Move to a target joint configuration along a Cartesian trajectory.
 
-Moves to a target configuration using Cartesian motion derived from joint
-positions (as opposed to ``set_joint_positions``, which moves in joint
-space). Offline, the configuration is resolved to a TCP pose and played back
-through the control loop on the kinematic model; no hardware connection is
-made.
-
-Supports all robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python set_joint_position_in_cartesian_space.py
@@ -22,22 +16,22 @@ def main():
     """Move to a target joint configuration along a Cartesian trajectory."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
-    # Target: current joint configuration with the base joint rotated
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=True)
+
+    #===================== Prepare Target ==========================================
     target_joint_positions = robot.get_joint_positions().copy()
     target_joint_positions[0] += 5
 
+    # ==================== Run Skill ============================================
     robot.set_joint_position_in_cartesian_space(
         joint_positions=target_joint_positions,
         speed=1.05,
         acceleration=1.4,
     )
     logger.info(f"Moved to target joint positions: {target_joint_positions}")
-
-    # ==================== Visualization (Optional) =============================
-    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

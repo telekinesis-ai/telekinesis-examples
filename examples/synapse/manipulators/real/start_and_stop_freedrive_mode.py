@@ -1,13 +1,7 @@
 """
-Freedrive mode example for the Synapse SDK.
+Enters freedrive (hand-guiding) mode for 10 seconds, then exits.
 
-``start_freedrive_mode`` puts the robot into hand-guiding mode — the operator
-can physically push the arm and it complies. ``free_axes`` is a 6-element
-mask ``[x, y, z, rx, ry, rz]`` where ``1`` means the axis is free and ``0``
-means it is locked. ``stop_freedrive_mode`` returns the controller to normal
-motion control.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python start_and_stop_freedrive_mode.py [--ip <ROBOT_IP>]
@@ -15,36 +9,41 @@ Usage:
 
 import argparse
 import time
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Enter freedrive for 10 seconds, then exit."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
-
-    # ==================== Run Skill ============================================
-    # Enter freedrive with all axes free
-    free_axes = [1, 1, 1, 1, 1, 1]
-    logger.info(f"Starting freedrive - free axes: {free_axes}")
-    robot.start_freedrive_mode(free_axes=free_axes)
-
-    # Hold freedrive open for hand-guiding
-    time.sleep(10)
-
-    # Exit freedrive
-    robot.stop_freedrive_mode()
-    logger.success("Freedrive mode stopped.")
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Visualization (Optional) =============================
-    robot.visualize_rerun(live=False)
+    robot.visualize_rerun(live=True)
 
-    # Disconnect
-    robot.disconnect()
+    try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
+        # Enter freedrive with all axes free
+        free_axes = [1, 1, 1, 1, 1, 1]
+        logger.info(f"Starting freedrive - free axes: {free_axes}")
+        robot.start_freedrive_mode(free_axes=free_axes)
+
+        # Hold freedrive open for hand-guiding
+        time.sleep(10)
+
+        # Exit freedrive
+        robot.stop_freedrive_mode()
+        logger.success("Freedrive mode stopped.")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
+    finally:
+        robot.disconnect()
 
 
 if __name__ == "__main__":
@@ -53,4 +52,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(ip=args.ip)
-

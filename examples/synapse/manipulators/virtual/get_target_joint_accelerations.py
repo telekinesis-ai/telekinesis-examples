@@ -1,13 +1,10 @@
 """
-Read target (commanded) joint accelerations example for the Synapse SDK — offline.
+Read the manipulator's target joint accelerations.
 
-Returns the manipulator's target/commanded joint accelerations [deg/s²]. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
-    python get_target_joint_accelerations_offline.py
+    python get_target_joint_accelerations.py
 """
 
 from loguru import logger
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache target joint accelerations [deg/s²]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"target_joint_accelerations [deg/s²]: {robot.get_target_joint_accelerations()}")

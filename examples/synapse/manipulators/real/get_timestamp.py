@@ -1,10 +1,7 @@
 """
-Read state timestamp example for the Synapse SDK.
+Logs the timestamp of the most recent state update, in seconds since the Unix epoch.
 
-Returns the time the most recent state update was captured, in seconds
-since the Unix epoch.
-
-Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_timestamp.py [--ip <ROBOT_IP>]
@@ -17,16 +14,20 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the timestamp of the most recent state update."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"timestamp [s since epoch]: {robot.get_timestamp()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

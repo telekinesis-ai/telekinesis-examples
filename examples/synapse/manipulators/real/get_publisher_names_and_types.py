@@ -1,10 +1,7 @@
 """
-Read publisher names and types example for the Synapse SDK.
+Logs the babyros topics published by a named robot and their message types.
 
-Returns the babyros topics this robot publishes on and their message types
-— empty when the robot was constructed without a ``name``.
-
-Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python get_publisher_names_and_types.py [--ip <ROBOT_IP>]
@@ -17,16 +14,20 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the babyros topics published by a named robot."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E(name="manipulator1")
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"publisher_names_and_types: {robot.get_publisher_names_and_types()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

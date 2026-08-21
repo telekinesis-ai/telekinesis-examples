@@ -1,13 +1,10 @@
 """
-Check connection status example for the Synapse SDK — offline.
+Check the manipulator's connection status.
 
-``is_connected`` reports whether the manipulator state is being driven by live
-hardware. Offline (no hardware connection), it always reports ``False``.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
-    python is_connected_offline.py
+    python is_connected.py
 """
 
 from loguru import logger
@@ -19,7 +16,7 @@ def main():
     """Log ``is_connected`` for an unconnected robot (always False offline)."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.info(f"is_connected: {robot.is_connected()}")

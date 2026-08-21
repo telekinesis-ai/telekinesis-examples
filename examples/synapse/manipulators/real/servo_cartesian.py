@@ -1,10 +1,7 @@
 """
-Servo Cartesian example for the Synapse SDK.
+Streams TCP poses at 500 Hz to trace a small circle in the YZ plane around the current TCP pose.
 
-Streams TCP poses at 500 Hz to trace a small circle in the YZ plane around
-the current TCP pose using ``servo_cartesian``.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python servo_cartesian.py [--ip <ROBOT_IP>]
@@ -19,24 +16,26 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main(ip: str) -> None:
     """Trace a YZ circle around the current TCP pose with servo_cartesian."""
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
+    # ==================== Visualization (Optional) =============================
+    # Live: subscribes to the robot's state topic and redraws as it moves.
+    robot.visualize_rerun(live=True)
+
+    # Motion parameters
     dt = 0.002              # 500 Hz servo loop
     radius = 0.02           # 2 cm circle
     period = 4.0            # seconds per revolution
     n_revolutions = 2
 
-    #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
-    robot.connect(ip=robot_ip)
-
-    # ==================== Visualization (Optional) =============================
-    # Live: subscribes to the robot's state topic and redraws as it moves.
-    robot.visualize_rerun()
-
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         # Read the current TCP pose as the centre of the circle.
         # The circle is offset so it "kisses" the start pose at t=0.
         center = robot.get_cartesian_pose()
@@ -71,6 +70,8 @@ def main(robot_ip: str):
 
         robot.servo_stop()
         logger.success("servo_cartesian loop complete.")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 
@@ -80,4 +81,4 @@ if __name__ == "__main__":
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    main(args.ip)
+    main(ip=args.ip)

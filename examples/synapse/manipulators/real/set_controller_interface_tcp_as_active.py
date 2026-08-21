@@ -1,37 +1,33 @@
 """
-Example: Set controller interface TCP as active
+Sets the controller interface TCP as the active TCP and reports the resulting pose.
 
-Demonstrates:
-- get_tcps()                  — retrieve all registered TCP frames from the controller
-- use_controller_interface_tcp()  — set the controller interface TCP as the active TCP
-
-Currently supported only for real hardware, and only Universal Robots (UR).
-
-For offline TCP examples, refer to tcp/offline/
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python set_controller_interface_tcp_as_active.py [--ip <ROBOT_IP>]
 """
 
 import argparse
+
 from loguru import logger
 
-from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
+from telekinesis.synapse.robots.manipulators import universal_robots
 
-def main():
+
+def main(ip: str) -> None:
     """Set the controller-interface TCP as active."""
 
-    # Parse command-line arguments for the UR controller IP address
-    parser = argparse.ArgumentParser(description="Set the controller-interface TCP as active on a real UR10E.")
-    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
-    args = parser.parse_args()
-
     #===================== Create Robot ==========================================
-    robot = UniversalRobotsUR10E()
-    robot.connect(ip=args.ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=True)
+
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         # Get all registered TCPs
         tcps = robot.get_tcps()
         logger.info(f"Registered TCPs: {tcps}")
@@ -48,14 +44,15 @@ def main():
         logger.info(f"Active TCP after setting controller_interface_tcp: {robot.active_tcp}"
                     f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                     f" \n TCP pose: {robot.get_cartesian_pose()}")
-
-        # ==================== Visualization (Optional) =========================
-        robot.visualize_rerun(live=False)
-
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
-        # Disconnect
         robot.disconnect()
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Set the controller-interface TCP as active on a real UR10E.")
+    parser.add_argument("--ip", type=str, default="192.168.1.100", help="UR controller IP address (default: 192.168.1.100)")
+    args = parser.parse_args()
+
+    main(ip=args.ip)

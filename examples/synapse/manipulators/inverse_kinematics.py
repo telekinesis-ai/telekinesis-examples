@@ -1,7 +1,7 @@
 """
-Simple Inverse Kinematics example for the Synapse SDK with default seed.
+Solve inverse kinematics for a fixed target TCP pose with a default seed.
 
-Universal Robots (UR10e) is used here purely for illustration; the same API works for all supported robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
     python inverse_kinematics.py
@@ -16,8 +16,7 @@ def main():
     """Solve IK for a target TCP pose with default solver parameters."""
 
     #===================== Create Robot ==========================================
-    # No connect required — IK runs on the kinematic model.
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     # Solve IK for a fixed target pose [x, y, z, rx, ry, rz] (m, deg)

@@ -1,13 +1,10 @@
 """
-Read TCP wrench (force/torque) example for the Synapse SDK — offline.
+Read the TCP wrench (force/torque).
 
-Returns the TCP wrench ``[Fx, Fy, Fz (N), Tx, Ty, Tz (N·m)]``. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual/sim.
 
 Usage:
-    python get_tcp_force_offline.py
+    python get_tcp_force.py
 """
 
 from loguru import logger
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache TCP wrench [N, N·m]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"tcp_force [N, N·m]: {robot.get_tcp_force()}")
