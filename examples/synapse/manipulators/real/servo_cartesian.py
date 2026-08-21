@@ -1,7 +1,7 @@
 """
 Streams TCP poses at 500 Hz to trace a small circle in the YZ plane around the current TCP pose.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python servo_cartesian.py [--ip <ROBOT_IP>]

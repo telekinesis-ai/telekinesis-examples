@@ -1,7 +1,7 @@
 """
 Read the Pinocchio kinematic model.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_model.py

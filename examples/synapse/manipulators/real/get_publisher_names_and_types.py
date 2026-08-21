@@ -1,7 +1,7 @@
 """
 Logs the babyros topics published by a named robot and their message types.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR) and Epson.
 
 Usage:
     python get_publisher_names_and_types.py [--ip <ROBOT_IP>]

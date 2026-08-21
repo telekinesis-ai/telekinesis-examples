@@ -1,7 +1,7 @@
 """
 Read the manipulator's TCP Cartesian pose.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_cartesian_pose.py

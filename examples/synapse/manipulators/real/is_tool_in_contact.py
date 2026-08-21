@@ -1,7 +1,7 @@
 """
 Jogs the TCP toward -Z and polls is_tool_in_contact each tick, stopping the instant contact is detected.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python is_tool_in_contact.py [--ip <ROBOT_IP>]

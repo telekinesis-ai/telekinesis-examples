@@ -1,7 +1,7 @@
 """
 Checks safety plane limits, TCP orientation deviation limits, and reachability for a Cartesian pose.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python is_pose_within_safety_limits.py [--ip <ROBOT_IP>]

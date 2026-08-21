@@ -1,7 +1,7 @@
 """
 Register a TCP frame, then delete it.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python delete_tcp.py

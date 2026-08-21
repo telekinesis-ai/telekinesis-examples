@@ -1,7 +1,7 @@
 """
 Logs the target speed fraction set by the operator via the teach-pendant speed slider.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python get_target_speed_fraction.py [--ip <ROBOT_IP>]

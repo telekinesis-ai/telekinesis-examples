@@ -1,7 +1,7 @@
 """
 Drives the TCP slowly downward while polling contact detection, and stops as soon as the tool touches a surface.
 
-Supports Universal Robots (UR)
+Supports Universal Robots (UR).
 
 Usage:
     python contact_detection.py [--ip <ROBOT_IP>]

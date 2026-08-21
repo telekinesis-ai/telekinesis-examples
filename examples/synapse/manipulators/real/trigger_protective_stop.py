@@ -1,7 +1,7 @@
 """
 Triggers a protective stop on the controller, immediately halting all motion.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python trigger_protective_stop.py [--ip <ROBOT_IP>]

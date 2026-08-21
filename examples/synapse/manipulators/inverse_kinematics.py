@@ -1,7 +1,7 @@
 """
 Solve inverse kinematics for a fixed target TCP pose with a default seed.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python inverse_kinematics.py

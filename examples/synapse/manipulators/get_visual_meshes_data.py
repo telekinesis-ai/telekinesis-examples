@@ -1,7 +1,7 @@
 """
 Read per-link visual mesh data.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_visual_meshes_data.py

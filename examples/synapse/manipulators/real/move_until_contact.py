@@ -1,7 +1,7 @@
 """
 Drives the TCP down in -Z until contact is detected, then stops and reports the result.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python move_until_contact.py [--ip <ROBOT_IP>]

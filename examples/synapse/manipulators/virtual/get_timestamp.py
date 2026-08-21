@@ -1,7 +1,7 @@
 """
 Read the state update timestamp.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_timestamp.py

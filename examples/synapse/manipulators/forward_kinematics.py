@@ -1,7 +1,7 @@
 """
 Compute forward kinematics for a fixed joint configuration.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python forward_kinematics.py

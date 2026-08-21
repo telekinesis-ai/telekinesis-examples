@@ -1,7 +1,7 @@
 """
 Logs whether the manipulator state is being driven by live hardware, before and after connecting.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python is_connected.py [--ip <ROBOT_IP>]

@@ -1,7 +1,7 @@
 """
 Read the manipulator's joint torques.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_joint_torques.py

@@ -1,7 +1,7 @@
 """
 Reads all registered TCP frames from the controller and reports the active TCP.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_tcps.py [--ip <ROBOT_IP>]

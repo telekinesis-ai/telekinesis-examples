@@ -1,7 +1,7 @@
 """
 Logs the manipulator's live joint velocities.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_joint_velocities.py [--ip <ROBOT_IP>]

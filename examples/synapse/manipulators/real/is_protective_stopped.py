@@ -1,7 +1,7 @@
 """
 Logs whether the robot is currently in a protective stop state.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python is_protective_stopped.py [--ip <ROBOT_IP>]

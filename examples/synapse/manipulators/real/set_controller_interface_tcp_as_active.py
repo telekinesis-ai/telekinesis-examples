@@ -1,7 +1,7 @@
 """
 Sets the controller interface TCP as the active TCP and reports the resulting pose.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python set_controller_interface_tcp_as_active.py [--ip <ROBOT_IP>]

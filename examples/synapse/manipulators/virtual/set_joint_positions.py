@@ -1,7 +1,7 @@
 """
 Move the robot to a target joint configuration.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python set_joint_positions.py

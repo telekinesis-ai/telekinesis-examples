@@ -1,7 +1,7 @@
 """
 Logs the measured state/TF publish rate of a named robot.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR) and Epson.
 
 Usage:
     python get_publisher_hz.py [--ip <ROBOT_IP>]

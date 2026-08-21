@@ -1,7 +1,7 @@
 """
 Commands an asynchronous joint move and interrupts it mid-trajectory with stop_joint_motion.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python stop_joint_motion.py [--ip <ROBOT_IP>]

@@ -1,7 +1,7 @@
 """
 Logs whether the robot is fully at rest and ready to accept external forces.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python is_steady.py [--ip <ROBOT_IP>]

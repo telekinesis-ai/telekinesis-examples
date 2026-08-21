@@ -1,7 +1,7 @@
 """
 Registers several TCP frames on the controller and switches the active one.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python change_active_tcp.py [--ip <ROBOT_IP>]

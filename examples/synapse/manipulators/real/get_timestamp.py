@@ -1,7 +1,7 @@
 """
 Logs the timestamp of the most recent state update, in seconds since the Unix epoch.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_timestamp.py [--ip <ROBOT_IP>]

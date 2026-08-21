@@ -1,7 +1,7 @@
 """
 Attaches an OnRobot RG6 gripper to a UR10e, registers its TCP, and visualizes it in Rerun.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python attach_tool.py [--ip <ROBOT_IP>]

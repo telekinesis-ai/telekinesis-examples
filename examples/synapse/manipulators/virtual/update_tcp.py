@@ -1,7 +1,7 @@
 """
 Register a TCP frame, then update its transform.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python update_tcp.py

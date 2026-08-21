@@ -1,7 +1,7 @@
 """
 Commands a circular-arc move from the current TCP pose to an offset target pose using servo_circular.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR).
 
 Usage:
     python servo_circular.py [--ip <ROBOT_IP>]

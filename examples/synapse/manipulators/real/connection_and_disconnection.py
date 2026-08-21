@@ -1,7 +1,7 @@
 """
 Connects to a UR10e, waits briefly, then cleanly disconnects.
 
-Supports Universal Robots (UR) and Epson
+Supports Universal Robots (UR) and Epson.
 
 Usage:
     python connection_and_disconnection.py [--ip <ROBOT_IP>]

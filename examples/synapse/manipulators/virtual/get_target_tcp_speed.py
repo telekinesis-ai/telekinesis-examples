@@ -1,7 +1,7 @@
 """
 Read the manipulator's target TCP velocity.
 
-Supports Universal Robots (UR), Epson, and virtual/sim.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_target_tcp_speed.py
