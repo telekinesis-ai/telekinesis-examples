@@ -93,7 +93,6 @@ RUN_ORDER = [
     "move_until_contact",
     "contact_detection",
     "trigger_protective_stop",
-    "ur10e_virtual_controller",
 ]
 
 
