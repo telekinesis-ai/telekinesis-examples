@@ -16,7 +16,7 @@ def string_example():
     logger.info(f"Original String: {string}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"Underlying String data: {string.data}")
+    logger.info(f"String data: {string.data}")
 
     # ======================= Visualize =========================================
     rr.init("string_example", spawn=True)

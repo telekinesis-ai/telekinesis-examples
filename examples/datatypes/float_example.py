@@ -15,7 +15,7 @@ def float_example():
     logger.info(f"Original Float: {value}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"Data: {value.data}")
+    logger.info(f"Float data: {value.data}")
 
     # ======================= Visualize =========================================
     rr.init("float_example", spawn=True)

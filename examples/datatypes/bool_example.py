@@ -14,6 +14,8 @@ def bool_example():
     value = datatypes.Bool(True)
 
     logger.info(f"Original Bool: {value}")
+
+    # ======================= Inspect ===========================================
     logger.info(f"Bool data: {value.data}")
 
     # ======================= Visualize =========================================

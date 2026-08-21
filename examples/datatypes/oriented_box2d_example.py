@@ -9,81 +9,92 @@ import rerun as rr
 from telekinesis import datatypes
 
 def oriented_box2d_example():
-    """Demonstrate creation, access, visualization, translate/scale/rotate, NumPy interop, and serialization."""
+    """Demonstrate creation, access, visualization, format conversion, translate/scale/rotate, NumPy interop, and serialization."""
 
     # ======================= Create ============================================
-    box = datatypes.OrientedBox2D([0.5, 0.5, 0.5, 0.5, 0.5])
+    # OrientedBox2D format is CXCYWH = [cx, cy, width, height] + rotation [yaw_deg]
+    box = datatypes.OrientedBox2D([0.5, 0.5, 0.5, 0.5, 30.0])
 
     logger.info(f"Created OrientedBox2D: {box}")
 
+    # ======================= Inspect ===========================================
+    logger.info(f"OrientedBox2D data: {box.data}")
+    logger.info(
+        f"dtype={box.dtype}, "
+        f"ndim={box.ndim}, "
+        f"shape={box.shape}, "
+        f"dimensions={box.dimensions}, "
+        f"area={box.area}, "
+        f"center={box.center}, "
+        f"rotation={box.rotation}"
+    )
     # ======================= Visualize =========================================
     rr.init("oriented_box2d_example", spawn=True)
     datatypes.visualize(
-        box, entity_path="/OrientedBox2D/my_oriented_box2d", label="My Oriented Box2D"
-    )
-
-    # ======================= Inspect ===========================================
-    logger.info(f"shape={box.shape}, dtype={box.dtype}, ndim={box.ndim}")
-    logger.info(f"NumPy array: {box.to_numpy()}")
-    logger.info(
-        f"center={box.center}, area={box.area}, width={box.width}, "
-        f"height={box.height}, theta={box.theta}"
+        box, entity_path="/OrientedBox2D/oriented_box2d", label="My Oriented Box2D"
     )
 
     # ======================= Update ============================================
-    box.data = [2.0, 2.0, 1.5, 1.0, 1.0]
+    box.data = [2.0, 2.0, 1.5, 3.0, 45.0]
 
     logger.info(f"Updated OrientedBox2D: {box}")
     datatypes.visualize(
-        box, entity_path="/OrientedBox2D/my_updated_oriented_box2d", label="Updated Oriented Box2D"
+        box, entity_path="/OrientedBox2D/updated_oriented_box2d", label="Updated Oriented Box2D"
     )
 
-    # ======================= Translate =========================================
-    translated_box = box.translate([1.0, 1.0])
+    # ======================= Alternate Construction =============================
+    # Only the center/dimensions portion is reinterpreted; the trailing
+    # rotation entry passes through unchanged.
+    xyxy_coords = [1.0, 1.5, 3.5, 3.0, 45.0]
+    box_from_xyxy = datatypes.OrientedBox2D.from_format(
+        xyxy_coords, source_format=datatypes.BoxFormat.XYXY
+    )
+    logger.info(f"OrientedBox2D created from xyxy format: {box_from_xyxy}")
+
+    xyxy_view = box.to_format(datatypes.BoxFormat.XYXY)
+    logger.info(f"OrientedBox2D converted to xyxy format: {xyxy_view}")
+
+    xywh_coords = [1.0, 1.5, 2.5, 1.5, 45.0]
+    box_from_xywh = datatypes.OrientedBox2D.from_format(
+        xywh_coords, source_format=datatypes.BoxFormat.XYWH
+    )
+    logger.info(f"OrientedBox2D created from xywh format: {box_from_xywh}")
+
+    xywh_view = box.to_format(datatypes.BoxFormat.XYWH)
+    logger.info(f"OrientedBox2D converted to xywh format: {xywh_view}")
+
+    # ======================= NumPy Interop =====================================
+    # Translate, scale, and rotate by operating on the underlying NumPy array directly.
+    translated_data = box.data.copy()
+    translated_data[:2] += [1.0, 1.0]
+    translated_box = datatypes.OrientedBox2D(translated_data)
 
     logger.info(f"Translated center: {translated_box.center} (was {box.center})")
     datatypes.visualize(
         translated_box,
-        entity_path="/OrientedBox2D/my_translated_oriented_box2d",
+        entity_path="/OrientedBox2D/translated_oriented_box2d",
         label="Translated Oriented Box2D",
     )
 
-    # ======================= Scale =============================================
-    scaled_box = box.scale(1.5)
+    scaled_data = box.data.copy()
+    scaled_data[2:4] *= 1.5
+    scaled_box = datatypes.OrientedBox2D(scaled_data)
 
-    logger.info(
-        f"Scaled width and height: {scaled_box.width} x {scaled_box.height} "
-        f"(was {box.width} x {box.height})"
-    )
+    logger.info(f"Scaled dimensions: {scaled_box.dimensions} (was {box.dimensions})")
     datatypes.visualize(
-        scaled_box, entity_path="/OrientedBox2D/my_scaled_oriented_box2d", label="Scaled Oriented Box2D"
+        scaled_box, entity_path="/OrientedBox2D/scaled_oriented_box2d", label="Scaled Oriented Box2D"
     )
 
-    # ======================= Rotate ============================================
-    rotated_box = box.rotate(0.25)
+    rotated_data = box.data.copy()
+    rotated_data[4] += 15.0
+    rotated_box = datatypes.OrientedBox2D(rotated_data)
 
-    logger.info(f"Rotated theta: {rotated_box.theta} (was {box.theta})")
+    logger.info(f"Rotated rotation: {rotated_box.rotation} (was {box.rotation})")
     datatypes.visualize(
         rotated_box,
-        entity_path="/OrientedBox2D/my_rotated_oriented_box2d",
+        entity_path="/OrientedBox2D/rotated_oriented_box2d",
         label="Rotated Oriented Box2D",
     )
-
-    # ======================= NumPy Interop =====================================
-    cx, cy, w, h, theta = np.asarray(rotated_box)
-    local_corners = np.array(
-        [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]], dtype=np.float32
-    )
-    cos_t, sin_t = np.cos(theta), np.sin(theta)
-    rotation_matrix = np.array([[cos_t, -sin_t], [sin_t, cos_t]], dtype=np.float32)
-    corners = local_corners @ rotation_matrix.T + np.array([cx, cy], dtype=np.float32)
-
-    logger.info(f"Corners (world space, [x, y] per row):\n{corners}")
-
-    edge_w = np.linalg.norm(corners[1] - corners[0])
-    edge_h = np.linalg.norm(corners[2] - corners[1])
-
-    logger.info(f"Area from corners: {edge_w * edge_h} (matches .area: {rotated_box.area})")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

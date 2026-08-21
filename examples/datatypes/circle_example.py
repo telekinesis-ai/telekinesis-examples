@@ -19,8 +19,11 @@ def circle_example():
     logger.info(f"center={circle.center}, radius={circle.radius}")
 
     # ======================= Translate / Scale =================================
-    translated = circle.translate([5.0, 5.0])
-    scaled = translated.scale(1.5)
+    # `translate()`/`scale()` were removed; build new `Circle`s directly.
+    translated = datatypes.Circle(
+        center=circle.center + np.array([5.0, 5.0], dtype=np.float32), radius=circle.radius
+    )
+    scaled = datatypes.Circle(center=translated.center, radius=translated.radius * 1.5)
     logger.info(f"Translated Circle: {translated}")
     logger.info(f"Scaled Circle: {scaled}")
 

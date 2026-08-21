@@ -36,7 +36,9 @@ def circles_example():
     logger.info(f"Sub-batch [1:]: centers={sub_batch.centers}, radii={sub_batch.radii}")
 
     # ======================= Translate / Scale =================================
-    circles = circles.translate([[5.0, 5.0], [10.0, 0.0], [-5.0, -5.0]]).scale(1.5)
+    # `translate()`/`scale()` were removed; build a new `Circles` directly.
+    offsets = np.array([[5.0, 5.0], [10.0, 0.0], [-5.0, -5.0]], dtype=np.float32)
+    circles = datatypes.Circles(centers=circles.centers + offsets, radii=circles.radii * 1.5)
     logger.info(f"Updated Circles centers data: {circles.centers}")
     logger.info(f"Updated Circles radii data: {circles.radii}")
     datatypes.visualize(

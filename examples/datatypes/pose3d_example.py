@@ -12,7 +12,7 @@ def pose3d_example():
     """Demonstrate creation, access, visualization, update, transform-matrix conversion, pose-format conversion, NumPy interop, and serialization."""
 
     # ======================= Create ============================================
-    pose_data = [0.5, 0.2, 0.5, 0.4619398, 0.1913417, 0.4619398, 0.7325378]
+    pose_data = [0.5, 0.2, 0.5, 0, 60, 90]
     pose3d = datatypes.Pose3D(pose_data)
 
     logger.info(f"Original Pose3D: {pose3d}")
@@ -33,27 +33,27 @@ def pose3d_example():
     datatypes.visualize(pose3d, entity_path="/Pose3D", label="my_pose3d")
 
     # ======================= Update ============================================
-    pose3d.data = [0.1, 0.2, 0.3, 0.0, 0.0, 0.0, 1.0]
+    pose3d.data = [0.1, 0.2, 0.3, 0.0, 0.0, 90]
     logger.info(f"Updated Pose3D: {pose3d}")
     datatypes.visualize(pose3d, entity_path="/Pose3D/updated", label="updated_pose3d")
 
     # ======================= Transform Matrix ==================================
-    matrix = pose3d.to_transform_matrix()
+    matrix = pose3d.to_transformation_matrix()
     logger.info(f"Pose3D as transformation matrix:\n{matrix}")
     transform3d = datatypes.Transform3D(matrix)
     datatypes.visualize(transform3d, entity_path="/Transform3D", label="pose3d_transform")
 
-    pose3d_from_transform = datatypes.Pose3D.from_transform_matrix(transform3d.data)
+    pose3d_from_transform = datatypes.Pose3D.from_transformation_matrix(transform3d.data)
     logger.info(f"Pose3D from transformation matrix: {pose3d_from_transform}")
     logger.info(f"Converted back to Pose3D is equal to original: {pose3d_from_transform == pose3d}")
 
     # ======================= Pose Formats ======================================
-    pose3d_deg = datatypes.Pose3D.from_pose_format(
-        [30, 45, 60, 0.4619398, 0.1913417, 0.4619398, 0.7325378], rot_type="deg"
+    pose3d_deg = datatypes.Pose3D.from_format(
+        [30, 45, 60, 0.4619398, 0.1913417, 0.4619398, 0.7325378], rot_type="QUATERNION"
     )
     logger.info(f"Pose3D from pose with rotation in degrees: {pose3d_deg}")
 
-    pose3d_rad = datatypes.Pose3D.from_pose_format(
+    pose3d_rad = datatypes.Pose3D.from_format(
         [
             np.radians(30),
             np.radians(45),
@@ -63,13 +63,13 @@ def pose3d_example():
             0.4619398,
             0.7325378,
         ],
-        rot_type="rad",
+        rot_type="RADIANS",
     )
     logger.info(f"Pose3D from pose with rotation in radians: {pose3d_rad}")
 
     pose3d_rotvec = datatypes.Pose3D.from_pose_format(
         [0.5235988, 0.7853982, 1.0471976, 0.4619398, 0.1913417, 0.4619398, 0.7325378],
-        rot_type="rotvec",
+        rot_type="ROTATION_VECTOR",
     )
     logger.info(f"Pose3D from pose with rotation as rotation vector: {pose3d_rotvec}")
 

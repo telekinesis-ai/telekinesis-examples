@@ -9,9 +9,10 @@ import rerun as rr
 from telekinesis import datatypes
 
 def box2d_example():
-    """Demonstrate creation, access, update, translation, scaling, NumPy interop, and serialization."""
+    """Demonstrate creation, access, update, format conversion, translation, scaling, NumPy interop, and serialization."""
 
     # ======================= Create ============================================
+    # Box2D format is CXCYWH = [cx, cy, width, height]
     coords = [1, 2.5, 3, 3]
     box2d = datatypes.Box2D(coords)
     logger.info(f"Original Box2D: {box2d}")
@@ -19,47 +20,68 @@ def box2d_example():
     # ======================= Inspect ===========================================
     logger.info(f"Box2D data: {box2d.data}")
     logger.info(
+        f"dtype={box2d.dtype}, "
+        f"ndim={box2d.ndim}, "
         f"shape={box2d.shape}, "
-        f"width={box2d.width}, "
-        f"height={box2d.height}, "
+        f"dimensions={box2d.dimensions}, "
         f"area={box2d.area}, "
         f"center={box2d.center}"
     )
 
     # ======================= Visualize =========================================
     rr.init("box2d_example", spawn=True)
-    datatypes.visualize(box2d, entity_path="/Box2D/my_box2d", label="Original Box2D")
+    datatypes.visualize(box2d, entity_path="/Box2D/box2d", label="Original Box2D")
 
     # ======================= Update ============================================
     updated_coords = [3, 4, 3, 5]
     box2d.data = updated_coords
     logger.info(f"Updated Box2D: {box2d}")
-    datatypes.visualize(box2d, entity_path="/Box2D/my_updated_box2d", label="Updated Box2D")
+    datatypes.visualize(box2d, entity_path="/Box2D/updated_box2d", label="Updated Box2D")
 
-    # ======================= Translate =========================================
-    translation = [2, 3]
-    translated_box2d = box2d.translate(translation)
-    logger.info(f"Translated Box2D: {translated_box2d}")
-    datatypes.visualize(
-        translated_box2d, entity_path="/Box2D/my_translated_box2d", label="Translated Box2D"
+    # ======================= Alternate Construction =============================
+    xyxy_coords = [1.0, 1.5, 4.0, 4.5]
+    box2d_from_xyxy = datatypes.Box2D.from_format(
+        xyxy_coords, source_format=datatypes.BoxFormat.XYXY
     )
+    logger.info(f"Box2D created from xyxy format: {box2d_from_xyxy}")
 
-    # ======================= Scale =============================================
-    scale_factors = [2, 0.5]
-    scaled_box2d = box2d.scale(scale_factors)
-    logger.info(f"Scaled Box2D: {scaled_box2d}")
-    datatypes.visualize(scaled_box2d, entity_path="/Box2D/my_scaled_box2d", label="Scaled Box2D")
+    xyxy_view = box2d.to_format(datatypes.BoxFormat.XYXY)
+    logger.info(f"Box2D converted to xyxy format: {xyxy_view}")
+
+    xywh_coords = [1.0, 1.5, 3.0, 3.0]
+    box2d_from_xywh = datatypes.Box2D.from_format(
+        xywh_coords, source_format=datatypes.BoxFormat.XYWH
+    )
+    logger.info(f"Box2D created from xywh format: {box2d_from_xywh}")
+
+    xywh_view = box2d.to_format(datatypes.BoxFormat.XYWH)
+    logger.info(f"Box2D converted to xywh format: {xywh_view}")
+
+    # ======================= Other Methods =====================================
+    box2d_copy = box2d.copy()
+    logger.info(f"Copied Box2D: {box2d_copy}")
+
+    # Returns the internal data as a NumPy array. If copy=True, returns a copy; otherwise, returns a view.
+    box2d_numpy = box2d.to_numpy(copy=False)
+    logger.info(f"NumPy Box2D:\n{box2d_numpy}")
 
     # ======================= NumPy Interop =====================================
-    box2d_xyxy = box2d.convert_box_format(target_format="xyxy")
-    scaled_xyxy = scaled_box2d.convert_box_format(target_format="xyxy")
-    inter_min = np.maximum(box2d_xyxy[:2], scaled_xyxy.data[:2])
-    inter_max = np.minimum(box2d_xyxy[2:], scaled_xyxy.data[2:])
-    inter_wh = np.clip(inter_max - inter_min, 0, None)
-    intersection = inter_wh[0] * inter_wh[1]
-    union = box2d.area + scaled_box2d.area - intersection
-    iou = intersection / union if union > 0 else 0.0
-    logger.info(f"IoU between box2d and scaled_box2d: {iou}")
+    # Translate and scale by operating on the underlying NumPy array directly.
+    translation = [2, 3]
+    translated_data = box2d.data.copy()
+    translated_data[:2] += translation
+    translated_box2d = datatypes.Box2D(translated_data)
+    logger.info(f"Translated Box2D: {translated_box2d}")
+    datatypes.visualize(
+        translated_box2d, entity_path="/Box2D/translated_box2d", label="Translated Box2D"
+    )
+
+    scale_factors = [2, 0.5]
+    scaled_data = box2d.data.copy()
+    scaled_data[2:] *= np.asarray(scale_factors, dtype=np.float32)
+    scaled_box2d = datatypes.Box2D(scaled_data)
+    logger.info(f"Scaled Box2D: {scaled_box2d}")
+    datatypes.visualize(scaled_box2d, entity_path="/Box2D/scaled_box2d", label="Scaled Box2D")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

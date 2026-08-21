@@ -4,113 +4,127 @@ import itertools
 import time
 
 import numpy as np
-from scipy.spatial.transform import Rotation
 from loguru import logger
 import rerun as rr
+from scipy.spatial.transform import Rotation
 
 from telekinesis import datatypes
 
 def oriented_boxes3d_example():
-    """Demonstrate creation, access, visualization, update, translate/scale/rotate transforms, NumPy corner computation, volume ranking, and serialization."""
+    """Demonstrate creation, access, visualization, update, format conversion, translate/scale/rotate transforms, NumPy corner computation, volume ranking, and serialization."""
 
     # ======================= Create ============================================
-    box3d_1 = [0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 0.0, 0.258819, 0.965926]
-    box3d_2 = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.382683, 0.923880]
+    # OrientedBoxes3D format is CXCYCZWHD = [[cx, cy, cz, width, height, depth], ...]
+    # + rotation columns [roll_deg, pitch_deg, yaw_deg]
+    box3d_1 = [0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 0.0, 30.0]
+    box3d_2 = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 45.0]
     boxes3d = datatypes.OrientedBoxes3D([box3d_1, box3d_2])
 
     logger.info(f"Original OrientedBoxes3D: {boxes3d}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"shape={boxes3d.shape}, dtype={boxes3d.dtype}, ndim={boxes3d.ndim}")
-    logger.info(f"Underlying data: {boxes3d.data}")
-    logger.info(f"NumPy array: {boxes3d.to_numpy()}")
+    logger.info(f"OrientedBoxes3D data: {boxes3d.data}")
     logger.info(
-        f"center={boxes3d.center}, "
-        f"volume={boxes3d.volume}, "
-        f"width={boxes3d.width}, "
-        f"height={boxes3d.height}, "
-        f"depth={boxes3d.depth}"
+        f"dtype={boxes3d.dtype}, "
+        f"ndim={boxes3d.ndim}, "
+        f"shape={boxes3d.shape}, "
+        f"dimensions={boxes3d.dimensions}, "
+        f"volumes={boxes3d.volumes}, "
+        f"centers={boxes3d.centers}, "
+        f"rotations={boxes3d.rotations}"
     )
-    logger.info(f"Quaternion: {boxes3d.data[:, 6:10]}")
+    # `.quaternions` was removed; derive them directly from `.rotations` when needed.
+    quaternions = Rotation.from_euler("xyz", boxes3d.rotations, degrees=True).as_quat()
+    logger.info(f"Derived quaternions [qx, qy, qz, qw] (via scipy): {quaternions}")
 
     # ======================= Visualize =========================================
     rr.init("oriented_box3d_example", spawn=True)
     datatypes.visualize(
         boxes3d,
-        entity_path="/OrientedBox3D/my_oriented_boxes3d",
+        entity_path="/OrientedBox3D/oriented_boxes3d",
         label=["My Oriented Box3D 1", "My Oriented Box3D 2"],
     )
 
     # ======================= Update ============================================
     updated_data = boxes3d.data
-    updated_data[0] = [2.0, 2.0, 2.0, 1.5, 1.0, 1.0, 0.0, 0.173648, 0.0, 0.984808]
+    updated_data[0] = [2.0, 2.0, 2.0, 1.5, 1.0, 1.0, 0.0, 20.0, 0.0]
     boxes3d.data = updated_data
     logger.info(f"Updated OrientedBoxes3D: {boxes3d}")
     datatypes.visualize(
         boxes3d,
-        entity_path="/OrientedBoxes3D/my_updated_oriented_box3d",
+        entity_path="/OrientedBoxes3D/updated_oriented_box3d",
         label=["Updated Oriented Box3D 1", "Updated Oriented Box3D 2"],
     )
 
-    # ======================= Translate =========================================
-    translated = boxes3d.translate([1.0, 1.0, 1.0])
-    logger.info(f"Translated center: {translated.center} (was {boxes3d.center})")
+    # ======================= Alternate Construction =============================
+    # Only the center/dimensions portion is reinterpreted; the trailing
+    # rotation columns pass through unchanged.
+    xyzxyz_coords = [
+        [0.5, 1.0, 1.5, 3.5, 3.0, 2.5, 0.0, 20.0, 0.0],
+        [1.0, 1.5, 2.0, 2.5, 2.5, 2.5, 0.0, 0.0, 45.0],
+    ]
+    boxes_from_xyzxyz = datatypes.OrientedBoxes3D.from_format(
+        xyzxyz_coords, source_format=datatypes.BoxFormat.XYZXYZ
+    )
+    logger.info(f"OrientedBoxes3D created from xyzxyz format: {boxes_from_xyzxyz}")
+
+    xyzxyz_view = boxes3d.to_format(datatypes.BoxFormat.XYZXYZ)
+    logger.info(f"OrientedBoxes3D converted to xyzxyz format: {xyzxyz_view}")
+
+    xyzwhd_coords = [
+        [0.5, 1.0, 1.5, 3.0, 2.0, 1.0, 0.0, 20.0, 0.0],
+        [1.0, 1.5, 2.0, 1.5, 1.0, 0.5, 0.0, 0.0, 45.0],
+    ]
+    boxes_from_xyzwhd = datatypes.OrientedBoxes3D.from_format(
+        xyzwhd_coords, source_format=datatypes.BoxFormat.XYZWHD
+    )
+    logger.info(f"OrientedBoxes3D created from xyzwhd format: {boxes_from_xyzwhd}")
+
+    xyzwhd_view = boxes3d.to_format(datatypes.BoxFormat.XYZWHD)
+    logger.info(f"OrientedBoxes3D converted to xyzwhd format: {xyzwhd_view}")
+
+    # ======================= NumPy Interop =====================================
+    # Translate, scale, and rotate by operating on the underlying NumPy array directly.
+    translated_data = boxes3d.data.copy()
+    translated_data[:, :3] += [1.0, 1.0, 1.0]
+    translated = datatypes.OrientedBoxes3D(translated_data)
+    logger.info(f"Translated centers: {translated.centers} (was {boxes3d.centers})")
     datatypes.visualize(
         translated,
-        entity_path="/OrientedBoxes3D/my_translated_oriented_box3d",
+        entity_path="/OrientedBoxes3D/translated_oriented_box3d",
         label=["Translated Oriented Box3D 1", "Translated Oriented Box3D 2"],
     )
 
-    # ======================= Scale =============================================
-    scaled = boxes3d.scale(1.5)
-    logger.info(
-        f"Scaled width, height, depth: {scaled.width} x {scaled.height} x {scaled.depth} "
-        f"(was {boxes3d.width} x {boxes3d.height} x {boxes3d.depth})"
-    )
+    scaled_data = boxes3d.data.copy()
+    scaled_data[:, 3:6] *= 1.5
+    scaled = datatypes.OrientedBoxes3D(scaled_data)
+    logger.info(f"Scaled dimensions: {scaled.dimensions} (was {boxes3d.dimensions})")
     datatypes.visualize(
         scaled,
-        entity_path="/OrientedBoxes3D/my_scaled_oriented_box3d",
+        entity_path="/OrientedBoxes3D/scaled_oriented_box3d",
         label=["Scaled Oriented Box3D 1", "Scaled Oriented Box3D 2"],
     )
 
-    # ======================= Rotate ============================================
-    delta_quat = [0.130526, 0.0, 0.0, 0.991445]
-    rotated = boxes3d.rotate(delta_quat)
-    logger.info(
-        f"Rotated quaternion: {rotated.data[:, 6:10]} (was {boxes3d.data[:, 6:10]})"
-    )
+    delta_rotation_deg = [15.0, 0.0, 0.0]
+    current_rot = Rotation.from_euler("xyz", boxes3d.rotations, degrees=True)
+    delta_rot = Rotation.from_euler("xyz", delta_rotation_deg, degrees=True)
+    composed_deg = (delta_rot * current_rot).as_euler("xyz", degrees=True)
+
+    rotated_data = boxes3d.data.copy()
+    rotated_data[:, 6:9] = composed_deg
+    rotated = datatypes.OrientedBoxes3D(rotated_data)
+    logger.info(f"Rotated rotations: {rotated.rotations} (was {boxes3d.rotations})")
     datatypes.visualize(
         rotated,
-        entity_path="/OrientedBoxes3D/my_rotated_oriented_box3d",
+        entity_path="/OrientedBoxes3D/rotated_oriented_box3d",
         label=["Rotated Oriented Box3D 1", "Rotated Oriented Box3D 2"],
     )
 
-    # ======================= NumPy Interop =====================================
-    data = np.asarray(rotated)
-    centers = data[:, :3]
-    half_extents = data[:, 3:6] / 2
-    quats_xyzw = data[:, 6:10]
-
-    corner_signs = np.array(list(itertools.product([-1, 1], repeat=3)), dtype=np.float32)
-    local_corners = corner_signs[None, :, :] * half_extents[:, None, :]
-
-    rotation_matrices = Rotation.from_quat(quats_xyzw).as_matrix().astype(np.float32)
-
-    corners = local_corners @ rotation_matrices.transpose(0, 2, 1) + centers[:, None, :]
-    logger.info(f"Corners per box, world space, shape {corners.shape}:\n{corners}")
-
-    edge_d = np.linalg.norm(corners[:, 1] - corners[:, 0], axis=-1)
-    edge_h = np.linalg.norm(corners[:, 2] - corners[:, 0], axis=-1)
-    edge_w = np.linalg.norm(corners[:, 4] - corners[:, 0], axis=-1)
-    logger.info(
-        f"Volume from numpy corners: {edge_w * edge_h * edge_d} (matches .volume: {rotated.volume})"
-    )
-
     # ======================= Rank by Volume ====================================
-    order = np.argsort(-rotated.volume)
+    order = np.argsort(-rotated.volumes)
     largest_first = datatypes.OrientedBoxes3D(rotated.data[order])
     logger.info(
-        f"Boxes ranked by volume (largest first): {largest_first.volume} (order: {order.tolist()})"
+        f"Boxes ranked by volume (largest first): {largest_first.volumes} (order: {order.tolist()})"
     )
 
     # ======================= Serialize / Deserialize ===========================

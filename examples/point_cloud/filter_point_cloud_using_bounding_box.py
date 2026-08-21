@@ -23,10 +23,9 @@ def filter_point_cloud_using_bounding_box_example():
 
     # ===================== Run Skill ==========================================
     x_min, y_min, z_min, x_max, y_max, z_max = -163, -100, 470, 150, 100, 544
-    bbox = datatypes.Boxes3D.from_format(
-        [[x_min, y_min, z_min, x_max, y_max, z_max]], source_format="xyzxyz"
+    bbox = datatypes.Box3D.from_format(
+        [x_min, y_min, z_min, x_max, y_max, z_max], source_format="xyzxyz"
     )
-
     filtered_point_cloud = vitreous.filter_point_cloud_using_bounding_box(
         point_cloud=point_cloud, bbox=bbox
     )
