@@ -26,26 +26,29 @@ def array_example():
     )
     logger.info(f"Array data:\n{array.data}")
 
+    # ======================= Visualize =========================================
+    rr.init("array_example", spawn=True)
+    datatypes.visualize(array, entity_path="/array")
+
+    # ======================= Update ============================================
+    array.data = np.arange(24, dtype=np.float32).reshape(4, 6)
+    logger.info(f"Updated Array: {array}")
+
+    # ======================= Other Methods ==============================================
+    array_copy = array.copy()
+    logger.info(f"Copied Array: {array_copy}")
+
+    array_numpy = array.to_numpy(copy = True)
+    logger.info(f"NumPy Array:\n{array_numpy}")
+    
     # ======================= NumPy Interop =====================================
     numpy_array = np.asarray(array)
-    reshaped = np.reshape(array, (2, 6))
+    reshaped = np.reshape(array, (2, 12))
 
     logger.info(f"NumPy array:\n{numpy_array}")
     logger.info(f"Reshaped array:\n{reshaped}")
     logger.info(f"Sum: {np.sum(array)}")
 
-    # ======================= Update ============================================
-    array.data = np.arange(24, dtype=np.float32).reshape(4, 6)
-
-    logger.info(f"Updated Array: {array}")
-
-    # ======================= Copy ==============================================
-    array_copy = array.copy()
-    logger.info(f"Copied Array: {array_copy}")
-
-    # ======================= Visualize =========================================
-    rr.init("array_example", spawn=True)
-    datatypes.visualize(array, entity_path="/array")
 
     # ======================= Serialize / Deserialize ============================
     start = time.perf_counter()

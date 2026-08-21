@@ -23,11 +23,8 @@ def filter_point_cloud_using_oriented_bounding_box_example():
     x_min, y_min, z_min = -205.65248652, -112.59310319, 554.42936219
     x_max, y_max, z_max = 121.88022318, -17.60647882, 698.54912862
     rot_x, rot_y, rot_z = -38.1245801, -7.89877607, -7.74440359
-
-    center = [(x_min + x_max) / 2, (y_min + y_max) / 2, (z_min + z_max) / 2]
-    size = [x_max - x_min, y_max - y_min, z_max - z_min]
-    quat_xyzw = R.from_euler("xyz", [rot_x, rot_y, rot_z], degrees=True).as_quat()
-    oriented_bbox = datatypes.OrientedBoxes3D([[*center, *size, *quat_xyzw]])
+    bbox = [x_min, y_min, z_min, x_max, y_max, z_max, rot_x, rot_y, rot_z]
+    oriented_bbox = datatypes.OrientedBox3D.from_format(data=bbox, source_format="xyzxyz")
 
     filtered_point_cloud = vitreous.filter_point_cloud_using_oriented_bounding_box(
         point_cloud=point_cloud, oriented_bbox=oriented_bbox

@@ -6,7 +6,7 @@ from loguru import logger
 import rerun as rr
 import rerun.blueprint as rrb
 
-from telekinesis import vitreous, datatypes
+from telekinesis import vitreous, datatypes, cornea
 
 
 def filter_point_cloud_using_mask_example():
@@ -25,7 +25,8 @@ def filter_point_cloud_using_mask_example():
     mask_url = (
         "https://assets.telekinesis.ai/examples/v1/images/can_vertical_6_mask.png"
     )
-    mask = datatypes.Image.from_url(url=mask_url).to_binary_mask(threshold=127)
+    mask_image = datatypes.Image.from_url(url=mask_url)
+    mask = cornea.segment_image_using_threshold(image=mask_image, min_value=127)
 
     # ===================== Run Skill ==========================================
     result_point_cloud = vitreous.filter_point_cloud_using_mask(

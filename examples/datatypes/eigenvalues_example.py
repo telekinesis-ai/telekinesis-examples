@@ -1,4 +1,4 @@
-"""Demonstrates the Telekinesis EigenValues datatype."""
+"""Demonstrates the Telekinesis Eigenvalues datatype."""
 
 import time
 
@@ -14,10 +14,10 @@ def eigenvalues_example():
     # ======================= Create ============================================
     matrix = np.array([[2.0, 1.0], [1.0, 2.0]], dtype=np.float32)
     w, _ = np.linalg.eigh(matrix)
-    eigenvalues = datatypes.EigenValues(w)
+    eigenvalues = datatypes.Eigenvalues(w)
 
     logger.info(f"Input eigenvalues: {w}")
-    logger.info(f"Original EigenValues: {eigenvalues}")
+    logger.info(f"Original Eigenvalues: {eigenvalues}")
 
     # ======================= Inspect ===========================================
     logger.info(
@@ -28,18 +28,18 @@ def eigenvalues_example():
     )
     logger.info(f"Data: {eigenvalues.data}")
     logger.info(f"NumPy array: {eigenvalues.to_numpy()}")
-    logger.info(f"Copied EigenValues: {eigenvalues.copy()}")
+    logger.info(f"Copied Eigenvalues: {eigenvalues.copy()}")
 
     # ======================= Visualize =========================================
     rr.init("eigenvalues_example", spawn=True)
-    datatypes.visualize(eigenvalues, entity_path="/EigenValues", label="Original EigenValues")
+    datatypes.visualize(eigenvalues, entity_path="/Eigenvalues", label="Original Eigenvalues")
 
     # ======================= Update ============================================
     new_w, _ = np.linalg.eigh(np.array([[5.0, 2.0], [2.0, 5.0]], dtype=np.float32))
     eigenvalues.data = new_w
-    logger.info(f"Updated EigenValues: {eigenvalues}")
+    logger.info(f"Updated Eigenvalues: {eigenvalues}")
     datatypes.visualize(
-        eigenvalues, entity_path="/EigenValues/updated", label="Updated EigenValues"
+        eigenvalues, entity_path="/Eigenvalues/updated", label="Updated Eigenvalues"
     )
 
     # ======================= Checks ============================================
@@ -62,7 +62,7 @@ def eigenvalues_example():
     deserialized = datatypes.deserialize(serialized)["param_0"]
     deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Deserialized EigenValues: {deserialized}")
+    logger.info(f"Deserialized Eigenvalues: {deserialized}")
     logger.info(f"Round-trip successful: {deserialized == eigenvalues}")
     logger.info(f"Serialization time: {serialization_ms:.3f} ms")
     logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")

@@ -1,7 +1,6 @@
 """Demonstrates the Telekinesis Timestamp datatype."""
 
 import time
-from datetime import datetime, timezone
 
 from loguru import logger
 import rerun as rr
@@ -10,28 +9,29 @@ from telekinesis import datatypes
 
 
 def timestamp_example():
-    """Demonstrate creation, access, visualization, update, arithmetic, and serialization."""
+    """Demonstrate creation, access, visualization, comparison, and serialization."""
 
     # ======================= Create ============================================
-    timestamp = datatypes.Timestamp(datetime.now(timezone.utc))
+    timestamp = datatypes.Timestamp(sec=42, nanosec=250_000_000)
     logger.info(f"Original Timestamp: {timestamp}")
 
     # ======================= Inspect ===========================================
-    data = timestamp.data
-    logger.info(f"Underlying Timestamp data: {data}")
+    logger.info(f"sec={timestamp.sec}, nanosec={timestamp.nanosec}")
 
     # ======================= Visualize =========================================
     rr.init("timestamp_example", spawn=True)
-    datatypes.visualize(timestamp, entity_path="/Timestamp/my_timestamp")
+    datatypes.visualize(timestamp, entity_path="/Timestamp")
 
-    # ======================= Update ============================================
-    timestamp.data = datetime.now(timezone.utc)
-    logger.info(f"Updated Timestamp: {timestamp}")
-    datatypes.visualize(timestamp, entity_path="/Timestamp/updated", label="Updated Timestamp")
+    # ======================= New Instance ======================================
+    # Timestamp is immutable; build a new instance rather than mutating in place.
+    later = datatypes.Timestamp(sec=43, nanosec=0)
+    logger.info(f"Later Timestamp: {later}")
+    datatypes.visualize(later, entity_path="/Timestamp/later")
 
-    # ======================= Arithmetic ========================================
-    diff = timestamp.data - data
-    logger.info(f"Time difference between original and updated timestamp: {diff}")
+    # ======================= Compare ===========================================
+    diff_sec = (later.sec + later.nanosec / 1e9) - (timestamp.sec + timestamp.nanosec / 1e9)
+    logger.info(f"Difference between timestamps: {diff_sec:.3f} s")
+    logger.info(f"EQ: {timestamp} == {timestamp} = {timestamp == datatypes.Timestamp(sec=42, nanosec=250_000_000)}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

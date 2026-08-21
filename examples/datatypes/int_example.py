@@ -16,7 +16,7 @@ def int_example():
     logger.info(f"Created Int: {value}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"data={value.data}")
+    logger.info(f"Int data: {value.data}")
 
     # ======================= Visualize =========================================
     rr.init("int_example", spawn=True)

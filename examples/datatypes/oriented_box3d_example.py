@@ -4,70 +4,105 @@ import time
 
 from loguru import logger
 import rerun as rr
+from scipy.spatial.transform import Rotation
 
 from telekinesis import datatypes
 
 def oriented_box3d_example():
-    """Demonstrate creation, access, visualization, translate/scale/rotate, and serialization."""
+    """Demonstrate creation, access, visualization, format conversion, translate/scale/rotate, and serialization."""
 
     # ======================= Create ============================================
-    box = datatypes.OrientedBox3D([0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0])
+    # OrientedBox3D format is CXCYCZWHD = [cx, cy, cz, width, height, depth]
+    # + rotation [roll_deg, pitch_deg, yaw_deg]
+    box = datatypes.OrientedBox3D([0.5, 0.5, 0.5, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
 
     logger.info(f"Created OrientedBox3D: {box}")
+
+    # ======================= Inspect ===========================================
+    logger.info(f"OrientedBox3D data: {box.data}")
+    logger.info(
+        f"dtype={box.dtype}, "
+        f"ndim={box.ndim}, "
+        f"shape={box.shape}, "
+        f"dimensions={box.dimensions}, "
+        f"volume={box.volume}, "
+        f"center={box.center}, "
+        f"rotation={box.rotation}"
+    )
 
     # ======================= Visualize =========================================
     rr.init("oriented_box3d_example", spawn=True)
     datatypes.visualize(
-        box, entity_path="/OrientedBox3D/my_oriented_box3d", label="My Oriented Box3D"
+        box, entity_path="/OrientedBox3D/oriented_box3d", label="My Oriented Box3D"
     )
-
-    # ======================= Inspect ===========================================
-    logger.info(f"shape={box.shape}, dtype={box.dtype}, ndim={box.ndim}")
-    logger.info(f"NumPy array: {box.to_numpy()}")
-    logger.info(
-        f"center={box.center}, volume={box.volume}, width={box.width}, "
-        f"height={box.height}, depth={box.depth}"
-    )
-    logger.info(f"Quaternion [qx, qy, qz, qw]: {box.data[6:]}")
 
     # ======================= Update ============================================
-    box.data = [2.0, 2.0, 2.0, 3.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+    box.data = [2.0, 2.0, 2.0, 3.0, 1.0, 1.0, 0.0, 0.0, 0.0]
 
     logger.info(f"Updated OrientedBox3D: {box}")
     datatypes.visualize(
-        box, entity_path="/OrientedBox3D/my_updated_oriented_box3d", label="Updated Oriented Box3D"
+        box, entity_path="/OrientedBox3D/updated_oriented_box3d", label="Updated Oriented Box3D"
     )
 
-    # ======================= Translate =========================================
-    translated_box = box.translate([1.0, 1.0, 1.0])
+    # ======================= Alternate Construction =============================
+    # Only the center/dimensions portion is reinterpreted; the trailing
+    # rotation entries pass through unchanged.
+    xyzxyz_coords = [0.5, 1.0, 1.5, 3.5, 3.0, 2.5, 0.0, 0.0, 0.0]
+    box_from_xyzxyz = datatypes.OrientedBox3D.from_format(
+        xyzxyz_coords, source_format=datatypes.BoxFormat.XYZXYZ
+    )
+    logger.info(f"OrientedBox3D created from xyzxyz format: {box_from_xyzxyz}")
+
+    xyzxyz_view = box.to_format(datatypes.BoxFormat.XYZXYZ)
+    logger.info(f"OrientedBox3D converted to xyzxyz format: {xyzxyz_view}")
+
+    xyzwhd_coords = [0.5, 1.0, 1.5, 3.0, 2.0, 1.0, 0.0, 0.0, 0.0]
+    box_from_xyzwhd = datatypes.OrientedBox3D.from_format(
+        xyzwhd_coords, source_format=datatypes.BoxFormat.XYZWHD
+    )
+    logger.info(f"OrientedBox3D created from xyzwhd format: {box_from_xyzwhd}")
+
+    xyzwhd_view = box.to_format(datatypes.BoxFormat.XYZWHD)
+    logger.info(f"OrientedBox3D converted to xyzwhd format: {xyzwhd_view}")
+
+    # ======================= NumPy Interop =====================================
+    # Translate, scale, and rotate by operating on the underlying NumPy array directly.
+    translated_data = box.data.copy()
+    translated_data[:3] += [1.0, 1.0, 1.0]
+    translated_box = datatypes.OrientedBox3D(translated_data)
 
     logger.info(f"Translated center: {translated_box.center} (was {box.center})")
     datatypes.visualize(
         translated_box,
-        entity_path="/OrientedBox3D/my_translated_oriented_box3d",
+        entity_path="/OrientedBox3D/translated_oriented_box3d",
         label="Translated Oriented Box3D",
     )
 
-    # ======================= Scale =============================================
-    scaled_box = box.scale(1.5)
+    scaled_data = box.data.copy()
+    scaled_data[3:6] *= 1.5
+    scaled_box = datatypes.OrientedBox3D(scaled_data)
 
-    logger.info(
-        f"Scaled width, height, and depth: {scaled_box.width} x {scaled_box.height} x "
-        f"{scaled_box.depth} (was {box.width} x {box.height} x {box.depth})"
-    )
+    logger.info(f"Scaled dimensions: {scaled_box.dimensions} (was {box.dimensions})")
     datatypes.visualize(
-        scaled_box, entity_path="/OrientedBox3D/my_scaled_oriented_box3d", label="Scaled Oriented Box3D"
+        scaled_box, entity_path="/OrientedBox3D/scaled_oriented_box3d", label="Scaled Oriented Box3D"
     )
 
-    # ======================= Rotate ============================================
-    delta_quaternion = [0.0, 0.0, 0.70710678, 0.70710678]
-    rotated_box = box.rotate(delta_quaternion)
+    delta_rotation_deg = [0.0, 0.0, 90.0]
+    current_rot = Rotation.from_euler("xyz", box.rotation, degrees=True)
+    delta_rot = Rotation.from_euler("xyz", delta_rotation_deg, degrees=True)
+    composed_deg = (delta_rot * current_rot).as_euler("xyz", degrees=True)
 
-    logger.info(f"Rotated quaternion: {rotated_box.data[6:]} (was {box.data[6:]})")
-    rotated_box_display = rotated_box.translate([4.0, 0.0, 0.0])
+    rotated_data = box.data.copy()
+    rotated_data[6:9] = composed_deg
+    rotated_box = datatypes.OrientedBox3D(rotated_data)
+
+    logger.info(f"Rotated rotation: {rotated_box.rotation} (was {box.rotation})")
+    display_data = rotated_box.data.copy()
+    display_data[:3] += [4.0, 0.0, 0.0]
+    rotated_box_display = datatypes.OrientedBox3D(display_data)
     datatypes.visualize(
         rotated_box_display,
-        entity_path="/OrientedBox3D/my_rotated_oriented_box3d",
+        entity_path="/OrientedBox3D/rotated_oriented_box3d",
         label="Rotated Oriented Box3D",
     )
 

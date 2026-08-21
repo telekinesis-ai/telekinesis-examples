@@ -31,10 +31,8 @@ def calculate_axis_aligned_bounding_box_example():
     logger.info(f"Axis-aligned bounding box shape: {axis_aligned_bounding_box.shape}")
     logger.info(f"Axis-aligned bounding box center: {axis_aligned_bounding_box.center}")
     logger.info(
-        f"Axis-aligned bounding box size (height, width, depth): "
-        f"{axis_aligned_bounding_box.height}, "
-        f"{axis_aligned_bounding_box.width}, "
-        f"{axis_aligned_bounding_box.depth}"
+        f"Axis-aligned bounding box dimensions (height, width, depth): "
+        f"{axis_aligned_bounding_box.dimensions}, "
     )
     logger.info(f"Axis-aligned bounding box volume: {axis_aligned_bounding_box.volume}")
 
