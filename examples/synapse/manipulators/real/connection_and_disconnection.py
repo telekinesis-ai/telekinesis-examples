@@ -22,11 +22,10 @@ def main(ip: str) -> None:
     robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     try:
-        #===================== Connect Robot ==========================================
+        # ==================== Run Skill ============================================
         robot.connect(ip=ip)
         logger.success(f"Connected to UR10e at {ip}.")
-
-        # ==================== Run Skill ============================================
+        
         time.sleep(2)
     except (ConnectionError, OSError) as e:
         logger.error(f"Error occurred: {e}")
