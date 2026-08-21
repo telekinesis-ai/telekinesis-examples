@@ -29,8 +29,8 @@ RUN_ORDER = [
     "inverse_kinematics",
     "setup_kinematics_solver",
     "set_default_joint_configuration",
-    "joint_trajectory_generator_example",
-    "cartesian_trajectory_generator_example",
+    "generate_joint_trajectory",
+    "generate_cartesian_trajectory",
     "joint_trajectory_controller",
     "visualize",
 ]
