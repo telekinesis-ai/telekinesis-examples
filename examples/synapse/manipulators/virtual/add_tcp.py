@@ -31,14 +31,11 @@ def main():
     robot.add_tcp(name="new_tool",
                   transform=[0.0, 0.0, 0.1, 0.0, 0.0, 0.0],  # 100 mm along Z-axis
                   set_active=True)
-
+    
     # Get updated Active TCP, transform w.r.t default tcp, and TCP pose
     logger.info(f"Active TCP after add_tcp(): {robot.active_tcp}"
                 f" \nActive TCP transform: {robot.get_active_tcp_transform()}"
                 f" \n TCP pose: {robot.get_cartesian_pose()}")
-
-    
-
 
 if __name__ == "__main__":
     main()
