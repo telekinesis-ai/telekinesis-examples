@@ -7,6 +7,7 @@ Usage:
     python update_tcp.py
 """
 
+import time
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
@@ -25,6 +26,7 @@ def main():
     robot.add_tcp(name="new_tool",
                   transform=[0.0, 0.0, 0.1, 0.0, 0.0, 0.0],  # 100 mm along Z-axis
                   set_active=True)
+    time.sleep(2)
 
     # Active TCP, transform w.r.t default tcp, and TCP pose
     logger.info(f"Active TCP after add_tcp(): {robot.active_tcp}"
@@ -32,7 +34,7 @@ def main():
                 f" \n TCP pose: {robot.get_cartesian_pose()}")
 
     # Update the TCP
-    updated_tcp_pose_in_default_tcp_frame = [0.0, 0.0, 0.2, 0.0, 0.0, 0.0]  # 200 mm along Z-axis
+    updated_tcp_pose_in_default_tcp_frame = [0.1, 0.1, 0.2, 0.0, 0.0, 90.0]  # 200 mm along Z-axis
     robot.update_tcp(name="new_tool",
                      transform=updated_tcp_pose_in_default_tcp_frame)
 

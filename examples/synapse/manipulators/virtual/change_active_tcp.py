@@ -24,13 +24,13 @@ def main():
     # ==================== Run Skill ============================================
     # Register a few custom TCP frames
     robot.add_tcp(name="camera_tip",
-                  transform=[0.0, 0.0, 0.1, 0.0, 0.0, 0.0],
+                  transform=[0.2, 0.2, 0.1, 0.0, 0.0, 90.0],
                   set_active=True)
     robot.add_tcp(name="gripper_tip",
-                  transform=[0.0, 0.0, 0.2, 0.0, 0.0, 0.0],
+                  transform=[0.0, 0.0, 0.26, 0.0, 0.0, 180.0],
                   set_active=False)
     robot.add_tcp(name="laser_tip",
-                  transform=[0.0, 0.0, 0.3, 0.0, 0.0, 0.0],
+                  transform=[-0.05, 0.0, 0.15, 0.0, 0.0, 90.0],
                   set_active=False)
 
     # Active TCP, transform w.r.t default tcp, and TCP pose
