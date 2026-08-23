@@ -9,7 +9,7 @@ from loguru import logger
 from telekinesis import datatypes
 
 def box3d_example():
-    """Demonstrate creation, access, update, translation, scaling, NumPy interop, format conversion, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     # Box3D format is CXCYCZWHD = [cx, cy, cz, width, height, depth]
@@ -17,65 +17,65 @@ def box3d_example():
     box3d = datatypes.Box3D(coords)
     logger.info(f"Original Box3D: {box3d}")
 
+    xyzxyz_coords = [1.0, 1.5, 2.0, 4.0, 4.5, 5.0]
+    box3d_from_xyzxyz = datatypes.Box3D.from_xyzxyz(xyzxyz_coords)
+    logger.info(f"Box3D created from xyzxyz format: {box3d_from_xyzxyz}")
+
+    xyzwhd_coords = [1.0, 1.5, 2.0, 3.0, 3.0, 3.0]
+    box3d_from_xyzwhd = datatypes.Box3D.from_xyzwhd(xyzwhd_coords)
+    logger.info(f"Box3D created from xyzwhd format: {box3d_from_xyzwhd}")
+
     # ======================= Inspect ===========================================
-    logger.info(f"Box3D data: {box3d.data}")
-    logger.info(
-        f"dtype={box3d.dtype}, "
-        f"ndim={box3d.ndim}, "
-        f"shape={box3d.shape}, "
-        f"dimensions={box3d.dimensions}, "
-        f"volume={box3d.volume}, "
-        f"center={box3d.center}"
-    )
+    logger.info(f"data={box3d.data}")
+    logger.info(f"dtype={box3d.dtype}")
+    logger.info(f"ndim={box3d.ndim}")
+    logger.info(f"shape={box3d.shape}")
+    logger.info(f"size={box3d.size}")
+    logger.info(f"dimensions={box3d.dimensions}")
+    logger.info(f"volume={box3d.volume}")
+    logger.info(f"center={box3d.center}")
 
-    # ======================= Visualize =========================================
-    rr.init("box3d_example", spawn=True)
-    datatypes.visualize(box3d, entity_path="/Box3D/box3d", label="Original Box3D")
-
-    # ======================= Update ============================================
+    # ======================= Operations =========================================
     updated_coords = [1, 4, 2.5, 5, 2, 7]
     box3d.data = updated_coords
     logger.info(f"Updated Box3D: {box3d}")
-    datatypes.visualize(box3d, entity_path="/Box3D/updated_box3d", label="Updated Box3D")
-
-    # ======================= Alternate Construction =============================
-    xyzxyz_coords = [1, 2, 2.5, 5, 3, 5]
-    box3d_from_xyzxyz = datatypes.Box3D.from_xyzxyz(xyzxyz_coords)
-    logger.info(f"Box3D created from xyzxyz format: {box3d_from_xyzxyz}")
 
     xyzxyz_view = box3d.as_xyzxyz()
     logger.info(f"Box3D converted to xyzxyz format: {xyzxyz_view}")
 
-    xyzwhd_coords = [1, 2, 2.5, 4, 1, 2.5]
-    box3d_from_xyzwhd = datatypes.Box3D.from_xyzwhd(xyzwhd_coords)
-    logger.info(f"Box3D created from xyzwhd format: {box3d_from_xyzwhd}")
-
     xyzwhd_view = box3d.as_xyzwhd()
     logger.info(f"Box3D converted to xyzwhd format: {xyzwhd_view}")
 
-    # ======================= NumPy Interop =====================================
+    box3d_copy = box3d.copy()
+    logger.info(f"Copied Box3D: {box3d_copy}")
+
+    # Returns the internal data as a NumPy array. If copy=True, returns a copy; otherwise, returns a view.
+    box3d_numpy = box3d.to_numpy(copy=False)
+    logger.info(f"NumPy Box3D:\n{box3d_numpy}")
+
+    numpy_box3d = np.asarray(box3d)
+    logger.info(f"Box3D via __array__:\n{numpy_box3d}")
+
     # Translate and scale by operating on the underlying NumPy array directly.
     translation = [3, 3, 1]
     translated_data = box3d.data.copy()
     translated_data[:3] += translation
     translated_box3d = datatypes.Box3D(translated_data)
     logger.info(f"Translated Box3D: {translated_box3d}")
-    datatypes.visualize(
-        translated_box3d, entity_path="/Box3D/translated_box3d", label="Translated Box3D"
-    )
 
     scale_factors = [2, 0.5, 1.5]
     scaled_data = box3d.data.copy()
     scaled_data[3:] *= np.asarray(scale_factors, dtype=np.float32)
     scaled_box3d = datatypes.Box3D(scaled_data)
     logger.info(f"Scaled Box3D: {scaled_box3d}")
-    datatypes.visualize(scaled_box3d, entity_path="/Box3D/scaled_box3d", label="Scaled Box3D")
 
-    multiply_factor = 1
-    scaled_dimensions = np.multiply(box3d, multiply_factor)
-    logger.info(
-        f"Box3D dimensions multiplied by {multiply_factor} using numpy: {scaled_dimensions}"
+    # ======================= Visualize =========================================
+    rr.init("box3d_example", spawn=True)
+    datatypes.visualize(box3d, entity_path="/box3d/updated", label="Updated Box3D")
+    datatypes.visualize(
+        translated_box3d, entity_path="/box3d/translated", label="Translated Box3D"
     )
+    datatypes.visualize(scaled_box3d, entity_path="/box3d/scaled", label="Scaled Box3D")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

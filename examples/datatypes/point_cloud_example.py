@@ -5,127 +5,102 @@ from pathlib import Path
 
 import numpy as np
 import rerun as rr
-import rerun.blueprint as rrb
 from loguru import logger
 
 from telekinesis import datatypes
 
-ROOT_PATH = Path(__file__).parent.parent
-
 def point_cloud_example():
-    """Demonstrate creation of compressed and uncompressed point clouds, access, visualization, update, compression settings, loading/saving .ply files, NumPy interop, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
-    N = 4000000
+    N = 2000
     positions = np.random.randn(N, 3).astype(np.float32)
+    point_cloud = datatypes.PointCloud(positions)
+    logger.info(f"Created PointCloud: {point_cloud}")
+
     normals = np.random.randn(N, 3).astype(np.float32)
     colors = np.random.randint(0, 255, (N, 3), dtype=np.uint8)
+    point_cloud = datatypes.PointCloud(
+        positions, normals=normals, colors=colors, use_compression=True
+    )
+    logger.info(f"PointCloud with normals, colors, and compression: {point_cloud}")
 
-    uncompressed = datatypes.PointCloud(
-        positions=positions, normals=normals, colors=colors, use_compression=False
-    )
-    compressed = datatypes.PointCloud(
-        positions=positions, normals=normals, colors=colors, use_compression=True
-    )
-    logger.info(f"Original Uncompressed PointCloud: {uncompressed}")
-    logger.info(f"Original Compressed PointCloud: {compressed}")
+    point_cloud_from_coerce = datatypes.PointCloud.coerce(positions)
+    logger.info(f"PointCloud created via coerce: {point_cloud_from_coerce}")
+
+    url = "https://assets.telekinesis.ai/examples/v1/point_clouds/zivid_bottles_10_preprocessed.ply"
+    point_cloud_from_url = datatypes.PointCloud.from_url(url=url)
+    logger.info(f"PointCloud loaded from URL: {point_cloud_from_url}")
+
+    cached_path = Path.home() / ".cache" / "telekinesis" / "point_clouds" / Path(url).name
+    point_cloud_from_path = datatypes.PointCloud.from_path(cached_path)
+    logger.info(f"PointCloud loaded from path: {point_cloud_from_path}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"Underlying positions: {uncompressed.positions}")
-    logger.info(f"Underlying normals: {uncompressed.normals}")
-    logger.info(f"Underlying colors: {uncompressed.colors}")
-    logger.info(f"Compression settings: {uncompressed.compression_settings}")
+    logger.info(f"positions={point_cloud.positions}")
+    logger.info(f"normals={point_cloud.normals}")
+    logger.info(f"colors={point_cloud.colors}")
+    logger.info(f"has_normals={point_cloud.has_normals}")
+    logger.info(f"has_colors={point_cloud.has_colors}")
+    logger.info(f"use_compression={point_cloud.use_compression}")
+    logger.info(f"compression_settings={point_cloud.compression_settings}")
+    logger.info(f"draco_atol={point_cloud.draco_atol}")
 
-    # ======================= Visualize =========================================
-    blueprint = rrb.Blueprint(
-        rrb.Grid(
-            rrb.Spatial3DView(name="My PointCloud", origin="/PointCloud/my_pointcloud"),
-            rrb.Spatial3DView(name="Updated PointCloud", origin="/PointCloud/updated"),
-            rrb.Spatial3DView(
-                name="Updated PointCloud Colors", origin="/PointCloud/updated_colors"
-            ),
-        )
-    )
-    rr.init("point_cloud_example", spawn=True, default_blueprint=blueprint)
-    rr.send_blueprint(blueprint, make_active=True)
-    datatypes.visualize(
-        uncompressed, entity_path="/PointCloud/my_pointcloud", label="My PointCloud"
-    )
+    # ======================= Operations =========================================
+    point_cloud.positions = np.random.randn(N, 3).astype(np.float32)
+    logger.info(f"Updated positions: {point_cloud}")
 
-    # ======================= Update ============================================
-    updated_positions = np.random.randn(N, 3).astype(np.float32)
-    uncompressed.positions = updated_positions
-    logger.info(f"Updated positions: {uncompressed}")
+    point_cloud.normals = np.random.randn(N, 3).astype(np.float32)
+    logger.info(f"Updated normals: {point_cloud}")
 
-    updated_colors = np.random.randint(0, 255, (N, 3), dtype=np.uint8)
-    uncompressed.colors = updated_colors
-    logger.info(f"Updated colors: {uncompressed.colors}")
-    datatypes.visualize(
-        uncompressed,
-        entity_path="/PointCloud/updated_colors",
-        label="Updated PointCloud Colors",
-    )
+    point_cloud.colors = np.random.randint(0, 255, (N, 3), dtype=np.uint8)
+    logger.info(f"Updated colors: {point_cloud}")
 
-    # ======================= Compression =======================================
-    uncompressed.use_compression = True
-    uncompressed.set_compression_parameters(compression_level=5, quantization_bits=12)
-    logger.info(f"Updated compression settings: {uncompressed}")
+    point_cloud.use_compression = False
+    logger.info(f"Toggled use_compression: {point_cloud.use_compression}")
 
-    # ======================= Load / Save =======================================
-    url = "https://assets.telekinesis.ai/examples/v1/point_clouds/zivid_bottles_10_preprocessed.ply"
-    from_url = datatypes.PointCloud.from_url(url=url)
-    logger.info(f"PointCloud from .ply: {from_url}")
-    datatypes.visualize(from_url, entity_path="/PointCloud/from_url", label="URL PointCloud")
+    point_cloud.set_compression_parameters(compression_level=5, quantization_bits=12)
+    logger.info(f"Updated compression settings: {point_cloud.compression_settings}")
 
-    from_url.save_to_path("results/my_point_cloud_saved.ply")
-    logger.info("Saved PointCloud to disk as .ply file.")
+    point_cloud_copy = point_cloud.copy()
+    logger.info(f"Copied PointCloud: {point_cloud_copy}")
 
-    # ======================= NumPy Interop =====================================
-    array_data = np.asarray(uncompressed)
-    centroid = np.mean(uncompressed, axis=0)
-    logger.info(f"NumPy array: {uncompressed.to_numpy()}")
+    point_cloud_numpy = point_cloud.to_numpy(copy=True)
+    logger.info(f"NumPy positions:\n{point_cloud_numpy}")
+
+    array_data = np.asarray(point_cloud)
+    centroid = np.mean(point_cloud, axis=0)
     logger.info(f"As array: {array_data}")
     logger.info(f"Centroid: {centroid}")
 
+    logger.info(f"length={len(point_cloud)}")
+
+    save_path = "results/point_cloud_example.ply"
+    point_cloud.save_to_path(save_path)
+    logger.info(f"Saved PointCloud to {save_path}")
+
+    # ======================= Visualize =========================================
+    rr.init("point_cloud_example", spawn=True)
+    datatypes.visualize(
+        point_cloud, entity_path="/point_cloud/updated", label="Updated PointCloud"
+    )
+    datatypes.visualize(
+        point_cloud_from_url, entity_path="/point_cloud/from_url", label="URL PointCloud"
+    )
+
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
-    serialized_uncompressed = datatypes.serialize(uncompressed)
-    uncompressed_serialization_ms = (time.perf_counter() - start) * 1000
-    uncompressed_serialized_size = len(serialized_uncompressed)
+    serialized = datatypes.serialize(point_cloud)
+    serialization_ms = (time.perf_counter() - start) * 1000
 
     start = time.perf_counter()
-    deserialized = datatypes.deserialize(serialized_uncompressed)["param_0"]
-    uncompressed_deserialization_ms = (time.perf_counter() - start) * 1000
-    uncompressed_deserialized_size = len(serialized_uncompressed)
+    deserialized = datatypes.deserialize(serialized)["param_0"]
+    deserialization_ms = (time.perf_counter() - start) * 1000
 
-    logger.info(f"Deserialized Uncompressed PointCloud: {deserialized}")
-    logger.info(f"Round-trip successful: {deserialized == uncompressed}")
-
-    start = time.perf_counter()
-    serialized_compressed = datatypes.serialize(compressed)
-    compressed_serialization_ms = (time.perf_counter() - start) * 1000
-    compressed_serialized_size = len(serialized_compressed)
-
-    start = time.perf_counter()
-    deserialized = datatypes.deserialize(serialized_compressed)["param_0"]
-    compressed_deserialization_ms = (time.perf_counter() - start) * 1000
-    compressed_deserialized_size = len(serialized_compressed)
-
-    logger.info(f"Deserialized Compressed PointCloud: {deserialized}")
-    logger.info(f"Round-trip successful: {deserialized == compressed}")
-
-    logger.info(
-        f"Uncompressed: serialize={uncompressed_serialization_ms:.3f} ms "
-        f"({uncompressed_serialized_size / 1024 / 1024:.3f} MB), "
-        f"deserialize={uncompressed_deserialization_ms:.3f} ms "
-        f"({uncompressed_deserialized_size / 1024 / 1024:.3f} MB)"
-    )
-    logger.info(
-        f"Compressed: serialize={compressed_serialization_ms:.3f} ms "
-        f"({compressed_serialized_size / 1024 / 1024:.3f} MB), "
-        f"deserialize={compressed_deserialization_ms:.3f} ms "
-        f"({compressed_deserialized_size / 1024 / 1024:.3f} MB)"
-    )
+    logger.info(f"Deserialized PointCloud: {deserialized}")
+    logger.info(f"Round-trip successful: {point_cloud == deserialized}")
+    logger.info(f"Serialization time: {serialization_ms:.3f} ms")
+    logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
 
 if __name__ == "__main__":

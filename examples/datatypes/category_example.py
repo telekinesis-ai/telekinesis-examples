@@ -8,22 +8,25 @@ from loguru import logger
 from telekinesis import datatypes
 
 def category_example():
-    """Demonstrate creation, access, visualization, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     category = datatypes.Category(id=1, name="person", supercategory="person")
-    logger.info(f"Original Category: {category}")
+    logger.info(f"Created Category: {category}")
 
     # ======================= Inspect ===========================================
-    logger.info(
-        f"id={category.id}, "
-        f"name={category.name}, "
-        f"supercategory={category.supercategory}"
-    )
+    logger.info(f"id={category.id}")
+    logger.info(f"name={category.name}")
+    logger.info(f"supercategory={category.supercategory}")
+
+    # ======================= Operations =========================================
+    other_category = datatypes.Category(id=2, name="bicycle", supercategory="vehicle")
+    logger.info(f"category == category: {category == category}")
+    logger.info(f"category == other_category: {category == other_category}")
 
     # ======================= Visualize =========================================
     rr.init("category_example", spawn=True)
-    datatypes.visualize(category, entity_path="/Category")
+    datatypes.visualize(category, entity_path="/category")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

@@ -9,91 +9,105 @@ from loguru import logger
 from telekinesis import datatypes
 
 def oriented_boxes2d_example():
-    """Demonstrate creation, access, visualization, update, format conversion, translate/rotate transforms, NumPy corner computation, area ranking, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     # OrientedBoxes2D format is CXCYWH = [[cx, cy, width, height], ...]
     # + rotation column [yaw_deg]
-    box2d_1 = [0.5, 0.5, 0.5, 0.5, 30.0]
-    box2d_2 = [1.0, 1.0, 1.0, 1.0, 15.0]
-    boxes2d = datatypes.OrientedBoxes2D([box2d_1, box2d_2])
+    oriented_box2d_1 = [0.5, 0.5, 0.5, 0.5, 30.0]
+    oriented_box2d_2 = [1.0, 1.0, 1.0, 1.0, 15.0]
+    oriented_boxes2d = datatypes.OrientedBoxes2D([oriented_box2d_1, oriented_box2d_2])
+    logger.info(f"Created OrientedBoxes2D: {oriented_boxes2d}")
 
-    logger.info(f"Original OrientedBoxes2D: {boxes2d}")
+    xyxy_coords = [[1.0, 1.5, 3.5, 3.0, 60.0], [2.0, 2.5, 4.5, 4.0, 30.0]]
+    oriented_boxes2d_from_xyxy = datatypes.OrientedBoxes2D.from_xyxy(xyxy_coords)
+    logger.info(f"OrientedBoxes2D created from xyxy format: {oriented_boxes2d_from_xyxy}")
+
+    xywh_coords = [[1.0, 1.5, 2.5, 1.5, 60.0], [2.0, 2.5, 2.5, 1.5, 30.0]]
+    oriented_boxes2d_from_xywh = datatypes.OrientedBoxes2D.from_xywh(xywh_coords)
+    logger.info(f"OrientedBoxes2D created from xywh format: {oriented_boxes2d_from_xywh}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"OrientedBoxes2D data: {boxes2d.data}")
-    logger.info(
-        f"dtype={boxes2d.dtype}, "
-        f"ndim={boxes2d.ndim}, "
-        f"shape={boxes2d.shape}, "
-        f"dimensions={boxes2d.dimensions}, "
-        f"areas={boxes2d.areas}, "
-        f"centers={boxes2d.centers}, "
-        f"rotations={boxes2d.rotations}"
-    )
+    logger.info(f"data={oriented_boxes2d.data}")
+    logger.info(f"dtype={oriented_boxes2d.dtype}")
+    logger.info(f"ndim={oriented_boxes2d.ndim}")
+    logger.info(f"shape={oriented_boxes2d.shape}")
+    logger.info(f"size={oriented_boxes2d.size}")
+    logger.info(f"length={len(oriented_boxes2d)}")
+    logger.info(f"centers={oriented_boxes2d.centers}")
+    logger.info(f"dimensions={oriented_boxes2d.dimensions}")
+    logger.info(f"areas={oriented_boxes2d.areas}")
+    logger.info(f"rotations={oriented_boxes2d.rotations}")
 
-    # ======================= Visualize =========================================
-    rr.init("oriented_box2d_example", spawn=True)
-    datatypes.visualize(
-        boxes2d,
-        entity_path="/OrientedBox2D/oriented_boxes2d",
-        label=["Oriented Box2D 1", "Oriented Box2D 2"],
-    )
-
-    # ======================= Update ============================================
-    boxes2d.data = [
+    # ======================= Operations =========================================
+    updated_data = [
         [2.0, 2.0, 1.5, 2.0, 60.0],
         [3.0, 3.0, 2.0, 2.5, 30.0],
     ]
-    logger.info(f"Updated OrientedBoxes2D: {boxes2d}")
-    datatypes.visualize(
-        boxes2d,
-        entity_path="/OrientedBoxes2D/updated_oriented_box2d",
-        label=["Updated Oriented Box2D 1", "Updated Oriented Box2D 2"],
-    )
+    oriented_boxes2d.data = updated_data
+    logger.info(f"Updated OrientedBoxes2D: {oriented_boxes2d}")
 
-    # ======================= Alternate Construction =============================
-    # Only the center/dimensions portion is reinterpreted; the trailing
-    # rotation column passes through unchanged.
-    xyxy_coords = [[1.0, 1.5, 3.5, 3.0, 60.0], [2.0, 2.5, 4.5, 4.0, 30.0]]
-    boxes_from_xyxy = datatypes.OrientedBoxes2D.from_xyxy(xyxy_coords)
-    logger.info(f"OrientedBoxes2D created from xyxy format: {boxes_from_xyxy}")
-
-    xyxy_view = boxes2d.as_xyxy()
+    xyxy_view = oriented_boxes2d.as_xyxy()
     logger.info(f"OrientedBoxes2D converted to xyxy format: {xyxy_view}")
 
-    xywh_coords = [[1.0, 1.5, 2.5, 1.5, 60.0], [2.0, 2.5, 2.5, 1.5, 30.0]]
-    boxes_from_xywh = datatypes.OrientedBoxes2D.from_xywh(xywh_coords)
-    logger.info(f"OrientedBoxes2D created from xywh format: {boxes_from_xywh}")
-
-    xywh_view = boxes2d.as_xywh()
+    xywh_view = oriented_boxes2d.as_xywh()
     logger.info(f"OrientedBoxes2D converted to xywh format: {xywh_view}")
 
-    # ======================= NumPy Interop =====================================
+    first_oriented_box2d = oriented_boxes2d[0]
+    logger.info(f"First OrientedBox2D (index 0): {first_oriented_box2d}")
+
+    sub_batch = oriented_boxes2d[1:]
+    logger.info(f"Sub-batch of OrientedBoxes2D [1:]: {sub_batch}")
+
+    oriented_boxes2d_copy = oriented_boxes2d.copy()
+    logger.info(f"Copied OrientedBoxes2D: {oriented_boxes2d_copy}")
+
+    # Returns the internal data as a NumPy array. If copy=True, returns a copy; otherwise, returns a view.
+    oriented_boxes2d_numpy = oriented_boxes2d.to_numpy(copy=False)
+    logger.info(f"NumPy OrientedBoxes2D:\n{oriented_boxes2d_numpy}")
+
     # Translate and rotate by operating on the underlying NumPy array directly.
-    translated_data = boxes2d.data.copy()
-    translated_data[:, :2] += [3.0, 3.0]
-    translated = datatypes.OrientedBoxes2D(translated_data)
-    logger.info(f"Translated centers: {translated.centers} (was {boxes2d.centers})")
+    translation = [1.0, 1.0]
+    translated_data = oriented_boxes2d.data.copy()
+    translated_data[:, :2] += translation
+    translated_oriented_boxes2d = datatypes.OrientedBoxes2D(translated_data)
+    logger.info(f"Translated OrientedBoxes2D: {translated_oriented_boxes2d}")
+
+    rotation_delta_deg = 15.0
+    rotated_data = oriented_boxes2d.data.copy()
+    rotated_data[:, 4] += rotation_delta_deg
+    rotated_oriented_boxes2d = datatypes.OrientedBoxes2D(rotated_data)
+    logger.info(f"Rotated OrientedBoxes2D: {rotated_oriented_boxes2d}")
+
+    # NumPy interop: rank boxes by area (largest first) using the areas property.
+    order = np.argsort(-oriented_boxes2d.areas)
+    largest_first = datatypes.OrientedBoxes2D(oriented_boxes2d.data[order])
+    logger.info(f"OrientedBoxes2D ranked by area (largest first): {largest_first.areas}")
+
+    numpy_array = np.asarray(oriented_boxes2d)
+    logger.info(f"NumPy array via __array__:\n{numpy_array}")
+
+    # ======================= Visualize =========================================
+    rr.init("oriented_boxes2d_example", spawn=True)
     datatypes.visualize(
-        translated,
-        entity_path="/OrientedBoxes2D/translated_oriented_box2d",
+        oriented_boxes2d,
+        entity_path="/oriented_boxes2d/updated",
+        label=["Updated Oriented Box2D 1", "Updated Oriented Box2D 2"],
+    )
+    datatypes.visualize(
+        translated_oriented_boxes2d,
+        entity_path="/oriented_boxes2d/translated",
         label=["Translated Oriented Box2D 1", "Translated Oriented Box2D 2"],
     )
-
-    rotated_data = boxes2d.data.copy()
-    rotated_data[:, 4] += 15.0
-    rotated = datatypes.OrientedBoxes2D(rotated_data)
-    logger.info(f"Rotated rotations: {rotated.rotations} (was {boxes2d.rotations})")
     datatypes.visualize(
-        rotated,
-        entity_path="/OrientedBoxes2D/rotated_oriented_box2d",
+        rotated_oriented_boxes2d,
+        entity_path="/oriented_boxes2d/rotated",
         label=["Rotated Oriented Box2D 1", "Rotated Oriented Box2D 2"],
     )
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
-    serialized = datatypes.serialize(boxes2d)
+    serialized = datatypes.serialize(oriented_boxes2d)
     serialization_ms = (time.perf_counter() - start) * 1000
 
     start = time.perf_counter()
@@ -101,7 +115,7 @@ def oriented_boxes2d_example():
     deserialization_ms = (time.perf_counter() - start) * 1000
 
     logger.info(f"Deserialized OrientedBoxes2D: {deserialized}")
-    logger.info(f"Round-trip successful: {boxes2d == deserialized}")
+    logger.info(f"Round-trip successful: {oriented_boxes2d == deserialized}")
     logger.info(f"Serialization time: {serialization_ms:.3f} ms")
     logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 

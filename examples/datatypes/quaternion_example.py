@@ -11,40 +11,45 @@ from telekinesis import datatypes
 
 
 def quaternion_example():
-    """Demonstrate creation, access, visualization, update, NumPy/SciPy interop, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     quaternion = datatypes.Quaternion([0.4619398, 0.1913417, 0.4619398, 0.7325378])
-    logger.info(f"Original Quaternion: {quaternion}")
+    logger.info(f"Created Quaternion: {quaternion}")
 
     # ======================= Inspect ===========================================
-    logger.info(
-        f"data={quaternion.data}, "
-        f"shape={quaternion.shape}, "
-        f"size={quaternion.size}, "
-        f"ndim={quaternion.ndim}, "
-        f"dtype={quaternion.dtype}"
-    )
-    logger.info(f"NumPy array: {quaternion.to_numpy()}")
-    logger.info(f"Copied Quaternion: {quaternion.copy()}")
+    logger.info(f"data={quaternion.data}")
+    logger.info(f"shape={quaternion.shape}")
+    logger.info(f"ndim={quaternion.ndim}")
+    logger.info(f"dtype={quaternion.dtype}")
+    logger.info(f"size={quaternion.size}")
+    logger.info(f"quat_norm_atol={quaternion.quat_norm_atol}")
+
+    # ======================= Operations =========================================
+    quaternion.data = [0.0, 0.0, 0.7071068, 0.7071068]
+    logger.info(f"Updated Quaternion: {quaternion}")
+
+    quaternion_copy = quaternion.copy()
+    logger.info(f"Copied Quaternion: {quaternion_copy}")
+
+    quaternion_numpy = quaternion.to_numpy(copy=True)
+    logger.info(f"NumPy Quaternion: {quaternion_numpy}")
+
+    numpy_array = np.asarray(quaternion)
+    logger.info(f"NumPy array: {numpy_array}")
+
+    norm = np.linalg.norm(quaternion)
+    logger.info(f"Norm (np.linalg.norm): {norm}")
+
+    # Quaternion.data is scalar-first [qw, qx, qy, qz]; scipy expects scalar-last
+    # [qx, qy, qz, qw], so reorder before handing it to Rotation.from_quat.
+    qw, qx, qy, qz = quaternion.data
+    rotation_matrix = Rotation.from_quat([qx, qy, qz, qw]).as_matrix()
+    logger.info(f"Equivalent rotation matrix (scipy Rotation):\n{rotation_matrix}")
 
     # ======================= Visualize =========================================
     rr.init("quaternion_example", spawn=True)
-    datatypes.visualize(quaternion, entity_path="/Quaternion", label="My Quaternion")
-
-    # ======================= Update ============================================
-    quaternion.data = [0.0, 0.0, 0.7071068, 0.7071068]
-    logger.info(f"Updated Quaternion: {quaternion}")
-    datatypes.visualize(
-        quaternion, entity_path="/Quaternion/updated", label="Updated Quaternion"
-    )
-
-    # ======================= NumPy Interop =====================================
-    norm = np.linalg.norm(quaternion.data)
-    rotation_matrix = Rotation.from_quat(quaternion.data).as_matrix()
-
-    logger.info(f"Quaternion norm (np.linalg.norm): {norm}")
-    logger.info(f"Equivalent rotation matrix (scipy Rotation):\n{rotation_matrix}")
+    datatypes.visualize(quaternion, entity_path="/quaternion", label="Updated Quaternion")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

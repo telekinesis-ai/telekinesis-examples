@@ -8,77 +8,77 @@ from loguru import logger
 
 from telekinesis import datatypes
 
+
 def transform3d_example():
-    """Demonstrate creation, access, update, inverse, pose conversion, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     matrix = np.array(
         [
-            [0.5000000, -0.5000000, 0.7071068, 1],
-            [0.8535534, 0.1464466, -0.5000000, 2],
-            [0.1464466, 0.8535534, 0.5000000, 3],
-            [0, 0, 0, 1],
+            [0.5000000, -0.5000000, 0.7071068, 1.0],
+            [0.8535534, 0.1464466, -0.5000000, 2.0],
+            [0.1464466, 0.8535534, 0.5000000, 3.0],
+            [0.0, 0.0, 0.0, 1.0],
         ]
     )
     transform3d = datatypes.Transform3D(matrix)
     logger.info(f"Created Transform3D: {transform3d}")
 
-    # ======================= Inspect ===========================================
-    logger.info(
-        f"shape={transform3d.shape}, "
-        f"size={transform3d.size}, "
-        f"ndim={transform3d.ndim}, "
-        f"dtype={transform3d.dtype}"
+    transform3d_from_pose = datatypes.Transform3D.from_pose(
+        [0.5, 0.2, 0.8, 0.0, 0.0, 0.3826834, 0.9238795]
     )
-    logger.info(f"Transform3D data:\n{transform3d.data}")
-    logger.info(f"NumPy array:\n{ transform3d.to_numpy()}")
-    logger.info(f"Copied Transform3D: {transform3d.copy()}")
+    logger.info(f"Transform3D created from pose: {transform3d_from_pose}")
 
-    # ======================= Visualize =========================================
-    rr.init("transform3d_example", spawn=True)
-    datatypes.visualize(transform3d, entity_path="/Transform3D/main", label="transform3d")
+    # ======================= Inspect ===========================================
+    logger.info(f"data=\n{transform3d.data}")
+    logger.info(f"shape={transform3d.shape}")
+    logger.info(f"ndim={transform3d.ndim}")
+    logger.info(f"dtype={transform3d.dtype}")
+    logger.info(f"size={transform3d.size}")
 
-    # ======================= Update ============================================
+    # ======================= Operations =========================================
     new_matrix = np.array(
         [
             [0.5000000, -0.5000000, 0.7071068, 1.5],
             [0.8535534, 0.1464466, -0.5000000, 2.5],
-            [0.1464466, 0.8535534, 0.5000000, 3],
-            [0, 0, 0, 1],
+            [0.1464466, 0.8535534, 0.5000000, 3.0],
+            [0.0, 0.0, 0.0, 1.0],
         ]
     )
     transform3d.data = new_matrix
-
     logger.info(f"Updated Transform3D: {transform3d}")
-    datatypes.visualize(
-        transform3d, entity_path="/Transform3D/updated", label="updated_transform3d"
-    )
 
-    # ======================= Inverse ===========================================
-    inverse = transform3d.inverse()
+    transform3d_copy = transform3d.copy()
+    logger.info(f"Copied Transform3D: {transform3d_copy}")
 
-    logger.info(f"Inverse Transform3D: {inverse}")
-    datatypes.visualize(inverse, entity_path="/Transform3D/inverse", label="inverse_transform3d")
+    transform3d_numpy = transform3d.to_numpy(copy=True)
+    logger.info(f"NumPy Transform3D:\n{transform3d_numpy}")
 
-    # ======================= Pose Conversion ===================================
+    inverse_transform3d = transform3d.inverse()
+    logger.info(f"Inverse Transform3D: {inverse_transform3d}")
+
     pose3d = transform3d.to_pose3d()
-    pose_quat = pose3d.as_quat()
+    logger.info(f"Transform3D as Pose3D: {pose3d}")
 
-    logger.info(f"Pose (deg): {pose3d.as_euler(degrees=True)}")
-    logger.info(f"Pose (rotvec): {pose3d.as_rotvec()}")
-    logger.info(f"Pose (rad): {pose3d.as_euler(degrees=False)}")
-    logger.info(f"Pose (quat): {pose_quat}")
+    transformation_error = transform3d.compute_transformation_error(transform3d_from_pose)
+    logger.info(f"Transformation error vs pose-based Transform3D: {transformation_error}")
 
-    new_transform3d = datatypes.Transform3D.from_pose(pose_quat)
+    numpy_array = np.asarray(transform3d)
+    sum_result = numpy_array + np.array([1, 1, 1, 0])
+    logger.info(f"NumPy array:\n{numpy_array}")
+    logger.info(f"Sum of Transform3D with NumPy array:\n{sum_result}")
 
-    logger.info(f"New Transform3D from pose: {new_transform3d}")
-    logger.info(
-        f"Transformation error: {transform3d.compute_transformation_error(new_transform3d)}"
+    # ======================= Visualize =========================================
+    rr.init("transform3d_example", spawn=True)
+    datatypes.visualize(transform3d, entity_path="/transform3d", label="Transform3D")
+    datatypes.visualize(
+        inverse_transform3d, entity_path="/transform3d/inverse", label="Inverse Transform3D"
     )
-
-    # ======================= NumPy Interop =====================================
-    sum_result = np.array([1, 1, 1, 0]) + transform3d
-    logger.info(f"Sum of Transform3D with numpy array: {sum_result}")
+    datatypes.visualize(
+        transform3d_from_pose,
+        entity_path="/transform3d/from_pose",
+        label="Transform3D From Pose",
+    )
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

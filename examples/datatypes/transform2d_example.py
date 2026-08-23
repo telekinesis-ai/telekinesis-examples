@@ -10,7 +10,7 @@ from telekinesis import datatypes
 
 
 def transform2d_example():
-    """Demonstrate creation, access, visualization, update, NumPy interop, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     theta = np.pi / 4
@@ -22,30 +22,16 @@ def transform2d_example():
         ]
     )
     transform2d = datatypes.Transform2D(matrix)
-    logger.info(f"Original Transform2D: {transform2d}")
+    logger.info(f"Created Transform2D: {transform2d}")
 
     # ======================= Inspect ===========================================
-    numpy_array = transform2d.to_numpy()
+    logger.info(f"data=\n{transform2d.data}")
+    logger.info(f"shape={transform2d.shape}")
+    logger.info(f"ndim={transform2d.ndim}")
+    logger.info(f"dtype={transform2d.dtype}")
+    logger.info(f"size={transform2d.size}")
 
-    logger.info(
-        f"shape={transform2d.shape}, "
-        f"size={transform2d.size}, "
-        f"ndim={transform2d.ndim}, "
-        f"dtype={transform2d.dtype}"
-    )
-    logger.info(f"Transform2D data:\n{transform2d.data}")
-    logger.info(f"NumPy array:\n{numpy_array}")
-    logger.info(f"Copied Transform2D: {transform2d.copy()}")
-
-    # ======================= Visualize =========================================
-    rr.init("transform2d_example", spawn=True)
-    datatypes.visualize(
-        transform2d,
-        entity_path="/Transform2D/main",
-        label="My Transform2D",
-    )
-
-    # ======================= Update ============================================
+    # ======================= Operations =========================================
     updated_theta = np.pi / 2
     updated_matrix = np.array(
         [
@@ -56,15 +42,21 @@ def transform2d_example():
     )
     transform2d.data = updated_matrix
     logger.info(f"Updated Transform2D: {transform2d}")
-    datatypes.visualize(
-        transform2d,
-        entity_path="/Transform2D/updated",
-        label="Updated Transform2D",
-    )
 
-    # ======================= Arithmetic ========================================
-    total = np.array([1, 1, 0]) + numpy_array
-    logger.info(f"Sum of Transform2D with numpy array: {total}")
+    transform2d_copy = transform2d.copy()
+    logger.info(f"Copied Transform2D: {transform2d_copy}")
+
+    transform2d_numpy = transform2d.to_numpy(copy=True)
+    logger.info(f"NumPy Transform2D:\n{transform2d_numpy}")
+
+    numpy_array = np.asarray(transform2d)
+    total = numpy_array + np.array([1, 1, 0])
+    logger.info(f"NumPy array:\n{numpy_array}")
+    logger.info(f"Sum of Transform2D with NumPy array:\n{total}")
+
+    # ======================= Visualize =========================================
+    rr.init("transform2d_example", spawn=True)
+    datatypes.visualize(transform2d, entity_path="/transform2d", label="Transform2D")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

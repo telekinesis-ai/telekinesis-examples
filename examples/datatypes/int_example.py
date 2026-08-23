@@ -8,49 +8,59 @@ from loguru import logger
 from telekinesis import datatypes
 
 def int_example():
-    """Demonstrate creation, access, arithmetic, conversion, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     value = datatypes.Int(42)
-
     logger.info(f"Created Int: {value}")
 
+    coerced = datatypes.Int.coerce(7.0)
+    logger.info(f"Int coerced from float: {coerced}")
+
     # ======================= Inspect ===========================================
-    logger.info(f"Int data: {value.data}")
+    logger.info(f"data={value.data}")
 
-    # ======================= Visualize =========================================
-    rr.init("int_example", spawn=True)
-    datatypes.visualize(value, entity_path="/Int")
-
-    # ======================= Update ============================================
+    # ======================= Operations ========================================
     value.data = 100
-
     logger.info(f"Updated Int: {value}")
 
-    # ======================= Arithmetic ========================================
     other = datatypes.Int(58)
 
     logger.info(f"{value} + {other} = {value + other}")
     logger.info(f"{value} - {other} = {value - other}")
     logger.info(f"{value} * {other} = {value * other}")
     logger.info(f"{value} / {other} = {value / other}")
+    logger.info(f"{value} // {other} = {value // other}")
     logger.info(f"{value} % {other} = {value % other}")
+    logger.info(f"Reflected add: 10 + {value} = {10 + value}")
+    logger.info(f"Reflected sub: 200 - {value} = {200 - value}")
+    logger.info(f"Reflected mul: 2 * {value} = {2 * value}")
+    logger.info(f"Reflected truediv: 1000 / {value} = {1000 / value}")
+    logger.info(f"Reflected floordiv: 1000 // {value} = {1000 // value}")
+    logger.info(f"Reflected mod: 1000 % {value} = {1000 % value}")
 
-    # ======================= Convert ===========================================
-    logger.info(f"int={int(value)}, float={float(value)}, bool={bool(value)}")
+    logger.info(f"negated={-value}")
+    logger.info(f"positive={+value}")
+    logger.info(f"absolute={abs(value)}")
 
-    # ======================= Index =============================================
+    logger.info(f"EQ: {value} == {other} = {value == other}")
+    logger.info(f"LT: {value} < {other} = {value < other}")
+    logger.info(f"LE: {value} <= {other} = {value <= other}")
+    logger.info(f"GT: {value} > {other} = {value > other}")
+    logger.info(f"GE: {value} >= {other} = {value >= other}")
+
+    logger.info(f"int(value)={int(value)}")
+    logger.info(f"float(value)={float(value)}")
+    logger.info(f"bool(value)={bool(value)}")
+
     items = [1, 2, 3, 4, 5]
     index = value % len(items)
+    logger.info(f"Used as index via __index__: items[{index}] = {items[index]}")
 
-    logger.info(f"items[{index}] = {items[index]}")
+    # ======================= Visualize =========================================
+    rr.init("int_example", spawn=True)
+    datatypes.visualize(value, entity_path="/int")
 
-    # ======================= Unary =============================================
-    logger.info(f"negated={-value}, absolute={abs(value)}")
-
-    # ======================= Compare ===========================================
-    logger.info(f"{value} > {other} = {value > other}")
-    
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
     serialized = datatypes.serialize(value)

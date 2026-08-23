@@ -8,39 +8,38 @@ from loguru import logger
 from telekinesis import datatypes
 
 def bool_example():
-    """Demonstrate creation, access, boolean operations, formatting, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     value = datatypes.Bool(True)
+    logger.info(f"Created Bool: {value}")
 
-    logger.info(f"Original Bool: {value}")
+    coerced = datatypes.Bool.coerce(1)
+    logger.info(f"Bool coerced from int: {coerced}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"Bool data: {value.data}")
+    logger.info(f"data={value.data}")
 
-    # ======================= Visualize =========================================
-    rr.init("bool_example", spawn=True)
-    datatypes.visualize(value, entity_path="/Bool")
-
-    # ======================= Update ============================================
+    # ======================= Operations ========================================
     value.data = False
     logger.info(f"Updated Bool: {value}")
 
-    # ======================= Operations ========================================
     other = datatypes.Bool(True)
 
     logger.info(f"AND: {value} & {other} = {value & other}")
     logger.info(f"OR: {value} | {other} = {value | other}")
     logger.info(f"XOR: {value} ^ {other} = {value ^ other}")
     logger.info(f"NOT: ~{value} = {~value}")
+    logger.info(f"Reflected AND: True & {value} = {True & value}")
+    logger.info(f"Reflected OR: False | {value} = {False | value}")
+    logger.info(f"Reflected XOR: True ^ {value} = {True ^ value}")
     logger.info(f"EQ: {value} == {other} = {value == other}")
-    logger.info(f"NEQ: {value} != {other} = {value != other}")
+    logger.info(f"int(value)={int(value)}")
+    logger.info(f"bool(value)={bool(value)}")
 
-    # ======================= Native Operations =================================
-    logger.info(f"AND with native bool: True & {value} = {True & value}")
-    logger.info(f"OR with native bool: False | {value} = {False | value}")
-    logger.info(f"XOR with native bool: True ^ {value} = {True ^ value}")
-
+    # ======================= Visualize =========================================
+    rr.init("bool_example", spawn=True)
+    datatypes.visualize(value, entity_path="/bool")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

@@ -9,7 +9,7 @@ from loguru import logger
 from telekinesis import datatypes
 
 def model_definitions_example():
-    """Demonstrate batch construction (canonical_name input_0/output_N), access, indexing, empty batches, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     created_at = datetime(2024, 6, 1, tzinfo=timezone.utc)
@@ -36,31 +36,44 @@ def model_definitions_example():
         created_ats=[created_at, updated_at],
         updated_ats=[created_at, updated_at],
     )
-
-    # ======================= Visualize =========================================
-    rr.init("model_definitions_example", spawn=True)
-    datatypes.visualize(definitions, entity_path="/ModelDefinitions")
+    logger.info(f"Created ModelDefinitions: {definitions}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"Number of records: {len(definitions)}")
-    logger.info(f"model_names={definitions.model_names}, model_formats={definitions.model_formats}")
-    logger.info(f"visibilities={definitions.visibilities}, model_statuses={definitions.model_statuses}")
+    logger.info(f"model_names={definitions.model_names}")
+    logger.info(f"model_formats={definitions.model_formats}")
+    logger.info(f"visibilities={definitions.visibilities}")
+    logger.info(f"model_statuses={definitions.model_statuses}")
+    logger.info(f"model_descriptions={definitions.model_descriptions}")
     logger.info(f"model_inputs={definitions.model_inputs}")
-    logger.info(f"created_ats={definitions.created_ats}, updated_ats={definitions.updated_ats}")
+    logger.info(f"model_outputs={definitions.model_outputs}")
+    logger.info(f"created_ats={definitions.created_ats}")
+    logger.info(f"updated_ats={definitions.updated_ats}")
 
-    # ======================= Index =============================================
+    # ======================= Operations =========================================
+    logger.info(f"length={len(definitions)}")
+
     subset = definitions[0:1]
-    mask = definitions.model_statuses == "uploaded"
-
-    logger.info(f"definitions[0] = {definitions[0]}")
     logger.info(f"definitions[0:1] = {len(subset)} record(s), names={subset.model_names}")
+
+    first = definitions[0]
+    logger.info(f"definitions[0] = {first}")
+
+    mask = definitions.model_statuses == "uploaded"
     logger.info(f"definitions[uploaded mask] = {len(definitions[mask])} record(s)")
 
-    # ======================= Empty Batch =======================================
+    # ModelTensorDefinition exposes its fields as plain attributes plus a dict view.
+    logger.info(f"model_input.to_dict()={model_input.to_dict()}")
+
+    # A ModelDefinitions batch may be empty.
     empty = datatypes.ModelDefinitions(
         model_names=[], model_formats=[], visibilities=[], model_statuses=[]
     )
-    datatypes.visualize(empty, entity_path="/ModelDefinitions/empty")
+    logger.info(f"length of empty batch={len(empty)}")
+
+    # ======================= Visualize =========================================
+    rr.init("model_definitions_example", spawn=True)
+    datatypes.visualize(definitions, entity_path="/model_definitions")
+    datatypes.visualize(empty, entity_path="/model_definitions/empty")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
@@ -72,7 +85,7 @@ def model_definitions_example():
     deserialization_ms = (time.perf_counter() - start) * 1000
 
     logger.info(f"Deserialized ModelDefinitions: {deserialized}")
-    logger.info(f"Round-trip successful: {deserialized == definitions}")
+    logger.info(f"Round-trip successful: {definitions == deserialized}")
     logger.info(f"Serialization time: {serialization_ms:.3f} ms")
     logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
