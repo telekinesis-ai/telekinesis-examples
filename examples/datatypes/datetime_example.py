@@ -3,8 +3,8 @@
 import time
 from datetime import datetime, timedelta, timezone
 
-from loguru import logger
 import rerun as rr
+from loguru import logger
 
 from telekinesis import datatypes
 

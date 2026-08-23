@@ -1,12 +1,12 @@
 """Demonstrates the Telekinesis PointCloud datatype."""
 
-from pathlib import Path
 import time
+from pathlib import Path
 
 import numpy as np
-from loguru import logger
 import rerun as rr
 import rerun.blueprint as rrb
+from loguru import logger
 
 from telekinesis import datatypes
 
