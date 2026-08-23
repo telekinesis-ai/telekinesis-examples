@@ -2,8 +2,8 @@
 
 import time
 
-import rerun as rr
 import numpy as np
+import rerun as rr
 from loguru import logger
 
 from telekinesis import datatypes

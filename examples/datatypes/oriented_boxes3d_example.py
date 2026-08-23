@@ -4,8 +4,8 @@ import itertools
 import time
 
 import numpy as np
-from loguru import logger
 import rerun as rr
+from loguru import logger
 from scipy.spatial.transform import Rotation
 
 from telekinesis import datatypes

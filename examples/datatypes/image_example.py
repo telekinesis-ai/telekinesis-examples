@@ -4,8 +4,8 @@ import time
 from pathlib import Path
 
 import numpy as np
-from loguru import logger
 import rerun as rr
+from loguru import logger
 
 from telekinesis import datatypes
 
