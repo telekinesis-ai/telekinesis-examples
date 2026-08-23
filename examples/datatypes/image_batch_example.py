@@ -10,42 +10,57 @@ from loguru import logger
 from telekinesis import datatypes
 
 def image_batch_example():
-    """Demonstrate creation, inspection, visualization, indexing, grayscale conversion, rebuilding, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
-    ROOT_PATH = Path(__file__).parent
+    root = Path(__file__).parent
+
     image_1 = np.random.randint(0, 255, (512, 512, 3), dtype=np.uint8)
-    image_2 = datatypes.Image.from_path(ROOT_PATH / "data/sample.jpg").to_numpy()
+    image_2 = datatypes.Image.from_path(root / "data/sample.jpg").to_numpy()
     images = [image_1, image_2]
     image_batch = datatypes.ImageBatch(images)
-    logger.info(f"Original ImageBatch: {image_batch}")
+    logger.info(f"Created ImageBatch: {image_batch}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"dtypes={image_batch.dtypes}, shapes={image_batch.shapes}, compressions={image_batch.compressions}")
-    logger.info(f"NumPy array: {image_batch.to_numpy()}")
+    logger.info(f"Number of images in batch: {len(image_batch)}")
+    logger.info(f"shapes={image_batch.shapes}")
+    logger.info(f"dtypes={image_batch.dtypes}")
+    logger.info(f"compressions={image_batch.compressions}")
 
-    # ======================= Visualize =========================================
-    rr.init("image_batch_example", spawn=True)
-    datatypes.visualize(image_batch, entity_path="/ImageBatch")
+    # ======================= Operations =========================================
+    image_batch_copy = image_batch.copy()
+    logger.info(f"Copied ImageBatch: {image_batch_copy}")
 
-    # ======================= Index =============================================
+    image_batch_numpy = image_batch.to_numpy(copy=True)
+    logger.info(f"NumPy ImageBatch: shapes={[arr.shape for arr in image_batch_numpy]}")
+
     index = 1
     image_at_index = image_batch[index]
     logger.info(f"Image at index {index}: {image_at_index}")
-    datatypes.visualize(image_at_index, entity_path="/ImageBatch/Image_1")
 
-    # ======================= Grayscale =========================================
+    sliced_batch = image_batch[0:1]
+    logger.info(f"Sliced ImageBatch: {sliced_batch}")
+
+    keep_mask = np.array([True, False])
+    masked_batch = image_batch[keep_mask]
+    logger.info(f"Masked ImageBatch: {masked_batch}")
+
+    # Indexing returns a real Image, so its own methods remain available.
     gray_image = image_at_index.to_grayscale()
     logger.info(f"Grayscale image at index {index}: {gray_image}")
-    datatypes.visualize(gray_image, entity_path="/ImageBatch/Image_1/Grayscale")
-    gray_image.save_to_path(ROOT_PATH / "data/grayscale_image.jpg")
+    gray_image.save_to_path(root / "data/grayscale_image.jpg")
 
-    # ======================= Rebuild ===========================================
-    index = 0
-    updated_image = np.random.randint(0, 255, (1907, 512, 3), dtype=np.uint8)
-    images[index] = updated_image
-    image_batch = datatypes.ImageBatch(images)
-    logger.info(f"Rebuilt ImageBatch at index 0: {image_batch}")
+    # ImageBatch has no setter for its contents; rebuild a new batch instead.
+    updated_images = list(images)
+    updated_images[0] = np.random.randint(0, 255, (1907, 512, 3), dtype=np.uint8)
+    rebuilt_image_batch = datatypes.ImageBatch(updated_images)
+    logger.info(f"Rebuilt ImageBatch: {rebuilt_image_batch}")
+
+    # ======================= Visualize =========================================
+    rr.init("image_batch_example", spawn=True)
+    datatypes.visualize(image_batch, entity_path="/image_batch")
+    datatypes.visualize(image_at_index, entity_path="/image_batch/image_1")
+    datatypes.visualize(gray_image, entity_path="/image_batch/image_1/grayscale")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

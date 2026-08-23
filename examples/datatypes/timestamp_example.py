@@ -7,31 +7,38 @@ from loguru import logger
 
 from telekinesis import datatypes
 
-
 def timestamp_example():
-    """Demonstrate creation, access, visualization, comparison, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     timestamp = datatypes.Timestamp(sec=42, nanosec=250_000_000)
-    logger.info(f"Original Timestamp: {timestamp}")
+    logger.info(f"Created Timestamp: {timestamp}")
+
+    coerced = datatypes.Timestamp.coerce((43, 0))
+    logger.info(f"Timestamp coerced from tuple: {coerced}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"sec={timestamp.sec}, nanosec={timestamp.nanosec}")
+    logger.info(f"sec={timestamp.sec}")
+    logger.info(f"nanosec={timestamp.nanosec}")
 
-    # ======================= Visualize =========================================
-    rr.init("timestamp_example", spawn=True)
-    datatypes.visualize(timestamp, entity_path="/Timestamp")
-
-    # ======================= New Instance ======================================
+    # ======================= Operations ========================================
     # Timestamp is immutable; build a new instance rather than mutating in place.
     later = datatypes.Timestamp(sec=43, nanosec=0)
     logger.info(f"Later Timestamp: {later}")
-    datatypes.visualize(later, entity_path="/Timestamp/later")
 
-    # ======================= Compare ===========================================
+    same = datatypes.Timestamp(sec=42, nanosec=250_000_000)
+    logger.info(f"EQ: {timestamp} == {same} = {timestamp == same}")
+    logger.info(f"EQ: {timestamp} == {later} = {timestamp == later}")
+
+    # Timestamp exposes only sec/nanosec and equality; derived quantities such
+    # as elapsed time are computed by the caller from the raw fields.
     diff_sec = (later.sec + later.nanosec / 1e9) - (timestamp.sec + timestamp.nanosec / 1e9)
     logger.info(f"Difference between timestamps: {diff_sec:.3f} s")
-    logger.info(f"EQ: {timestamp} == {timestamp} = {timestamp == datatypes.Timestamp(sec=42, nanosec=250_000_000)}")
+
+    # ======================= Visualize =========================================
+    rr.init("timestamp_example", spawn=True)
+    datatypes.visualize(timestamp, entity_path="/timestamp/original")
+    datatypes.visualize(later, entity_path="/timestamp/later")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

@@ -8,36 +8,37 @@ from loguru import logger
 
 from telekinesis import datatypes
 
-
 def datetime_example():
-    """Demonstrate creation, access, visualization, update, comparison, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     created_at = datatypes.DateTime(datetime.now(timezone.utc))
-    logger.info(f"Original DateTime: {created_at}")
+    logger.info(f"Created DateTime: {created_at}")
+
+    coerced = datatypes.DateTime.coerce(datetime.now(timezone.utc))
+    logger.info(f"DateTime coerced from datetime: {coerced}")
 
     # ======================= Inspect ===========================================
-    logger.info(f"DateTime data: {created_at.data}")
+    logger.info(f"data={created_at.data}")
 
-    # ======================= Visualize =========================================
-    rr.init("datetime_example", spawn=True)
-    datatypes.visualize(created_at, entity_path="/DateTime")
-
-    # ======================= Update ============================================
-    updated_at = datatypes.DateTime(created_at.data + timedelta(minutes=5))
-    created_at.data = updated_at.data
+    # ======================= Operations ========================================
+    created_at.data = created_at.data + timedelta(minutes=5)
     logger.info(f"Updated DateTime: {created_at}")
-    datatypes.visualize(created_at, entity_path="/DateTime/updated")
 
-    # ======================= Non-UTC Timezone ==================================
-    # Any timezone-aware datetime is accepted; it's normalized to UTC on storage.
+    # Any timezone-aware datetime is accepted; it is normalized to UTC on storage.
     pst = datatypes.DateTime(datetime.now(timezone(timedelta(hours=-8))))
     logger.info(f"DateTime from PST input, normalized to UTC: {pst}")
 
-    # ======================= Compare ===========================================
     earlier = datatypes.DateTime(created_at.data - timedelta(minutes=1))
+
     logger.info(f"EQ: {created_at} == {created_at} = {created_at == created_at}")
     logger.info(f"LT: {earlier} < {created_at} = {earlier < created_at}")
+    logger.info(f"GT (via reflected __lt__): {created_at} > {earlier} = {created_at > earlier}")
+
+    # ======================= Visualize =========================================
+    rr.init("datetime_example", spawn=True)
+    datatypes.visualize(created_at, entity_path="/datetime/updated")
+    datatypes.visualize(pst, entity_path="/datetime/pst")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

@@ -9,48 +9,41 @@ from loguru import logger
 from telekinesis import datatypes
 
 def array_example():
-    """Demonstrate creation, access, NumPy interop, update, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     data = np.arange(12, dtype=np.int32).reshape(3, 4)
     array = datatypes.Array(data)
-
     logger.info(f"Created Array: {array}")
 
     # ======================= Inspect ===========================================
-    logger.info(
-        f"shape={array.shape}, "
-        f"size={array.size}, "
-        f"ndim={array.ndim}, "
-        f"dtype={array.dtype}"
-    )
-    logger.info(f"Array data:\n{array.data}")
+    logger.info(f"shape={array.shape}")
+    logger.info(f"size={array.size}")
+    logger.info(f"ndim={array.ndim}")
+    logger.info(f"dtype={array.dtype}")
+    logger.info(f"data={array.data}")
+
+    # ======================= Operations =========================================
+    array.data = np.arange(24, dtype=np.float32).reshape(4, 6)
+    logger.info(f"Updated Array: {array}")
+
+    array_copy = array.copy()
+    logger.info(f"Copied Array: {array_copy}")
+
+    array_numpy = array.to_numpy(copy=True)
+    logger.info(f"NumPy Array:\n{array_numpy}")
+
+    numpy_array = np.asarray(array)
+    reshaped = np.reshape(array, (2, 12))
+    logger.info(f"NumPy array:\n{numpy_array}")
+    logger.info(f"Reshaped array:\n{reshaped}")
+    logger.info(f"Sum: {np.sum(array)}")
 
     # ======================= Visualize =========================================
     rr.init("array_example", spawn=True)
     datatypes.visualize(array, entity_path="/array")
 
-    # ======================= Update ============================================
-    array.data = np.arange(24, dtype=np.float32).reshape(4, 6)
-    logger.info(f"Updated Array: {array}")
-
-    # ======================= Other Methods ==============================================
-    array_copy = array.copy()
-    logger.info(f"Copied Array: {array_copy}")
-
-    array_numpy = array.to_numpy(copy = True)
-    logger.info(f"NumPy Array:\n{array_numpy}")
-    
-    # ======================= NumPy Interop =====================================
-    numpy_array = np.asarray(array)
-    reshaped = np.reshape(array, (2, 12))
-
-    logger.info(f"NumPy array:\n{numpy_array}")
-    logger.info(f"Reshaped array:\n{reshaped}")
-    logger.info(f"Sum: {np.sum(array)}")
-
-
-    # ======================= Serialize / Deserialize ============================
+    # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
     serialized = datatypes.serialize(array)
     serialization_ms = (time.perf_counter() - start) * 1000

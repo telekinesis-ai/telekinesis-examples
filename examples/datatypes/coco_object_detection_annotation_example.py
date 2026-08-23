@@ -9,13 +9,13 @@ from loguru import logger
 from telekinesis import datatypes
 
 def coco_object_detection_annotation_example():
-    """Demonstrate creation, access, mask rasterization, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     # Segmentation semantics: iscrowd=False -> polygon (stored natively, not
     # converted), iscrowd=True -> encoded COCO RLE. The two representations are
     # never silently converted between each other.
-    H, W = 720, 1280
+    image_height, image_width = 720, 1280
     annotation = datatypes.COCOObjectDetectionAnnotation(
         id=0,
         image_id=7,
@@ -25,37 +25,30 @@ def coco_object_detection_annotation_example():
         iscrowd=False,
         segmentation=[[0, 2, 10, 0, 10, 10, 0, 10]],
     )
-    logger.info(f"Original COCOObjectDetectionAnnotation: {annotation}")
+    logger.info(f"Created COCOObjectDetectionAnnotation: {annotation}")
 
     # ======================= Inspect ===========================================
-    logger.info(
-        f"id={annotation.id}, "
-        f"image_id={annotation.image_id}, "
-        f"category_id={annotation.category_id}, "
-        f"bbox={annotation.bbox}, "
-        f"area={annotation.area}, "
-        f"iscrowd={annotation.iscrowd}"
-    )
+    logger.info(f"id={annotation.id}")
+    logger.info(f"image_id={annotation.image_id}")
+    logger.info(f"category_id={annotation.category_id}")
+    logger.info(f"bbox={annotation.bbox}")
+    logger.info(f"area={annotation.area}")
+    logger.info(f"iscrowd={annotation.iscrowd}")
     logger.info(f"segmentation={annotation.segmentation}")
 
-    # ======================= Visualize =========================================
-    rr.init("coco_object_detection_annotation_example", spawn=True)
-    datatypes.visualize(annotation, entity_path="/COCOObjectDetectionAnnotation")
+    # ======================= Operations =========================================
+    annotation_as_mask = annotation.as_mask(image_height=image_height, image_width=image_width)
+    logger.info(
+        f"Segmentation as mask: shape={annotation_as_mask['segmentation'].shape}, "
+        f"dtype={annotation_as_mask['segmentation'].dtype}"
+    )
 
-    # ======================= To Mask =============================================
-    # `to_mask` takes the target size explicitly since the annotation doesn't
-    # store one. For an `iscrowd=True` (RLE) entry, the passed size must match
-    # the RLE's own embedded size.
-    mask = annotation.to_mask(image_height=H, image_width=W)
-    logger.info(f"Segmentation as mask: shape={mask.shape}, dtype={mask.dtype}")
-
-    # ======================= From Mask ===========================================
     # `area`/`iscrowd` are labeling decisions that can't be derived from a mask,
     # so there's no dedicated "from mask" constructor (unlike
     # `COCOObjectDetectionResult.from_mask`). Build the RLE segmentation via the
     # shared `COCOSegmentationMixin.mask_to_rle` helper and pass the rest of the
     # fields directly.
-    crowd_mask = np.zeros((H, W), dtype=np.uint8)
+    crowd_mask = np.zeros((image_height, image_width), dtype=np.uint8)
     crowd_mask[100:200, 150:400] = 1
     crowd_annotation = datatypes.COCOObjectDetectionAnnotation(
         id=1,
@@ -67,7 +60,33 @@ def coco_object_detection_annotation_example():
         segmentation=datatypes.COCOObjectDetectionAnnotation.mask_to_rle(crowd_mask),
     )
     logger.info(f"Crowd annotation built from a mask: {crowd_annotation}")
-    datatypes.visualize(crowd_annotation, entity_path="/CrowdObjectDetectionAnnotation")
+
+    crowd_annotation_as_mask = crowd_annotation.as_mask(
+        image_height=image_height, image_width=image_width
+    )
+    logger.info(
+        f"Crowd segmentation as mask: shape={crowd_annotation_as_mask['segmentation'].shape}, "
+        f"dtype={crowd_annotation_as_mask['segmentation'].dtype}"
+    )
+
+    # Mixin helpers shared across all COCO segmentation datatypes.
+    mask_from_rle = datatypes.COCOObjectDetectionAnnotation.rle_to_mask(crowd_annotation.segmentation)
+    logger.info(f"Mask decoded via rle_to_mask: shape={mask_from_rle.shape}, dtype={mask_from_rle.dtype}")
+
+    polygon_from_rle = datatypes.COCOObjectDetectionAnnotation.rle_to_polygon(
+        crowd_annotation.segmentation
+    )
+    logger.info(f"Polygon decoded via rle_to_polygon: {polygon_from_rle}")
+
+    rle_from_polygon = datatypes.COCOObjectDetectionAnnotation.polygon_to_rle(
+        annotation.segmentation, height=image_height, width=image_width
+    )
+    logger.info(f"RLE encoded via polygon_to_rle: {rle_from_polygon}")
+
+    # ======================= Visualize =========================================
+    rr.init("coco_object_detection_annotation_example", spawn=True)
+    datatypes.visualize(annotation, entity_path="/coco_object_detection_annotation")
+    datatypes.visualize(crowd_annotation, entity_path="/coco_object_detection_annotation/crowd")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

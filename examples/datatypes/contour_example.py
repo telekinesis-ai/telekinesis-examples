@@ -9,7 +9,7 @@ from loguru import logger
 from telekinesis import datatypes
 
 def contour_example():
-    """Demonstrate creation, inspection, visualization, NumPy-based shifting, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     contour = datatypes.Contour(
@@ -17,21 +17,23 @@ def contour_example():
     )
     logger.info(f"Original Contour: {contour}")
 
-    # ======================= Inspect ===========================================
-    points = contour.points
+    contour_from_list = datatypes.Contour.coerce([[0, 0], [10, 0], [10, 10], [0, 10]])
+    logger.info(f"Contour coerced from list: {contour_from_list}")
 
-    logger.info(f"Points: {points}")
+    # ======================= Inspect ===========================================
+    logger.info(f"points={contour.points}")
+
+    # ======================= Operations =========================================
     logger.info(f"Number of points: {len(contour)}")
+
+    shifted_points = contour.points + np.array([10, 10], dtype=np.int64)
+    shifted_contour = datatypes.Contour(points=shifted_points)
+    logger.info(f"Shifted Contour: {shifted_contour}")
 
     # ======================= Visualize =========================================
     rr.init("contour_example", spawn=True)
-    datatypes.visualize(contour, entity_path="/Contour")
-
-    # ======================= Shift =============================================
-    shifted_points = points + np.array([10, 10], dtype=np.int64)
-    shifted_contour = datatypes.Contour(points=shifted_points)
-    logger.info(f"Shifted Contour: {shifted_contour}")
-    datatypes.visualize(shifted_contour, entity_path="/Contour/shifted")
+    datatypes.visualize(contour, entity_path="/contour/original")
+    datatypes.visualize(shifted_contour, entity_path="/contour/shifted")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

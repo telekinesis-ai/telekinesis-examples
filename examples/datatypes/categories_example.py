@@ -9,7 +9,7 @@ from loguru import logger
 from telekinesis import datatypes
 
 def categories_example():
-    """Demonstrate creation, access, indexing, rebuilding the immutable table, NumPy-based ranking, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
     categories = datatypes.Categories(
@@ -17,39 +17,42 @@ def categories_example():
         names=np.array(["person", "bicycle", "car"]),
         supercategories=np.array(["person", "vehicle", "vehicle"]),
     )
-    logger.info(f"Original Categories: {categories}")
+    logger.info(f"Created Categories: {categories}")
 
     # ======================= Inspect ===========================================
+    logger.info(f"ids={categories.ids}")
+    logger.info(f"names={categories.names}")
+    logger.info(f"supercategories={categories.supercategories}")
+
+    # ======================= Operations =========================================
     logger.info(f"length={len(categories)}")
-    logger.info(
-        f"ids={categories.ids}, "
-        f"names={categories.names}, "
-        f"supercategories={categories.supercategories}"
-    )
 
-    # ======================= Index =============================================
-    category_id = 2
-    logger.info(f"Indexed category for id {category_id}: {categories[category_id]}")
+    # int indexing returns the Category at that position (not an id lookup)
+    index = 1
+    logger.info(f"categories[{index}] = {categories[index]}")
 
-    # ======================= Visualize =========================================
-    rr.init("categories_example", spawn=True)
-    datatypes.visualize(categories, entity_path="/Categories")
+    sliced = categories[0:2]
+    logger.info(f"categories[0:2] = {sliced}")
 
-    # ======================= Rebuild ===========================================
+    mask = categories.ids >= 2
+    masked = categories[mask]
+    logger.info(f"categories[ids >= 2] = {masked}")
+
+    # Categories is immutable; build a new instance to add or change entries.
     updated = datatypes.Categories(
         ids=np.append(categories.ids, 4),
         names=np.append(categories.names, "traffic light"),
         supercategories=np.append(categories.supercategories, "outdoor"),
     )
     logger.info(f"Updated Categories: {updated}")
-    datatypes.visualize(updated, entity_path="/Categories/updated")
 
-    # ======================= NumPy Interop =====================================
     order = np.argsort(-updated.ids)
-    logger.info(
-        f"Categories ranked by id (descending): {updated.names[order]} "
-        f"(order: {order.tolist()})"
-    )
+    logger.info(f"Categories ranked by id (descending): {updated.names[order]}")
+
+    # ======================= Visualize =========================================
+    rr.init("categories_example", spawn=True)
+    datatypes.visualize(categories, entity_path="/categories/original")
+    datatypes.visualize(updated, entity_path="/categories/updated")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

@@ -10,88 +10,78 @@ from loguru import logger
 from telekinesis import datatypes
 
 def image_example():
-    """Demonstrate creation, access, conversions, saving, NumPy interop, and serialization."""
+    """Demonstrate creation, inspection, operations, visualization, and serialization."""
 
     # ======================= Create ============================================
+    root = Path(__file__).parent
+
     data = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
-
-    logger.info(f"Input data: shape={data.shape}, dtype={data.dtype}")
-
     image = datatypes.Image(data)
-
     logger.info(f"Created Image: {image}")
 
+    buffer = data.tobytes()
+    image_from_raw_buffer = datatypes.Image.from_raw_buffer(buffer, shape=data.shape, dtype=data.dtype)
+    logger.info(f"Image created from raw buffer: {image_from_raw_buffer}")
+
+    encoded_buffer = (root / "data/sample.jpg").read_bytes()
+    image_from_encoded_buffer = datatypes.Image.from_encoded_buffer(encoded_buffer)
+    logger.info(f"Image created from encoded buffer: {image_from_encoded_buffer}")
+
+    image_from_path = datatypes.Image.from_path(root / "data/sample.jpg")
+    logger.info(f"Image created from path: {image_from_path}")
+
+    url = "https://assets.telekinesis.ai/examples/v1/images/screws_standing.jpg"
+    image_from_url = datatypes.Image.from_url(url)
+    logger.info(f"Image created from URL: {image_from_url}")
+
     # ======================= Inspect ===========================================
-    logger.info(
-        f"shape={image.data.shape}, "
-        f"dtype={image.data.dtype}, "
-        f"height={image.height}, "
-        f"width={image.width}, "
-        f"channels={image.channels}, "
-        f"compression={image.compression}"
-    )
-    logger.info(f"Image data: {image.data}")
-    logger.info(f"NumPy array: {image.to_numpy()}")
+    logger.info(f"compression={image.compression}")
+    logger.info(f"data={image.data}")
+    logger.info(f"shape={image.shape}")
+    logger.info(f"height={image.height}")
+    logger.info(f"width={image.width}")
+    logger.info(f"channels={image.channels}")
+    logger.info(f"dtype={image.dtype}")
+
+    # ======================= Operations =========================================
+    image.data = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
+    logger.info(f"Updated Image: {image}")
+
+    gray_image = image_from_path.to_grayscale()
+    logger.info(f"Grayscale image: {gray_image}")
+
+    bgr_image = image_from_path.to_bgr()
+    logger.info(f"BGR image: {bgr_image}")
+
+    rgb_image = bgr_image.to_rgb()
+    logger.info(f"RGB image: {rgb_image}")
+
+    image_batch = image.expand_dims()
+    logger.info(f"Expanded to ImageBatch: {image_batch}")
+
+    image_copy = image.copy()
+    logger.info(f"Copied Image: {image_copy}")
+
+    image_numpy = image.to_numpy(copy=True)
+    logger.info(f"NumPy Image:\n{image_numpy}")
+
+    output_path = root / "data/output_image.jpg"
+    gray_image.save_to_path(output_path)
+    logger.info(f"Image saved to: {output_path}")
+
+    mean_pixel_value = np.mean(image)
+    flipped_image = np.flipud(image)
+    logger.info(f"Mean pixel value: {mean_pixel_value}")
+    logger.info(f"Flipped shape={flipped_image.shape}, dtype={flipped_image.dtype}")
 
     # ======================= Visualize =========================================
     rr.init("image_example", spawn=True)
-    datatypes.visualize(image, entity_path="/Image")
-
-    # ======================= Update ============================================
-    image.data = np.random.randint(0, 255, (480, 640, 3), dtype=np.uint8)
-
-    logger.info(f"Updated Image: {image}")
-    datatypes.visualize(image, entity_path="/Image")
-
-    # ======================= Load From Path ====================================
-    root = Path(__file__).parent
-    image_from_path = datatypes.Image.from_path(root / "data/sample.jpg")
-
-    logger.info(f"shape={image_from_path.shape}, dtype={image_from_path.dtype}")
-    datatypes.visualize(image_from_path, entity_path="/ImageFromPath")
-
-    # ======================= Load From URL =====================================
-    url = "https://assets.telekinesis.ai/examples/v1/images/screws_standing.jpg"
-    image_from_url = datatypes.Image.from_url(url)
-
-    logger.info(f"shape={image_from_url.shape}, dtype={image_from_url.dtype}")
-    datatypes.visualize(image_from_url, entity_path="/ImageFromURL")
-
-    # ======================= Convert To Grayscale ==============================
-    gray_image = image_from_path.to_grayscale()
-
-    logger.info(f"shape={gray_image.shape}, dtype={gray_image.dtype}")
-    datatypes.visualize(gray_image, entity_path="/GrayImage")
-
-    # ======================= Convert To BGR ====================================
-    bgr_image = image_from_path.to_bgr()
-
-    logger.info(f"shape={bgr_image.shape}, dtype={bgr_image.dtype}")
-    datatypes.visualize(bgr_image, entity_path="/BGRImage")
-
-    # ======================= Convert To RGB ====================================
-    rgb_image = bgr_image.to_rgb()
-
-    logger.info(f"shape={rgb_image.shape}, dtype={rgb_image.dtype}")
-    datatypes.visualize(rgb_image, entity_path="/RGBImage")
-
-    # ======================= Expand Dims =======================================
-    image_batch = image.expand_dims()
-
-    logger.info(f"shapes={image_batch.shapes}, dtypes={image_batch.dtypes}")
-
-    # ======================= Save ==============================================
-    output_path = root / "data/output_image.jpg"
-    gray_image.save_to_path(path=output_path)
-
-    logger.info(f"Image saved to: {output_path}")
-
-    # ======================= NumPy Interop =====================================
-    mean = np.mean(image)
-    flipped = np.flipud(image)
-
-    logger.info(f"Mean pixel value: {mean}")
-    logger.info(f"Flipped shape={flipped.shape}, dtype={flipped.dtype}")
+    datatypes.visualize(image, entity_path="/image")
+    datatypes.visualize(image_from_path, entity_path="/image/from_path")
+    datatypes.visualize(image_from_url, entity_path="/image/from_url")
+    datatypes.visualize(gray_image, entity_path="/image/grayscale")
+    datatypes.visualize(bgr_image, entity_path="/image/bgr")
+    datatypes.visualize(rgb_image, entity_path="/image/rgb")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
@@ -103,7 +93,7 @@ def image_example():
     deserialization_ms = (time.perf_counter() - start) * 1000
 
     logger.info(f"Deserialized Image: {deserialized}")
-    logger.info(f"Round-trip successful: {deserialized == image}")
+    logger.info(f"Round-trip successful: {image == deserialized}")
     logger.info(f"Serialization time: {serialization_ms:.3f} ms")
     logger.info(f"Deserialization time: {deserialization_ms:.3f} ms")
 
