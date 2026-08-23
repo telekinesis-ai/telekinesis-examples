@@ -4,7 +4,6 @@ Demonstrates filtering points within an oriented (rotated) bounding box.
 
 from loguru import logger
 import rerun as rr
-from scipy.spatial.transform import Rotation as R
 
 from telekinesis import vitreous, datatypes
 
@@ -24,7 +23,7 @@ def filter_point_cloud_using_oriented_bounding_box_example():
     x_max, y_max, z_max = 121.88022318, -17.60647882, 698.54912862
     rot_x, rot_y, rot_z = -38.1245801, -7.89877607, -7.74440359
     bbox = [x_min, y_min, z_min, x_max, y_max, z_max, rot_x, rot_y, rot_z]
-    oriented_bbox = datatypes.OrientedBox3D.from_format(data=bbox, source_format="xyzxyz")
+    oriented_bbox = datatypes.OrientedBox3D.from_xyzxyz(bbox)
 
     filtered_point_cloud = vitreous.filter_point_cloud_using_oriented_bounding_box(
         point_cloud=point_cloud, oriented_bbox=oriented_bbox
