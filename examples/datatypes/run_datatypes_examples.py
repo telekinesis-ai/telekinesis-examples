@@ -1,4 +1,4 @@
-"""Run all retina examples."""
+"""Run all datatypes examples."""
 
 import importlib.util
 import pathlib
@@ -11,15 +11,16 @@ logger.add(sys.stderr, format="<level>{level: <8}</level> | <level>{message}</le
 
 
 def run_examples():
-    """Discover and run all retina examples."""
+    """Discover and run all datatypes examples."""
     examples_dir = pathlib.Path(__file__).parent
-    examples = sorted([f for f in examples_dir.glob("*.py") if not f.name.startswith("_") and f.name != "run_retina_examples.py"])
+    this_file = pathlib.Path(__file__).resolve()
+    examples = sorted(f for f in examples_dir.glob("*.py") if not f.name.startswith("_") and f.resolve() != this_file)
 
     if not examples:
         logger.error("No examples found")
         return 1
 
-    logger.info(f"Running {len(examples)} retina example(s)...")
+    logger.info(f"Running {len(examples)} datatypes example(s)...")
     logger.info("=" * 60)
 
     successful = 0
@@ -37,10 +38,17 @@ def run_examples():
             spec.loader.exec_module(module)
 
             # Find and call the example function
-            for attr_name in dir(module):
-                if attr_name.endswith("_example") and callable(getattr(module, attr_name)):
-                    getattr(module, attr_name)()
-                    break
+            example_func = next(
+                (
+                    getattr(module, attr_name)
+                    for attr_name in dir(module)
+                    if attr_name.endswith("_example") and callable(getattr(module, attr_name))
+                ),
+                None,
+            )
+            if example_func is None:
+                raise RuntimeError(f"No *_example function found in {example_name}")
+            example_func()
 
             logger.success(f"✓ {example_name} completed")
             successful += 1

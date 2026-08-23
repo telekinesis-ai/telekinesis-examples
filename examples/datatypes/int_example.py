@@ -50,11 +50,7 @@ def int_example():
 
     # ======================= Compare ===========================================
     logger.info(f"{value} > {other} = {value > other}")
-
-    # ======================= Format ============================================
-    logger.info(f"id={datatypes.Int(42):05d}")
-    logger.info(f"hex={datatypes.Int(255):x}")
-
+    
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
     serialized = datatypes.serialize(value)

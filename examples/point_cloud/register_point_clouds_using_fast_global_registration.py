@@ -54,7 +54,6 @@ def register_point_clouds_using_fast_global_registration_example():
     aligned_source_point_cloud = vitreous.apply_transform_to_point_cloud(
         point_cloud=source_point_cloud,
         transformation_matrix=transformation_matrix,
-        modify_inplace=False,
     )
 
     rr.init("register_point_clouds_using_fast_global_registration_example", spawn=True)

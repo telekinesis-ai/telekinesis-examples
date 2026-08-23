@@ -63,24 +63,20 @@ def oriented_boxes3d_example():
         [0.5, 1.0, 1.5, 3.5, 3.0, 2.5, 0.0, 20.0, 0.0],
         [1.0, 1.5, 2.0, 2.5, 2.5, 2.5, 0.0, 0.0, 45.0],
     ]
-    boxes_from_xyzxyz = datatypes.OrientedBoxes3D.from_format(
-        xyzxyz_coords, source_format=datatypes.BoxFormat.XYZXYZ
-    )
+    boxes_from_xyzxyz = datatypes.OrientedBoxes3D.from_xyzxyz(xyzxyz_coords)
     logger.info(f"OrientedBoxes3D created from xyzxyz format: {boxes_from_xyzxyz}")
 
-    xyzxyz_view = boxes3d.to_format(datatypes.BoxFormat.XYZXYZ)
+    xyzxyz_view = boxes3d.as_xyzxyz()
     logger.info(f"OrientedBoxes3D converted to xyzxyz format: {xyzxyz_view}")
 
     xyzwhd_coords = [
         [0.5, 1.0, 1.5, 3.0, 2.0, 1.0, 0.0, 20.0, 0.0],
         [1.0, 1.5, 2.0, 1.5, 1.0, 0.5, 0.0, 0.0, 45.0],
     ]
-    boxes_from_xyzwhd = datatypes.OrientedBoxes3D.from_format(
-        xyzwhd_coords, source_format=datatypes.BoxFormat.XYZWHD
-    )
+    boxes_from_xyzwhd = datatypes.OrientedBoxes3D.from_xyzwhd(xyzwhd_coords)
     logger.info(f"OrientedBoxes3D created from xyzwhd format: {boxes_from_xyzwhd}")
 
-    xyzwhd_view = boxes3d.to_format(datatypes.BoxFormat.XYZWHD)
+    xyzwhd_view = boxes3d.as_xyzwhd()
     logger.info(f"OrientedBoxes3D converted to xyzwhd format: {xyzwhd_view}")
 
     # ======================= NumPy Interop =====================================

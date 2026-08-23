@@ -41,8 +41,6 @@ def bool_example():
     logger.info(f"OR with native bool: False | {value} = {False | value}")
     logger.info(f"XOR with native bool: True ^ {value} = {True ^ value}")
 
-    # ======================= Format ============================================
-    logger.info(f"f-string format: flag={datatypes.Bool(True):>10}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
