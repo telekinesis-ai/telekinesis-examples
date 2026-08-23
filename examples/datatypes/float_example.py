@@ -42,10 +42,6 @@ def float_example():
     logger.info(f"-{value} = {-value}")
     logger.info(f"abs({value}) = {abs(value)}")
 
-    # ======================= Format ============================================
-    logger.info(f"f-string format: pose={datatypes.Float(3.14159):.3f}")
-    logger.info(f"f-string format: percent={datatypes.Float(0.5):.1%}")
-
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()
     serialized = datatypes.serialize(value)

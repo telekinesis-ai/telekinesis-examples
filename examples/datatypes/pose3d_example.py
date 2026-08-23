@@ -38,7 +38,7 @@ def pose3d_example():
     datatypes.visualize(pose3d, entity_path="/Pose3D/updated", label="updated_pose3d")
 
     # ======================= Transform Matrix ==================================
-    matrix = pose3d.to_transformation_matrix()
+    matrix = pose3d.as_transformation_matrix()
     logger.info(f"Pose3D as transformation matrix:\n{matrix}")
     transform3d = datatypes.Transform3D(matrix)
     datatypes.visualize(transform3d, entity_path="/Transform3D", label="pose3d_transform")
@@ -48,41 +48,31 @@ def pose3d_example():
     logger.info(f"Converted back to Pose3D is equal to original: {pose3d_from_transform == pose3d}")
 
     # ======================= Pose Formats ======================================
-    pose3d_deg = datatypes.Pose3D.from_format(
-        [30, 45, 60, 0.4619398, 0.1913417, 0.4619398, 0.7325378], rot_type="QUATERNION"
+    pose3d_from_quat = datatypes.Pose3D.from_quat(
+        [0.5, 0.2, 0.8, 0.0, 0.0, 0.3826834, 0.9238795],
     )
-    logger.info(f"Pose3D from pose with rotation in degrees: {pose3d_deg}")
+    logger.info(f"Pose3D from quaternion: {pose3d_from_quat}")
 
-    pose3d_rad = datatypes.Pose3D.from_format(
-        [
-            np.radians(30),
-            np.radians(45),
-            np.radians(60),
-            0.4619398,
-            0.1913417,
-            0.4619398,
-            0.7325378,
-        ],
-        rot_type="RADIANS",
+    pose3d_from_rad = datatypes.Pose3D.from_euler(
+        [0.5, 0.2, 0.8, np.radians(30), np.radians(45), np.radians(60)],
+        degrees=False,
     )
-    logger.info(f"Pose3D from pose with rotation in radians: {pose3d_rad}")
+    logger.info(f"Pose3D from radians: {pose3d_from_rad}")
 
-    pose3d_rotvec = datatypes.Pose3D.from_pose_format(
-        [0.5235988, 0.7853982, 1.0471976, 0.4619398, 0.1913417, 0.4619398, 0.7325378],
-        rot_type="ROTATION_VECTOR",
+    pose3d_from_rotvec = datatypes.Pose3D.from_rotvec(
+        [0.5, 0.2, 0.8, 0.0, 0.0, np.pi / 2],
     )
-    logger.info(f"Pose3D from pose with rotation as rotation vector: {pose3d_rotvec}")
+    logger.info(f"Pose3D from rotation vector: {pose3d_from_rotvec}")
 
-    # ======================= Convert ===========================================
-    logger.info(f"Pose3D as rotation in degrees: {pose3d.convert_pose_format(rot_type='deg')}")
-    logger.info(f"Pose3D as rotation in radians: {pose3d.convert_pose_format(rot_type='rad')}")
-    logger.info(
-        f"Pose3D as rotation vector: {pose3d.convert_pose_format(rot_type='rotvec')}"
-    )
+    # ======================= Convert To ===========================================
+    logger.info(f"Pose3D to rotation in degrees: {pose3d.as_euler(degrees=True)}")
+    logger.info(f"Pose3D to rotation in radians: {pose3d.as_euler(degrees=False)}")
+    logger.info(f"Pose3D to rotation vector: {pose3d.as_rotvec()}")
+    logger.info(f"Pose3D to transformation matrix: {pose3d.as_transformation_matrix()}")
 
     # ======================= NumPy Interop =====================================
-    reshaped = np.reshape(pose3d, (7,))
-    logger.info(f"Underlying Pose3D with np.reshape: {reshaped}")
+    reshaped = np.reshape(pose3d, (6,))
+    logger.info(f"Pose3D with np.reshape: {reshaped}")
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

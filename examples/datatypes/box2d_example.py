@@ -40,21 +40,17 @@ def box2d_example():
 
     # ======================= Alternate Construction =============================
     xyxy_coords = [1.0, 1.5, 4.0, 4.5]
-    box2d_from_xyxy = datatypes.Box2D.from_format(
-        xyxy_coords, source_format=datatypes.BoxFormat.XYXY
-    )
+    box2d_from_xyxy = datatypes.Box2D.from_xyxy(xyxy_coords)
     logger.info(f"Box2D created from xyxy format: {box2d_from_xyxy}")
 
-    xyxy_view = box2d.to_format(datatypes.BoxFormat.XYXY)
+    xyxy_view = box2d.as_xyxy()
     logger.info(f"Box2D converted to xyxy format: {xyxy_view}")
 
     xywh_coords = [1.0, 1.5, 3.0, 3.0]
-    box2d_from_xywh = datatypes.Box2D.from_format(
-        xywh_coords, source_format=datatypes.BoxFormat.XYWH
-    )
+    box2d_from_xywh = datatypes.Box2D.from_xywh(xywh_coords)
     logger.info(f"Box2D created from xywh format: {box2d_from_xywh}")
 
-    xywh_view = box2d.to_format(datatypes.BoxFormat.XYWH)
+    xywh_view = box2d.as_xywh()
     logger.info(f"Box2D converted to xywh format: {xywh_view}")
 
     # ======================= Other Methods =====================================

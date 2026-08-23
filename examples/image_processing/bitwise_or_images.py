@@ -20,7 +20,7 @@ def bitwise_or_images_example():
         resize_width=image_a.width,
         resize_height=image_a.height,
         pad_color=(0, 0, 0),
-    ).drop_alpha()
+    ).to_rgb()
     logger.info(f"Resized {image_b} to match dimensions of {image_a}")
 
     # ===================== Run Skill ==========================================

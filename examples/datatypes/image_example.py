@@ -4,7 +4,6 @@ import time
 from pathlib import Path
 
 import numpy as np
-import requests
 from loguru import logger
 import rerun as rr
 
@@ -53,9 +52,7 @@ def image_example():
 
     # ======================= Load From URL =====================================
     url = "https://assets.telekinesis.ai/examples/v1/images/screws_standing.jpg"
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-    image_from_url = datatypes.Image.from_encoded_buffer(response.content)
+    image_from_url = datatypes.Image.from_url(url)
 
     logger.info(f"shape={image_from_url.shape}, dtype={image_from_url.dtype}")
     datatypes.visualize(image_from_url, entity_path="/ImageFromURL")

@@ -46,21 +46,17 @@ def oriented_box2d_example():
     # Only the center/dimensions portion is reinterpreted; the trailing
     # rotation entry passes through unchanged.
     xyxy_coords = [1.0, 1.5, 3.5, 3.0, 45.0]
-    box_from_xyxy = datatypes.OrientedBox2D.from_format(
-        xyxy_coords, source_format=datatypes.BoxFormat.XYXY
-    )
+    box_from_xyxy = datatypes.OrientedBox2D.from_xyxy(xyxy_coords)
     logger.info(f"OrientedBox2D created from xyxy format: {box_from_xyxy}")
 
-    xyxy_view = box.to_format(datatypes.BoxFormat.XYXY)
+    xyxy_view = box.as_xyxy()
     logger.info(f"OrientedBox2D converted to xyxy format: {xyxy_view}")
 
     xywh_coords = [1.0, 1.5, 2.5, 1.5, 45.0]
-    box_from_xywh = datatypes.OrientedBox2D.from_format(
-        xywh_coords, source_format=datatypes.BoxFormat.XYWH
-    )
+    box_from_xywh = datatypes.OrientedBox2D.from_xywh(xywh_coords)
     logger.info(f"OrientedBox2D created from xywh format: {box_from_xywh}")
 
-    xywh_view = box.to_format(datatypes.BoxFormat.XYWH)
+    xywh_view = box.as_xywh()
     logger.info(f"OrientedBox2D converted to xywh format: {xywh_view}")
 
     # ======================= NumPy Interop =====================================

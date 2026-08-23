@@ -50,21 +50,17 @@ def boxes2d_example():
 
     # ======================= Alternate Construction =============================
     xyxy_coords = [[1, 1.5, 4, 4.5], [3, 4.5, 5, 5.5]]
-    boxes2d_from_xyxy = datatypes.Boxes2D.from_format(
-        xyxy_coords, source_format=datatypes.BoxFormat.XYXY
-    )
+    boxes2d_from_xyxy = datatypes.Boxes2D.from_xyxy(xyxy_coords)
     logger.info(f"Boxes2D created from xyxy format: {boxes2d_from_xyxy}")
 
-    xyxy_view = boxes2d.to_format(datatypes.BoxFormat.XYXY)
+    xyxy_view = boxes2d.as_xyxy()
     logger.info(f"Boxes2D converted to xyxy format: {xyxy_view}")
 
     xywh_coords = [[1.0, 1.5, 3.0, 3.0], [3.0, 4.5, 2.0, 1.0]]
-    boxes2d_from_xywh = datatypes.Boxes2D.from_format(
-        xywh_coords, source_format=datatypes.BoxFormat.XYWH
-    )
+    boxes2d_from_xywh = datatypes.Boxes2D.from_xywh(xywh_coords)
     logger.info(f"Boxes2D created from xywh format: {boxes2d_from_xywh}")
 
-    xywh_view = boxes2d.to_format(datatypes.BoxFormat.XYWH)
+    xywh_view = boxes2d.as_xywh()
     logger.info(f"Boxes2D converted to xywh format: {xywh_view}")
 
     # ======================= NumPy Interop =====================================

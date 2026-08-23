@@ -21,12 +21,9 @@ def transform3d_example():
         ]
     )
     transform3d = datatypes.Transform3D(matrix)
-
     logger.info(f"Created Transform3D: {transform3d}")
 
     # ======================= Inspect ===========================================
-    numpy_array = transform3d.to_numpy()
-
     logger.info(
         f"shape={transform3d.shape}, "
         f"size={transform3d.size}, "
@@ -34,7 +31,7 @@ def transform3d_example():
         f"dtype={transform3d.dtype}"
     )
     logger.info(f"Transform3D data:\n{transform3d.data}")
-    logger.info(f"NumPy array:\n{numpy_array}")
+    logger.info(f"NumPy array:\n{ transform3d.to_numpy()}")
     logger.info(f"Copied Transform3D: {transform3d.copy()}")
 
     # ======================= Visualize =========================================
@@ -58,18 +55,18 @@ def transform3d_example():
     )
 
     # ======================= Inverse ===========================================
-    inverse_matrix = transform3d.inverse()
-    inverse = datatypes.Transform3D(inverse_matrix)
+    inverse = transform3d.inverse()
 
-    logger.info(f"Inverse Transform3D: {inverse_matrix}")
+    logger.info(f"Inverse Transform3D: {inverse}")
     datatypes.visualize(inverse, entity_path="/Transform3D/inverse", label="inverse_transform3d")
 
     # ======================= Pose Conversion ===================================
-    pose_quat = transform3d.to_pose(rot_type="quat")
+    pose3d = transform3d.to_pose3d()
+    pose_quat = pose3d.as_quat()
 
-    logger.info(f"Pose (deg): {transform3d.to_pose(rot_type='deg')}")
-    logger.info(f"Pose (rotvec): {transform3d.to_pose(rot_type='rotvec')}")
-    logger.info(f"Pose (rad): {transform3d.to_pose(rot_type='rad')}")
+    logger.info(f"Pose (deg): {pose3d.as_euler(degrees=True)}")
+    logger.info(f"Pose (rotvec): {pose3d.as_rotvec()}")
+    logger.info(f"Pose (rad): {pose3d.as_euler(degrees=False)}")
     logger.info(f"Pose (quat): {pose_quat}")
 
     new_transform3d = datatypes.Transform3D.from_pose(pose_quat)
@@ -80,8 +77,7 @@ def transform3d_example():
     )
 
     # ======================= NumPy Interop =====================================
-    sum_result = np.array([1, 1, 1, 0]) + numpy_array
-
+    sum_result = np.array([1, 1, 1, 0]) + transform3d
     logger.info(f"Sum of Transform3D with numpy array: {sum_result}")
 
     # ======================= Serialize / Deserialize ===========================

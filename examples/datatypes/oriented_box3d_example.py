@@ -48,21 +48,17 @@ def oriented_box3d_example():
     # Only the center/dimensions portion is reinterpreted; the trailing
     # rotation entries pass through unchanged.
     xyzxyz_coords = [0.5, 1.0, 1.5, 3.5, 3.0, 2.5, 0.0, 0.0, 0.0]
-    box_from_xyzxyz = datatypes.OrientedBox3D.from_format(
-        xyzxyz_coords, source_format=datatypes.BoxFormat.XYZXYZ
-    )
+    box_from_xyzxyz = datatypes.OrientedBox3D.from_xyzxyz(xyzxyz_coords)
     logger.info(f"OrientedBox3D created from xyzxyz format: {box_from_xyzxyz}")
 
-    xyzxyz_view = box.to_format(datatypes.BoxFormat.XYZXYZ)
+    xyzxyz_view = box.as_xyzxyz()
     logger.info(f"OrientedBox3D converted to xyzxyz format: {xyzxyz_view}")
 
     xyzwhd_coords = [0.5, 1.0, 1.5, 3.0, 2.0, 1.0, 0.0, 0.0, 0.0]
-    box_from_xyzwhd = datatypes.OrientedBox3D.from_format(
-        xyzwhd_coords, source_format=datatypes.BoxFormat.XYZWHD
-    )
+    box_from_xyzwhd = datatypes.OrientedBox3D.from_xyzwhd(xyzwhd_coords)
     logger.info(f"OrientedBox3D created from xyzwhd format: {box_from_xyzwhd}")
 
-    xyzwhd_view = box.to_format(datatypes.BoxFormat.XYZWHD)
+    xyzwhd_view = box.as_xyzwhd()
     logger.info(f"OrientedBox3D converted to xyzwhd format: {xyzwhd_view}")
 
     # ======================= NumPy Interop =====================================

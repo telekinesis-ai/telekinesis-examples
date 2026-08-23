@@ -50,21 +50,17 @@ def boxes3d_example():
 
     # ======================= Alternate Construction =============================
     xyzxyz_coords = [[0, 0, 0, 1, 1, 1], [2, 2, 2, 3, 3, 3]]
-    boxes3d_from_xyzxyz = datatypes.Boxes3D.from_format(
-        xyzxyz_coords, source_format=datatypes.BoxFormat.XYZXYZ
-    )
+    boxes3d_from_xyzxyz = datatypes.Boxes3D.from_xyzxyz(xyzxyz_coords)
     logger.info(f"Boxes3D created from xyzxyz format: {boxes3d_from_xyzxyz}")
 
-    xyzxyz_view = boxes3d.to_format(datatypes.BoxFormat.XYZXYZ)
+    xyzxyz_view = boxes3d.as_xyzxyz()
     logger.info(f"Boxes3D converted to xyzxyz format: {xyzxyz_view}")
 
     xyzwhd_coords = [[0, 0, 0, 1, 1, 1], [2, 2, 2, 1, 1, 1]]
-    boxes3d_from_xyzwhd = datatypes.Boxes3D.from_format(
-        xyzwhd_coords, source_format=datatypes.BoxFormat.XYZWHD
-    )
+    boxes3d_from_xyzwhd = datatypes.Boxes3D.from_xyzwhd(xyzwhd_coords)
     logger.info(f"Boxes3D created from xyzwhd format: {boxes3d_from_xyzwhd}")
 
-    xyzwhd_view = boxes3d.to_format(datatypes.BoxFormat.XYZWHD)
+    xyzwhd_view = boxes3d.as_xyzwhd()
     logger.info(f"Boxes3D converted to xyzwhd format: {xyzwhd_view}")
 
     # ======================= NumPy Interop =====================================
