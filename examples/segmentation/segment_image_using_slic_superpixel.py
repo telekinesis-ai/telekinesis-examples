@@ -4,6 +4,7 @@ Demonstrates SLIC superpixel segmentation.
 
 from loguru import logger
 import rerun as rr
+import rerun.blueprint as rrb
 
 from telekinesis import cornea, datatypes
 
@@ -29,6 +30,11 @@ def segment_image_using_slic_superpixel_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_image_using_slic_superpixel_example", spawn=True)
+    blueprint = rrb.Horizontal(
+        rrb.Spatial2DView(origin="/input_image", name="Input"),
+        rrb.Spatial2DView(origin="/segmented_image", name="Output"),
+    )
+    rr.send_blueprint(blueprint)
     datatypes.visualize(image, entity_path="/input_image")
     datatypes.visualize(segmented_image, entity_path="/segmented_image")
 

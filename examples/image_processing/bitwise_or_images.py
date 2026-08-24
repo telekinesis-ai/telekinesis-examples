@@ -11,8 +11,8 @@ def bitwise_or_images_example():
     # ===================== Load Images ==========================================
     image_url_a = "https://assets.telekinesis.ai/examples/v1/images/can_vertical_6_mask.png"
     image_url_b = "https://assets.telekinesis.ai/examples/v1/images/rectangles_mask.png"
-    image_a = datatypes.Image.from_url(image_url_a)
-    image_b = datatypes.Image.from_url(image_url_b)
+    image_a = datatypes.Image.from_url(image_url_a).to_rgb()
+    image_b = datatypes.Image.from_url(image_url_b).to_rgb()
 
     # ===================== Resize Image B ==========================================
     image_b = pupil.resize_image_with_aspect_fit(
@@ -20,7 +20,7 @@ def bitwise_or_images_example():
         resize_width=image_a.width,
         resize_height=image_a.height,
         pad_color=(0, 0, 0),
-    ).to_rgb()
+    )
     logger.info(f"Resized {image_b} to match dimensions of {image_a}")
 
     # ===================== Run Skill ==========================================

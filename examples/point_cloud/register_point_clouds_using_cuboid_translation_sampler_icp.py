@@ -27,19 +27,19 @@ def register_point_clouds_using_cuboid_translation_sampler_icp_example():
     )
 
     # ===================== Run Skill ==========================================
-    transformation_matrix = (
+    coarse_transform = (
         vitreous.register_point_clouds_using_cuboid_translation_sampler_icp(
-            step_size=2,
+            step_size=5,
             x_min=-20,
             x_max=20,
             y_min=-20,
             y_max=20,
             z_min=-20,
             z_max=20,
-            early_stop_fitness_score=0.3,
-            min_fitness_score=0.48,
-            max_iterations=50,
-            max_correspondence_distance=2,
+            early_stop_fitness_score=0.7,
+            min_fitness_score=0.3,
+            max_iterations=15,
+            max_correspondence_distance=4,
             estimate_scaling=False,
             source_point_cloud=source_point_cloud,
             target_point_cloud=target_point_cloud,
@@ -47,20 +47,40 @@ def register_point_clouds_using_cuboid_translation_sampler_icp_example():
         )
     )
 
+    # ===================== Stage 2: Fine Search =================================
+    fine_transform = (
+        vitreous.register_point_clouds_using_cuboid_translation_sampler_icp(
+            step_size=1,
+            x_min=-3,
+            x_max=3,
+            y_min=-3,
+            y_max=3,
+            z_min=-3,
+            z_max=3,
+            early_stop_fitness_score=0.85,
+            min_fitness_score=0.48,
+            max_iterations=40,
+            max_correspondence_distance=2,
+            estimate_scaling=False,
+            source_point_cloud=source_point_cloud,
+            target_point_cloud=target_point_cloud,
+            initial_transformation_matrix=coarse_transform,
+        )
+    )
     # ===================== Log ================================================
     logger.success(
         f"Registered {source_point_cloud} to {target_point_cloud} using cuboid translation sampler ICP"
     )
-    logger.success(f"Results: {transformation_matrix}")
-    logger.info(f"Transformation matrix data: {transformation_matrix.data}")
-    logger.info(f"Transformation matrix shape: {transformation_matrix.shape}")
-    logger.info(f"Transformation matrix ndim: {transformation_matrix.ndim}")
-    logger.info(f"Transformation matrix dtype: {transformation_matrix.dtype}")
+    logger.success(f"Results: {fine_transform}")
+    logger.info(f"Transformation matrix data: {fine_transform.data}")
+    logger.info(f"Transformation matrix shape: {fine_transform.shape}")
+    logger.info(f"Transformation matrix ndim: {fine_transform.ndim}")
+    logger.info(f"Transformation matrix dtype: {fine_transform.dtype}")
 
     # ===================== Visualization  (Optional) ===========================
     aligned_source_point_cloud = vitreous.apply_transform_to_point_cloud(
         point_cloud=source_point_cloud,
-        transformation_matrix=transformation_matrix,
+        transformation_matrix=fine_transform,
     )
 
     rr.init(

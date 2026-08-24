@@ -5,6 +5,7 @@ Demonstrates filtering superpixels based on a mask.
 import numpy as np
 from loguru import logger
 import rerun as rr
+import rerun.blueprint as rrb
 
 from telekinesis import cornea, datatypes
 
@@ -38,6 +39,12 @@ def filter_segments_by_mask_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_segments_by_mask_example", spawn=True)
+    blueprint = rrb.Horizontal(
+        rrb.Spatial2DView(origin="/input_image", name="Input"),
+        rrb.Spatial2DView(origin="/filtering_mask", name="Mask"),
+        rrb.Spatial2DView(origin="/filtered_image", name="Output"),
+    )
+    rr.send_blueprint(blueprint)
     datatypes.visualize(image, entity_path="/input_image")
     datatypes.visualize(mask, entity_path="/filtering_mask")
     datatypes.visualize(filtered_image, entity_path="/filtered_image")
