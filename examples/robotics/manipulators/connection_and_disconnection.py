@@ -21,6 +21,9 @@ def main(ip: str | None, prim_path: str | None) -> None:
     #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
+    # ==================== Visualization (Optional) ================================
+    robot.visualize_rerun()
+
     try:
         # ==================== Run Skill ============================================
         if ip:
