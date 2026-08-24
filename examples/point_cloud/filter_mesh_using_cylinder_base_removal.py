@@ -8,7 +8,7 @@ import rerun as rr
 from telekinesis import vitreous, datatypes
 
 
-def filter_point_cloud_using_cylinder_base_removal_example():
+def filter_mesh_using_cylinder_base_removal_example():
     """
     Removes the base faces from a cylindrical mesh.
 
@@ -20,7 +20,7 @@ def filter_point_cloud_using_cylinder_base_removal_example():
     mesh = datatypes.Mesh3D.from_url(url=mesh_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
-    filtered_mesh = vitreous.filter_point_cloud_using_cylinder_base_removal(
+    filtered_mesh = vitreous.filter_mesh_using_cylinder_base_removal(
         mesh=mesh,
         compute_vertex_normals=True,
         distance_threshold=0.005,
@@ -39,10 +39,10 @@ def filter_point_cloud_using_cylinder_base_removal_example():
     )
 
     # ===================== Visualization  (Optional) ===========================
-    rr.init("filter_point_cloud_using_cylinder_base_removal_example", spawn=True)
+    rr.init("filter_mesh_using_cylinder_base_removal_example", spawn=True)
     datatypes.visualize(mesh, entity_path="/1-original_mesh")
     datatypes.visualize(filtered_mesh, entity_path="/2-filtered_mesh")
 
 
 if __name__ == "__main__":
-    filter_point_cloud_using_cylinder_base_removal_example()
+    filter_mesh_using_cylinder_base_removal_example()

@@ -21,11 +21,11 @@ def segment_point_cloud_using_vector_proximity_example():
 
     # ===================== Run Skill ==========================================
     result_point_cloud = vitreous.segment_point_cloud_using_vector_proximity(
-        distance_threshold=0.1,
-        keep_outliers=False,
         point_cloud=point_cloud,
         reference_point=[0.0, 0.0, 0.0],
         reference_vector=[0.0, 0.0, 1.0],
+        distance_threshold=0.1,
+        keep_outliers=False,
     )
 
     # ===================== Log ================================================

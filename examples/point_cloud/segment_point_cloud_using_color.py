@@ -23,9 +23,9 @@ def segment_point_cloud_using_color_example():
 
     # ===================== Run Skill ==========================================
     segmented_point_cloud = vitreous.segment_point_cloud_using_color(
+        point_cloud=point_cloud,
         target_color=[50, 75, 200],
         color_distance_threshold=60.0,
-        point_cloud=point_cloud,
     )
 
     # ===================== Log ================================================
