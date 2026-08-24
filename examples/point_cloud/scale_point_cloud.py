@@ -25,7 +25,6 @@ def scale_point_cloud_example():
         point_cloud=point_cloud,
         center_point=[0.0, 0.0, 0.0],
         scale_factor=0.3,
-        modify_inplace=False,
     )
 
     # ===================== Log ================================================

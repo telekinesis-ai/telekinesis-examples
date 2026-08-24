@@ -21,11 +21,11 @@ def segment_point_cloud_using_plane_example():
 
     # ===================== Run Skill ==========================================
     segmented_point_cloud, plane_model = vitreous.segment_point_cloud_using_plane(
+        point_cloud=point_cloud,
         distance_threshold=1.0,
         num_initial_points=3,
         max_iterations=1000,
         keep_outliers=False,
-        point_cloud=point_cloud,
     )
 
     # ===================== Log ================================================
