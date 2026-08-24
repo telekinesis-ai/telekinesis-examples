@@ -1,5 +1,5 @@
 """
-Telekinesis quickstart: drive a Neura Robotics robot in joint space along a sweeping trajectory.
+Telekinesis quickstart: drive a Franka Robotics robot in joint space along a sweeping trajectory.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
 Sweeps the base 360° around home while a secondary joint oscillates ±30°. The TCP
@@ -7,7 +7,7 @@ traces the resulting wavy path, drawn live as a connected line with a hue gradie
 (older segments blue, newest red).
 
 Run:
-    python examples/synapse/quickstart_set_joint_positions_neura_robotics.py
+    python examples/robotics/quickstart_set_joint_positions_franka_robotics.py
 """
 
 import colorsys
@@ -17,7 +17,7 @@ import numpy as np
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.robots.manipulators import neura_robotics
+from telekinesis.synapse.robots.manipulators import franka_robotics
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
@@ -34,7 +34,7 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 
 
 def main():
-    """Sweep the MAiRA 7M's base while a secondary joint oscillates, visualized in rerun."""
+    """Sweep the Panda's base while a secondary joint oscillates, visualized in rerun."""
 
     # Frequency to update the visualization (Hz)
     hz = 30
@@ -52,7 +52,7 @@ def main():
     n_steps = int(base_joint_span / (base_joint_speed * dt))
 
     # Create robot
-    robot = neura_robotics.NeuraRoboticsMAiRA7M()
+    robot = franka_robotics.FrankaRoboticsPanda()
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)

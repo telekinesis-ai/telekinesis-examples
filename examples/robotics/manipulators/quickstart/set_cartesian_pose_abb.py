@@ -1,13 +1,13 @@
 """
-Telekinesis quickstart: drive a Yaskawa Motoman robot along a YZ-plane circle via Cartesian pose targets.
+Telekinesis quickstart: drive an ABB robot along a YZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Traces a closed circle of radius 0.10m in the YZ plane around the home TCP pose. The TCP
+Traces a closed circle of radius 0.50m in the YZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
 Run:
-    python examples/synapse/quickstart_set_cartesian_pose_motoman.py
+    python examples/robotics/quickstart_set_cartesian_pose_abb.py
 """
 
 import colorsys
@@ -16,8 +16,9 @@ import time
 import numpy as np
 import rerun as rr
 from loguru import logger
+from babyros import node
 
-from telekinesis.synapse.robots.manipulators import motoman
+from telekinesis.synapse.robots.manipulators import abb
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
@@ -34,23 +35,21 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 
 
 def main():
-    """Trace a YZ-plane circle around the Motoman's home TCP pose, visualized in rerun."""
-
-    # Frequency to update the visualization (Hz)
-    hz = 30
-    dt = 1.0 / hz
+    """Trace a YZ-plane circle around the ABB's home TCP pose, visualized in rerun."""
 
     # Radius of the circle to trace (meters)
-    radius = 0.10
+    radius = 0.5
     n_steps = 200
 
     # Create robot
-    robot = motoman.MotomanMH5()
+    robot = abb.AbbIRB7600150350()
+
+    # sub node
+    sub = node.Su
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
-    robot.visualize_rerun(axis_length=0.1, recording_stream=rr.get_global_data_recording())
-    time.sleep(2.0)
+    robot.visualize_rerun(recording_stream=rr.get_global_data_recording())
 
     # Get home pose (default configuration)
     home_pose = robot.get_cartesian_pose()
@@ -74,7 +73,6 @@ def main():
             continue  # outside reach / joint limits
 
         # Visualize robot and path
-        robot.visualize_rerun()
         actual = robot.get_cartesian_pose()
         path.append([float(actual[0]), float(actual[1]), float(actual[2])])
         visualize_path(path)

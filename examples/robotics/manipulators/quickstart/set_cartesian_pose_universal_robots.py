@@ -1,13 +1,13 @@
 """
-Telekinesis quickstart: drive a Franka Robotics robot along a YZ-plane circle via Cartesian pose targets.
+Telekinesis quickstart: drive a Universal Robots robot along a YZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Traces a closed circle of radius 0.10m in the YZ plane around the home TCP pose. The TCP
+Traces a closed circle with radius 0.20m in the YZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
 Run:
-    python examples/synapse/quickstart_set_cartesian_pose_franka_robotics.py
+    python examples/robotics/quickstart_set_cartesian_pose_universal_robots.py
 """
 
 import colorsys
@@ -17,12 +17,10 @@ import numpy as np
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.robots.manipulators import franka_robotics
-
+from telekinesis.synapse.robots.manipulators import universal_robots
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
-
     if len(path) < 2:
         return
     segments = [[path[i], path[i + 1]] for i in range(len(path) - 1)]
@@ -35,31 +33,30 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 
 
 def main():
-    """Trace a YZ-plane circle around the Panda's home TCP pose, visualized in rerun."""
+    """Trace a YZ-plane circle around the UR16E's home TCP pose, visualized in rerun."""
 
-    # Frequency to update the visualization (Hz)
-    hz = 20
+    # Visualization tick rate
+    hz = 30
     dt = 1.0 / hz
 
-    # Radius of the circle to trace (meters)
-    radius = 0.10
+    # Circle motion parameters (radius in meters, number of segments)
+    radius = 0.20
     n_steps = 200
 
     # Create robot
-    robot = franka_robotics.FrankaRoboticsPanda()
+    robot = universal_robots.UniversalRobotsUR16E()
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
     robot.visualize_rerun(axis_length=0.1, recording_stream=rr.get_global_data_recording())
     time.sleep(2.0)
 
-    # Get home pose (default configuration)
+    # Extract home pose
     home_pose = robot.get_cartesian_pose()
     logger.info(f"Tracing circle of radius {radius:.3f} m in YZ plane ({n_steps} steps)")
 
     # Robot motion: draw circle in YZ plane, visualize robot and TCP path
     path: list[list[float]] = []
-
     for step in range(n_steps + 1):
         theta = 2.0 * np.pi * step / n_steps
 
@@ -80,7 +77,7 @@ def main():
         path.append([float(actual[0]), float(actual[1]), float(actual[2])])
         visualize_path(path)
 
-        # Sleep to maintain a consistent visualization rate.
+        # Sleep to maintain a consistent visualization tick rate
         time.sleep(dt)
 
 

@@ -1,13 +1,13 @@
 """
-Telekinesis quickstart: drive a Fanuc robot along a YZ-plane circle via Cartesian pose targets.
+Telekinesis quickstart: drive a Neura Robotics robot along a YZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Traces a closed circle of radius 0.20m in the YZ plane around the home TCP pose. The TCP
+Traces a closed circle of radius 0.30m in the YZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
 Run:
-    python examples/synapse/quickstart_set_cartesian_pose_fanuc.py
+    python examples/robotics/quickstart_set_cartesian_pose_neura_robotics.py
 """
 
 import colorsys
@@ -17,8 +17,7 @@ import numpy as np
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.robots.manipulators import fanuc
-
+from telekinesis.synapse.robots.manipulators import neura_robotics
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
@@ -35,18 +34,18 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 
 
 def main():
-    """Trace a YZ-plane circle around the Fanuc's home TCP pose, visualized in rerun."""
+    """Trace a YZ-plane circle around the LARA8's home TCP pose, visualized in rerun."""
 
     # Frequency to update the visualization (Hz)
     hz = 30
     dt = 1.0 / hz
 
     # Radius of the circle to trace (meters)
-    radius = 0.2
+    radius = 0.30
     n_steps = 200
 
     # Create robot
-    robot = fanuc.FanucM10IA()
+    robot = neura_robotics.NeuraRoboticsMAiRA7M()
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
