@@ -1,5 +1,5 @@
 """
-Telekinesis quickstart: drive a Yaskawa Motoman robot in joint space along a sweeping trajectory.
+Telekinesis quickstart: drive an Epson robot in joint space along a sweeping trajectory.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
 Sweeps the base 360° around home while a secondary joint oscillates ±30°. The TCP
@@ -7,7 +7,7 @@ traces the resulting wavy path, drawn live as a connected line with a hue gradie
 (older segments blue, newest red).
 
 Run:
-    python examples/synapse/quickstart_set_joint_positions_motoman.py
+    python examples/robotics/quickstart_set_joint_positions_epson.py
 """
 
 import colorsys
@@ -17,8 +17,7 @@ import numpy as np
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.robots.manipulators import motoman
-
+from telekinesis.synapse.robots.manipulators import epson
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
     """Draw the TCP path as connected segments with a blue→red hue gradient."""
@@ -35,7 +34,7 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 
 
 def main():
-    """Sweep the Motoman's base while a secondary joint oscillates, visualized in rerun."""
+    """Sweep the Epson's base while a secondary joint oscillates, visualized in rerun."""
 
     # Frequency to update the visualization (Hz)
     hz = 30
@@ -53,7 +52,7 @@ def main():
     n_steps = int(base_joint_span / (base_joint_speed * dt))
 
     # Create robot
-    robot = motoman.MotomanMH5()
+    robot = epson.EpsonCX4A601S()
 
     # Initialize rerun and log static meshes
     rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)

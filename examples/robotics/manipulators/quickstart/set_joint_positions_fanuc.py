@@ -7,7 +7,7 @@ traces the resulting wavy path, drawn live as a connected line with a hue gradie
 (older segments blue, newest red).
 
 Run:
-    python examples/synapse/quickstart_set_joint_positions_fanuc.py
+    python examples/robotics/quickstart_set_joint_positions_fanuc.py
 """
 
 import colorsys
