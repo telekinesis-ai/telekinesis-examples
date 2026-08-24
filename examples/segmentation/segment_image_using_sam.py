@@ -4,6 +4,7 @@ Demonstrates segmentation using SAM (Segment Anything Model).
 
 from loguru import logger
 import rerun as rr
+import rerun.blueprint as rrb
 
 from telekinesis import cornea, datatypes
 
@@ -26,7 +27,13 @@ def segment_image_using_sam_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("segment_image_using_sam_example", spawn=True)
-    datatypes.visualize(image, segmentation_results, entity_path="/Image/overlayed_segmentations")
+    blueprint = rrb.Horizontal(
+        rrb.Spatial2DView(origin="/input_image", name="Input"),
+        rrb.Spatial2DView(origin="/segmented_image", name="Output"),
+    )
+    rr.send_blueprint(blueprint)
+    datatypes.visualize(image, entity_path="/input_image")
+    datatypes.visualize(image, segmentation_results, entity_path="/segmented_image")
 
 
 if __name__ == "__main__":

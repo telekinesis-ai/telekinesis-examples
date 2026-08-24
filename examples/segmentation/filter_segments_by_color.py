@@ -4,6 +4,7 @@ Demonstrates filtering superpixels based on color.
 
 from loguru import logger
 import rerun as rr
+import rerun.blueprint as rrb
 
 from telekinesis import cornea, datatypes
 
@@ -32,6 +33,11 @@ def filter_segments_by_color_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_segments_by_color_example", spawn=True)
+    blueprint = rrb.Horizontal(
+        rrb.Spatial2DView(origin="/input_image", name="Input"),
+        rrb.Spatial2DView(origin="/filtered_image", name="Output"),
+    )
+    rr.send_blueprint(blueprint)
     datatypes.visualize(image, entity_path="/input_image")
     datatypes.visualize(filtered_image, entity_path="/filtered_image")
 
