@@ -8,11 +8,12 @@ Usage:
 """
 
 import argparse
+import time
 
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
-from telekinesis.synapse.tools.parallel_grippers import onrobot
+from telekinesis.synapse.tools.parallel_grippers import schunk
 
 
 def main(ip: str | None, prim_path: str | None) -> None:
@@ -20,7 +21,10 @@ def main(ip: str | None, prim_path: str | None) -> None:
 
     #===================== Create Robot and Gripper =============================
     robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
-    gripper = onrobot.OnRobotRG6()
+    gripper = schunk.SchunkEGU50()
+
+    # ==================== Visualization (Optional) ================================
+    robot.visualize_rerun()
 
     try:
         #===================== Connect Robot ==========================================
@@ -31,7 +35,7 @@ def main(ip: str | None, prim_path: str | None) -> None:
 
         # ==================== Run Skill ============================================
         robot.attach_tool(gripper)
-        robot.visualize_rerun(live=False)
+        time.sleep(2)
         logger.info("Gripper attached and visualized.")
 
         robot.detach_tool()
