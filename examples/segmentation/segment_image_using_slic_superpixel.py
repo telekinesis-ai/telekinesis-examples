@@ -8,6 +8,7 @@ import rerun.blueprint as rrb
 
 from telekinesis import cornea, datatypes
 
+
 def segment_image_using_slic_superpixel_example():
     """Segments an image into compact superpixels using the SLIC algorithm."""
     # ===================== Load Image ==========================================
@@ -16,8 +17,13 @@ def segment_image_using_slic_superpixel_example():
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_slic_superpixel(
-        image=image, num_segments=2, compactness=15.0, max_iterations=20,
-        sigma=0.0, enforce_connectivity=True, start_label=1
+        image=image,
+        num_segments=9,
+        compactness=15.0,
+        max_iterations=20,
+        sigma=0.0,
+        enforce_connectivity=True,
+        start_label=1,
     )
 
     # ===================== Log ================================================
