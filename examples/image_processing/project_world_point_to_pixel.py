@@ -13,7 +13,7 @@ def project_world_point_to_pixel_example():
     # Point: [x, y, z] in world coordinates
     point = np.array([0.0, 0.0, 1.0], dtype=np.float64)
 
-    # World-to-camera transformation matrix (4x4)
+    # Camera-to-world transformation matrix (4x4)
     world_T_camera = np.eye(4, dtype=np.float64)
     world_T_camera[2, 3] = 1.0
 

@@ -16,7 +16,7 @@ def project_pixel_to_world_point_example():
     # Depth: scalar value representing the distance from the camera to the point
     depth = 1.0
 
-    # World-to-camera transformation matrix (4x4)
+    # Camera-to-world transformation matrix (4x4)
     world_T_camera = np.eye(4, dtype=np.float64)
     world_T_camera[2, 3] = 1.0
     

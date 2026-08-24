@@ -30,7 +30,7 @@ def project_pixel_to_camera_point_example():
     )
 
     # ===================== Run Skill ==========================================
-    # Returns 4x4 transformation matrix representing the camera-to-point transformation
+    # Returns the back-projected 3D point in camera coordinates
     camera_point = pupil.project_pixel_to_camera_point(
         pixel=pixel,
         depth=depth,
