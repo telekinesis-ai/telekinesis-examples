@@ -1,10 +1,7 @@
 """
-Set Joint Positions example for the Synapse SDK -- offline.
+Move the robot to a target joint configuration.
 
-Moves the robot to a target joint configuration on the kinematic model; no
-hardware connection is made.
-
-Supports all robots.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python set_joint_positions.py
@@ -18,13 +15,15 @@ def main():
     """Move the robot to a target joint configuration."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
-    # Target: current joint configuration with the base joint rotated +30 deg
+    # ==================== Visualization (Optional) =============================
+    robot.visualize_rerun(live=True)
+
+    #===================== Prepare Target ==========================================
     target_joint_positions = [0, -90, -90, -90, 90, 0]
-
-    # Move to target joint positions
+    
+    # ==================== Run Skill ============================================
     robot.set_joint_positions(
         joint_positions=target_joint_positions,
         speed=60,
@@ -32,9 +31,6 @@ def main():
         asynchronous=False,
     )
     logger.info(f"Moved to target joint positions: {target_joint_positions}")
-
-    # ==================== Visualization (Optional) =============================
-    robot.visualize_rerun(live=False)
 
 
 if __name__ == "__main__":

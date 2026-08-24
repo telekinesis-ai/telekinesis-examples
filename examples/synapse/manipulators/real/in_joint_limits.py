@@ -1,11 +1,7 @@
 """
-Check joint limits example for the Synapse SDK.
+Checks whether joint configurations lie within the limits derived from the robot's URDF.
 
-``in_joint_limits`` checks whether a joint configuration lies within the
-limits derived from the robot's URDF. This is a kinematic check only — it
-does not read from or move the connected robot.
-
-Supported for all robots, in every connection mode.
+Supports Universal Robots (UR) and Epson.
 
 Usage:
     python in_joint_limits.py [--ip <ROBOT_IP>]
@@ -18,15 +14,17 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Check the robot's current joint configuration and an out-of-range one."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         current_joint_positions = robot.get_joint_positions()
         logger.success(
             f"Current joint positions within limits: "
@@ -38,6 +36,8 @@ def main(ip: str):
             f"Configuration past the upper limits within limits: "
             f"{robot.in_joint_limits(q=out_of_range, verbose=True)}"
         )
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

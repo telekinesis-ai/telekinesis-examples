@@ -1,13 +1,10 @@
 """
-Read target (commanded) joint positions example for the Synapse SDK — offline.
+Read the manipulator's target joint positions.
 
-Returns the manipulator's target/commanded joint positions [deg]. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
-    python get_target_joint_positions_offline.py
+    python get_target_joint_positions.py
 """
 
 from loguru import logger
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache target joint positions [deg]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"target_joint_positions [deg]: {robot.get_target_joint_positions()}")

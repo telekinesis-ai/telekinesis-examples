@@ -1,10 +1,7 @@
 """
-Read target joint velocities example for the Synapse SDK.
+Logs the controller-commanded target joint velocities.
 
-Returns the controller-commanded target joint velocities [deg/s]. Zero when
-the backend does not report a commanded velocity. Reads from ``self.state``.
-
-Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_target_joint_velocities.py [--ip <ROBOT_IP>]
@@ -17,16 +14,20 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the controller-commanded target joint velocities [deg/s]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"target_joint_velocities [deg/s]: {robot.get_target_joint_velocities()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

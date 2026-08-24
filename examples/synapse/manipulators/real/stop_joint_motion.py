@@ -1,11 +1,7 @@
 """
-Stop Joint Motion example for the Synapse SDK.
+Commands an asynchronous joint move and interrupts it mid-trajectory with stop_joint_motion.
 
-Commands an asynchronous joint move and interrupts it mid-trajectory
-with ``stop_joint_motion``. ``stopping_speed`` controls the deceleration
-profile (deg/s).
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR).
 
 Usage:
     python stop_joint_motion.py [--ip <ROBOT_IP>]
@@ -13,30 +9,33 @@ Usage:
 
 import argparse
 import time
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Start an async joint move and interrupt it with stop_joint_motion."""
 
     #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
-    robot.connect(ip=ip)
 
     # ==================== Visualization (Optional) =============================
     # Live: subscribes to the robot's state topic and redraws as it moves.
-    robot.visualize_rerun()
+    robot.visualize_rerun(live=True)
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        #===================== Prepare Target ==========================================
         # Get initial joint positions [deg]
         initial_joint_positions = robot.get_joint_positions()
-
-        # Asynchronous +20 deg move on joint 0
         target_joint_positions = list(initial_joint_positions)
-        target_joint_positions[0] += 20
+        target_joint_positions[0] += 20  # Asynchronous +20 deg move on joint 0
+
+        # ==================== Run Skill ============================================
         robot.set_joint_positions(
             joint_positions=target_joint_positions,
             speed=60,
@@ -48,8 +47,9 @@ def main(ip: str):
         time.sleep(0.3)
         robot.stop_joint_motion(stopping_speed=30)
         logger.info("Stopped joint motion.")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
-        # Disconnect
         robot.disconnect()
 
 
@@ -59,4 +59,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(ip=args.ip)
-

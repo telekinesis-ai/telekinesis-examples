@@ -1,14 +1,7 @@
 """
-Start and stop jog mode example for the Synapse SDK.
+Jogs the TCP +Z at 5 cm/s in the base frame for 5 seconds, then stops.
 
-``start_jog`` drives the TCP continuously at a Cartesian twist
-``[vx, vy, vz (m/s), ωx, ωy, ωz (deg/s)]`` expressed in the ``feature``
-frame, until ``stop_jog`` is called — equivalent to holding a direction
-button on the teach pendant. ``feature`` selects the frame:
-``0`` = base, ``1`` = tool, ``2`` = custom (provide ``custom_frame``).
-This is Cartesian jogging — there is no joint-jog API.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR).
 
 Usage:
     python start_and_stop_jog_mode.py [--ip <ROBOT_IP>]
@@ -16,38 +9,43 @@ Usage:
 
 import argparse
 import time
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Jog the TCP +Z (upward) at 5 cm/s in the base frame for 5 seconds, then stop."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
-
-    # ==================== Run Skill ============================================
-    # Cartesian twist [vx, vy, vz (m/s), ωx, ωy, ωz (deg/s)] in the base frame
-    cartesian_velocity = [0.0, 0.0, 0.05, 0.0, 0.0, 0.0]
-    logger.info(f"Starting jog - cartesian_velocity [m/s, deg/s]: {cartesian_velocity}")
-    robot.start_jog(
-        cartesian_velocity=cartesian_velocity,
-        feature=0,
-        cartesian_acceleration=0.5,
-    )
-
-    # Let the jog run, then stop
-    time.sleep(5.0)
-    robot.stop_jog()
-    logger.success("Jog mode stopped.")
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Visualization (Optional) =============================
-    robot.visualize_rerun(live=False)
+    robot.visualize_rerun(live=True)
 
-    # Disconnect
-    robot.disconnect()
+    try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
+        # Cartesian twist [vx, vy, vz (m/s), ωx, ωy, ωz (deg/s)] in the base frame
+        cartesian_velocity = [0.0, 0.0, 0.05, 0.0, 0.0, 0.0]
+        logger.info(f"Starting jog - cartesian_velocity [m/s, deg/s]: {cartesian_velocity}")
+        robot.start_jog(
+            cartesian_velocity=cartesian_velocity,
+            feature=0,
+            cartesian_acceleration=0.5,
+        )
+
+        # Let the jog run, then stop
+        time.sleep(5.0)
+        robot.stop_jog()
+        logger.success("Jog mode stopped.")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
+    finally:
+        robot.disconnect()
 
 
 if __name__ == "__main__":
@@ -56,4 +54,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(ip=args.ip)
-

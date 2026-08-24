@@ -1,14 +1,7 @@
 """
-Read per-link visual mesh world transforms for the Synapse SDK.
+Read per-link visual mesh world transforms for a manipulator.
 
-``get_visual_mesh_transforms`` returns ``{link_name: world_T_visual_mesh}``
-— a 4x4 homogeneous matrix per link, composed from the link frame and the
-URDF ``<visual><origin>`` offset. Links without a usable visual mesh are
-omitted.
-
-Universal Robots (UR10e) is used here purely for illustration; the same API
-works for all supported robots. Runs on the kinematic model only — no
-hardware connection and no ``--ip`` required.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_visual_mesh_transforms.py
@@ -23,10 +16,10 @@ from telekinesis.synapse import utils
 def main():
     """Read every link's visual-mesh world transform at the current joint configuration."""
 
-    # Create the robot (no connect required — runs on the kinematic model)
-    robot = universal_robots.UniversalRobotsUR10E()
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # Read world transforms for every link's visual mesh
+    # ==================== Run Skill ============================================
     transforms = robot.get_visual_mesh_transforms()
     logger.info(f"Number of links with visual meshes: {len(transforms)}")
 

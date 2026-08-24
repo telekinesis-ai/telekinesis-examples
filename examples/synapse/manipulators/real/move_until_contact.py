@@ -1,41 +1,42 @@
 """
-Move until Contact example for the Synapse SDK.
+Drives the TCP down in -Z until contact is detected, then stops and reports the result.
 
-Drives a real robot downwards in z direction until contact is detected,
-then stops and reports the result.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR).
 
 Usage:
     python move_until_contact.py [--ip <ROBOT_IP>]
 """
 
 import argparse
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Move the TCP down in -Z until contact is detected, then report and disconnect."""
 
     #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
-    robot.connect(ip=ip)
 
     # ==================== Visualization (Optional) =============================
     # Live: subscribes to the robot's state topic and redraws as it moves.
-    robot.visualize_rerun()
+    robot.visualize_rerun(live=True)
 
-    # ==================== Run Skill ============================================
     try:
-        # Move by the cartesian velocity until contact
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         contacted = robot.move_until_contact(
             cartesian_velocity=[0, 0, -0.02, 0, 0, 0],
             direction=[0, 0, 0, 0, 0, 0],
             acceleration=0.1,
         )
         logger.info(f"Contact detected: {contacted}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 
@@ -46,4 +47,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(ip=args.ip)
-

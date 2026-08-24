@@ -1,11 +1,7 @@
 """
-Trigger protective stop example for the Synapse SDK.
+Triggers a protective stop on the controller, immediately halting all motion.
 
-Currently supported only for real hardware, and only Universal Robots (UR).
-
-Immediately halts all motion and puts the robot into a protective stop
-state. The robot remains powered but frozen until the stop is
-acknowledged and cleared from the teach pendant.
+Supports Universal Robots (UR).
 
 Usage:
     python trigger_protective_stop.py [--ip <ROBOT_IP>]
@@ -18,19 +14,21 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Trigger a protective stop on the controller."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         robot.trigger_protective_stop()
         logger.success("Protective stop triggered.")
-
-    # Ensure we disconnect even if there was an error
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 
@@ -41,4 +39,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(ip=args.ip)
-

@@ -1,13 +1,7 @@
 """
-Example: Get all registered TCPs from the robot — offline.
+List all registered TCP frames and the active one.
 
-Demonstrates:
-- get_tcps()                  — retrieve all registered TCP frames
-- get_active_tcp_transform()  — read the active TCP offset (metres, Euler-XYZ degrees)
-- active_tcp                  — check which frame is currently active
-
-This example runs offline on the commanded-cache state; no hardware
-connection is made.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_tcps.py
@@ -22,7 +16,7 @@ def main():
     """List all registered TCPs and the currently active one."""
 
     #===================== Create Robot ==========================================
-    robot = UniversalRobotsUR10E()
+    robot = UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     # Get all registered TCPs

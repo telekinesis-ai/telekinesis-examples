@@ -1,31 +1,33 @@
 """
-Read robot mode example for the Synapse SDK.
+Logs the controller's high-level robot mode.
 
-Returns the controller's high-level robot mode (e.g. ``"RUNNING"``,
-``"IDLE"``, ``"POWER_OFF"``).
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR).
 
 Usage:
     python get_robot_mode.py [--ip <ROBOT_IP>]
 """
 
 import argparse
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the current robot mode."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         logger.success(f"Robot mode: {robot.get_robot_mode()}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

@@ -1,13 +1,10 @@
 """
-Read state timestamp example for the Synapse SDK — offline.
+Read the state update timestamp.
 
-Returns the timestamp of the most recent state update [s since epoch]. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
-    python get_timestamp_offline.py
+    python get_timestamp.py
 """
 
 from loguru import logger
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache state timestamp [s]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"timestamp [s]: {robot.get_timestamp()}")

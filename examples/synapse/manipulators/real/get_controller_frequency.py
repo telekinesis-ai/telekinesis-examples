@@ -1,34 +1,34 @@
 """
-Read controller frequency example for the Synapse SDK.
+Measures the controller's update rate by polling get_timestamp() and computing 1 / mean_step_time.
 
-``get_controller_frequency`` measures the controller's update rate by
-polling ``get_timestamp()`` for ``window_s`` seconds and computing
-``1 / mean_step_time``.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR).
 
 Usage:
     python get_controller_frequency.py [--ip <ROBOT_IP>]
 """
 
 import argparse
+
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the measured controller update frequency [Hz]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
-        # window_s defaults to 0.2 s; pass explicitly for clarity
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         frequency = robot.get_controller_frequency(window_s=0.2)
         logger.success(f"Controller frequency [Hz]: {frequency:.2f}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

@@ -1,12 +1,7 @@
 """
-Servo Joint example for the Synapse SDK.
+Streams joint targets at 125 Hz to oscillate the base joint (j0) sinusoidally with servo_joint.
 
-Streams joint targets at 125 Hz to oscillate the base joint (j0) around
-the current joint configuration using ``servo_joint`` — a smooth sinusoidal
-motion of small amplitude. Only the base moves; all other joints are held
-at their starting values.
-
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR).
 
 Usage:
     python servo_joint.py [--ip <ROBOT_IP>]
@@ -21,25 +16,26 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main(ip: str) -> None:
     """Oscillate the base joint (j0) sinusoidally with servo_joint."""
-
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
+    
     # Servo-loop and trajectory parameters
     dt = 0.008          # 125 Hz servo loop
     amplitude = 2.0     # ±2 deg base oscillation
     period = 4.0        # seconds per full oscillation
     n_cycles = 2
 
-    #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
-    robot.connect(ip=robot_ip)
-
     # ==================== Visualization (Optional) =============================
     # Live: subscribes to the robot's state topic and redraws as it moves.
-    robot.visualize_rerun()
+    robot.visualize_rerun(live=True)
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         # Hold all joints at their current values; only j0 will be modulated.
         # Sine starts at 0, so the first target equals ``center`` exactly —
         # no step at t=0.
@@ -80,6 +76,8 @@ def main(robot_ip: str):
 
         robot.servo_stop()
         logger.success("servo_joint loop complete.")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 
@@ -89,4 +87,4 @@ if __name__ == "__main__":
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    main(args.ip)
+    main(ip=args.ip)

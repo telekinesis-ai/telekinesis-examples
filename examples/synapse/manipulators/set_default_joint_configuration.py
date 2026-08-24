@@ -1,10 +1,7 @@
 """
-Set the default joint configuration for the Synapse SDK.
+Override the default joint configuration used as the offline commanded state.
 
-``set_default_joint_configuration`` overrides the brand-default joint configuration
-used as the offline commanded state. Values are in degrees.
-
-Universal Robots (UR10e) is used here purely for illustration; the same API works for all supported robots.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python set_default_joint_configuration.py
@@ -19,8 +16,7 @@ def main():
     """Override the default joint configuration and verify the readback."""
 
     #===================== Create Robot ==========================================
-    # No connect required — runs on the kinematic model.
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     # Log the brand-default joint configuration [deg]

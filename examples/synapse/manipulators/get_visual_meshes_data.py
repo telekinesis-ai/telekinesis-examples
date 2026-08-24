@@ -1,14 +1,7 @@
 """
-Read per-link visual mesh data for the Synapse SDK.
+Read per-link visual mesh data.
 
-``get_visual_meshes_data`` parses the robot's URDF and returns, per link,
-raw vertex/triangle arrays plus optional vertex colors and the mesh origin,
-ready for visualizers. Links without a visual mesh have ``vertices`` set to
-``None``.
-
-Universal Robots (UR10e) is used here purely for illustration; the same API
-works for all supported robots. Runs on the kinematic model only — no
-hardware connection and no ``--ip`` required.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_visual_meshes_data.py
@@ -22,10 +15,10 @@ from telekinesis.synapse.robots.manipulators import universal_robots
 def main():
     """Read per-link visual mesh data and log a summary per link."""
 
-    # Create the robot (no connect required — runs on the kinematic model)
-    robot = universal_robots.UniversalRobotsUR10E()
+    #===================== Create Robot ==========================================
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # Read per-link visual mesh data
+    # ==================== Run Skill ============================================
     meshes = robot.get_visual_meshes_data()
     logger.info(f"Number of links: {len(meshes)}")
 

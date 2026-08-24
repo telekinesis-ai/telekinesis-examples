@@ -1,14 +1,10 @@
-"""Visualize a JointTrajectoryGenerator trajectory in Rerun.
+"""
+Generate and visualize a JointTrajectoryGenerator trajectory in Rerun.
 
-Builds a joint-space move for a UR10E with per-joint velocity and acceleration limits,
-then logs the produced trajectory to Rerun so it can be checked by eye. For every joint
-it plots the position, velocity, acceleration, and remaining error to the goal against a
-shared time axis. Velocity and acceleration are computed by finite differences of the
-sampled joint positions, so the plots reflect exactly what the generator outputs.
+Supports Universal Robots (UR), Epson, and virtual.
 
-Run with the Rerun viewer:
-
-    python examples/generate_joint_trajectory.py
+Usage:
+    python generate_joint_trajectory.py
 """
 
 import numpy as np
@@ -19,29 +15,6 @@ from telekinesis.synapse.trajectory_generators.joint_trajectory_generator import
     JointTrajectoryGenerator,
 )
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
-
-def finite_difference(values: np.ndarray, t: np.ndarray) -> np.ndarray:
-    """Numerical time derivative of a sampled signal.
-
-    Differentiates ``values`` with respect to the time vector ``t`` along the sample
-    axis using a central difference in the interior and one-sided differences at the
-    ends. The time vector may be non-uniform, which matches trajectories whose final
-    sample is clamped to the motion duration.
-
-    Args:
-        values (np.ndarray): Sampled signal of shape ``(N,)`` or ``(N, D)``, where ``N``
-            is the number of samples.
-        t (np.ndarray): Sample times of shape ``(N,)``, in seconds.
-
-    Returns:
-        np.ndarray: Derivative with the same shape as ``values``. A trajectory with
-        fewer than two samples has no defined derivative and yields zeros.
-    """
-    values = np.asarray(values, dtype=float)
-    t = np.asarray(t, dtype=float)
-    if values.shape[0] < 2:
-        return np.zeros_like(values)
-    return np.gradient(values, t, axis=0)
 
 # Control period the trajectory is sampled at, in seconds.
 DT = 0.008
@@ -68,6 +41,28 @@ def shared_axis_range(data: np.ndarray) -> tuple[float, float]:
     margin = 0.05 * (high - low)
     return (low - margin, high + margin)
 
+def finite_difference(values: np.ndarray, t: np.ndarray) -> np.ndarray:
+    """Numerical time derivative of a sampled signal.
+
+    Differentiates ``values`` with respect to the time vector ``t`` along the sample
+    axis using a central difference in the interior and one-sided differences at the
+    ends. The time vector may be non-uniform, which matches trajectories whose final
+    sample is clamped to the motion duration.
+
+    Args:
+        values (np.ndarray): Sampled signal of shape ``(N,)`` or ``(N, D)``, where ``N``
+            is the number of samples.
+        t (np.ndarray): Sample times of shape ``(N,)``, in seconds.
+
+    Returns:
+        np.ndarray: Derivative with the same shape as ``values``. A trajectory with
+        fewer than two samples has no defined derivative and yields zeros.
+    """
+    values = np.asarray(values, dtype=float)
+    t = np.asarray(t, dtype=float)
+    if values.shape[0] < 2:
+        return np.zeros_like(values)
+    return np.gradient(values, t, axis=0)
 
 def clamp_to_limits(q: np.ndarray, joint_limits: np.ndarray, label: str) -> np.ndarray:
     """Clamp a joint configuration into the robot position limits, warning if it moves."""
@@ -90,7 +85,7 @@ def configure_series(path: str, name: str, color: list[int]) -> None:
 
 def main():
     #===================== Create Trajectory Generator ===========================
-    robot = UniversalRobotsUR10E()
+    robot = UniversalRobotsUR10E(name='UR10e')
     joint_limits = robot.joint_limits
 
     q_start = clamp_to_limits(np.asarray(Q_START, dtype=float), joint_limits, "Q_START")

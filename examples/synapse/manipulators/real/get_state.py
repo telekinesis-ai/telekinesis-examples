@@ -1,12 +1,7 @@
 """
-Read the full robot state dictionary example for the Synapse SDK.
+Logs the full live robot state dictionary.
 
-Returns the same state dict broadcast over the robot's state topic, with keys
-such as ``joint_positions``, ``joint_velocities``, ``tcp_pose``,
-``target_joint_positions``, ``target_tcp_pose`` and ``timestamp`` (plus
-hardware-dependent optional fields).
-
-Currently supported only for real hardware. Works on Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_state.py [--ip <ROBOT_IP>]
@@ -19,18 +14,22 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(ip: str):
+def main(ip: str) -> None:
     """Log the full live robot state dictionary."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
-    robot.connect(ip=ip)
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        # ==================== Run Skill ============================================
         state = robot.get_state()
         for key, value in state.items():
             logger.success(f"{key}: {value}")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 

@@ -1,10 +1,7 @@
 """
-Read TCP Cartesian pose example for the Synapse SDK — offline.
+Read the manipulator's TCP Cartesian pose.
 
-Returns the TCP pose ``[x, y, z (m), rx, ry, rz (deg)]``. Reads from the internal commanded-cache
-state; no hardware connection is made.
-
-Illustrated using Universal Robots (UR10e), supported on all robots.
+Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
     python get_cartesian_pose.py
@@ -19,7 +16,7 @@ def main():
     """Log the commanded-cache TCP pose [m, deg]."""
 
     #===================== Create Robot ==========================================
-    robot = universal_robots.UniversalRobotsUR10E()
+    robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Run Skill ============================================
     logger.success(f"tcp_pose [m, deg]: {robot.get_cartesian_pose()}")

@@ -1,17 +1,10 @@
-"""Visualize a LinearCartesianTrajectoryGenerator trajectory in Rerun.
+"""
+Generate and visualize a LinearCartesianTrajectoryGenerator trajectory in Rerun.
 
-Builds a straight-line (moveL) Cartesian move for a UR10E, resolving every setpoint to
-joints with the robot inverse kinematics, then logs the produced trajectory to Rerun so
-it can be checked by eye. For each TCP axis it plots the actual position (x, y, z) and
-orientation (x, y, z) against the constant target so the convergence to the goal is
-visible, together with the linear and angular velocity and acceleration profiles and the
-remaining translation and orientation error to the goal. Velocity and acceleration are
-computed by finite differences of the sampled poses. A 3D view shows the TCP path with a
-coordinate frame travelling from the start pose to the goal pose.
+Supports Universal Robots (UR), Epson, and virtual.
 
-Run with the Rerun viewer:
-
-    python examples/generate_cartesian_trajectory.py
+Usage:
+    python generate_cartesian_trajectory.py
 """
 
 import numpy as np
@@ -24,6 +17,24 @@ from telekinesis.synapse.trajectory_generators.linear_cartesian_trajectory_gener
 )
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 
+# Control period the trajectory is sampled at, in seconds.
+DT = 0.008
+
+# Start and goal TCP poses [x, y, z, rx, ry, rz] in meters and Euler-XYZ degrees.
+START_POSE = [0.5, -0.2, 0.4, 180.0, 0.0, 180.0]
+GOAL_POSE = [0.4, 0.3, 0.6, 180.0, 30.0, 90.0]
+
+# Joint seed for the first IK solve, in degrees (UR10E home configuration).
+HOME_JOINTS = [0.0, -90.0, -90.0, 0.0, 90.0, 0.0]
+
+# TCP limits used to shape the trapezoidal profile.
+MAX_LINEAR_VELOCITY = 0.25  # meters per second
+MAX_LINEAR_ACCELERATION = 1.0  # meters per second^2
+MAX_ANGULAR_VELOCITY = 45.0  # degrees per second
+MAX_ANGULAR_ACCELERATION = 150.0  # degrees per second^2
+
+# Width of the plotted lines, in UI points; wider lines are easier to read.
+LINE_WIDTH = 3.0
 
 def finite_difference(values: np.ndarray, t: np.ndarray) -> np.ndarray:
     """Numerical time derivative of a sampled signal.
@@ -47,27 +58,6 @@ def finite_difference(values: np.ndarray, t: np.ndarray) -> np.ndarray:
     if values.shape[0] < 2:
         return np.zeros_like(values)
     return np.gradient(values, t, axis=0)
-
-
-# Control period the trajectory is sampled at, in seconds.
-DT = 0.008
-
-# Start and goal TCP poses [x, y, z, rx, ry, rz] in meters and Euler-XYZ degrees.
-START_POSE = [0.5, -0.2, 0.4, 180.0, 0.0, 180.0]
-GOAL_POSE = [0.4, 0.3, 0.6, 180.0, 30.0, 90.0]
-
-# Joint seed for the first IK solve, in degrees (UR10E home configuration).
-HOME_JOINTS = [0.0, -90.0, -90.0, 0.0, 90.0, 0.0]
-
-# TCP limits used to shape the trapezoidal profile.
-MAX_LINEAR_VELOCITY = 0.25  # meters per second
-MAX_LINEAR_ACCELERATION = 1.0  # meters per second^2
-MAX_ANGULAR_VELOCITY = 45.0  # degrees per second
-MAX_ANGULAR_ACCELERATION = 150.0  # degrees per second^2
-
-# Width of the plotted lines, in UI points; wider lines are easier to read.
-LINE_WIDTH = 3.0
-
 
 def orientations_from_poses(poses: np.ndarray) -> Rotation:
     """Convert the Euler-XYZ orientation columns of a pose array to rotations."""
@@ -107,7 +97,7 @@ def configure_actual_target(path: str, unit: str) -> None:
 
 def main():
     #===================== Create Trajectory Generator ===========================
-    robot = UniversalRobotsUR10E()
+    robot = UniversalRobotsUR10E(name='UR10e')
     def ik_resolver(pose, seed): return robot.inverse_kinematics(pose, q_init=seed)
 
     generator = LinearCartesianTrajectoryGenerator(

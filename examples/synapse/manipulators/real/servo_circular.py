@@ -1,11 +1,7 @@
 """
-Servo Circular example for the Synapse SDK.
+Commands a circular-arc move from the current TCP pose to an offset target pose using servo_circular.
 
-Commands a circular-arc move from the current TCP pose to a target pose
-using ``servo_circular`` (UR ``servoC``). The target here is offset 2 cm
-in Y and -2 cm in Z from the current pose so the arc is visually distinct
-from a straight line.
-Currently supported only for real hardware, and only Universal Robots (UR).
+Supports Universal Robots (UR).
 
 Usage:
     python servo_circular.py [--ip <ROBOT_IP>]
@@ -19,25 +15,28 @@ from loguru import logger
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 
-def main(robot_ip: str):
+def main(ip: str) -> None:
     """Drive a circular arc from the current TCP pose to an offset target."""
 
     #===================== Create Robot ==========================================
     robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
-    robot.connect(ip=robot_ip)
 
     # ==================== Visualization (Optional) =============================
     # Live: subscribes to the robot's state topic and redraws as it moves.
-    robot.visualize_rerun()
+    robot.visualize_rerun(live=True)
 
-    # ==================== Run Skill ============================================
     try:
+        #===================== Connect Robot ==========================================
+        robot.connect(ip=ip)
+
+        #===================== Prepare Target ==========================================
         # Target pose: 2 cm out in Y and 2 cm down in Z from the current pose.
         current = robot.get_cartesian_pose()
         target = list(current)
         target[1] += 0.02
         target[2] -= 0.02
 
+        # ==================== Run Skill ============================================
         logger.warning(
             f"About to move real robot along a circular arc from {current} to {target}. "
             "Make sure it's safe to move there."
@@ -57,6 +56,8 @@ def main(robot_ip: str):
         time.sleep(2.0)
         robot.servo_stop()
         logger.success("servo_circular complete.")
+    except (ConnectionError, OSError) as e:
+        logger.error(f"Error occurred: {e}")
     finally:
         robot.disconnect()
 
@@ -66,4 +67,4 @@ if __name__ == "__main__":
     parser.add_argument("--ip", type=str, default="192.168.1.100", help="IP address of the UR robot (default: 192.168.1.100)")
     args = parser.parse_args()
 
-    main(args.ip)
+    main(ip=args.ip)

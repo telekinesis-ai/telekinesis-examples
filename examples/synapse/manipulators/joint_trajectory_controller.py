@@ -1,11 +1,11 @@
 """
-Individual test for the JointTrajectoryController C++ binding.
+Test the JointTrajectoryController C++ binding without a control loop.
 
-Verifies three behaviors without a control loop: holding the current pose when
-no trajectory is set, linear interpolation between waypoints as the internal
-clock advances by dt, and holding the final waypoint after the trajectory ends.
+Verifies holding the current pose when no trajectory is set, linear
+interpolation between waypoints as the internal clock advances, and holding
+the final waypoint after the trajectory ends.
 
-Run:
+Usage:
     python joint_trajectory_controller.py
 
 Expected output:
