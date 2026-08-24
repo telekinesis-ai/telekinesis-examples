@@ -1,50 +1,119 @@
 """
-Run ALL kinematics/trajectory manipulator example scripts in this folder
-(not the real\\ or virtual\\ subfolders), one after the other.
+Run ALL manipulator example scripts in this folder, one after the other.
 
 Each example is executed in a fresh Python process to avoid global state
-issues (e.g. rerun). None of these examples connect to hardware or
-simulation, so no connection arguments are needed.
+issues (e.g. rerun, RTDE handles, visualization). ``--ip`` is forwarded to
+every example (they all accept it). ``--prim_path`` is forwarded only to
+examples that declare it — real-hardware-only examples (servo/freedrive/
+safety-status/etc.) have no Isaac Sim equivalent and ignore it. Passing
+neither runs every example in offline/virtual mode, in which real-only
+examples fail informatively (no hardware to talk to).
 
-Any example not listed in RUN_ORDER is appended alphabetically.
+Examples run in a hardware-safe order: connection is checked first, then
+read-only status/state getters, then TCP and tool setup, then motion
+skills, then the contact-detection / stop / protective-stop skills that
+leave the robot halted or requiring pendant acknowledgement. Any example not
+listed in RUN_ORDER is appended alphabetically.
+
+By default, the name of the next example is printed and execution pauses
+until Enter is pressed, so you can watch each one individually and keep the
+real robot supervised. Pass ``--non-interactive`` to run straight through
+instead.
 
 Usage:
-    python run_all_examples.py
+    python run_all_examples.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>] [--non-interactive]
 """
 
+import argparse
 import pathlib
 import subprocess
 import sys
 import time
-import argparse
 from loguru import logger
 
-# Pause between examples, giving the previous process time to release its
-# rerun handles.
+# Pause between examples, giving the robot/simulation time to settle and the
+# previous process time to release its connection.
 DELAY_BETWEEN_EXAMPLES_S = 2
 
-# Execution order. Files not listed here run afterwards, in alphabetical order.
+# Hardware-safe execution order. Files not listed here run afterwards,
+# in alphabetical order.
 RUN_ORDER = [
-    "forward_kinematics",
-    "inverse_kinematics",
-    "setup_kinematics_solver",
-    "set_default_joint_configuration",
-    "generate_joint_trajectory",
-    "generate_cartesian_trajectory",
-    "joint_trajectory_controller",
-    "visualize",
+    "connection_and_disconnection",
+    "is_connected",
+    "get_robot_mode",
+    "get_robot_status",
+    "get_runtime_state",
+    "get_safety_mode",
+    "get_safety_status_bits",
+    "is_protective_stopped",
+    "is_emergency_stopped",
+    "is_program_running_on_controller",
+    "is_steady",
+    "get_target_speed_fraction",
+    "get_speed_scaling_combined",
+    "get_controller_frequency",
+    "get_publisher_names_and_types",
+    "get_publisher_hz",
+    "get_timestamp",
+    "get_state",
+    "get_cartesian_pose",
+    "get_joint_positions",
+    "get_joint_velocities",
+    "get_joint_torques",
+    "get_tcp_speed",
+    "get_tcp_force",
+    "get_target_joint_positions",
+    "get_target_joint_velocities",
+    "get_target_joint_accelerations",
+    "get_target_tcp_pose",
+    "get_target_tcp_speed",
+    "in_joint_limits",
+    "is_pose_within_safety_limits",
+    "is_joints_within_safety_limits",
+    "get_tcps",
+    "add_tcp",
+    "update_tcp",
+    "change_active_tcp",
+    "set_controller_interface_tcp_as_active",
+    "delete_tcp",
+    "attach_tool",
+    "detach_tool",
+    "set_joint_positions",
+    "set_cartesian_pose",
+    "set_cartesian_pose_in_joint_space",
+    "set_joint_position_in_cartesian_space",
+    "servo_joint",
+    "servo_cartesian",
+    "servo_circular",
+    "servo_stop",
+    "stop_joint_motion",
+    "stop_cartesian_motion",
+    "start_and_stop_jog_mode",
+    "start_and_stop_freedrive_mode",
+    # "start_and_stop_teach_mode",
+    "is_tool_in_contact",
+    "move_until_contact",
+    "contact_detection",
+    "trigger_protective_stop",
 ]
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Run all kinematics/trajectory manipulator example scripts in this directory"
+        description="Run all manipulator example scripts in this directory"
     )
     parser.add_argument(
         "--examples_dir",
         type=pathlib.Path,
         default=None,
         help="Directory containing example scripts (defaults to this file's directory)",
+    )
+    parser.add_argument("--ip", default=None, help="UR robot IP address for real hardware")
+    parser.add_argument("--prim_path", default=None, help="Isaac Sim articulation prim path")
+    parser.add_argument(
+        "--non-interactive",
+        action="store_true",
+        help="Run straight through without pausing for Enter before each example",
     )
     return parser.parse_args()
 
@@ -54,7 +123,6 @@ def collect_examples(examples_dir: pathlib.Path) -> list[pathlib.Path]:
     Collect runnable example scripts, ordered by RUN_ORDER.
 
     This runner itself, private modules and empty placeholder files are skipped.
-    The real\\ and virtual\\ subfolders (which have their own runners) are skipped.
     """
     this_file = pathlib.Path(__file__).resolve()
 
@@ -72,13 +140,24 @@ def collect_examples(examples_dir: pathlib.Path) -> list[pathlib.Path]:
     return ordered
 
 
-def run_example_in_subprocess(example_file: pathlib.Path) -> bool:
+def supports_prim_path(example_file: pathlib.Path) -> bool:
+    """Whether an example declares a ``--prim_path`` argument (Isaac Sim support)."""
+    return "--prim_path" in example_file.read_text(encoding="utf-8")
+
+
+def run_example_in_subprocess(example_file: pathlib.Path,
+                              ip_args: list[str],
+                              prim_path_args: list[str]) -> bool:
     """
     Run a single example script in a fresh Python process.
 
     Returns True if successful, False otherwise.
     """
-    cmd = [sys.executable, str(example_file)]
+    args = list(ip_args)
+    if supports_prim_path(example_file):
+        args += prim_path_args
+
+    cmd = [sys.executable, str(example_file), *args]
 
     logger.info(f"Executing: {' '.join(cmd)}")
 
@@ -93,6 +172,9 @@ def main():
 
     if examples_dir is None:
         examples_dir = pathlib.Path(__file__).parent
+
+    ip_args = ["--ip", args.ip] if args.ip is not None else []
+    prim_path_args = ["--prim_path", args.prim_path] if args.prim_path is not None else []
 
     example_files = collect_examples(examples_dir)
 
@@ -109,9 +191,14 @@ def main():
         example_name = example_file.stem
 
         logger.info("=" * 80)
+        logger.info(f"[{idx}/{len(example_files)}] Next example: {example_name}")
+
+        if not args.non_interactive:
+            input("Press Enter to run it (Ctrl+C to abort)... ")
+
         logger.info(f"[{idx}/{len(example_files)}] Running example: {example_name}")
 
-        ok = run_example_in_subprocess(example_file)
+        ok = run_example_in_subprocess(example_file, ip_args, prim_path_args)
 
         if ok:
             passed.append(example_name)
