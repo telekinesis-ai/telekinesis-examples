@@ -1,23 +1,21 @@
 """
-Telekinesis quickstart: drive a Fanuc robot along a YZ-plane circle via Cartesian pose targets.
+Telekinesis quickstart: drive an Epson robot along an XZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Traces a closed circle of radius 0.20m in the YZ plane around the home TCP pose. The TCP
+Traces a closed circle of radius 0.08m in the XZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
 Run:
-    python examples/robotics/quickstart_set_cartesian_pose_fanuc.py
+    python quickstart_set_cartesian_pose_epson.py
 """
 
 import colorsys
-import time
 
 import numpy as np
 import rerun as rr
-from loguru import logger
 
-from telekinesis.synapse.robots.manipulators import fanuc
+from telekinesis.synapse.robots.manipulators import epson
 
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
@@ -35,37 +33,27 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 
 
 def main():
-    """Trace a YZ-plane circle around the Fanuc's home TCP pose, visualized in rerun."""
+    """Trace an XZ-plane circle around the Epson's home TCP pose, visualized in rerun."""
 
-    # Frequency to update the visualization (Hz)
-    hz = 30
-    dt = 1.0 / hz
+    # =========================== Create Robot ==================================
+    robot = epson.EpsonCX4A601S(name="EpsonCX4A601S")
 
-    # Radius of the circle to trace (meters)
-    radius = 0.2
-    n_steps = 200
+    # =========================== Visualization (Optional) =============================
+    robot.visualize_rerun()
 
-    # Create robot
-    robot = fanuc.FanucM10IA()
+    # ========================== Draw Circle ====================================
+    radius = 0.08
+    n_steps = 50
 
-    # Initialize rerun and log static meshes
-    rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
-    robot.visualize_rerun(axis_length=0.1, recording_stream=rr.get_global_data_recording())
-    time.sleep(2.0)
-
-    # Get home pose (default configuration)
     home_pose = robot.get_cartesian_pose()
-    logger.info(f"Tracing circle of radius {radius:.3f} m in YZ plane ({n_steps} steps)")
-
-    # Robot motion: draw circle in YZ plane, visualize robot and TCP path
     path: list[list[float]] = []
-
     for step in range(n_steps + 1):
         theta = 2.0 * np.pi * step / n_steps
 
-        # Circle in the YZ plane, offset so it "kisses" the home pose at theta=0.
+        # Circle in the XZ plane, offset so it "kisses" the home pose at theta=0.
+        # The CX4-A601S URDF reaches along +Y, so XZ is the plane in front of it.
         pose = home_pose.copy()
-        pose[1] = home_pose[1] + radius * np.cos(theta) - radius
+        pose[0] = home_pose[0] + radius * np.cos(theta) - radius
         pose[2] = home_pose[2] + radius * np.sin(theta)
 
         # Move the robot
@@ -74,15 +62,9 @@ def main():
         except ValueError:
             continue  # outside reach / joint limits
 
-        # Visualize robot and path
-        robot.visualize_rerun()
         actual = robot.get_cartesian_pose()
         path.append([float(actual[0]), float(actual[1]), float(actual[2])])
         visualize_path(path)
-
-        # Sleep to maintain a consistent visualization rate.
-        time.sleep(dt)
-
 
 if __name__ == "__main__":
     main()

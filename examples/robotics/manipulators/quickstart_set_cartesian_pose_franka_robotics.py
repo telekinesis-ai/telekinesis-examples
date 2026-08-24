@@ -7,15 +7,13 @@ path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
 Run:
-    python examples/robotics/quickstart_set_cartesian_pose_franka_robotics.py
+    python quickstart_set_cartesian_pose_franka_robotics.py
 """
 
 import colorsys
-import time
 
 import numpy as np
 import rerun as rr
-from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import franka_robotics
 
@@ -37,29 +35,18 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 def main():
     """Trace a YZ-plane circle around the Panda's home TCP pose, visualized in rerun."""
 
-    # Frequency to update the visualization (Hz)
-    hz = 20
-    dt = 1.0 / hz
+    # =========================== Create Robot ==================================
+    robot = franka_robotics.FrankaRoboticsPanda(name="FrankaRoboticsPanda")
 
-    # Radius of the circle to trace (meters)
+    # =========================== Visualization (Optional) =============================
+    robot.visualize_rerun()
+
+    # ========================== Draw Circle ====================================
     radius = 0.10
-    n_steps = 200
+    n_steps = 50
 
-    # Create robot
-    robot = franka_robotics.FrankaRoboticsPanda()
-
-    # Initialize rerun and log static meshes
-    rr.init(f"telekinesis_synapse_{type(robot).__name__}", spawn=True)
-    robot.visualize_rerun(axis_length=0.1, recording_stream=rr.get_global_data_recording())
-    time.sleep(2.0)
-
-    # Get home pose (default configuration)
     home_pose = robot.get_cartesian_pose()
-    logger.info(f"Tracing circle of radius {radius:.3f} m in YZ plane ({n_steps} steps)")
-
-    # Robot motion: draw circle in YZ plane, visualize robot and TCP path
     path: list[list[float]] = []
-
     for step in range(n_steps + 1):
         theta = 2.0 * np.pi * step / n_steps
 
@@ -74,15 +61,9 @@ def main():
         except ValueError:
             continue  # outside reach / joint limits
 
-        # Visualize robot and path
-        robot.visualize_rerun()
         actual = robot.get_cartesian_pose()
         path.append([float(actual[0]), float(actual[1]), float(actual[2])])
         visualize_path(path)
-
-        # Sleep to maintain a consistent visualization rate.
-        time.sleep(dt)
-
 
 if __name__ == "__main__":
     main()
