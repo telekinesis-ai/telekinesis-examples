@@ -13,6 +13,7 @@ from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 from telekinesis.synapse.tools.parallel_grippers import robotiq, onrobot, schunk
+from telekinesis.synapse.tools.suction_grippers import piab
 
 # Every parallel gripper model the SDK ships, keyed by short name.
 _GRIPPERS = {
@@ -25,6 +26,7 @@ _GRIPPERS = {
     "egp":     schunk.SchunkEGP,
     "pznplus": schunk.SchunkPZNPlus,
     "pzv64":   schunk.SchunkPZV64,
+    "piabpicobot": piab.PiabPiCobotElectric,
 }
 
 # Pause between grippers, so each one is visible in the viewer before the
@@ -36,14 +38,9 @@ def main():
     """Attaches each supported parallel gripper to a UR10e and visualizes it."""
 
     #===================== Create Robot =========================================
-    # The name is what enables live updates: it gives the robot a state topic
-    # for visualize_rerun(live=True) to subscribe to.
     robot = universal_robots.UniversalRobotsUR10E(name='UR10e')
 
     # ==================== Visualization (Optional) =============================
-    # Called once, before the loop: the viewer subscribes to the robot's state
-    # topic and redraws by itself on every later change, so the attach calls
-    # below need no further visualize_rerun() call.
     robot.visualize_rerun(live=True)
 
     # ==================== Run Skill ============================================
@@ -54,15 +51,13 @@ def main():
     for name, gripper_cls in _GRIPPERS.items():
         gripper = gripper_cls()
 
-        # Clear the previous gripper's meshes, so the tools do not pile up in
-        # the viewer as the loop goes on.
         robot.detach_tool()
         robot.attach_tool(gripper)
 
-        logger.info(f"Visualizing {name}: {gripper_cls.__name__}...")
         time.sleep(DELAY_BETWEEN_TOOLS_S)
 
-    logger.success(f"Visualized {len(_GRIPPERS)} supported parallel grippers.")
+    # =================== Shutdown ===============================================
+    robot.shutdown()
 
 
 if __name__ == "__main__":

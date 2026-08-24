@@ -1,13 +1,13 @@
 """
-Telekinesis quickstart: drive an ABB robot along a YZ-plane circle via Cartesian pose targets.
+Telekinesis quickstart: drive a Yaskawa Motoman robot along a YZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
 
-Traces a closed circle of radius 0.50m in the YZ plane around the home TCP pose. The TCP
+Traces a closed circle of radius 0.10m in the YZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
 segments blue, newest red).
 
 Run:
-    python set_cartesian_pose_abb.py
+    python quickstart_set_cartesian_pose_motoman.py
 """
 
 import colorsys
@@ -15,7 +15,7 @@ import colorsys
 import numpy as np
 import rerun as rr
 
-from telekinesis.synapse.robots.manipulators import abb
+from telekinesis.synapse.robots.manipulators import motoman
 
 
 def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None:
@@ -33,16 +33,16 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
 
 
 def main():
-    """Trace a YZ-plane circle around the ABB's home TCP pose, visualized in rerun."""
+    """Trace a YZ-plane circle around the Motoman's home TCP pose, visualized in rerun."""
 
     # =========================== Create Robot ==================================
-    robot = abb.AbbIRB7600150350(name="AbbIRB7600150350")
+    robot = motoman.MotomanMH5(name="MotomanMH5")
 
     # =========================== Visualization (Optional) =============================
     robot.visualize_rerun()
 
     # ========================== Draw Circle ====================================
-    radius = 0.5
+    radius = 0.10
     n_steps = 50
 
     home_pose = robot.get_cartesian_pose()
