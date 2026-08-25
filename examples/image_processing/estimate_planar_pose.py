@@ -46,10 +46,10 @@ def estimate_planar_poses_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("estimate_planar_poses_example", spawn=True)
-    datatypes.visualize(image, entity_path="0-Input Image")
+    datatypes.visualize(image, entity_path="0-InputImage")
     datatypes.visualize(mask, entity_path="1-Mask")
-    datatypes.visualize(depth_image, entity_path="2-Depth Image")
-    datatypes.visualize(pose_3d, entity_path="3-Estimated 3D Pose")
+    datatypes.visualize(depth_image, entity_path="2-DepthImage")
+    datatypes.visualize(pose_3d, entity_path="3-Estimated3DPose")
 
 if __name__ == "__main__":
     estimate_planar_poses_example()
