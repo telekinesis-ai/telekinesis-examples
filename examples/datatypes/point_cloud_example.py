@@ -25,9 +25,6 @@ def point_cloud_example():
     )
     logger.info(f"PointCloud with normals, colors, and compression: {point_cloud}")
 
-    point_cloud_from_coerce = datatypes.PointCloud.coerce(positions)
-    logger.info(f"PointCloud created via coerce: {point_cloud_from_coerce}")
-
     url = "https://assets.telekinesis.ai/examples/v1/point_clouds/zivid_bottles_10_preprocessed.ply"
     point_cloud_from_url = datatypes.PointCloud.from_url(url=url)
     logger.info(f"PointCloud loaded from URL: {point_cloud_from_url}")

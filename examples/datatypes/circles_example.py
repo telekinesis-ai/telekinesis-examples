@@ -18,11 +18,6 @@ def circles_example():
     )
     logger.info(f"Original Circles: {circles}")
 
-    circles_from_dict = datatypes.Circles.coerce(
-        {"centers": [[0.0, 0.0], [10.0, 10.0]], "radii": [1.0, 2.0]}
-    )
-    logger.info(f"Circles coerced from dict: {circles_from_dict}")
-
     # ======================= Inspect ===========================================
     logger.info(f"centers={circles.centers}")
     logger.info(f"radii={circles.radii}")

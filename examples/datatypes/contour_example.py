@@ -17,9 +17,6 @@ def contour_example():
     )
     logger.info(f"Original Contour: {contour}")
 
-    contour_from_list = datatypes.Contour.coerce([[0, 0], [10, 0], [10, 10], [0, 10]])
-    logger.info(f"Contour coerced from list: {contour_from_list}")
-
     # ======================= Inspect ===========================================
     logger.info(f"points={contour.points}")
 

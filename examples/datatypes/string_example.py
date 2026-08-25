@@ -14,9 +14,6 @@ def string_example():
     value = datatypes.String("Hello")
     logger.info(f"Created String: {value}")
 
-    coerced = datatypes.String.coerce("Coerced")
-    logger.info(f"String coerced from str: {coerced}")
-
     # ======================= Inspect ===========================================
     logger.info(f"data={value.data}")
 

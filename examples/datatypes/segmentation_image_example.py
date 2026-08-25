@@ -17,9 +17,6 @@ def segmentation_image_example():
     segmentation_image = datatypes.SegmentationImage(data)
     logger.info(f"Created SegmentationImage: {segmentation_image}")
 
-    segmentation_image_from_coerce = datatypes.SegmentationImage.coerce(data)
-    logger.info(f"SegmentationImage created via coerce: {segmentation_image_from_coerce}")
-
     raw_buffer = data.tobytes()
     segmentation_image_from_raw_buffer = datatypes.SegmentationImage.from_raw_buffer(
         raw_buffer, shape=data.shape, dtype=data.dtype

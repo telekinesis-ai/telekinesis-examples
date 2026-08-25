@@ -14,9 +14,6 @@ def float_example():
     value = datatypes.Float(3.14)
     logger.info(f"Created Float: {value}")
 
-    coerced = datatypes.Float.coerce(7)
-    logger.info(f"Float coerced from int: {coerced}")
-
     # ======================= Inspect ===========================================
     logger.info(f"data={value.data}")
 

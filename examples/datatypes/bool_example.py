@@ -14,9 +14,6 @@ def bool_example():
     value = datatypes.Bool(True)
     logger.info(f"Created Bool: {value}")
 
-    coerced = datatypes.Bool.coerce(1)
-    logger.info(f"Bool coerced from int: {coerced}")
-
     # ======================= Inspect ===========================================
     logger.info(f"data={value.data}")
 

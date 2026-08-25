@@ -14,9 +14,6 @@ def timestamp_example():
     timestamp = datatypes.Timestamp(sec=42, nanosec=250_000_000)
     logger.info(f"Created Timestamp: {timestamp}")
 
-    coerced = datatypes.Timestamp.coerce((43, 0))
-    logger.info(f"Timestamp coerced from tuple: {coerced}")
-
     # ======================= Inspect ===========================================
     logger.info(f"sec={timestamp.sec}")
     logger.info(f"nanosec={timestamp.nanosec}")

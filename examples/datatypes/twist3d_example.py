@@ -16,9 +16,6 @@ def twist3d_example():
     twist3d = datatypes.Twist3D(values)
     logger.info(f"Created Twist3D: {twist3d}")
 
-    twist3d_from_coerce = datatypes.Twist3D.coerce(values)
-    logger.info(f"Twist3D created via coerce: {twist3d_from_coerce}")
-
     # ======================= Inspect ===========================================
     logger.info(f"data={twist3d.data}")
     logger.info(f"shape={twist3d.shape}")
@@ -43,9 +40,6 @@ def twist3d_example():
 
     # ======================= Visualize =========================================
     rr.init("twist3d_example", spawn=True)
-    datatypes.visualize(
-        twist3d_from_coerce, entity_path="/twist3d/coerced", label="Coerced Twist3D"
-    )
     datatypes.visualize(twist3d, entity_path="/twist3d/updated", label="Updated Twist3D")
 
     # ======================= Serialize / Deserialize ===========================

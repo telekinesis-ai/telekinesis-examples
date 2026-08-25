@@ -6,7 +6,6 @@ import rerun as rr
 
 from telekinesis import pupil, datatypes
 
-
 def project_camera_point_to_pixel_example():
     """Projects a 3D camera point to pixel coordinates."""
     # ===================== Create Parameters ==========================================

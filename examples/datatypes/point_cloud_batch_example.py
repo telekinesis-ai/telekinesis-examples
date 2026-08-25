@@ -24,9 +24,6 @@ def point_cloud_batch_example():
     point_cloud_batch = datatypes.PointCloudBatch([cloud_1, cloud_2])
     logger.info(f"Created PointCloudBatch: {point_cloud_batch}")
 
-    point_cloud_batch_from_coerce = datatypes.PointCloudBatch.coerce([cloud_1, cloud_2])
-    logger.info(f"PointCloudBatch created via coerce: {point_cloud_batch_from_coerce}")
-
     # ======================= Inspect ===========================================
     logger.info(f"positions={point_cloud_batch.positions}")
     logger.info(f"normals={point_cloud_batch.normals}")

@@ -18,9 +18,6 @@ def depth_image_example():
     depth_image = datatypes.DepthImage(depth)
     logger.info(f"Created DepthImage: {depth_image}")
 
-    depth_image_from_coerce = datatypes.DepthImage.coerce(depth)
-    logger.info(f"DepthImage created via coerce: {depth_image_from_coerce}")
-
     depth_scale = 0.001
     raw_counts = np.round(depth / depth_scale).astype(np.uint16)
     depth_image_from_raw_buffer = datatypes.DepthImage.from_raw_buffer(

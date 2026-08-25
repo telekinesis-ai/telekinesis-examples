@@ -15,9 +15,6 @@ def circle_example():
     circle = datatypes.Circle(center=[50.0, 60.0], radius=10.0)
     logger.info(f"Original Circle: {circle}")
 
-    circle_from_dict = datatypes.Circle.coerce({"center": [20.0, 30.0], "radius": 5.0})
-    logger.info(f"Circle coerced from dict: {circle_from_dict}")
-
     # ======================= Inspect ===========================================
     logger.info(f"center={circle.center}")
     logger.info(f"radius={circle.radius}")

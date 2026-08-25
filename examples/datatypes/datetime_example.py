@@ -15,9 +15,6 @@ def datetime_example():
     created_at = datatypes.DateTime(datetime.now(timezone.utc))
     logger.info(f"Created DateTime: {created_at}")
 
-    coerced = datatypes.DateTime.coerce(datetime.now(timezone.utc))
-    logger.info(f"DateTime coerced from datetime: {coerced}")
-
     # ======================= Inspect ===========================================
     logger.info(f"data={created_at.data}")
 

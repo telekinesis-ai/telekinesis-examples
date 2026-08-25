@@ -13,8 +13,7 @@ def coco_object_detection_annotations_example():
 
     # ======================= Create ============================================
     # Segmentation semantics: iscrowd=False -> polygon (stored natively, not
-    # converted), iscrowd=True -> encoded COCO RLE. The two representations are
-    # never silently converted between each other.
+    # converted), iscrowd=True -> encoded COCO RLE. 
     image_height, image_width = 720, 1280
     annotations = datatypes.COCOObjectDetectionAnnotations(
         ids=np.array([0, 1], dtype=np.int32),
@@ -29,6 +28,20 @@ def coco_object_detection_annotations_example():
         ],
     )
     logger.info(f"Created COCOObjectDetectionAnnotations: {annotations}")
+
+    mask_0 = np.zeros((image_height, image_width), dtype=np.uint8)
+    mask_0[100:200, 150:400] = 1
+    mask_1 = np.zeros((image_height, image_width), dtype=np.uint8)
+    mask_1[300:340, 500:540] = 1
+    annotations_from_masks = datatypes.COCOObjectDetectionAnnotations.from_masks(
+        ids=np.array([2, 3], dtype=np.int32),
+        image_ids=np.array([7, 7], dtype=np.int32),
+        category_ids=np.array([3, 4], dtype=np.int32),
+        bboxes=np.array([[150, 100, 250, 100], [500, 300, 40, 40]], dtype=np.float32),
+        areas=np.array([float(mask_0.sum()), float(mask_1.sum())], dtype=np.float32),
+        masks=[mask_0, mask_1],
+    )
+    logger.info(f"COCOObjectDetectionAnnotations created from masks: {annotations_from_masks}")
 
     # ======================= Inspect ===========================================
     logger.info(f"Number of annotations in batch: {len(annotations)}")
@@ -51,10 +64,7 @@ def coco_object_detection_annotations_example():
     keep_mask = np.array([True, False])
     masked_annotations = annotations[keep_mask]
     logger.info(f"Masked COCOObjectDetectionAnnotations: {masked_annotations}")
-
-    # Neither the single annotation nor the batch stores an image size, so
-    # `as_mask`/`as_masks` take the target size explicitly. For an `iscrowd=True`
-    # (RLE) entry, the passed size must match the RLE's own embedded size.
+    
     single_as_mask = single_annotation.as_mask(image_height=image_height, image_width=image_width)
     logger.info(
         f"Segmentation 0 as mask: shape={single_as_mask['segmentation'].shape}, "
@@ -66,11 +76,6 @@ def coco_object_detection_annotations_example():
     )
     logger.info(f"All masks: shapes={[m.shape for m in annotations_as_masks['segmentations']]}")
 
-    # `area`/`iscrowd` are labeling decisions that can't be derived from a mask,
-    # so there's no dedicated "from mask" constructor for annotations (unlike
-    # `COCOObjectDetectionResult.from_mask`). Build the RLE segmentation via the
-    # shared `COCOSegmentationMixin.mask_to_rle` helper and pass the rest of the
-    # fields directly.
     crowd_mask = np.zeros((image_height, image_width), dtype=np.uint8)
     crowd_mask[100:200, 150:400] = 1
     crowd_rle = datatypes.COCOObjectDetectionAnnotations.mask_to_rle(crowd_mask)
@@ -85,7 +90,6 @@ def coco_object_detection_annotations_example():
     )
     logger.info(f"Crowd annotation built from a mask: {crowd_annotation}")
 
-    # Mixin helpers shared across all COCO segmentation datatypes.
     mask_from_rle = datatypes.COCOObjectDetectionAnnotations.rle_to_mask(crowd_rle)
     logger.info(f"Mask decoded via rle_to_mask: shape={mask_from_rle.shape}, dtype={mask_from_rle.dtype}")
 
@@ -102,6 +106,9 @@ def coco_object_detection_annotations_example():
     datatypes.visualize(annotations, entity_path="/coco_object_detection_annotations")
     datatypes.visualize(single_annotation, entity_path="/coco_object_detection_annotations/single")
     datatypes.visualize(crowd_annotation, entity_path="/coco_object_detection_annotations/crowd")
+    datatypes.visualize(
+        annotations_from_masks, entity_path="/coco_object_detection_annotations/from_masks"
+    )
 
     # ======================= Serialize / Deserialize ===========================
     start = time.perf_counter()

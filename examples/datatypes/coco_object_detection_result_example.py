@@ -69,9 +69,11 @@ def coco_object_detection_result_example():
     result_as_polygon = result.as_polygon()
     logger.info(f"Segmentation as polygon: {result_as_polygon['segmentation']}")
 
-    # Mixin helpers shared across all COCO segmentation datatypes.
     mask_from_rle = datatypes.COCOObjectDetectionResult.rle_to_mask(result.segmentation)
     logger.info(f"Mask decoded via rle_to_mask: shape={mask_from_rle.shape}, dtype={mask_from_rle.dtype}")
+
+    rle_from_mask = datatypes.COCOObjectDetectionResult.mask_to_rle(mask_from_rle)
+    logger.info(f"RLE encoded via mask_to_rle: {rle_from_mask}")
 
     polygon_from_rle = datatypes.COCOObjectDetectionResult.rle_to_polygon(result.segmentation)
     logger.info(f"Polygon decoded via rle_to_polygon: {polygon_from_rle}")

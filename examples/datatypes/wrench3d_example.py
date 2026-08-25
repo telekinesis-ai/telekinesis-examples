@@ -16,9 +16,6 @@ def wrench3d_example():
     wrench3d = datatypes.Wrench3D(values)
     logger.info(f"Created Wrench3D: {wrench3d}")
 
-    wrench3d_from_coerce = datatypes.Wrench3D.coerce(values)
-    logger.info(f"Wrench3D created via coerce: {wrench3d_from_coerce}")
-
     # ======================= Inspect ===========================================
     logger.info(f"data={wrench3d.data}")
     logger.info(f"shape={wrench3d.shape}")
@@ -43,9 +40,6 @@ def wrench3d_example():
 
     # ======================= Visualize =========================================
     rr.init("wrench3d_example", spawn=True)
-    datatypes.visualize(
-        wrench3d_from_coerce, entity_path="/wrench3d/coerced", label="Coerced Wrench3D"
-    )
     datatypes.visualize(wrench3d, entity_path="/wrench3d/updated", label="Updated Wrench3D")
 
     # ======================= Serialize / Deserialize ===========================
