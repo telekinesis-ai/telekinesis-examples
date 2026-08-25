@@ -44,7 +44,7 @@ def project_pixel_to_camera_point_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("project_pixel_to_camera_point_example", spawn=True)
-    datatypes.visualize(camera_point, entity_path="1-Camera Point")
+    datatypes.visualize(camera_point, entity_path="1-camerapoint")
 
 if __name__ == "__main__":
     project_pixel_to_camera_point_example()

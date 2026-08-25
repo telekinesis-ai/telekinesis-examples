@@ -32,9 +32,9 @@ def bitwise_difference_images_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("bitwise_difference_images_example", spawn=True)
-    datatypes.visualize(image_a, entity_path="1-Original")
-    datatypes.visualize(image_b_resized, entity_path="2-Resized")
-    datatypes.visualize(filtered_image, entity_path="3-Filtered Image")
+    datatypes.visualize(image_a, entity_path="1-original")
+    datatypes.visualize(image_b_resized, entity_path="2-resized")
+    datatypes.visualize(filtered_image, entity_path="3-filteredimage")
 
 
 if __name__ == "__main__":

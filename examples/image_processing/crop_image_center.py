@@ -26,8 +26,8 @@ def crop_image_center_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("crop_image_center_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Cropped")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-cropped")
 
 if __name__ == "__main__":
     crop_image_center_example()

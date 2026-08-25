@@ -36,9 +36,9 @@ def overlay_images_using_weighted_overlay_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("overlay_images_using_weighted_overlay_example", spawn=True)
-    datatypes.visualize(image_a, entity_path="1-Image A")
-    datatypes.visualize(image_b, entity_path="2-Image B")
-    datatypes.visualize(filtered_image, entity_path="3-Blended")
+    datatypes.visualize(image_a, entity_path="1-imagea")
+    datatypes.visualize(image_b, entity_path="2-imageb")
+    datatypes.visualize(filtered_image, entity_path="3-blended")
 
 if __name__ == "__main__":
     overlay_images_using_weighted_overlay_example()

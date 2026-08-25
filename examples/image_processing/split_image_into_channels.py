@@ -21,7 +21,7 @@ def split_image_into_channels_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("split_image_into_channels_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
+    datatypes.visualize(image, entity_path="1-original")
     channel_names = ["Red", "Green", "Blue"]
     for i, channel_image in enumerate(image_channels):
         datatypes.visualize(channel_image, entity_path=f"{i + 2}-{channel_names[i]}")

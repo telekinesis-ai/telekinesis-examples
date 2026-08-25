@@ -27,8 +27,8 @@ def normalize_image_intensity_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("normalize_image_intensity_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Normalized")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-normalized")
 
 if __name__ == "__main__":
     normalize_image_intensity_example()

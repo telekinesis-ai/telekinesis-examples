@@ -48,7 +48,7 @@ def project_pixel_to_world_point_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("project_pixel_to_world_point_example", spawn=True)
-    datatypes.visualize(world_point, entity_path="1-World Point")
+    datatypes.visualize(world_point, entity_path="1-worldpoint")
 
 if __name__ == "__main__":
     project_pixel_to_world_point_example()

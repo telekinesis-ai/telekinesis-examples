@@ -24,11 +24,11 @@ def calculate_mask_pca_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("calculate_mask_pca_example", spawn=True)
-    datatypes.visualize(image, eigenvectors, entity_path="1-Mask")
-    datatypes.visualize(centroid, entity_path="2-Centroid")
-    datatypes.visualize(eigenvectors, entity_path="3-Eigenvectors")
-    datatypes.visualize(eigenvalues, entity_path="4-Eigenvalues")
-    datatypes.visualize(angle, entity_path="5-Angle")
+    datatypes.visualize(image, eigenvectors, entity_path="1-mask")
+    datatypes.visualize(centroid, entity_path="2-centroid")
+    datatypes.visualize(eigenvectors, entity_path="3-eigenvectors")
+    datatypes.visualize(eigenvalues, entity_path="4-eigenvalues")
+    datatypes.visualize(angle, entity_path="5-angle")
     
 if __name__ == "__main__":
     calculate_mask_pca_example()

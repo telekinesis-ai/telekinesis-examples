@@ -25,8 +25,8 @@ def convert_image_color_space_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("convert_image_color_space_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Filtered")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-filtered")
 
 if __name__ == "__main__":
     convert_image_color_space_example()

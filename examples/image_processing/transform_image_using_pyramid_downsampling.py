@@ -32,10 +32,10 @@ def transform_image_using_pyramid_downsampling_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("transform_image_using_pyramid_downsampling_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Level 1")
-    datatypes.visualize(filtered_image_1, entity_path="3-Level 2")
-    datatypes.visualize(filtered_image_2, entity_path="4-Level 3")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-level1")
+    datatypes.visualize(filtered_image_1, entity_path="3-level2")
+    datatypes.visualize(filtered_image_2, entity_path="4-level3")
 
 if __name__ == "__main__":
     transform_image_using_pyramid_downsampling_example()

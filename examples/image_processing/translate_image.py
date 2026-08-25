@@ -28,8 +28,8 @@ def translate_image_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("translate_image_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Translated")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-translated")
 
 if __name__ == "__main__":
     translate_image_example()

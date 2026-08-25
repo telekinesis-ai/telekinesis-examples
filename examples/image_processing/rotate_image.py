@@ -26,8 +26,8 @@ def rotate_image_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("rotate_image_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Rotated")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-rotated")
 
 if __name__ == "__main__":
     rotate_image_example()

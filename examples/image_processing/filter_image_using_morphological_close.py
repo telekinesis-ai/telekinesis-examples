@@ -27,8 +27,8 @@ def filter_image_using_morphological_close_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_morphological_close_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Closed")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-closed")
 
 if __name__ == "__main__":
     filter_image_using_morphological_close_example()

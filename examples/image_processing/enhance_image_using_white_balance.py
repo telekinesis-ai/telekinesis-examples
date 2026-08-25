@@ -23,8 +23,8 @@ def enhance_image_using_white_balance_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("enhance_image_using_white_balance_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Enhanced")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-enhanced")
 
 if __name__ == "__main__":
     enhance_image_using_white_balance_example()

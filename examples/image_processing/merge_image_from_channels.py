@@ -25,7 +25,7 @@ def merge_image_from_channels_example():
     channel_names = ["Red", "Green", "Blue"]
     for i, channel_image in enumerate(image_channels):
         datatypes.visualize(channel_image, entity_path=f"{i + 1}-{channel_names[i]}")
-    datatypes.visualize(filtered_image, entity_path="4-Merged")
+    datatypes.visualize(filtered_image, entity_path="4-merged")
 
 if __name__ == "__main__":
     merge_image_from_channels_example()

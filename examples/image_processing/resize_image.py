@@ -25,8 +25,8 @@ def resize_image_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("resize_image_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Resized")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-resized")
 
 if __name__ == "__main__":
     resize_image_example()

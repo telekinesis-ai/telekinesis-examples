@@ -27,8 +27,8 @@ def filter_image_using_morphological_erode_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_morphological_erode_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Eroded")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-eroded")
 
 if __name__ == "__main__":
     filter_image_using_morphological_erode_example()

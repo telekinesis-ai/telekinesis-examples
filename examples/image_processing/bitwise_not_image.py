@@ -21,8 +21,8 @@ def bitwise_not_image_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("bitwise_not_image_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Inverted")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-inverted")
 
 if __name__ == "__main__":
     bitwise_not_image_example()

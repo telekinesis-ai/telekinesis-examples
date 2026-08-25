@@ -32,9 +32,9 @@ def bitwise_or_images_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("bitwise_or_images_example", spawn=True)
-    datatypes.visualize(image_a, entity_path="1-Original")
-    datatypes.visualize(image_b, entity_path="2-Resized")
-    datatypes.visualize(filtered_image, entity_path="3-Filtered")
+    datatypes.visualize(image_a, entity_path="1-original")
+    datatypes.visualize(image_b, entity_path="2-resized")
+    datatypes.visualize(filtered_image, entity_path="3-filtered")
 
 if __name__ == "__main__":
     bitwise_or_images_example()

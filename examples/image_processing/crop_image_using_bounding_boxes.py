@@ -32,7 +32,7 @@ def crop_image_using_bounding_boxes_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("crop_image_using_bounding_boxes_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
+    datatypes.visualize(image, entity_path="1-original")
     for i, cropped_image in enumerate(cropped_images):
         datatypes.visualize(cropped_image, entity_path=f"{i + 2}-Crop {i + 1}")
 

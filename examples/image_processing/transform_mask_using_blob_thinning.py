@@ -26,8 +26,8 @@ def transform_mask_using_blob_thinning_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("transform_mask_using_blob_thinning_example", spawn=True)
-    datatypes.visualize(image, entity_path="1-Original")
-    datatypes.visualize(filtered_image, entity_path="2-Thinned")
+    datatypes.visualize(image, entity_path="1-original")
+    datatypes.visualize(filtered_image, entity_path="2-thinned")
 
 if __name__ == "__main__":
     transform_mask_using_blob_thinning_example()

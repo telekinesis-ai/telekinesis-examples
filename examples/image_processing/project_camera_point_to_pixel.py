@@ -37,8 +37,8 @@ def project_camera_point_to_pixel_example():
 
     # ===================== Visualization  (Optional) ======================
     rr.init("project_camera_point_to_pixel_example", spawn=True)
-    datatypes.visualize(point, entity_path="0-Point in 3D Space")
-    datatypes.visualize(pixel, entity_path="1-Pixel")
+    datatypes.visualize(point, entity_path="0-pointin3dspace")
+    datatypes.visualize(pixel, entity_path="1-pixel")
 
 if __name__ == "__main__":
     project_camera_point_to_pixel_example()
