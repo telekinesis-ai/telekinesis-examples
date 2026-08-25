@@ -61,7 +61,7 @@ python examples/detection/run_retina_examples.py                                
 
 - Robotics
 ```bash
-python examples/robotics/motion/set_cartesian_pose/set_cartesian_pose.py         # Synapse motion
+python examples/robotics/manipulators/set_joint_positions.py                     # Synapse motion
 ```
 
 - Hardware
