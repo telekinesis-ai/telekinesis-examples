@@ -30,6 +30,7 @@ def main(ip: str | None, prim_path: str | None) -> None:
             robot.connect(ip=ip)
         elif prim_path:
             robot.connect(simulation_prim_path=prim_path)
+            robot.set_joint_positions(robot.default_joint_configuration)
 
         #===================== Prepare Target ==========================================
         # Target: current joint configuration with the base joint rotated
