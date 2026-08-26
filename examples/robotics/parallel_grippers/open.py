@@ -6,6 +6,10 @@ Supports OnRobot and Robotiq grippers, and Isaac Sim.
 Usage:
     python open.py --ip <GRIPPER_IP>
     python open.py --prim_path <PRIM_PATH>
+
+Note:
+    Experimental gripper support for Isaac Sim:  Robotiq 2F85 (USD-based simulation only); Schunk EGP and
+    PZN+ are.
 """
 
 import argparse

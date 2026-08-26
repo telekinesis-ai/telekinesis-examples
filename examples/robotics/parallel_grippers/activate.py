@@ -11,6 +11,9 @@ Usage:
 Note:
     A simulated gripper has no activation cycle, so activate() is a no-op
     when connected to Isaac Sim.
+
+    Experimental gripper support for Isaac Sim:  Robotiq 2F85 (USD-based simulation only); Schunk EGP and
+    PZN+ are.
 """
 
 import argparse

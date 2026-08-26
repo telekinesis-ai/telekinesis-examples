@@ -21,6 +21,10 @@ last. Any example not listed in RUN_ORDER is appended alphabetically.
 Note: the visualization examples spawn a Rerun viewer window and block until
 it is closed.
 
+Note: Experimental gripper support for Isaac Sim: OnRobot RG2, RG6; Robotiq 2F140, HandE,
+2F85 (USD-based simulation only); Schunk EGU50, PZV64. Schunk EGP and PZN+
+are not currently working.
+
 Usage:
     python run_all_examples.py --ip <GRIPPER_IP>
     python run_all_examples.py --protocol MODBUS_RTU --serial-port COM4 --ip <GRIPPER_IP>

@@ -11,6 +11,9 @@ Note:
     OnRobot has no multi-unit backend: only parameter="position" with
     unit="mm", and parameter="force" with unit="N", are accepted. set_unit()
     is provided for signature parity with the Robotiq wrapper.
+
+    Experimental gripper support for Isaac Sim:  Robotiq 2F85 (USD-based simulation only); Schunk EGP and
+    PZN+ are.
 """
 
 import argparse

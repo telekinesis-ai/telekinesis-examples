@@ -10,6 +10,9 @@ Usage:
 Note:
     The simulation does not model grip force, so in Isaac Sim this call is
     accepted but has no effect on the motion.
+
+    Experimental gripper support for Isaac Sim:  Robotiq 2F85 (USD-based simulation only); Schunk EGP and
+    PZN+ are.
 """
 
 import argparse
