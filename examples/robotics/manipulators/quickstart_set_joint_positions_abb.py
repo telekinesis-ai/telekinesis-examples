@@ -1,6 +1,8 @@
 """
 Telekinesis quickstart: drive an ABB robot in joint space along a sweeping trajectory.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
+--prim_path is accepted for testing, but Isaac Sim is not yet implemented for ABB
+in this SDK version, so connect(simulation_prim_path=...) will raise.
 
 Sweeps the base 360° around home while a secondary joint oscillates ±30°. The TCP
 traces the resulting wavy path, drawn live as a connected line with a hue gradient
@@ -8,8 +10,10 @@ traces the resulting wavy path, drawn live as a connected line with a hue gradie
 
 Run:
     python quickstart_set_joint_positions_abb.py
+    python quickstart_set_joint_positions_abb.py --prim_path <PRIM_PATH>
 """
 
+import argparse
 import colorsys
 
 import numpy as np
@@ -32,7 +36,7 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
     rr.log(entity, rr.LineStrips3D(segments, colors=colors, radii=0.003))
 
 
-def main():
+def main(prim_path: str | None) -> None:
     """Sweep the ABB's base while a secondary joint oscillates, visualized in rerun."""
 
     # =========================== Create Robot ==================================
@@ -41,32 +45,50 @@ def main():
     # =========================== Visualization (Optional) =============================
     robot.visualize_rerun()
 
-    # ========================== Sweep Trajectory ====================================
-    base_joint_span = 360.0
-    elbow_amplitude_deg = 30.0
-    elbow_cycles = 4
-    n_steps = 180
+    try:
+        #===================== Connect Robot (Optional) ============================
+        if prim_path:
+            robot.connect(simulation_prim_path=prim_path)
+            robot.set_joint_positions(robot.default_joint_configuration)  # Move to default pose in simulation
 
-    home_q = np.asarray(robot.get_joint_positions(), dtype=float)
-    path: list[list[float]] = []
-    for step in range(n_steps + 1):
-        # Normalised progress through the sweep, 0 -> 1.
-        t = step / n_steps
+        # ========================== Sweep Trajectory ====================================
+        base_joint_span = 360.0
+        elbow_amplitude_deg = 30.0
+        elbow_cycles = 4
+        n_steps = 180
 
-        # Centre the base sweep on home so it stays inside symmetric joint limits.
-        q = home_q.copy()
-        q[0] += base_joint_span * (t - 0.5)
-        q[2] += elbow_amplitude_deg * np.sin(2.0 * np.pi * elbow_cycles * t)
+        home_q = np.asarray(robot.get_joint_positions(), dtype=float)
+        path: list[list[float]] = []
+        for step in range(n_steps + 1):
+            # Normalised progress through the sweep, 0 -> 1.
+            t = step / n_steps
 
-        # Move the robot
-        try:
-            robot.set_joint_positions(q.tolist())
-        except ValueError:
-            continue  # outside joint limits
+            # Centre the base sweep on home so it stays inside symmetric joint limits.
+            q = home_q.copy()
+            q[0] += base_joint_span * (t - 0.5)
+            q[2] += elbow_amplitude_deg * np.sin(2.0 * np.pi * elbow_cycles * t)
 
-        pose = robot.get_cartesian_pose()
-        path.append([float(pose[0]), float(pose[1]), float(pose[2])])
-        visualize_path(path)
+            # Move the robot
+            try:
+                robot.set_joint_positions(q.tolist())
+            except ValueError:
+                continue  # outside joint limits
+
+            pose = robot.get_cartesian_pose()
+            path.append([float(pose[0]), float(pose[1]), float(pose[2])])
+            visualize_path(path)
+    finally:
+        if prim_path:
+            robot.disconnect()
+        robot.shutdown()
+
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Drive a ABB robot in joint space along a sweeping trajectory"
+    )
+    parser.add_argument("--prim_path", type=str, default=None,
+                         help='Isaac Sim articulation prim path, e.g. "/World/abb_irb7600"')
+    args = parser.parse_args()
+
+    main(prim_path=args.prim_path)

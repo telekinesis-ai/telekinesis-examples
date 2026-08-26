@@ -1,6 +1,8 @@
 """
 Telekinesis quickstart: drive an Epson robot along an XZ-plane circle via Cartesian pose targets.
 No Hardware Required - runs entirely in software with live visualization in Rerun.
+--prim_path is accepted for testing, but Isaac Sim is not yet implemented for Epson
+in this SDK version, so connect(simulation_prim_path=...) will raise.
 
 Traces a closed circle of radius 0.08m in the XZ plane around the home TCP pose. The TCP
 path is drawn live as a connected line with a hue gradient (older
@@ -8,8 +10,10 @@ segments blue, newest red).
 
 Run:
     python quickstart_set_cartesian_pose_epson.py
+    python quickstart_set_cartesian_pose_epson.py --prim_path <PRIM_PATH>
 """
 
+import argparse
 import colorsys
 
 import numpy as np
@@ -32,7 +36,7 @@ def visualize_path(path: list[list[float]], entity: str = "/trajectory") -> None
     rr.log(entity, rr.LineStrips3D(segments, colors=colors, radii=0.003))
 
 
-def main():
+def main(prim_path: str | None) -> None:
     """Trace an XZ-plane circle around the Epson's home TCP pose, visualized in rerun."""
 
     # =========================== Create Robot ==================================
@@ -41,30 +45,48 @@ def main():
     # =========================== Visualization (Optional) =============================
     robot.visualize_rerun()
 
-    # ========================== Draw Circle ====================================
-    radius = 0.08
-    n_steps = 50
+    try:
+        #===================== Connect Robot (Optional) ============================
+        if prim_path:
+            robot.connect(simulation_prim_path=prim_path)
+            robot.set_joint_positions(robot.default_joint_configuration)  # Move to default pose in simulation
 
-    home_pose = robot.get_cartesian_pose()
-    path: list[list[float]] = []
-    for step in range(n_steps + 1):
-        theta = 2.0 * np.pi * step / n_steps
+        # ========================== Draw Circle ====================================
+        radius = 0.08
+        n_steps = 50
 
-        # Circle in the XZ plane, offset so it "kisses" the home pose at theta=0.
-        # The CX4-A601S URDF reaches along +Y, so XZ is the plane in front of it.
-        pose = home_pose.copy()
-        pose[0] = home_pose[0] + radius * np.cos(theta) - radius
-        pose[2] = home_pose[2] + radius * np.sin(theta)
+        home_pose = robot.get_cartesian_pose()
+        path: list[list[float]] = []
+        for step in range(n_steps + 1):
+            theta = 2.0 * np.pi * step / n_steps
 
-        # Move the robot
-        try:
-            robot.set_cartesian_pose(pose)
-        except ValueError:
-            continue  # outside reach / joint limits
+            # Circle in the XZ plane, offset so it "kisses" the home pose at theta=0.
+            # The CX4-A601S URDF reaches along +Y, so XZ is the plane in front of it.
+            pose = home_pose.copy()
+            pose[0] = home_pose[0] + radius * np.cos(theta) - radius
+            pose[2] = home_pose[2] + radius * np.sin(theta)
 
-        actual = robot.get_cartesian_pose()
-        path.append([float(actual[0]), float(actual[1]), float(actual[2])])
-        visualize_path(path)
+            # Move the robot
+            try:
+                robot.set_cartesian_pose(pose)
+            except ValueError:
+                continue  # outside reach / joint limits
+
+            actual = robot.get_cartesian_pose()
+            path.append([float(actual[0]), float(actual[1]), float(actual[2])])
+            visualize_path(path)
+    finally:
+        if prim_path:
+            robot.disconnect()
+        robot.shutdown()
+
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Drive a Epson robot along a circle"
+    )
+    parser.add_argument("--prim_path", type=str, default=None,
+                         help='Isaac Sim articulation prim path, e.g. "/World/epson_cx4a601s"')
+    args = parser.parse_args()
+
+    main(prim_path=args.prim_path)
