@@ -57,6 +57,22 @@ def main(ip: str | None,
                            "gripper is only drawn in Rerun, not fixed to the arm in the "
                            "simulation. Pass --gripper_prim_path to assemble it.")
 
+        #===================== Connect Gripper (Isaac Sim) ============================
+        # attach_tool() fixes the tool to the flange in the simulation only when
+        # the tool reports the ISAACSIM protocol, which it does after connecting
+        # to its own prim. On hardware the gripper needs no connection here: the
+        # attachment is for co-visualization only.
+        if gripper_prim_path:
+            gripper.connect(simulation_prim_path=gripper_prim_path)
+        elif ip:
+            logger.warning("Running on real hardware: attach_tool() registers the tool "
+                           "for co-visualization only. Nothing is physically attached — "
+                           "mount the gripper on the flange yourself.")
+        elif prim_path:
+            logger.warning("Connected to Isaac Sim without --gripper_prim_path: the "
+                           "gripper is only drawn in Rerun, not fixed to the arm in the "
+                           "simulation. Pass --gripper_prim_path to assemble it.")
+
         # ==================== Run Skill ============================================
         # UR robots declare simulation_mount_link = "wrist_3_link", so the
         # default mount frame is a real rigid-body link the simulation accepts.

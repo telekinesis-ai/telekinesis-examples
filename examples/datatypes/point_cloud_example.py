@@ -20,8 +20,9 @@ def point_cloud_example():
 
     normals = np.random.randn(N, 3).astype(np.float32)
     colors = np.random.randint(0, 255, (N, 3), dtype=np.uint8)
+    compression = datatypes.PointCloudCompression.DRACO
     point_cloud = datatypes.PointCloud(
-        positions, normals=normals, colors=colors, use_compression=True
+        positions, normals=normals, colors=colors, compression=compression
     )
     logger.info(f"PointCloud with normals, colors, and compression: {point_cloud}")
 
@@ -39,7 +40,7 @@ def point_cloud_example():
     logger.info(f"colors={point_cloud.colors}")
     logger.info(f"has_normals={point_cloud.has_normals}")
     logger.info(f"has_colors={point_cloud.has_colors}")
-    logger.info(f"use_compression={point_cloud.use_compression}")
+    logger.info(f"use_compression={point_cloud.compression}")
     logger.info(f"compression_settings={point_cloud.compression_settings}")
     logger.info(f"draco_atol={point_cloud.draco_atol}")
 
@@ -52,9 +53,6 @@ def point_cloud_example():
 
     point_cloud.colors = np.random.randint(0, 255, (N, 3), dtype=np.uint8)
     logger.info(f"Updated colors: {point_cloud}")
-
-    point_cloud.use_compression = False
-    logger.info(f"Toggled use_compression: {point_cloud.use_compression}")
 
     point_cloud.set_compression_parameters(compression_level=5, quantization_bits=12)
     logger.info(f"Updated compression settings: {point_cloud.compression_settings}")
