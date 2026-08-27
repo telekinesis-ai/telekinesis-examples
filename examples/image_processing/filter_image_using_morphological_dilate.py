@@ -10,7 +10,7 @@ def filter_image_using_morphological_dilate_example():
     """Applies dilation to expand bright regions and fill holes."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/spanners_arranged.jpg"
-    image = datatypes.Image.from_url(image_url)
+    image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_dilate(

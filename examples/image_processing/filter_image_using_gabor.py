@@ -10,7 +10,7 @@ def filter_image_using_gabor_example():
     """Applies filter_image_using_gabor operation."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/finger_print.jpg"
-    image = datatypes.Image.from_url(image_url)
+    image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_gabor(

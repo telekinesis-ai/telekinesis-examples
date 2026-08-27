@@ -10,7 +10,7 @@ def filter_image_using_morphological_blackhat_example():
     """Applies filter_image_using_morphological_blackhat operation."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/mechanical_parts_gray.png"
-    image = datatypes.Image.from_url(image_url)
+    image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_blackhat(

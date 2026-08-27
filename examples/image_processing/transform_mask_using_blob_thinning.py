@@ -10,7 +10,7 @@ def transform_mask_using_blob_thinning_example():
     """Applies blob thinning transformation."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/handwriting_mask.png"
-    image = datatypes.Image.from_url(image_url)
+    image = datatypes.Image.from_url(image_url).to_grayscale()
 
     mask = cornea.segment_image_using_otsu_threshold(image=image)
 
