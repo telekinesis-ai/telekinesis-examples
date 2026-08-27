@@ -39,7 +39,6 @@ def main(ip: str | None,
             robot.connect(ip=ip)
         elif prim_path:
             robot.connect(simulation_prim_path=prim_path)
-            robot.set_joint_positions(robot.default_joint_configuration)  
 
         #===================== Connect Gripper (Isaac Sim) ============================
         # attach_tool() fixes the tool to the flange in the simulation only when
