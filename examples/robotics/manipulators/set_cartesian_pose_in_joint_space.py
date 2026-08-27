@@ -30,6 +30,7 @@ def main(ip: str | None, prim_path: str | None) -> None:
             robot.connect(ip=ip)
         elif prim_path:
             robot.connect(simulation_prim_path=prim_path)
+            robot.set_joint_positions(robot.default_joint_configuration)
 
         #===================== Prepare Target ==========================================
         current_cartesian_pose = robot.get_cartesian_pose()

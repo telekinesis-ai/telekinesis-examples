@@ -12,14 +12,14 @@ import numpy as np
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.tools.parallel_grippers import robotiq
+from telekinesis.synapse.tools.parallel_grippers import onrobot
 
 
 def main() -> None:
-    """Reads the visual mesh data of every link of a Robotiq gripper."""
+    """Reads the visual mesh data of every link of an OnRobot gripper."""
 
     #===================== Create Gripper ======================================
-    gripper = robotiq.Robotiq2F85()
+    gripper = onrobot.OnRobotRG6()
 
     # ==================== Run Skill ===========================================
     meshes = gripper.get_visual_meshes_data()

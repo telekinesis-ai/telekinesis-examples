@@ -1,7 +1,7 @@
 """
 Demonstrates setting the maximum vacuum-pump speed of a suction gripper.
 
-Supports Piab grippers only on the URCAP protocol.
+Supports real Piab grippers only on the URCAP protocol.
 
 Usage:
     python set_max_pump_speed.py --ip <ROBOT_IP>

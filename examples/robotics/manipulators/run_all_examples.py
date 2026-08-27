@@ -2,12 +2,14 @@
 Run ALL manipulator example scripts in this folder, one after the other.
 
 Each example is executed in a fresh Python process to avoid global state
-issues (e.g. rerun, RTDE handles, visualization). ``--ip`` is forwarded to
-every example (they all accept it). ``--prim_path`` is forwarded only to
-examples that declare it — real-hardware-only examples (servo/freedrive/
-safety-status/etc.) have no Isaac Sim equivalent and ignore it. Passing
-neither runs every example in offline/virtual mode, in which real-only
-examples fail informatively (no hardware to talk to).
+issues (e.g. rerun, RTDE handles, visualization). Each connection argument is
+forwarded only to the examples that declare it: the model-only examples
+(kinematics/visualization) accept none, the real-hardware-only skills
+(servo/freedrive/safety-status/etc.) have no Isaac Sim equivalent and declare
+no ``--prim_path``, and ``--gripper_prim_path`` applies only to the
+attach/detach tool examples. Passing nothing runs every example in
+offline/virtual mode, in which real-only examples fail informatively (no
+hardware to talk to).
 
 Examples run in a hardware-safe order: connection is checked first, then
 read-only status/state getters, then TCP and tool setup, then motion
@@ -21,7 +23,8 @@ real robot supervised. Pass ``--non-interactive`` to run straight through
 instead.
 
 Usage:
-    python run_all_examples.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>] [--non-interactive]
+    python run_all_examples.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]
+                               [--gripper_prim_path <GRIPPER_PRIM_PATH>] [--non-interactive]
 """
 
 import argparse
@@ -110,6 +113,8 @@ def parse_args():
     )
     parser.add_argument("--ip", default=None, help="UR robot IP address for real hardware")
     parser.add_argument("--prim_path", default=None, help="Isaac Sim articulation prim path")
+    parser.add_argument("--gripper_prim_path", default=None,
+                        help="Isaac Sim gripper prim path, for the attach/detach tool examples")
     parser.add_argument(
         "--non-interactive",
         action="store_true",
@@ -140,24 +145,34 @@ def collect_examples(examples_dir: pathlib.Path) -> list[pathlib.Path]:
     return ordered
 
 
-def supports_prim_path(example_file: pathlib.Path) -> bool:
-    """Whether an example declares a ``--prim_path`` argument (Isaac Sim support)."""
-    return "--prim_path" in example_file.read_text(encoding="utf-8")
+def supported_args(example_file: pathlib.Path,
+                   connection_args: list[tuple[str, str]]) -> list[str]:
+    """
+    Select the connection arguments an example actually declares.
+
+    Model-only examples (kinematics, visualization) take no connection
+    arguments, and the real-hardware-only skills declare no ``--prim_path``,
+    so passing them a flag they do not define would make argparse exit with
+    an error before the example runs.
+    """
+    source = example_file.read_text(encoding="utf-8")
+
+    selected = []
+    for flag, value in connection_args:
+        if flag in source:
+            selected += [flag, value]
+    return selected
 
 
 def run_example_in_subprocess(example_file: pathlib.Path,
-                              ip_args: list[str],
-                              prim_path_args: list[str]) -> bool:
+                              connection_args: list[tuple[str, str]]) -> bool:
     """
     Run a single example script in a fresh Python process.
 
     Returns True if successful, False otherwise.
     """
-    args = list(ip_args)
-    if supports_prim_path(example_file):
-        args += prim_path_args
-
-    cmd = [sys.executable, str(example_file), *args]
+    cmd = [sys.executable, str(example_file),
+           *supported_args(example_file, connection_args)]
 
     logger.info(f"Executing: {' '.join(cmd)}")
 
@@ -173,8 +188,13 @@ def main():
     if examples_dir is None:
         examples_dir = pathlib.Path(__file__).parent
 
-    ip_args = ["--ip", args.ip] if args.ip is not None else []
-    prim_path_args = ["--prim_path", args.prim_path] if args.prim_path is not None else []
+    connection_args = []
+    if args.ip is not None:
+        connection_args.append(("--ip", args.ip))
+    if args.prim_path is not None:
+        connection_args.append(("--prim_path", args.prim_path))
+    if args.gripper_prim_path is not None:
+        connection_args.append(("--gripper_prim_path", args.gripper_prim_path))
 
     example_files = collect_examples(examples_dir)
 
@@ -198,7 +218,7 @@ def main():
 
         logger.info(f"[{idx}/{len(example_files)}] Running example: {example_name}")
 
-        ok = run_example_in_subprocess(example_file, ip_args, prim_path_args)
+        ok = run_example_in_subprocess(example_file, connection_args)
 
         if ok:
             passed.append(example_name)

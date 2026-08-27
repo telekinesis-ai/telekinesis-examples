@@ -11,15 +11,15 @@ Usage:
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.tools.parallel_grippers import robotiq
+from telekinesis.synapse.tools.parallel_grippers import onrobot
 from telekinesis.synapse import utils
 
 
 def main() -> None:
-    """Reads the base-frame transform of every link of a Robotiq gripper."""
+    """Reads the base-frame transform of every link of an OnRobot gripper."""
 
     #===================== Create Gripper ======================================
-    gripper = robotiq.Robotiq2F85()
+    gripper = onrobot.OnRobotRG6()
 
     # ==================== Run Skill ===========================================
     transforms = gripper.get_link_transforms()

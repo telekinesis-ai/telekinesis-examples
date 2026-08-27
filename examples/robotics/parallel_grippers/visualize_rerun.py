@@ -10,14 +10,14 @@ Usage:
 
 import rerun as rr
 
-from telekinesis.synapse.tools.parallel_grippers import robotiq
+from telekinesis.synapse.tools.parallel_grippers import onrobot
 
 
 def main() -> None:
-    """Visualizes a Robotiq gripper in Rerun while translating it along +X."""
+    """Visualizes an OnRobot gripper in Rerun while translating it along +X."""
 
     #===================== Create Gripper ======================================
-    gripper = robotiq.Robotiq2F85()
+    gripper = onrobot.OnRobotRG6()
 
     # =================== Visualization (Optional) ==============================
     # The first call uploads the static meshes; subsequent calls only update
