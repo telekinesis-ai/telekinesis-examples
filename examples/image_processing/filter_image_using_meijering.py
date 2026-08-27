@@ -10,7 +10,7 @@ def filter_image_using_meijering_example():
     """Applies filter_image_using_meijering operation."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/sidewalk_cracked.jpg"
-    image = datatypes.Image.from_url(image_url)
+    image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_meijering(
