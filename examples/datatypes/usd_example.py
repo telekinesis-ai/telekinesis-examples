@@ -21,9 +21,7 @@ from telekinesis import datatypes
 def urdf_example():
     """Demonstrate fetching, inspection, and serialization."""
 
-    # ======================= Fetch ==============================================
-    # from_url downloads and extracts a .zip bundle, returning a fully
-    # populated URDF with its file paths already resolved.
+    # ======================= Create ==============================================
     urdf = datatypes.URDF.from_url(
         # "https://assets.telekinesis.ai/urdf/robots/manipulators/universal_robots/ur10e.zip"
         "http://localhost:8931/urdf/robots/manipulators/universal_robots/ur10e.zip"
