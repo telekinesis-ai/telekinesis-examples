@@ -17,191 +17,136 @@ def segment_image_using_watershed_example() -> None:
         "https://assets.telekinesis.ai/examples/v1/images/water_coins.jpg"
     )
     image = datatypes.Image.from_url(url=image_url)
-    image_np = image.to_numpy()
     gray_image = image.to_grayscale()
 
     # ===================== Build Markers =======================================
-    markers_np = _build_watershed_markers(image_np)
-    markers = datatypes.SegmentationImage(
-        markers_np.astype(np.int32),
+    markers = _build_watershed_markers(
+        gray_image=gray_image,
+        kernel_size=3,
+        opening_iterations=2,
+        dilate_iterations=3,
+        dist_fg_ratio=0.7,
     )
 
-    marker_labels, marker_counts = np.unique(
-        markers_np,
-        return_counts=True,
-    )
-
-    logger.info(f"Marker shape: {markers_np.shape}")
-    logger.info(f"Marker dtype: {markers_np.dtype}")
-    logger.info(f"Marker labels: {marker_labels}")
-    logger.info(f"Marker counts: {marker_counts}")
-
-    # ===================== Build Gradient Image ===============================
+    # ===================== Build Gradient =====================================
     gradient_y = pupil.filter_image_using_sobel(
         image=gray_image,
         dx=0,
         dy=1,
-    ).to_numpy().astype(np.float32)
+        output_format="32bit",
+    ).to_numpy()
 
     gradient_x = pupil.filter_image_using_sobel(
         image=gray_image,
         dx=1,
         dy=0,
-    ).to_numpy().astype(np.float32)
+        output_format="32bit",
+    ).to_numpy()
 
-    # np.hypot computes sqrt(x**2 + y**2) without integer overflow.
-    gradient = np.hypot(gradient_x, gradient_y)
+    gradient = np.hypot(
+        gradient_x.astype(np.float32),
+        gradient_y.astype(np.float32),
+    )
 
-    gradient_min = float(gradient.min())
-    gradient_max = float(gradient.max())
+    gradient_image = datatypes.Image(gradient)
 
-    gradient_normalized = (
-        (gradient - gradient_min)
-        / (gradient_max - gradient_min + 1e-12)
-        * 255.0
-    ).astype(np.uint8)
-
-    gradient_image = datatypes.Image(gradient_normalized)
-
-    # ===================== Run Skill ==========================================
-    segmented_image = cornea.segment_image_using_watershed(
+    gradient_normalized = pupil.normalize_image_intensity(
         image=gradient_image,
+        alpha=0.0,
+        beta=255.0,
+        normalization_method="minmax",
+        output_format="8bit",
+    )
+
+    # ===================== Run Watershed ======================================
+    segmented_image = cornea.segment_image_using_watershed(
+        image=gradient_normalized,
         markers=markers,
         connectivity=1,
     )
 
     # ===================== Log ================================================
-    logger.success(f"Segmented {image} using the watershed algorithm.")
-    logger.success(f"Results: {segmented_image}")
-    logger.info(
-        f"Segmented image label codes: {segmented_image.label_codes}"
-    )
-    logger.info(
-        "Segmented image number of labels: "
-        f"{segmented_image.number_of_labels}"
-    )
-    logger.info(f"Segmented image shape: {segmented_image.shape}")
-    logger.info(f"Segmented image dtype: {segmented_image.dtype}")
+    logger.success(f"Segmented {image} using watershed.")
+    logger.success(f"Result: {segmented_image}")
+    logger.info(f"Labels: {segmented_image.label_codes}")
+    logger.info(f"Number of labels: {segmented_image.number_of_labels}")
 
     # ===================== Visualization ======================================
     rr.init("segment_image_using_watershed_example", spawn=True)
 
-    blueprint = rrb.Horizontal(
-        rrb.Spatial2DView(
-            origin="/input_image",
-            name="Input",
-        ),
-        rrb.Spatial2DView(
-            origin="/segmented_image",
-            name="Watershed labels",
-        ),
+    rr.send_blueprint(
+        rrb.Horizontal(
+            rrb.Spatial2DView(origin="/input", name="Input"),
+            rrb.Spatial2DView(origin="/labels", name="Watershed labels"),
+        )
     )
 
-    rr.send_blueprint(blueprint)
-
-    datatypes.visualize(
-        image,
-        entity_path="/input_image",
-    )
-    datatypes.visualize(
-        segmented_image,
-        entity_path="/segmented_image",
-    )
+    datatypes.visualize(image, entity_path="/input")
+    datatypes.visualize(segmented_image, entity_path="/labels")
 
 
 def _build_watershed_markers(
-    rgb_image: np.ndarray,
     *,
-    kernel_size: int = 3,
-    opening_iterations: int = 2,
-    dilate_iterations: int = 3,
-    dist_fg_ratio: float = 0.7,
-) -> np.ndarray:
-    """Build marker IDs for marker-controlled watershed.
+    gray_image: datatypes.Image,
+    kernel_size: int,
+    opening_iterations: int,
+    dilate_iterations: int,
+    dist_fg_ratio: float,
+) -> datatypes.SegmentationImage:
+    """Build marker IDs for watershed segmentation."""
 
-    Args:
-        rgb_image: RGB image with shape `(H, W, 3)`, or a grayscale image
-            with shape `(H, W)`.
-        kernel_size: Width and height of the morphology kernel.
-        opening_iterations: Number of morphological-opening iterations.
-        dilate_iterations: Number of background-dilation iterations.
-        dist_fg_ratio: Fraction of the maximum distance-transform value used
-            to identify definite foreground pixels.
-
-    Returns:
-        An `int32` marker image. Label `0` represents unknown pixels, label
-        `1` represents the known background, and labels `2...N` represent
-        foreground components.
-    """
-    if rgb_image.ndim == 2:
-        gray = rgb_image
-    elif rgb_image.ndim == 3 and rgb_image.shape[2] == 3:
-        gray = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2GRAY)
-    else:
-        raise ValueError(
-            "Expected an RGB image with shape (H, W, 3) or a grayscale "
-            f"image with shape (H, W); got {rgb_image.shape}."
-        )
-
-    # Separate the dark coins from the bright background.
-    _, thresholded = cv2.threshold(
-        gray,
-        0,
-        255,
-        cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU,
+    # Cornea Otsu returns 0=background, 1=foreground.
+    otsu_mask = cornea.segment_image_using_otsu_threshold(
+        image=gray_image,
     )
 
-    kernel = np.ones(
-        (kernel_size, kernel_size),
-        dtype=np.uint8,
+    # Coins are dark, so invert the Otsu result and convert to 0/255.
+    thresholded = datatypes.Image(
+        ((1 - otsu_mask.to_numpy()) * 255).astype(np.uint8)
     )
 
-    # Remove small foreground noise.
-    opening = cv2.morphologyEx(
-        thresholded,
-        cv2.MORPH_OPEN,
-        kernel,
+    # Equivalent to cv2.MORPH_OPEN with a square kernel.
+    opening = pupil.filter_image_using_morphological_open(
+        image=thresholded,
+        kernel_size=kernel_size,
+        kernel_shape="rectangle",
         iterations=opening_iterations,
+        border_type="constant",
+        border_value=0,
     )
 
-    # Region known to contain background.
-    sure_background = cv2.dilate(
-        opening,
-        kernel,
+    sure_background = pupil.filter_image_using_morphological_dilate(
+        image=opening,
+        kernel_size=kernel_size,
+        kernel_shape="rectangle",
         iterations=dilate_iterations,
+        border_type="constant",
+        border_value=0,
     )
 
-    # Separate touching objects by finding their central regions.
     distance = cv2.distanceTransform(
-        opening,
+        opening.to_numpy(),
         cv2.DIST_L2,
         5,
     )
+    sure_foreground = (
+        distance > dist_fg_ratio * float(distance.max())
+    ).astype(np.uint8) * 255
+    sure_foreground_image = datatypes.Image(sure_foreground)
 
-    _, sure_foreground = cv2.threshold(
-        distance,
-        dist_fg_ratio * float(distance.max()),
-        255,
-        cv2.THRESH_BINARY,
-    )
+    unknown = pupil.bitwise_difference_images(
+        image_a=sure_background,
+        image_b=sure_foreground_image,
+    ).to_numpy()
 
-    sure_foreground = sure_foreground.astype(np.uint8)
-
-    # Pixels that watershed must determine.
-    unknown = cv2.subtract(
-        sure_background,
+    _, markers = cv2.connectedComponents(
         sure_foreground,
+        connectivity=8,
     )
-
-    # Assign a unique marker ID to every foreground component.
-    _, markers = cv2.connectedComponents(sure_foreground)
-
-    # Reserve 0 for unknown pixels:
-    # 0 = unknown, 1 = background, 2...N = foreground components.
     markers = markers.astype(np.int32) + 1
-    markers[unknown == 255] = 0
+    markers[unknown != 0] = 0
 
-    return markers
+    return datatypes.SegmentationImage(markers)
 
 
 if __name__ == "__main__":
