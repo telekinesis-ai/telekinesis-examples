@@ -18,12 +18,18 @@ def segment_image_using_slic_superpixel_example():
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_slic_superpixel(
         image=image,
-        num_segments=9,
+        num_segments=2,
         compactness=15.0,
         max_iterations=20,
-        sigma=0.0,
+        spacing=None,
+        convert_to_lab=None,
         enforce_connectivity=True,
+        min_size_factor=0.1,
+        max_size_factor=150.0,
+        use_slic_zero=False,
         start_label=1,
+        mask=None,
+        channel_axis=-1,
     )
 
     # ===================== Log ================================================
