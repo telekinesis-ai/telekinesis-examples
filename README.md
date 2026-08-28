@@ -44,6 +44,14 @@ This repository contains standalone, chainable Python examples of those Skills. 
 
 For a complete walkthrough, refer to the [Installation guide.](https://docs.telekinesis.ai/getting-started/quickstart.html).
 
+### Upgrading package
+
+If package is installed previously, run below to upgrade to latest version:
+
+```bash
+python -m pip install --upgrade telekinesis-ai
+```
+
 ## Quickstart
 
 ```bash
@@ -68,6 +76,8 @@ python examples/robotics/manipulators/set_joint_positions.py                    
 ```bash
 python examples/sensors/webcam/capture_image_example.py                         # Medulla (webcam)
 ```
+
+
 
 ## Join The Telekinesis Community
 
