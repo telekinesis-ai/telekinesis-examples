@@ -10,7 +10,7 @@ def filter_image_using_morphological_gradient_example():
     """Applies filter_image_using_morphological_gradient operation."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/cartons_arranged.png"
-    image = datatypes.Image.from_url(image_url)
+    image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_gradient(

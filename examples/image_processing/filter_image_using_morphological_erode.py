@@ -3,7 +3,7 @@
 from loguru import logger
 import rerun as rr
 
-from telekinesis import pupil, datatypes
+from telekinesis import pupil, datatypes, cornea
 
 
 def filter_image_using_morphological_erode_example():
@@ -11,6 +11,8 @@ def filter_image_using_morphological_erode_example():
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/gear_with_texture.jpg"
     image = datatypes.Image.from_url(image_url)
+    segmentation_data = cornea.segment_image_using_otsu_threshold(image=image).data
+    image = datatypes.Image(segmentation_data)
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_erode(

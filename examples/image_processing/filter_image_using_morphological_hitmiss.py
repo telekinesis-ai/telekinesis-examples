@@ -10,8 +10,8 @@ def filter_image_using_morphological_hitmiss_example():
     """Applies filter_image_using_morphological_hitmiss operation."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/spanners_arranged.jpg"
-    image = datatypes.Image.from_url(image_url)
-
+    image = datatypes.Image.from_url(image_url).to_grayscale()
+    
     segmented_image = cornea.segment_image_using_threshold(image=image)
 
     # ===================== Run Skill ==========================================

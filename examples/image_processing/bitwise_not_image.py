@@ -10,7 +10,7 @@ def bitwise_not_image_example():
     """Performs bitwise NOT (inversion) on an image."""
     # ===================== Load Image ==========================================
     image_url = "https://assets.telekinesis.ai/examples/v1/images/einstein.png"
-    image = datatypes.Image.from_url(image_url)
+    image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.bitwise_not_image(image=image)
