@@ -1,15 +1,4 @@
-"""Demonstrates the Telekinesis URDF datatype.
-
-If https://assets.telekinesis.ai is unreachable, serve a local
-`telekinesis-assets` checkout instead and point the URL below at it:
-
-    1. cd /path/to/telekinesis-assets
-    2. python3 -m http.server 8931
-    3. Replace "https://assets.telekinesis.ai/..." below with
-       "http://localhost:8931/..." (same path after that).
-
-Stop the server with Ctrl+C in that terminal when done.
-"""
+"""Demonstrates the Telekinesis URDF datatype."""
 
 import time
 
@@ -23,8 +12,7 @@ def urdf_example():
 
     # ======================= Create ==============================================
     urdf = datatypes.URDF.from_url(
-        # "https://assets.telekinesis.ai/urdf/robots/manipulators/universal_robots/ur10e.zip"
-        "http://localhost:8931/urdf/robots/manipulators/universal_robots/ur10e.zip"
+        "https://assets.telekinesis.ai/urdf/robots/manipulators/universal_robots/ur10e.zip"
     )
     logger.info(f"Fetched URDF: {urdf}")
 
