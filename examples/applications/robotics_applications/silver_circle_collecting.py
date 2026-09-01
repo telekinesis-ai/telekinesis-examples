@@ -238,8 +238,8 @@ def run_sam_on_bboxes(rgb_image, bboxes_xywh):
             bboxes_xyxy.append([int(x), int(y), int(x + w), int(y + h)])
         logger.info(f"  running SAM on {len(bboxes_xyxy)} bboxes (XYXY)")
 
-        sam_ann = cornea.segment_image_using_sam(
-                    rgb_image, bboxes=bboxes_xyxy, mask_threshold=0.5, image_id=0)
+        sam_ann = cornea.segment_image_using_sam3(
+                    rgb_image, bboxes=bboxes_xyxy, mask_threshold=0.5)
         items = sam_ann.to_list() if hasattr(sam_ann, "to_list") else []
         logger.info(f"  SAM returned {len(items)} annotation items")
         masks = []
