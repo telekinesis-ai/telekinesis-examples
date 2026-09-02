@@ -1,12 +1,12 @@
 """
-Runs a conveyor belt in a running Isaac Sim stage for a few seconds.
+Demonstrates starting a conveyor belt in a running Isaac Sim stage.
 
 Supports Isaac Sim only. The belt runs at the speed the scene authored
 unless ``start()`` is given one, and a negative speed runs it backwards.
 
 Usage:
-    python run_conveyor.py --prim_path <PRIM_PATH>
-    python run_conveyor.py --prim_path <PRIM_PATH> --cargo_root <CARGO_ROOT> --velocity 0.5
+    python start.py --prim_path <PRIM_PATH>
+    python start.py --prim_path <PRIM_PATH> --velocity -0.5
 
 Note:
     Open Isaac Sim and add a conveyor prim before running this. If there is
@@ -18,21 +18,17 @@ Note:
 """
 
 import argparse
-import time
 
 from loguru import logger
 
 from telekinesis.medulla.conveyors import isaacsim
 
 
-def main(prim_path: str,
-         cargo_root: str | None,
-         velocity: float,
-         run_seconds: float) -> None:
-    """Runs a conveyor belt for a few seconds, then stops it."""
+def main(prim_path: str, cargo_root: str | None, velocity: float | None) -> None:
+    """Starts a conveyor belt."""
 
     #===================== Create Conveyor ======================================
-    belt = isaacsim.IsaacSimConveyor(name="simulated_conveyor")
+    belt = isaacsim.IsaacSimConveyor(name="my_simulated_conveyor")
 
     try:
         #===================== Connect Conveyor ==================================
@@ -40,11 +36,7 @@ def main(prim_path: str,
 
         # ==================== Run Skill ============================================
         belt.start(velocity=velocity)
-        logger.info(f"Running at {belt.velocity} m/s for {run_seconds} s.")
-        time.sleep(run_seconds)
-
-        belt.stop()
-        logger.success(f"Stopped. Running: {belt.is_running}.")
+        logger.success(f"Running at {belt.velocity} m/s. Running: {belt.is_running}.")
     except (ConnectionError, RuntimeError) as e:
         logger.error(f"Error occurred: {e}")
     finally:
@@ -52,18 +44,14 @@ def main(prim_path: str,
 
 
 if __name__ == "__main__":
-    p = argparse.ArgumentParser(description="Run a conveyor belt in Isaac Sim")
+    p = argparse.ArgumentParser(description="Start a conveyor belt in Isaac Sim")
     p.add_argument("--prim_path", type=str, default="/World/ConveyorTrack",
                    help='Isaac Sim conveyor prim path, e.g. "/World/ConveyorTrack"')
     p.add_argument("--cargo_root", type=str, default="/World",
                    help="USD path whose rigid bodies are woken when the belt starts")
-    p.add_argument("--velocity", type=float, default=0.5,
-                   help="Signed speed in meters per second to run the belt at")
-    p.add_argument("--run_seconds", type=float, default=5.0,
-                   help="How long to run the belt before stopping")
+    p.add_argument("--velocity", type=float, default=None,
+                   help="Signed speed in meters per second to run the belt at. "
+                        "Defaults to the belt's own configured speed")
     args = p.parse_args()
 
-    main(prim_path=args.prim_path,
-         cargo_root=args.cargo_root,
-         velocity=args.velocity,
-         run_seconds=args.run_seconds)
+    main(prim_path=args.prim_path, cargo_root=args.cargo_root, velocity=args.velocity)

@@ -6,8 +6,8 @@ the simulation timeline must be playing -- a stopped simulation has no
 reading to give.
 
 Usage:
-    python detect_object.py --prim_path <PRIM_PATH>
-    python detect_object.py --prim_path <PRIM_PATH> --watch_seconds 20
+    python is_beam_broken.py --prim_path <PRIM_PATH>
+    python is_beam_broken.py --prim_path <PRIM_PATH> --watch_seconds 20
 
 Note:
     Open Isaac Sim and add a lightbeam sensor prim before running this. If
