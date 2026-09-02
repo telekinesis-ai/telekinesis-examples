@@ -1,21 +1,6 @@
 """Example: load every supported manipulator, across every brand, and
 visualize each in Rerun.
 
-Covers Universal Robots, ABB, Kuka, Motoman, Fanuc, Neura Robotics, Franka
-Robotics, and Epson. Each robot is created offline (no hardware/simulator
-needed), fetching its URDF via URDF.from_url() (see the corresponding
-manufacturer module, e.g. universal_robots.py). It's then shown in its own
-Rerun viewer window, one at a time, before being released and moving on to
-the next.
-
-If https://assets.telekinesis.ai is unreachable, serve a local
-telekinesis-assets checkout instead:
-
-    1. cd /path/to/telekinesis-assets
-    2. python3 -m http.server 8931
-    3. Each manufacturer module has its own _<BRAND>_ASSETS_BASE_URL
-       constant near the top; they already default to "http://localhost:8931".
-
 Run:
     python examples/visualize_all_robots.py
 """

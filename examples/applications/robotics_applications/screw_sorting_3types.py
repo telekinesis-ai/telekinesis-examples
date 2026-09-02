@@ -313,7 +313,7 @@ def segment_screw(rgb_image, bbox_xyxy):
     """Run SAM to get a mask for a screw bbox. Returns binary mask (H,W) uint8."""
     try:
         # SAM expects XYXY boxes
-        anns = cornea.segment_image_using_sam(
+        anns = cornea.segment_image_using_sam3(
             image=rgb_image,
             bboxes=[bbox_xyxy],
             mask_threshold=0.5,

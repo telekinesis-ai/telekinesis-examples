@@ -1,8 +1,8 @@
-"""Example: load every supported parallel gripper, across every brand, and
+"""Example: load every supported suction gripper, across every brand, and
 visualize each in Rerun.
 
 Run:
-    python visualize_all_parallel_grippers.py
+    python visualize_all_suction_grippers.py
 """
 
 import inspect
@@ -11,27 +11,22 @@ import time
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.tools.parallel_grippers import (
-    onrobot,
-    robotiq,
-    schunk,
-)
+from telekinesis.synapse.tools.suction_grippers import custom, piab
 
-# All parallel-gripper brand modules paired with their brand base class.
+# All suction-gripper brand modules paired with their brand base class.
 _BRAND_MODULES = [
-    (robotiq, robotiq.Robotiq),
-    (onrobot, onrobot.OnRobot),
-    (schunk, schunk.SchunkEGU),
+    (piab, piab.Piab),
+    (custom, custom.SuctionGripper),
 ]
 
 
 # ============================ Get All Gripper Classes ===================================
 def _all_gripper_classes() -> list[type]:
-    """Return every concrete parallel-gripper model class across all brands.
+    """Return every concrete suction-gripper model class across all brands.
 
-    The brand base classes (e.g. ``Robotiq``, ``OnRobot``) are excluded — only
-    the concrete models that ship a URDF bundle (e.g. ``Robotiq2F85``,
-    ``OnRobotRG6``) are returned.
+    The brand base classes (e.g. ``Piab``) are excluded — only the concrete
+    models that ship a URDF bundle (e.g. ``PiabPiCobotElectric``) are
+    returned, plus any classes listed in ``_EXTRA_GRIPPER_CLASSES``.
     """
     classes = []
     for module, base_cls in _BRAND_MODULES:
@@ -45,7 +40,7 @@ def _all_gripper_classes() -> list[type]:
 
 def main():
     """
-    Load every supported parallel gripper, across every brand, and visualize
+    Load every supported suction gripper, across every brand, and visualize
     each in Rerun.
     """
 
@@ -64,16 +59,8 @@ def main():
             )
             continue
 
-        # A gripper whose URDF bundle could not be fetched has no model, so
-        # there is nothing to visualize — skip it rather than raise.
-        if gripper.urdf_path is None:
-            logger.error(f"Skipping {gripper_cls.__name__}: no URDF model available.")
-            continue
-
+    
     # ================================== Visualize ================================================
-        # Each gripper gets its own spawned viewer window. The first
-        # visualize_rerun call uploads the static meshes; there are no further
-        # updates here since the gripper is not moving.
         rr.init(f"telekinesis_synapse_{gripper_cls.__name__}", spawn=True)
         gripper.visualize_rerun(recording_stream=rr.get_global_data_recording())
         time.sleep(3.0)

@@ -163,11 +163,10 @@ def detect_boxes(image_np):
 def get_mask_for_bbox(image_np, bbox_xyxy):
     """Run SAM on a single bbox and return a binary uint8 mask (H,W)."""
     boxes2d = datatypes.Boxes2D(arrays=[bbox_xyxy], array_format="XYXY")
-    sam_ann = cornea.segment_image_using_sam(
+    sam_ann = cornea.segment_image_using_sam3(
         image=image_np,
         bboxes=boxes2d,
         mask_threshold=SAM_THRESHOLD,
-        image_id=0,
     )
     # SAM returns ObjectDetectionAnnotations whose 'segmentation' fields contain mask info.
     # We'll instead reconstruct the mask by re-running cornea on each bbox is expensive;
