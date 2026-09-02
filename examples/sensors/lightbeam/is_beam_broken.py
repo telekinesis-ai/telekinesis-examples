@@ -32,7 +32,7 @@ def main(prim_path: str, watch_seconds: float) -> None:
     """Watches a lightbeam sensor until its beam breaks or time runs out."""
 
     #===================== Create Sensor ======================================
-    sensor = isaacsim.IsaacSimLightBeamSensor(name="my_simulated_lightbeam")
+    sensor = isaacsim.LightBeamSensor(name="my_simulated_lightbeam")
 
     try:
         #===================== Connect Sensor ==================================

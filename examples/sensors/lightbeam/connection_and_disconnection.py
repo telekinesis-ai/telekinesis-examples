@@ -25,12 +25,11 @@ def main(prim_path: str) -> None:
     """Connects to a lightbeam sensor, then disconnects."""
 
     #===================== Create Sensor ======================================
-    sensor = isaacsim.IsaacSimLightBeamSensor(name="my_simulated_lightbeam")
+    sensor = isaacsim.LightBeamSensor(name="my_simulated_lightbeam")
 
     try:
         # ==================== Run Skill ============================================
         sensor.connect(simulation_prim_path=prim_path)
-        logger.success(f"Connected: {sensor.is_connected}.")
     except (ConnectionError, RuntimeError) as e:
         logger.error(f"Error occurred: {e}")
     finally:
