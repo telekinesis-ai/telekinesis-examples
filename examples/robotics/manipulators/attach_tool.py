@@ -39,6 +39,23 @@ def main(ip: str | None,
             robot.connect(ip=ip)
         elif prim_path:
             robot.connect(simulation_prim_path=prim_path)
+            robot.set_joint_positions(robot.default_joint_configuration)  
+
+        #===================== Connect Gripper (Isaac Sim) ============================
+        # attach_tool() fixes the tool to the flange in the simulation only when
+        # the tool reports the ISAACSIM protocol, which it does after connecting
+        # to its own prim. On hardware the gripper needs no connection here: the
+        # attachment is for co-visualization only.
+        if gripper_prim_path:
+            gripper.connect(simulation_prim_path=gripper_prim_path)
+        elif ip:
+            logger.warning("Running on real hardware: attach_tool() registers the tool "
+                           "for co-visualization only. Nothing is physically attached — "
+                           "mount the gripper on the flange yourself.")
+        elif prim_path:
+            logger.warning("Connected to Isaac Sim without --gripper_prim_path: the "
+                           "gripper is only drawn in Rerun, not fixed to the arm in the "
+                           "simulation. Pass --gripper_prim_path to assemble it.")
 
         #===================== Connect Gripper (Isaac Sim) ============================
         # attach_tool() fixes the tool to the flange in the simulation only when
