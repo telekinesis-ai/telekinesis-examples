@@ -15,12 +15,14 @@ from telekinesis.synapse.tools.suction_grippers import custom, piab
 
 # All suction-gripper brand modules paired with their brand base class.
 _BRAND_MODULES = [
-    (piab, piab.Piab),
-    (custom, custom.SuctionGripper),
+    (piab, piab.Piab)
 ]
 
+_EXTRA_GRIPPER_CLASSES = []
 
 # ============================ Get All Gripper Classes ===================================
+
+
 def _all_gripper_classes() -> list[type]:
     """Return every concrete suction-gripper model class across all brands.
 
@@ -35,6 +37,8 @@ def _all_gripper_classes() -> list[type]:
             for obj in vars(module).values()
             if inspect.isclass(obj) and issubclass(obj, base_cls) and obj is not base_cls
         )
+
+    classes.extend(_EXTRA_GRIPPER_CLASSES)
     return classes
 
 
@@ -44,9 +48,9 @@ def main():
     each in Rerun.
     """
 
-    # ================================== Create Gripper =============================================
+    # ================================== Create Gripper ======================
     gripper_classes = _all_gripper_classes()
-    logger.info(f"Found {len(gripper_classes)} grippers across {len(_BRAND_MODULES)} brands.")
+    logger.info(f"Found {len(gripper_classes)} grippers across {len(_BRAND_MODULES) + len(_EXTRA_GRIPPER_CLASSES)} brands.")
 
     for gripper_cls in gripper_classes:
         logger.info(f"Loading {gripper_cls.__name__}...")
@@ -59,7 +63,6 @@ def main():
             )
             continue
 
-    
     # ================================== Visualize ================================================
         rr.init(f"telekinesis_synapse_{gripper_cls.__name__}", spawn=True)
         gripper.visualize_rerun(recording_stream=rr.get_global_data_recording())
