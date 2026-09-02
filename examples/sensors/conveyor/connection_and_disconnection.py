@@ -24,13 +24,12 @@ from telekinesis.medulla.conveyors import isaacsim
 def main(prim_path: str, cargo_root: str | None) -> None:
     """Connects to a conveyor belt, then disconnects."""
 
-    #===================== Create Conveyor ======================================
-    belt = isaacsim.IsaacSimConveyor(name="my_simulated_conveyor")
+    # ===================== Create Conveyor ======================================
+    belt = isaacsim.Conveyor(name="my_simulated_conveyor")
 
     try:
         # ==================== Run Skill ============================================
         belt.connect(simulation_prim_path=prim_path, cargo_root=cargo_root)
-        logger.success(f"Connected: {belt.is_connected}.")
     except (ConnectionError, RuntimeError) as e:
         logger.error(f"Error occurred: {e}")
     finally:
