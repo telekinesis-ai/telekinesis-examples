@@ -163,7 +163,7 @@ def run_sam(color_img: np.ndarray, xyxy_boxes: list[list[int]]):
     if not xyxy_boxes:
         return []
     logger.info(f"Running SAM on {len(xyxy_boxes)} boxes")
-    sam_anns = cornea.segment_image_using_sam(color_img, xyxy_boxes, mask_threshold=SAM_MASK_THRESHOLD)
+    sam_anns = cornea.segment_image_using_sam3(color_img, xyxy_boxes, mask_threshold=SAM_MASK_THRESHOLD)
     masks = []
     h, w = color_img.shape[:2]
     for a in sam_anns.to_list():

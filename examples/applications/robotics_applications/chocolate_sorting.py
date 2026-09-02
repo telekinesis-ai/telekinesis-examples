@@ -492,11 +492,10 @@ def main():
             # --- Segmentation: SAM on the detected bboxes ---
             logger.info("Running SAM segmentation on detected bboxes")
             try:
-                sam_annotations = cornea.segment_image_using_sam(
+                sam_annotations = cornea.segment_image_using_sam3(
                     image=rgb,
                     bboxes=bboxes_xyxy,
                     mask_threshold=SAM_THRESHOLD,
-                    image_id=0,
                 )
             except Exception as e:
                 logger.exception(f"SAM segmentation failed: {e}")

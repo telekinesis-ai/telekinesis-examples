@@ -41,9 +41,9 @@ def conveyor_tracking_using_sam_example():
     """
     Conveyor Tracking: Segment objects on a conveyor belt.
 
-    Loads an image, and segments the box using SAM.
+    Loads an image, and segments the box using SAM3.
     Visualizes the results using Rerun.
-    """ 
+    """
     # Load image
     image_path = DATA_DIR / "images/conveyor_tracking.png"
     image = io.load_image(image_path, keep_alpha=False)
@@ -57,8 +57,8 @@ def conveyor_tracking_using_sam_example():
     y_max = height // 1.5
     bounding_box = [x_min, y_min, x_max, y_max]
 
-    # Segment using SAM
-    result = cornea.segment_image_using_sam(image=image, 
+    # Segment using SAM3
+    result = cornea.segment_image_using_sam3(image=image,
                                            bboxes=[bounding_box])
     annotations = result.to_list()
 
@@ -158,9 +158,9 @@ def conveyor_tracking_using_sam_example():
 # Depalletizing
 def depalletizing_using_sam_example():
     """
-    Depalletizing: Segment objects on a pallet using SAM.
+    Depalletizing: Segment objects on a pallet using SAM3.
 
-    Loads an image, crops it, and segments the box using SAM.
+    Loads an image, crops it, and segments the box using SAM3.
 
     Visualizes the results using Rerun.
     """
@@ -173,8 +173,8 @@ def depalletizing_using_sam_example():
     # Define a bounding box: (x, y, width, height)
     bounding_box = [170, 370, 360, 500]
 
-    # Segment using SAM
-    result = cornea.segment_image_using_sam(
+    # Segment using SAM3
+    result = cornea.segment_image_using_sam3(
         image=image,
         bboxes=[bounding_box],
     )
@@ -277,9 +277,9 @@ def depalletizing_using_sam_example():
 # Bin Picking
 def bin_picking_using_sam_example():
     """
-    Bin Picking: Segment objects in a bin using SAM.
+    Bin Picking: Segment objects in a bin using SAM3.
 
-    Loads an image, and segments the box using SAM.
+    Loads an image, and segments the box using SAM3.
     Visualizes the results using Rerun.
     """
 
@@ -291,8 +291,8 @@ def bin_picking_using_sam_example():
     # Define a bounding box: (x_min, y_min, x_max, y_max)
     bounding_box = [550, 260, 680, 350]
 
-    # Segment using SAM
-    result = cornea.segment_image_using_sam(
+    # Segment using SAM3
+    result = cornea.segment_image_using_sam3(
         image=image,
         bboxes=[bounding_box],
     )
@@ -388,9 +388,9 @@ def bin_picking_using_sam_example():
 # Ground Segmentation
 def ground_segmentation_using_sam_example():
     """
-    Ground Segmentation: Segment ground regions in an image using SAM.
+    Ground Segmentation: Segment ground regions in an image using SAM3.
 
-    Loads an image, defines a bounding box for the ground, and segments it using SAM.
+    Loads an image, defines a bounding box for the ground, and segments it using SAM3.
     Visualizes the results using Rerun.
     """
     # Load image
@@ -401,8 +401,8 @@ def ground_segmentation_using_sam_example():
     # Define a bounding box: (x_min, y_min, x_max, y_max)
     bounding_box = [3, 294, 794, 499] 
 
-    # Segment using SAM
-    result = cornea.segment_image_using_sam(
+    # Segment using SAM3
+    result = cornea.segment_image_using_sam3(
         image=image,
         bboxes=[bounding_box],
     )
@@ -498,9 +498,9 @@ def ground_segmentation_using_sam_example():
 # Pedestrian Segmentation
 def pedestrian_segmentation_using_sam_example():
     """
-    Pedestrian Segmentation: Segment pedestrian regions in an image using SAM.
+    Pedestrian Segmentation: Segment pedestrian regions in an image using SAM3.
 
-    Loads an image, defines a bounding box for the pedestrian, and segments it using SAM.
+    Loads an image, defines a bounding box for the pedestrian, and segments it using SAM3.
     Visualizes the results using Rerun.
     """
     # Load image
@@ -511,8 +511,8 @@ def pedestrian_segmentation_using_sam_example():
     # Define a bounding box: (x_min, y_min, x_max, y_max)
     bounding_box = [40, 70, 330, 414] 
 
-    # Segment using SAM
-    result = cornea.segment_image_using_sam(
+    # Segment using SAM3
+    result = cornea.segment_image_using_sam3(
         image=image,
         bboxes=[bounding_box],
     )
@@ -608,9 +608,9 @@ def pedestrian_segmentation_using_sam_example():
 # PCB Segmentation
 def pcb_segmentation_using_sam_example():
     """
-    PCB Segmentation: Segment PCB regions in an image using SAM.
+    PCB Segmentation: Segment PCB regions in an image using SAM3.
 
-    Loads an image, defines a bounding box for the PCB, and segments it using SAM.
+    Loads an image, defines a bounding box for the PCB, and segments it using SAM3.
     Visualizes the results using Rerun.
     """
     # Load image
@@ -621,8 +621,8 @@ def pcb_segmentation_using_sam_example():
     # Define a bounding box: (x_min, y_min, x_max, y_max)
     bounding_box = [1185, 1407, 1645, 1690] 
 
-    # Segment using SAM
-    result = cornea.segment_image_using_sam(
+    # Segment using SAM3
+    result = cornea.segment_image_using_sam3(
         image=image,
         bboxes=[bounding_box],
     )
@@ -718,9 +718,9 @@ def pcb_segmentation_using_sam_example():
 # Forklift Segmentation
 def forklift_segmentation_using_sam_example():
     """
-    Forklift Segmentation: Segment forklifts in an image using SAM.
+    Forklift Segmentation: Segment forklifts in an image using SAM3.
 
-    Loads an image, defines a bounding box for the forklift, and segments it using SAM.
+    Loads an image, defines a bounding box for the forklift, and segments it using SAM3.
     Visualizes the results using Rerun.
     """
     # Load image
@@ -731,8 +731,8 @@ def forklift_segmentation_using_sam_example():
     # Define a bounding box: (x_min, y_min, x_max, y_max)
     bounding_box = [18, 216, 303, 389] 
 
-    # Segment using SAM
-    result = cornea.segment_image_using_sam(
+    # Segment using SAM3
+    result = cornea.segment_image_using_sam3(
         image=image,
         bboxes=[bounding_box],
     )
