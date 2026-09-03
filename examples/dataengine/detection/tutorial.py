@@ -32,13 +32,10 @@ from __future__ import annotations
 import argparse
 import pathlib
 
-import cv2
 import numpy as np
-import requests
 from loguru import logger
 
-from datatypes import datatypes
-from telekinesis import pupil, retina
+from telekinesis import retina, datatypes
 from telekinesis.dataengine import DetectionLogger
 from telekinesis.dataengine.detection.utils import convert_dataset, merge_datasets, visualize
 
@@ -53,22 +50,9 @@ IMAGE_URLS = [
 ]
 
 
-def fetch_image(url: str) -> datatypes.Image:
-    """Download an image and return it as a Telekinesis Image in RGB."""
-    response = requests.get(url, timeout=60)
-    response.raise_for_status()
-    image_bgr = cv2.imdecode(
-        np.frombuffer(response.content, dtype=np.uint8), cv2.IMREAD_COLOR
-    )
-    image = datatypes.Image(image=image_bgr, color_model="BGR")
-    return pupil.convert_image_color_space(
-        image, source_color_space="BGR", target_color_space="RGB"
-    )
-
-
 def detect_sample(
     image: datatypes.Image,
-    prompt: str,
+    class_names: list[str],
     name_to_id: dict[str, int],
 ) -> tuple[np.ndarray, list[dict]]:
     """Run Grounding DINO on one image; return it with COCO-style annotations.
@@ -80,20 +64,22 @@ def detect_sample(
     """
     annotations, categories = retina.detect_objects_using_grounding_dino(
         image=image,
-        prompt=prompt,
+        objects=class_names,
         box_threshold=0.3,
         text_threshold=0.25,
     )
-    local_names = {c["id"]: c["name"] for c in categories.to_list()}
+    local_names = dict(zip(categories.ids.tolist(), categories.names.tolist()))
 
     remapped = []
-    for ann in annotations.to_list():
-        name = local_names.get(ann["category_id"])
+    for category_id, bbox in zip(
+        annotations.category_ids.tolist(), annotations.bboxes.tolist()
+    ):
+        name = local_names.get(category_id)
         class_id = name_to_id.get(name)
         if class_id is None:
             logger.warning(f"unexpected class {name!r} from Grounding DINO -- skipping")
             continue
-        remapped.append({**ann, "category_id": class_id})
+        remapped.append({"category_id": class_id, "bbox": bbox})
 
     return image.to_numpy(), remapped
 
@@ -128,8 +114,8 @@ def main(output_path: pathlib.Path, prompt: str, image_urls: list[str]) -> None:
     print(f"Step 1/5: detect '{prompt}' in {len(image_urls)} images with Grounding DINO")
     samples = []
     for url in image_urls:
-        image = fetch_image(url)
-        sample = detect_sample(image, prompt, name_to_id)
+        image = datatypes.Image.from_url(url)
+        sample = detect_sample(image, class_names, name_to_id)
         samples.append(sample)
         logger.success(f"detected {len(sample[1])} objects in {url}")
 
