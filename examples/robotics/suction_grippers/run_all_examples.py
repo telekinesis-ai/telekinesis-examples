@@ -6,7 +6,9 @@ issues (e.g. rerun, serial/socket handles, visualization). Each connection
 argument is forwarded only to the examples that declare it — the model-only
 examples run on the kinematic model and take no arguments at all, and the two
 pump examples have no Isaac Sim equivalent and declare no ``--prim_path``, so
-passing them one would make argparse exit before the example runs.
+passing them one would make argparse exit before the example runs. The
+set_usd example is Isaac Sim only and reports itself skipped when no
+``--prim_path`` is given.
 
 Examples run in a hardware-safe order: the model-only examples first, then the
 gripper is configured, and the vacuum skills are exercised last. Any example
@@ -35,6 +37,7 @@ DELAY_BETWEEN_EXAMPLES_S = 2
 # Hardware-safe execution order, relative to this file's directory. Files not
 # listed here run afterwards, in alphabetical order.
 RUN_ORDER = [
+    "set_usd",
     "get_visual_meshes_data",
     "get_link_transforms",
     "get_visual_mesh_transforms",
