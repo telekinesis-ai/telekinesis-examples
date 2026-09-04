@@ -11,17 +11,17 @@ Usage:
 import argparse
 from loguru import logger
 
-from telekinesis.synapse.tools import welding_gun
+from telekinesis.synapse.tools.welding_guns import isaacsim
 
 
 def main(prim_path: str, position: float) -> None:
     """Moves a spot-welding gun electrode to a normalized position."""
 
-    #===================== Create Gripper ======================================
-    gun = welding_gun.SpotWeldingGun()
+    # ===================== Create Gripper ======================================
+    gun = isaacsim.SpotWeldingGun()
 
     try:
-        #===================== Connect Gripper =================================
+        # ===================== Connect Gripper =================================
         gun.connect(simulation_prim_path=prim_path)
 
         # ==================== Run Skill ====================================

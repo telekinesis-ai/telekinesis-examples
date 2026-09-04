@@ -11,7 +11,7 @@ import time
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse.tools.suction_grippers import custom, piab
+from telekinesis.synapse.tools.suction_grippers import isaacsim, piab
 
 # All suction-gripper brand modules paired with their brand base class.
 _BRAND_MODULES = [
@@ -50,7 +50,8 @@ def main():
 
     # ================================== Create Gripper ======================
     gripper_classes = _all_gripper_classes()
-    logger.info(f"Found {len(gripper_classes)} grippers across {len(_BRAND_MODULES) + len(_EXTRA_GRIPPER_CLASSES)} brands.")
+    logger.info(
+        f"Found {len(gripper_classes)} grippers across {len(_BRAND_MODULES) + len(_EXTRA_GRIPPER_CLASSES)} brands.")
 
     for gripper_cls in gripper_classes:
         logger.info(f"Loading {gripper_cls.__name__}...")
