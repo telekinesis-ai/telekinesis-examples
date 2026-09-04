@@ -8,15 +8,17 @@ reading to give.
 Usage:
     python is_beam_broken.py --prim_path <PRIM_PATH>
     python is_beam_broken.py --prim_path <PRIM_PATH> --watch_seconds 20
-    python is_beam_broken.py --prim_path <PRIM_PATH> --load_usd
 
 Note:
-    Open Isaac Sim and add a lightbeam sensor prim before running this. If
-    there is none in the stage yet, follow
+    Open Isaac Sim before running this. A stage that does not hold the
+    sensor prim gets the bundled demo sensor added to it at
+    /World/simple_light_beam_sensor, keeping whatever is already in the
+    stage; to build a sensor of your own instead, follow
     https://docs.isaacsim.omniverse.nvidia.com/5.1.0/sensors/isaacsim_sensors_physx_lightbeam.html
-    to create one, or pass --load_usd to add one to the open stage -- this
-    keeps whatever is already in the stage. Place an object with a collider
-    in front of the beam before running this to see it detected.
+    and name it with --prim_path.
+
+    Place an object with a collider in front of the beam before running
+    this to see it detected.
 """
 
 import argparse
@@ -30,26 +32,12 @@ POLL_SECONDS = 0.1
 PRINT_SECONDS = 1.0
 
 
-def main(prim_path: str, watch_seconds: float, load_usd: bool) -> None:
+def main(prim_path: str, watch_seconds: float) -> None:
     """Watches a lightbeam sensor until its beam breaks or time runs out."""
-
-    if load_usd:
-        # ===================== Load Demo Scene (Optional) ===========================
-        from telekinesis import datatypes, isaacsim_client
-
-        client = isaacsim_client.IsaacSimClient(
-            api_key="",
-            base_url="http://127.0.0.1:8766",
-            websocket_base_url="ws://127.0.0.1:8766",
-        )
-        asset = datatypes.USD.from_url(
-            "https://assets.telekinesis.ai/usd/sensors/simple_light_beam_sensor.zip"
-        )
-        client.stage.add_to_scene(uri=asset.path.as_posix(),
-                                  prim_path="/World/simple_light_beam_sensor")
 
     # ===================== Create Sensor ======================================
     sensor = isaacsim.LightBeamSensor(name="my_simulated_lightbeam")
+    sensor.set_usd("https://assets.telekinesis.ai/usd/sensors/simple_light_beam_sensor.zip")
 
     try:
         # ===================== Connect Sensor ==================================
@@ -86,11 +74,6 @@ if __name__ == "__main__":
         '"/World/simple_light_beam_sensor/LightBeam_Sensor"')
     p.add_argument("--watch_seconds", type=float, default=10.0,
                    help="How long to watch the sensor before giving up")
-    p.add_argument("--load_usd", action=argparse.BooleanOptionalAction, default=False,
-                   help="Add the bundled demo lightbeam sensor to the open "
-                        "stage at /World/simple_light_beam_sensor before "
-                        "connecting. Use this if you don't already have one "
-                        "in the stage.")
     args = p.parse_args()
 
-    main(prim_path=args.prim_path, watch_seconds=args.watch_seconds, load_usd=args.load_usd)
+    main(prim_path=args.prim_path, watch_seconds=args.watch_seconds)

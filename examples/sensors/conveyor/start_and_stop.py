@@ -1,56 +1,44 @@
 """
-Demonstrates starting and stopping a conveyor belt in a running Isaac Sim
-stage.
+Runs a conveyor belt in a running Isaac Sim stage for a few seconds.
 
 Supports Isaac Sim only. The belt runs at the speed the scene authored
-unless ``start()`` is given one, and a negative speed runs it backwards. It
-keeps that speed once stopped, so starting it again without a velocity
-resumes at the same speed.
+unless ``start()`` is given one, and a negative speed runs it backwards.
 
 Usage:
     python start_and_stop.py --prim_path <PRIM_PATH>
-    python start_and_stop.py --prim_path <PRIM_PATH> --velocity -0.5
-    python start_and_stop.py --prim_path <PRIM_PATH> --load_usd
+    python start_and_stop.py --prim_path <PRIM_PATH> --cargo_root <CARGO_ROOT> --velocity 0.5
 
 Note:
-    Open Isaac Sim and add a conveyor prim before running this. If there is
-    none in the stage yet, follow
+    Open Isaac Sim before running this. A stage that does not hold the
+    conveyor prim gets the bundled demo belt added to it at
+    /World/simple_conveyor, keeping whatever is already in the stage; to
+    build a belt of your own instead, follow
     https://docs.isaacsim.omniverse.nvidia.com/6.0.1/digital_twin/warehouse_logistics/ext_isaacsim_asset_gen_conveyor.html
-    to create one, or pass --load_usd to add one to the open stage -- this
-    keeps whatever is already in the stage. If the belt connects but never
-    moves, check that its ``ConveyorNode`` has ``inputs:enabled`` set to
+    and name it with --prim_path.
+
+    If the belt connects but never moves, check that its ``ConveyorNode``
+    (in ConveyorBeltGraph i.e. OmniGraphNode) has ``inputs:enabled`` set to
     true. Add an object on top of the belt beforehand to see it carried
     along.
 """
 
 import argparse
+import time
 
 from loguru import logger
 
 from telekinesis.medulla.conveyors import isaacsim
 
 
-def main(prim_path: str, cargo_root: str | None, velocity: float | None,
-         load_usd: bool) -> None:
-    """Starts a conveyor belt, then stops it."""
-
-    if load_usd:
-        # ===================== Load Demo Scene (Optional) ===========================
-        from telekinesis import datatypes, isaacsim_client
-
-        client = isaacsim_client.IsaacSimClient(
-            api_key="",
-            base_url="http://127.0.0.1:8766",
-            websocket_base_url="ws://127.0.0.1:8766",
-        )
-        asset = datatypes.USD.from_url(
-            "https://assets.telekinesis.ai/usd/conveyors/simple_conveyor.zip"
-        )
-        client.stage.add_to_scene(uri=asset.path.as_posix(),
-                                  prim_path="/World/simple_conveyor")
+def main(prim_path: str,
+         cargo_root: str | None,
+         velocity: float,
+         run_seconds: float) -> None:
+    """Runs a conveyor belt for a few seconds, then stops it."""
 
     # ===================== Create Conveyor ======================================
-    belt = isaacsim.Conveyor(name="my_simulated_conveyor")
+    belt = isaacsim.Conveyor(name="simulated_conveyor")
+    belt.set_usd("https://assets.telekinesis.ai/usd/conveyors/simple_conveyor.zip")
 
     try:
         # ===================== Connect Conveyor ==================================
@@ -58,7 +46,8 @@ def main(prim_path: str, cargo_root: str | None, velocity: float | None,
 
         # ==================== Run Skill ============================================
         belt.start(velocity=velocity)
-        logger.success(f"Running at {belt.velocity} m/s. Running: {belt.is_running}.")
+        logger.info(f"Running at {belt.velocity} m/s for {run_seconds} s.")
+        time.sleep(run_seconds)
 
         belt.stop()
         logger.success(f"Stopped. Running: {belt.is_running}.")
@@ -74,14 +63,13 @@ if __name__ == "__main__":
                    help='Isaac Sim conveyor prim path, e.g. "/World/simple_conveyor"')
     p.add_argument("--cargo_root", type=str, default="/World",
                    help="USD path whose rigid bodies are woken when the belt starts")
-    p.add_argument("--velocity", type=float, default=None,
-                   help="Signed speed in meters per second to run the belt at. "
-                        "Defaults to the belt's own configured speed")
-    p.add_argument("--load_usd", action=argparse.BooleanOptionalAction, default=False,
-                   help="Add the bundled demo conveyor to the open stage at "
-                        "/World/simple_conveyor before connecting. Use this "
-                        "if you don't already have one in the stage.")
+    p.add_argument("--velocity", type=float, default=0.5,
+                   help="Signed speed in meters per second to run the belt at")
+    p.add_argument("--run_seconds", type=float, default=3.0,
+                   help="How long to run the belt before stopping")
     args = p.parse_args()
 
-    main(prim_path=args.prim_path, cargo_root=args.cargo_root, velocity=args.velocity,
-         load_usd=args.load_usd)
+    main(prim_path=args.prim_path,
+         cargo_root=args.cargo_root,
+         velocity=args.velocity,
+         run_seconds=args.run_seconds)

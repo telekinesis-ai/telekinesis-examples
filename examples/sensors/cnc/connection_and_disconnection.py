@@ -6,16 +6,18 @@ Supports Isaac Sim only.
 
 Usage:
     python connection_and_disconnection.py --prim_path <PRIM_PATH>
-    python connection_and_disconnection.py --prim_path <PRIM_PATH> --load_usd
 
 Note:
-    Open Isaac Sim and add a CNC machine whose door is its own prim before
-    running this, or pass --load_usd to add one to the open stage -- this
-    keeps whatever is already in the stage. Both positions are relative to
-    the door prim's parent: select the door prim, slide it fully open and
-    fully closed in the stage, and read the position off Property >
-    Transform each time. Where that transform is shown as a matrix, the
-    first three values of the bottom row are its x, y and z.
+    Open Isaac Sim before running this. A stage that does not hold the
+    door prim gets the bundled demo CNC machine added to it at
+    /World/cnc_machine, keeping whatever is already in the stage; a machine
+    of your own needs its door as its own prim, named with --prim_path.
+
+    Both positions are relative to the door prim's parent: select the door
+    prim, slide it fully open and fully closed in the stage, and read the
+    position off Property > Transform each time. Where that transform is
+    shown as a matrix, the first three values of the bottom row are its x,
+    y and z.
 """
 
 import argparse
@@ -27,27 +29,12 @@ from telekinesis.medulla.machines import isaacsim
 
 def main(prim_path: str,
          open_position: list[float],
-         closed_position: list[float],
-         load_usd: bool) -> None:
+         closed_position: list[float]) -> None:
     """Connects to a CNC machine's door, then disconnects."""
-
-    if load_usd:
-        # ===================== Load Demo Scene (Optional) ===========================
-        from telekinesis import datatypes, isaacsim_client
-
-        client = isaacsim_client.IsaacSimClient(
-            api_key="",
-            base_url="http://127.0.0.1:8766",
-            websocket_base_url="ws://127.0.0.1:8766",
-        )
-        asset = datatypes.USD.from_url(
-            "https://assets.telekinesis.ai/usd/machines/cnc_machine.zip"
-        )
-        client.stage.add_to_scene(uri=asset.path.as_posix(),
-                                  prim_path="/World/cnc_machine")
 
     # ===================== Create Machine =======================================
     machine = isaacsim.CNCMachine(name="my_simulated_cnc_machine")
+    machine.set_usd("https://assets.telekinesis.ai/usd/machines/cnc_machine.zip")
 
     try:
         # ==================== Run Skill ============================================
@@ -75,13 +62,8 @@ if __name__ == "__main__":
                    default=[-0.2193, -0.05313, 1.208], metavar=("X", "Y", "Z"),
                    help="Door position in meters, relative to the door "
                         "prim's parent, at which it stands closed")
-    p.add_argument("--load_usd", action=argparse.BooleanOptionalAction, default=False,
-                   help="Add the bundled demo CNC machine to the open stage "
-                        "at /World/cnc_machine before connecting. Use this "
-                        "if you don't already have one in the stage.")
     args = p.parse_args()
 
     main(prim_path=args.prim_path,
          open_position=args.open_position,
-         closed_position=args.closed_position,
-         load_usd=args.load_usd)
+         closed_position=args.closed_position)
