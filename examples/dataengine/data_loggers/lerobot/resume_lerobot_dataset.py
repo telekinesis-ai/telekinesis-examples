@@ -1,5 +1,7 @@
 """Example script demonstrating how to resume recording a LeRobot dataset."""
 
+from pathlib import Path
+
 import numpy as np
 from loguru import logger
 
@@ -10,8 +12,12 @@ def resume_lerobot_dataset_example():
     """Resume an existing LeRobot dataset and record additional episodes."""
 
     # 1. Define the existing dataset location and writer configuration.
-    path_or_repo_id = "user/my_example_dataset"
-    local_path = "data/logger_test_dataset"
+    repo_id = "user/my_record_example"
+    local_path = (
+        Path(__file__).resolve().parent.parent.parent.parent.parent
+        / "results"
+        / repo_id
+    )
 
     config = datasets.LeRobotDatasetWriterConfig(
         tolerance_s=1e-4,
@@ -19,7 +25,7 @@ def resume_lerobot_dataset_example():
 
     # 2. Resume the existing dataset.
     lerobot_logger = data_loggers.LeRobotDatasetLogger(
-        repo_id=path_or_repo_id,
+        repo_id=repo_id,
         local_path=local_path,
         mode="resume",
         config=config,

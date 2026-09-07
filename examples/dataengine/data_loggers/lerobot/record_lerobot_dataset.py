@@ -1,18 +1,26 @@
 """Example script demonstrating how to log a LeRobot dataset using the Telekinesis Data Engine."""
 
+from pathlib import Path
+import shutil
+
 import numpy as np
 from loguru import logger
 
-from telekinesis.dataengine import datasets
-from telekinesis.dataengine import data_loggers
-
+from telekinesis.dataengine import datasets, data_loggers
 
 def record_lerobot_dataset_example():
     """Example function to load a LeRobot dataset."""
 
     # 1. Define the path, configuration, and the dataset features.
-    repo_id = "user/my_example_dataset"
-    local_path = "data/logger_test_dataset"
+    repo_id = "user/my_record_example"
+    local_path = (
+        Path(__file__).resolve().parent.parent.parent.parent.parent
+        / "results"
+        / repo_id
+    )
+    if local_path.exists():
+        shutil.rmtree(local_path)
+
     features = {
         "observation.camera_rgb": {
             "dtype": "video",

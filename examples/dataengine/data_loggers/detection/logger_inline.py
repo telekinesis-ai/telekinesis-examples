@@ -1,68 +1,75 @@
 """
-Minimal detection-dataset logger example.
+Minimal detection dataset logger example.
 
-Generates a few synthetic frames + annotations and writes them to disk in one of
-the supported training formats (pick with --format):
+Generates synthetic RGB frames with hand-placed bounding-box annotations and
+writes them to disk using ``DetectionLogger``.
 
-  - YOLO    → images/, labels/, data.yaml
-  - RF-DETR → <split>/_annotations.coco.json (COCO)
+Supported output formats:
 
-The dataset is written straight into --output-path.
+- YOLO
+- RF-DETR / COCO
 
-No servers required — the frames here are random noise with hand-placed boxes.
-Images are raw ``np.ndarray``; categories and annotations are plain COCO-style
-JSON (lists/dicts).
+No server or external data is required.
 
 Usage:
-    # YOLO into results/inline_dataset
     python logger_inline.py
-
-    # RF-DETR, appending to an existing dataset elsewhere
-    python logger_inline.py --output-path results/detection_rfdetr \\
-        --format rfdetr --mode append
 """
 
-from __future__ import annotations
-
-import argparse
-import pathlib
+from pathlib import Path
 
 import numpy as np
 from loguru import logger
 
-from telekinesis.dataengine.data_loggers.detection.logger import DetectionLogger
+from telekinesis.dataengine.data_loggers import DetectionLogger
 
-# The class table shared by every sample, in COCO ``categories`` JSON form.
-# category_id -> 0-based class index is derived from the order below
-# (so id 1 -> class 0, id 2 -> class 1).
+OUTPUT_PATH = Path("results/inline_dataset")
+OUTPUT_FORMAT = "yolo"
+MODE = "overwrite"
+NUM_FRAMES = 20
+
+IMAGE_HEIGHT = 480
+IMAGE_WIDTH = 640
+
 CATEGORIES = [
-    {"id": 1, "name": "class_a", "supercategory": "object"},
-    {"id": 2, "name": "class_b", "supercategory": "object"},
+    {
+        "id": 1,
+        "name": "class_a",
+        "supercategory": "object",
+    },
+    {
+        "id": 2,
+        "name": "class_b",
+        "supercategory": "object",
+    },
 ]
 
 
-# =============================================================================
-# SYNTHETIC SAMPLE GENERATOR
-# =============================================================================
+def make_sample(
+    frame_index: int,
+) -> tuple[np.ndarray, list[dict]]:
+    """Create one synthetic image and its annotations.
 
+    Args:
+        frame_index: Index used to seed the random number generator.
 
-def make_sample(frame_index: int) -> tuple[np.ndarray, list[dict]]:
-    """Return one (image, annotations) pair of fake data.
-
-    ``image`` is a raw ``HxWx3`` uint8 RGB array; ``annotations`` is a list of
-    COCO annotation dicts (``category_id`` + ``bbox`` as ``[x, y, w, h]``).
+    Returns:
+        RGB image and COCO-style annotations.
     """
-    image_height, image_width = 480, 640
     random = np.random.default_rng(frame_index)
-    image = random.integers(0, 255, (image_height, image_width, 3), dtype=np.uint8)
 
-    # Two COCO-style [x, y, w, h] boxes, one per class.
+    image = random.integers(
+        0,
+        255,
+        (IMAGE_HEIGHT, IMAGE_WIDTH, 3),
+        dtype=np.uint8,
+    )
+
     annotations = [
         {
             "category_id": 1,
             "bbox": [
-                float(random.integers(0, image_width // 2)),
-                float(random.integers(0, image_height // 2)),
+                float(random.integers(0, IMAGE_WIDTH // 2)),
+                float(random.integers(0, IMAGE_HEIGHT // 2)),
                 120.0,
                 90.0,
             ],
@@ -70,68 +77,50 @@ def make_sample(frame_index: int) -> tuple[np.ndarray, list[dict]]:
         {
             "category_id": 2,
             "bbox": [
-                float(random.integers(image_width // 2, image_width - 80)),
-                float(random.integers(image_height // 2, image_height - 60)),
+                float(
+                    random.integers(
+                        IMAGE_WIDTH // 2,
+                        IMAGE_WIDTH - 80,
+                    )
+                ),
+                float(
+                    random.integers(
+                        IMAGE_HEIGHT // 2,
+                        IMAGE_HEIGHT - 60,
+                    )
+                ),
                 60.0,
                 50.0,
             ],
         },
     ]
+
     return image, annotations
 
 
-# =============================================================================
-# MAIN
-# =============================================================================
-
-
-def main(
-    output_format: str,
-    output_path: pathlib.Path,
-    mode: str,
-    num_frames: int = 20,
-) -> None:
+def logger_inline_example() -> None:
+    """Log synthetic detection samples into a dataset."""
     dataset_logger = DetectionLogger.create(
-        output_format, output_path, CATEGORIES, mode=mode
+        OUTPUT_FORMAT,
+        OUTPUT_PATH,
+        CATEGORIES,
+        mode=MODE,
     )
 
-    # Splits are assigned by the logger itself — 80/10/10 train/val/test by default.
-    for frame_index in range(num_frames):
+    for frame_index in range(NUM_FRAMES):
         image, annotations = make_sample(frame_index)
-        dataset_logger.log(image, annotations)  # split auto-assigned 80/10/10
 
-    dataset_logger.close()  # writes data.yaml (YOLO) / _annotations.coco.json (RF-DETR)
-    logger.success(f"{output_format} dataset -> {output_path}")
+        dataset_logger.log(
+            image,
+            annotations,
+        )
+
+    dataset_logger.close()
+
+    logger.success(
+        f"{OUTPUT_FORMAT} dataset written to {OUTPUT_PATH}"
+    )
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Log a synthetic detection dataset in YOLO or RF-DETR format."
-    )
-    parser.add_argument(
-        "--output-path",
-        type=pathlib.Path,
-        default="results/inline_dataset",
-        help="Dataset directory (default: results/inline_dataset)",
-    )
-    parser.add_argument(
-        "--format",
-        dest="output_format",
-        choices=("yolo", "rfdetr"),
-        default="yolo",
-        help="Dataset format to write (default: yolo)",
-    )
-    parser.add_argument(
-        "--mode",
-        choices=("create", "overwrite", "append"),
-        default="create",
-        help="How to handle an existing non-empty dataset directory "
-        "(default: create)",
-    )
-    args = parser.parse_args()
-
-    main(
-        output_format=args.output_format,
-        output_path=args.output_path,
-        mode=args.mode,
-    )
+    logger_inline_example()
