@@ -30,8 +30,7 @@ The source format is auto-detected; pass --input-format to override it.
 import argparse
 import pathlib
 
-from telekinesis.dataengine.detection.utils import convert_dataset
-
+from telekinesis.dataengine.data_loggers.detection.utils import convert_dataset
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

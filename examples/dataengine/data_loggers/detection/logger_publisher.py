@@ -16,7 +16,7 @@ import argparse
 
 import numpy as np
 
-from telekinesis.dataengine import DetectionLoggerPublisher
+from telekinesis.dataengine.data_loggers.detection.node import DetectionLoggerPublisher
 
 
 def main(

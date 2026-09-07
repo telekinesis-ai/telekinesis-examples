@@ -19,7 +19,7 @@ from __future__ import annotations
 import argparse
 import pathlib
 
-from telekinesis.dataengine.detection.utils import merge_datasets
+from telekinesis.dataengine.data_loggers.detection.utils import merge_datasets
 
 
 def main(

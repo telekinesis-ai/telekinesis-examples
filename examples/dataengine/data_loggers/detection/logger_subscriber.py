@@ -14,7 +14,8 @@ import argparse
 import pathlib
 import time
 
-from telekinesis.dataengine import DetectionLogger, DetectionLoggerSubscriber
+from telekinesis.dataengine.data_loggers.detection.logger import DetectionLogger
+from telekinesis.dataengine.data_loggers.detection.node import DetectionLoggerSubscriber
 
 
 def main(

@@ -30,8 +30,7 @@ import pathlib
 import numpy as np
 from loguru import logger
 
-from telekinesis.dataengine import DetectionLogger
-
+from telekinesis.dataengine.data_loggers.detection.logger import DetectionLogger
 
 # The class table shared by every sample, in COCO ``categories`` JSON form.
 # category_id -> 0-based class index is derived from the order below

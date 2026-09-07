@@ -13,7 +13,7 @@ from __future__ import annotations
 import argparse
 import pathlib
 
-from telekinesis.dataengine.detection.utils import visualize
+from telekinesis.dataengine.data_loggers.detection.utils import visualize
 
 
 def main(
