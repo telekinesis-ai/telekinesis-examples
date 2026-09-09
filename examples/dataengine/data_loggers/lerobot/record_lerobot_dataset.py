@@ -10,9 +10,10 @@ from loguru import logger
 from telekinesis.dataengine import datasets, data_loggers
 
 def record_lerobot_dataset_example():
-    """Example function to load a LeRobot dataset."""
+    """Example function to record a LeRobot dataset."""
 
-    #============= Step 1: Define the repo ID and local path ================
+    #======================= Step 1: Define Dataset =======================
+    # 1. Define Repo ID and Local path
     repo_id = "user/my_record_example"
     local_path = (
         Path(__file__).resolve().parent.parent.parent.parent.parent
@@ -22,7 +23,7 @@ def record_lerobot_dataset_example():
     if local_path.exists():
         shutil.rmtree(local_path)
 
-    #============== Step 2: Define the dataset features schema ================
+    # 2. Define feature schema
     features = {
         "observation.camera_rgb": {
             "dtype": "video",
@@ -61,14 +62,14 @@ def record_lerobot_dataset_example():
         },
     }
 
-    #============= Step 3: Define the dataset writer configuration ================
+    # 3. Define the dataset writer config
     config = datasets.LeRobotDatasetWriterConfig(
         tolerance_s=1e-4,
     )
     # Choose this based on your acquisition speed
     dataset_fps = 30
 
-    #============= Step 4: Create the LeRobot dataset logger with configuration ================
+    # ===================== Step 2: Create the Logger ======================
     lerobot_logger = data_loggers.LeRobotDatasetLogger(
         repo_id=repo_id,
         local_path=local_path,
@@ -79,10 +80,8 @@ def record_lerobot_dataset_example():
         config=config,
     )
 
-    #============= Step 5: Define the number of episodes as required ================
+    #======================= Step 3: Record Episodes ========================
     num_episodes = 5
-
-    #============= Step 6: Loop over episodes and log frames for each episode ================
     try:
         for episode_index in range(num_episodes):
 
@@ -125,6 +124,7 @@ def record_lerobot_dataset_example():
     except KeyboardInterrupt:
         logger.info("Stopping data collection.")
 
+    # ======================= Step 4: Finalize recording ===========================
     finally:
         # If saving failed, stop_episode() deliberately leaves the episode
         # active so the caller can decide whether to retry or discard it.

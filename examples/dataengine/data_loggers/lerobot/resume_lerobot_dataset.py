@@ -12,7 +12,8 @@ from telekinesis.dataengine import datasets, data_loggers
 def resume_lerobot_dataset_example():
     """Example function to resume logging an existing LeRobot dataset."""
 
-    #============= Step 1: Define the repo ID and existing local path ================
+    #======================= Step 1: Define Dataset =======================
+    # 1. Define Repo ID and existing local path
     repo_id = "user/my_record_example"
     local_path = (
         Path(__file__).resolve().parent.parent.parent.parent.parent
@@ -20,14 +21,16 @@ def resume_lerobot_dataset_example():
         / repo_id
     )
 
-    #============= Step 2: Define the dataset writer configuration ================
+    # 2. Define the dataset writer config
     config = datasets.LeRobotDatasetWriterConfig(
         tolerance_s=1e-4,
     )
+
+    # 3. Define the acquisition FPS used by the existing dataset
     # Use the same FPS as the existing dataset being resumed.
     dataset_fps = 30
 
-    #============= Step 3: Resume the LeRobot dataset logger with configuration ================
+    # ===================== Step 2: Create the Logger ======================
     # Resume mode loads the existing dataset schema and continues its episode indices.
     lerobot_logger = data_loggers.LeRobotDatasetLogger(
         repo_id=repo_id,
@@ -36,10 +39,8 @@ def resume_lerobot_dataset_example():
         config=config,
     )
 
-    #============= Step 4: Define the number of additional episodes as required ================
+    #======================= Step 3: Record Episodes ========================
     num_episodes = 5
-
-    #============= Step 5: Loop over and log additional episodes ================
     try:
         for episode_index in range(num_episodes):
 
@@ -82,9 +83,11 @@ def resume_lerobot_dataset_example():
     except KeyboardInterrupt:
         logger.info("Stopping data collection.")
 
+    # ======================= Step 4: Finalize recording ===========================
     finally:
         # If saving failed, stop_episode() deliberately leaves the episode
         # active so the caller can decide whether to retry or discard it.
+        logger.info("Cleaning up active episode if any.")
         logger.info("Cleaning up active episode if any.")
         if lerobot_logger.episode_active:
             try:
@@ -94,6 +97,7 @@ def resume_lerobot_dataset_example():
 
         # Always finalize writers and pending dataset state after cleanup.
         lerobot_logger.close()
+        logger.info("Logging complete.")
         logger.info("Logging complete.")
         
 
