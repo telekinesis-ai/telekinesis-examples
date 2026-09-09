@@ -10,11 +10,15 @@ Usage:
     python is_beam_broken.py --prim_path <PRIM_PATH> --watch_seconds 20
 
 Note:
-    Open Isaac Sim and add a lightbeam sensor prim before running this. If
-    there is none in the stage yet, follow
+    Open Isaac Sim before running this. A stage that does not hold the
+    sensor prim gets the bundled demo sensor added to it at
+    /World/simple_light_beam_sensor, keeping whatever is already in the
+    stage; to build a sensor of your own instead, follow
     https://docs.isaacsim.omniverse.nvidia.com/5.1.0/sensors/isaacsim_sensors_physx_lightbeam.html
-    to create one. Place an object with a collider in front of the beam
-    before running this to see it detected.
+    and name it with --prim_path.
+
+    Place an object with a collider in front of the beam before running
+    this to see it detected.
 """
 
 import argparse
@@ -31,11 +35,12 @@ PRINT_SECONDS = 1.0
 def main(prim_path: str, watch_seconds: float) -> None:
     """Watches a lightbeam sensor until its beam breaks or time runs out."""
 
-    #===================== Create Sensor ======================================
+    # ===================== Create Sensor ======================================
     sensor = isaacsim.LightBeamSensor(name="my_simulated_lightbeam")
+    sensor.set_usd("https://assets.telekinesis.ai/usd/sensors/simple_light_beam_sensor.zip")
 
     try:
-        #===================== Connect Sensor ==================================
+        # ===================== Connect Sensor ==================================
         sensor.connect(simulation_prim_path=prim_path)
 
         # ==================== Run Skill ============================================
@@ -61,9 +66,12 @@ def main(prim_path: str, watch_seconds: float) -> None:
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="Watch a lightbeam sensor in Isaac Sim")
-    p.add_argument("--prim_path", type=str, default="/World/LightBeam_Sensor",
-                   help='Isaac Sim lightbeam sensor prim path, e.g. '
-                        '"/World/LightBeam_Sensor"')
+    p.add_argument(
+        "--prim_path",
+        type=str,
+        default="/World/simple_light_beam_sensor/LightBeam_Sensor",
+        help='Isaac Sim lightbeam sensor prim path, e.g. '
+        '"/World/simple_light_beam_sensor/LightBeam_Sensor"')
     p.add_argument("--watch_seconds", type=float, default=10.0,
                    help="How long to watch the sensor before giving up")
     args = p.parse_args()

@@ -35,8 +35,8 @@ def transforms3d_example():
 
     transforms3d_from_pose = datatypes.Transforms3D.from_pose(
         [
-            [0.5, 0.2, 0.8, 0.0, 0.0, 0.3826834, 0.9238795],
-            [0.1, 0.2, 0.3, 0.0, 0.0, 0.0, 1.0],
+            [0.5, 0.2, 0.8, 0.0, 0.0, 45.0],
+            [0.1, 0.2, 0.3, 0.0, 0.0, 0.0],
         ]
     )
     logger.info(f"Transforms3D created from pose: {transforms3d_from_pose}")

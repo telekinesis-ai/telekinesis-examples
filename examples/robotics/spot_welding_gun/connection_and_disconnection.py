@@ -10,17 +10,17 @@ Usage:
 import argparse
 from loguru import logger
 
-from telekinesis.synapse.tools.welding_gun import SpotWeldingGun
+from telekinesis.synapse.tools.welding_guns import isaacsim
 
 
 def main(prim_path: str) -> None:
     """Connects to a spot-welding gun simulated in Isaac Sim, then disconnects."""
 
-    #===================== Create Gripper ======================================
-    gun = SpotWeldingGun()
+    # ===================== Create Gripper ======================================
+    gun = isaacsim.SpotWeldingGun()
 
     try:
-        #===================== Connect Gripper =================================
+        # ===================== Connect Gripper =================================
         gun.connect(simulation_prim_path=prim_path)
     except (ConnectionError, OSError) as e:
         logger.error(f"Error occurred: {e}")
