@@ -18,7 +18,7 @@ def load_lerobot_dataset_example():
     )
 
     # 2. Configure how the dataset should be loaded.
-    config = datasets.LeRobotDatasetConfig(
+    reader_config = datasets.LeRobotDatasetReaderConfig(
         episode_indices=[0, 1, 2],
     )
 
@@ -26,7 +26,7 @@ def load_lerobot_dataset_example():
     dataset = datasets.LeRobotDataset(
         repo_id=repo_id,
         local_path=local_path,
-        config=config,
+        config=reader_config,
     )
 
     logger.info("LeRobot dataset loaded successfully.")

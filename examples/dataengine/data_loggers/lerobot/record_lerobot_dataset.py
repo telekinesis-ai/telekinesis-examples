@@ -63,7 +63,7 @@ def record_lerobot_dataset_example():
     }
 
     # 3. Define the dataset writer config
-    config = datasets.LeRobotDatasetWriterConfig(
+    writer_config = datasets.LeRobotDatasetWriterConfig(
         tolerance_s=1e-4,
     )
     # Choose this based on your acquisition speed
@@ -77,7 +77,7 @@ def record_lerobot_dataset_example():
         fps=dataset_fps,
         features=features,
         robot_type="my_dummy_ur",
-        config=config,
+        config=writer_config,
     )
 
     #======================= Step 3: Record Episodes ========================

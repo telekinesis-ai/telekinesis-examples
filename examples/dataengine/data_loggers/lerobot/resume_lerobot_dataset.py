@@ -22,7 +22,7 @@ def resume_lerobot_dataset_example():
     )
 
     # 2. Define the dataset writer config
-    config = datasets.LeRobotDatasetWriterConfig(
+    writer_config = datasets.LeRobotDatasetWriterConfig(
         tolerance_s=1e-4,
     )
 
@@ -36,7 +36,7 @@ def resume_lerobot_dataset_example():
         repo_id=repo_id,
         local_path=local_path,
         mode="resume",
-        config=config,
+        config=writer_config,
     )
 
     #======================= Step 3: Record Episodes ========================
