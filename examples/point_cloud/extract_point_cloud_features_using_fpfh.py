@@ -2,26 +2,10 @@
 Demonstrates extracting FPFH descriptors from a point cloud.
 """
 
-import numpy as np
 from loguru import logger
 import rerun as rr
-from scipy.spatial import cKDTree
 
 from telekinesis import datatypes, vitreous
-
-
-def estimate_point_spacing(point_cloud):
-    """Estimate median nearest-neighbor spacing for a point cloud."""
-    points = np.asarray(point_cloud.positions)
-    if len(points) < 2:
-        return 0.0
-
-    tree = cKDTree(points)
-
-    # k=2 because the closest point is the point itself.
-    distances, _ = tree.query(points, k=2)
-    nearest_neighbor_distances = distances[:, 1]
-    return float(np.median(nearest_neighbor_distances))
 
 
 def _log_feature_summary(feature_name, features):
@@ -47,18 +31,16 @@ def extract_point_cloud_features_using_fpfh_example():
     target_point_cloud = datatypes.PointCloud.from_url(
         url=target_point_cloud_url, use_cache=True
     )
-    spacing = estimate_point_spacing(source_point_cloud)
     logger.info(f"Loaded source point cloud: {source_point_cloud}")
     logger.info(f"Loaded target point cloud: {target_point_cloud}")
-    logger.info(f"Estimated point spacing: {spacing}")
 
     # ===================== Run Skill ==========================================
     features = vitreous.extract_point_cloud_features_using_fpfh(
         point_cloud=source_point_cloud,
-        normal_radius=spacing * 2.0,
-        normal_max_neighbors=30,
-        feature_radius=spacing * 5.0,
-        feature_max_neighbors=100,
+        normal_radius=0.002,
+        normal_max_neighbors=20,
+        feature_radius=0.005,
+        feature_max_neighbors=30,
     )
 
     # ===================== Log ================================================
