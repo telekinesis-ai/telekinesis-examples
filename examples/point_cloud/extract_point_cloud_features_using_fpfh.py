@@ -7,14 +7,6 @@ import rerun as rr
 
 from telekinesis import datatypes, vitreous
 
-
-def _log_feature_summary(feature_name, features):
-    logger.success(f"Results: {features}")
-    logger.info(f"{feature_name} shape: {getattr(features, 'shape', None)}")
-    logger.info(f"{feature_name} ndim: {getattr(features, 'ndim', None)}")
-    logger.info(f"{feature_name} dtype: {getattr(features, 'dtype', None)}")
-
-
 def extract_point_cloud_features_using_fpfh_example():
     """
     Extract Fast Point Feature Histogram descriptors from a point cloud.
@@ -45,7 +37,10 @@ def extract_point_cloud_features_using_fpfh_example():
 
     # ===================== Log ================================================
     logger.success(f"Extracted FPFH features for {source_point_cloud}")
-    _log_feature_summary("FPFH feature matrix", features)
+    logger.success(f"Results: {features}")
+    logger.info(
+        f"FPFH feature matrix: shape={features.shape}, ndim={features.ndim}, dtype={features.dtype}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("extract_point_cloud_features_using_fpfh_example", spawn=True)

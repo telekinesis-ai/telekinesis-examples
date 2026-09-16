@@ -23,55 +23,6 @@ def extract_fpfh_features(point_cloud):
     )
 
 
-def match_features(source_features, target_features):
-    """Match feature descriptors while tolerating minor SDK naming differences."""
-    from telekinesis import vitreous
-
-    kwargs_options = (
-        {
-            "source_features": source_features,
-            "target_features": target_features,
-        },
-        {
-            "source_feature_descriptors": source_features,
-            "target_feature_descriptors": target_features,
-        },
-        {
-            "features1": source_features,
-            "features2": target_features,
-        },
-    )
-
-    last_error = None
-    for kwargs in kwargs_options:
-        try:
-            correspondences = vitreous.match_features_using_kdtree(
-                **kwargs,
-                use_absolute_scale=False,
-                use_crosscheck=True,
-                use_tuple_test=False,
-                tuple_scale=0.95,
-                max_correspondences=5000,
-            )
-            if isinstance(correspondences, (tuple, list)) and len(correspondences) == 2:
-                return np.column_stack(correspondences)
-            return correspondences
-        except TypeError as exc:
-            last_error = exc
-
-    if last_error is not None:
-        raise last_error
-
-    raise RuntimeError("Failed to match features using KD-tree.")
-
-
-def _log_array_summary(name, array):
-    logger.success(f"Results: {array}")
-    logger.info(f"{name} shape: {getattr(array, 'shape', None)}")
-    logger.info(f"{name} ndim: {getattr(array, 'ndim', None)}")
-    logger.info(f"{name} dtype: {getattr(array, 'dtype', None)}")
-
-
 def match_features_using_kdtree_example():
     """
     Match source and target FPFH descriptors with a KD-tree.
@@ -94,15 +45,36 @@ def match_features_using_kdtree_example():
     # ===================== Run Skill ==========================================
     source_features = extract_fpfh_features(source_point_cloud)
     target_features = extract_fpfh_features(target_point_cloud)
-    correspondences = match_features(source_features, target_features)
+
+    from telekinesis import vitreous
+
+    correspondences = vitreous.match_features_using_kdtree(
+        source_features=source_features,
+        target_features=target_features,
+        cross_check=True,
+        tuple_test=False,
+        tuple_scale=0.95,
+        max_correspondences=5000,
+    )
+    if isinstance(correspondences, (tuple, list)) and len(correspondences) == 2:
+        correspondences = np.column_stack(correspondences)
 
     # ===================== Log ================================================
     logger.success(
         "Matched source and target point-cloud features using KD-tree search"
     )
-    _log_array_summary("Source FPFH feature matrix", source_features)
-    _log_array_summary("Target FPFH feature matrix", target_features)
-    _log_array_summary("Correspondence set", correspondences)
+    logger.success(f"Source FPFH features: {source_features}")
+    logger.info(
+        f"Source FPFH feature matrix: shape={source_features.shape}, ndim={source_features.ndim}, dtype={source_features.dtype}"
+    )
+    logger.success(f"Target FPFH features: {target_features}")
+    logger.info(
+        f"Target FPFH feature matrix: shape={target_features.shape}, ndim={target_features.ndim}, dtype={target_features.dtype}"
+    )
+    logger.success(f"Correspondences: {correspondences}")
+    logger.info(
+        f"Correspondence set: shape={correspondences.shape}, ndim={correspondences.ndim}, dtype={correspondences.dtype}"
+    )
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("match_features_using_kdtree_example", spawn=True)
