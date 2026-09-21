@@ -98,47 +98,97 @@ def _run_stream(stream: Stream, stop: threading.Event, seed: int) -> None:
         pub.delete()
     return seq
 
-
 def main(output_path: pathlib.Path, duration: float) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    print(f"Step 1/3: publish {len(STREAMS)} topics at their native rates")
+    # ------------------------------------------------------------
+    # Start recording
+    # ------------------------------------------------------------
+
+    print(f"Step 1/3: start MCAP recording to {output_path}")
+
+    mcap_logger = MCAPLogger(
+        output_path,
+        topics="**",
+    )
+    mcap_logger.start()
+
+    # ------------------------------------------------------------
+    # Start publishers
+    # ------------------------------------------------------------
+
+    print(f"\nStep 2/3: publish {len(STREAMS)} topics at their native rates")
+
     stop = threading.Event()
+
     threads = [
-        threading.Thread(target=_run_stream, args=(stream, stop, seed), name=stream.topic)
+        threading.Thread(
+            target=_run_stream,
+            args=(stream, stop, seed),
+            name=stream.topic,
+        )
         for seed, stream in enumerate(STREAMS)
     ]
+
     for thread in threads:
         thread.start()
-    for stream in STREAMS:
-        logger.info(f"publishing '{stream.topic}' at {stream.hz:g} Hz")
 
-    print(f"\nStep 2/3: subscribe to every topic ('**') and log to {output_path}")
-    mcap_logger = MCAPLogger(output_path)
+    for stream in STREAMS:
+        logger.info(
+            f"publishing '{stream.topic}' at {stream.hz:g} Hz"
+        )
+
     try:
         time.sleep(duration)
+
     finally:
+        # Stop publishers first so no more messages arrive while the
+        # MCAP writer is being finalized.
         stop.set()
+
         for thread in threads:
             thread.join()
+
+        # Now finalize the MCAP recording.
+        mcap_logger.stop()
+
         logger.success(
-            f"logged {mcap_logger.num_messages()} messages from topics: {mcap_logger.topics()}"
+            f"logged {mcap_logger.num_messages} messages "
+            f"from topics: {mcap_logger.topics}"
         )
-        mcap_logger.delete()
+
+    # ------------------------------------------------------------
+    # Read recording back
+    # ------------------------------------------------------------
 
     print(f"\nStep 3/3: read {output_path} back and summarize")
+
     counts: Counter = Counter()
     first_per_topic: dict = {}
+
     for topic, obj in MCAPLogger.read(output_path):
         counts[topic] += 1
+
         if topic not in first_per_topic:
             first_per_topic[topic] = obj
 
-    print(f"Decoded {sum(counts.values())} messages from {output_path}")
+    logger.info(
+        "Camera topics summary: "
+        f"{first_per_topic.get('camera').get('image').shape}"
+    )
+
+    print(
+        f"Decoded {sum(counts.values())} messages "
+        f"from {output_path}"
+    )
+
     for topic, n in counts.items():
-        print(f"  {topic}: {n} messages | sample: {first_per_topic[topic]!r}")
+        print(
+            f"  {topic}: {n} messages | "
+            f"sample: {first_per_topic[topic]!r}"
+        )
 
-
+        
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Run the publish -> log -> read -> summarize MCAP pipeline."
