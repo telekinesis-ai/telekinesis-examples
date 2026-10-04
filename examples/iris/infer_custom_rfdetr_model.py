@@ -6,19 +6,19 @@ import rerun as rr
 from telekinesis import datatypes, iris_backend
 
 
-def iris_inference_example():
-    """Run and visualize object detection using a deployed Iris model."""
+def infer_custom_rfdetr_model_example():
+    """Run and visualize inference using a deployed custom RF-DETR model."""
     # ===================== Load Image ======================================
     image = datatypes.Image.from_path(
         r"C:\Users\AmruthaVenkatesan\Documents\Telekinesis\Code"
-        r"\telekinesis-iris\dataset\epson_dataset_real\test\000046.jpg"
+        r"\telekinesis-iris\dataset\epson_dataset_real\test\000050.jpg"
     )
 
     # ===================== Run Skill ======================================
     detection_results, categories = iris_backend.infer(
         image=image,
-        model_name="epson_bin_picking",
-        threshold=0.5,
+        model_name="rfdetr_segmedium_epson_real",
+        threshold=0.3,
     )
 
     # ===================== Log ============================================
@@ -56,7 +56,7 @@ def iris_inference_example():
         )
 
     # ===================== Visualization (Optional) =======================
-    rr.init("iris_inference_example", spawn=True)
+    rr.init("infer_custom_rfdetr_model_example", spawn=True)
     datatypes.visualize(image, entity_path="/image/")
     datatypes.visualize(
         detection_results,
@@ -65,4 +65,4 @@ def iris_inference_example():
 
 
 if __name__ == "__main__":
-    iris_inference_example()
+    infer_custom_rfdetr_model_example()

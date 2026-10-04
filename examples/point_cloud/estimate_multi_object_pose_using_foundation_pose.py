@@ -10,7 +10,7 @@ import rerun as rr
 from telekinesis import datatypes, vitreous
 
 
-OBJECT_COUNT = 2
+OBJECT_COUNT = 10
 
 
 def estimate_multi_object_pose_using_foundation_pose_example():
