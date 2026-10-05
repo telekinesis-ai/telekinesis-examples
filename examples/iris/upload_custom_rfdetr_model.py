@@ -13,7 +13,7 @@ def deploy_custom_rfdetr_model_example(args: argparse.Namespace) -> None:
     # ===================== Load Model =========================================
 
     model_path = args.model
-    model_name = "rfdetr_segmedium_epson_real_original"
+    model_name = args.model_name
     class_names = [
         "black_cable_gland",
         "multi_pin_circular_connector",
@@ -40,6 +40,11 @@ if __name__ == "__main__":
         type=Path,
         required=True,
         help="Path to the exported RF-DETR ONNX model.",
+    )
+    parser.add_argument(
+        "--model-name",
+        required=True,
+        help="Name under which to register the RF-DETR model.",
     )
     args = parser.parse_args()
     deploy_custom_rfdetr_model_example(args)
