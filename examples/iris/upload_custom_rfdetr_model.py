@@ -1,5 +1,6 @@
 """Upload and register a custom RF-DETR model with Iris."""
 
+import argparse
 from pathlib import Path
 
 from loguru import logger
@@ -7,13 +8,11 @@ from loguru import logger
 from telekinesis import iris_backend
 
 
-def upload_custom_rfdetr_model_example():
+def deploy_custom_rfdetr_model_example(args: argparse.Namespace) -> None:
     """Upload an RF-DETR model and register its object classes."""
     # ===================== Load Model =========================================
-    model_path = Path(
-        r"C:\Users\AmruthaVenkatesan\Documents\Telekinesis\Code"
-        r"\telekinesis-iris\results\yu_model\model.onnx"
-    )
+
+    model_path = args.model
     model_name = "rfdetr_segmedium_epson_real_original"
     class_names = [
         "black_cable_gland",
@@ -35,4 +34,12 @@ def upload_custom_rfdetr_model_example():
 
 
 if __name__ == "__main__":
-    upload_custom_rfdetr_model_example()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--model",
+        type=Path,
+        required=True,
+        help="Path to the exported RF-DETR ONNX model.",
+    )
+    args = parser.parse_args()
+    deploy_custom_rfdetr_model_example(args)

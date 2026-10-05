@@ -1,26 +1,24 @@
 """Run object-detection inference using a deployed Iris model."""
 
+import argparse
+from pathlib import Path
+
 from loguru import logger
 import rerun as rr
 
 from telekinesis import datatypes, iris_backend
 
 
-def infer_custom_sam3_lora_model_example():
-    """Run and visualize inference using a deployed SAM3 LoRA model."""
+def infer_custom_rfdetr_model_remote_example(args: argparse.Namespace) -> None:
+    """Run and visualize inference using a deployed custom RF-DETR model."""
     # ===================== Load Image ======================================
-    image = datatypes.Image.from_path(
-        r"C:\Users\AmruthaVenkatesan\Documents\Telekinesis\Code"
-        r"\telekinesis-iris\dataset\epson_dataset_real\test\000046.jpg"
-    )
-    objects = ["black_cable_gland", "multi_pin_circular_connector", "panel_mount_pilot_light", "50_pin_male_Centronics_connector"]
+    image = datatypes.Image.from_path(args.image)
 
     # ===================== Run Skill ======================================
     detection_results, categories = iris_backend.infer(
         image=image,
-        model_name="sam3_lora_epson_real",
+        model_name="rfdetr_segmedium_epson_real",
         threshold=0.3,
-        prompt=objects,
     )
 
     # ===================== Log ============================================
@@ -28,28 +26,18 @@ def infer_custom_sam3_lora_model_example():
     logger.success(f"Results: {detection_results}")
 
     logger.info(f"Categories available: {categories}")
-    logger.info(
-        f"All detected object bounding boxes: {detection_results.bboxes}"
-    )
+    logger.info(f"All detected object bounding boxes: {detection_results.bboxes}")
     logger.info(f"All detected object scores: {detection_results.scores}")
-    logger.info(
-        "All detected object category IDs: "
-        f"{detection_results.category_ids}"
-    )
+    logger.info(f"All detected object category IDs: {detection_results.category_ids}")
 
     if len(detection_results) > 0:
         # Indexed object is of type `COCOObjectDetectionResult`.
         first_detection = detection_results[0]
         logger.info(f"Detected object at index 0: {first_detection}")
+        logger.info(f"Detected object at index 0 bounding box: {first_detection.bbox}")
+        logger.info(f"Detected object at index 0 score: {first_detection.score}")
         logger.info(
-            f"Detected object at index 0 bounding box: {first_detection.bbox}"
-        )
-        logger.info(
-            f"Detected object at index 0 score: {first_detection.score}"
-        )
-        logger.info(
-            "Detected object at index 0 category ID: "
-            f"{first_detection.category_id}"
+            f"Detected object at index 0 category ID: {first_detection.category_id}"
         )
         category_names = dict(zip(categories.ids, categories.names, strict=True))
         logger.info(
@@ -58,7 +46,7 @@ def infer_custom_sam3_lora_model_example():
         )
 
     # ===================== Visualization (Optional) =======================
-    rr.init("infer_custom_sam3_lora_model_example", spawn=True)
+    rr.init("infer_custom_rfdetr_model_example", spawn=True)
     datatypes.visualize(image, entity_path="/image/")
     datatypes.visualize(
         detection_results,
@@ -67,4 +55,12 @@ def infer_custom_sam3_lora_model_example():
 
 
 if __name__ == "__main__":
-    infer_custom_sam3_lora_model_example()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--image",
+        type=Path,
+        required=True,
+        help="Path to the image to send for remote inference.",
+    )
+    args = parser.parse_args()
+    infer_custom_rfdetr_model_remote_example(args)
