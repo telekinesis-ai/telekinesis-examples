@@ -12,7 +12,7 @@ def export_custom_sam3_lora_model_example(args: argparse.Namespace) -> None:
     artifact_path = export.export_model(
         checkpoint_path=args.checkpoint,
         output_dir=args.output_dir,
-        model_name="sam3-lora",
+        model_name=args.model_name,
         artifact_name="model",
     )
     logger.info(
@@ -34,6 +34,11 @@ if __name__ == "__main__":
         type=Path,
         required=True,
         help="Directory in which to save the exported model bundle.",
+    )
+    parser.add_argument(
+        "--model-name",
+        required=True,
+        help="SAM3 LoRA model name to store in the exported artifact.",
     )
     args = parser.parse_args()
     export_custom_sam3_lora_model_example(args)

@@ -12,7 +12,7 @@ def export_custom_rfdetr_model_example(args: argparse.Namespace) -> None:
     artifact_path = export.export_model(
         checkpoint_path=args.checkpoint,
         output_dir=args.output_dir,
-        model_name="seg-medium",
+        model_name=args.model_name,
         artifact_name="model",
     )
     logger.info(f"Exported RF-DETR model in ONNX format: {artifact_path.resolve()}")
@@ -31,6 +31,11 @@ if __name__ == "__main__":
         type=Path,
         required=True,
         help="Directory in which to save the exported ONNX model.",
+    )
+    parser.add_argument(
+        "--model-name",
+        required=True,
+        help="RF-DETR model variant name to store in the exported artifact.",
     )
     args = parser.parse_args()
     export_custom_rfdetr_model_example(args)

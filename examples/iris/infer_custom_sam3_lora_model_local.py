@@ -1,4 +1,4 @@
-"""Run SAM3 LoRA inference on one image."""
+"""Run local predictions with an exported Iris model."""
 
 import argparse
 from pathlib import Path
@@ -9,23 +9,24 @@ from loguru import logger
 from telekinesis.iris import deploy, visualization
 
 
-def infer_custom_sam3_lora_model_local_example(args: argparse.Namespace) -> None:
-    """Load one exported SAM3 LoRA model and predict one image."""
+def predict_model_example(args: argparse.Namespace) -> None:
+    """Load an exported model and predict one image."""
 
     # ===================== Load Model =====================================
     model = deploy.Model(
         args.model,
-        postprocess=deploy.SAM3PostprocessConfig(
-            confidence_threshold=0.5,
-            max_detections=100,
-            per_prompt_nms_threshold=0.5,
-            prompt_conflict_policy="best_prompt",
-            cross_prompt_iou_threshold=0.8,
-        ),
+        model_name=args.model_name,
+        class_names=args.class_names,
+        num_select=args.max_detections,
+        device=args.device,
     )
 
     # ===================== Run Skill ======================================
-    prediction = model.predict(args.image)
+    prediction = model.predict(
+        image=args.image,
+        confidence_threshold=args.confidence_threshold,
+        prompts=args.prompts,
+    )
     logger.info(f"Found {len(prediction)} detections in {args.image.name}")
     for box, score, class_id, class_name in zip(
         prediction.boxes,
@@ -40,7 +41,7 @@ def infer_custom_sam3_lora_model_local_example(args: argparse.Namespace) -> None
         )
 
     # ===================== Visualization =================================
-    rr.init("sam3_lora_inference", spawn=True)
+    rr.init("iris_prediction", spawn=True)
     visualization.visualize_prediction(args.image, prediction)
 
 
@@ -50,13 +51,40 @@ if __name__ == "__main__":
         "--model",
         type=Path,
         required=True,
-        help="Path to the exported SAM3 LoRA model bundle.",
+        help="Path to an exported ONNX model or Iris bundle.",
     )
     parser.add_argument(
         "--image",
         type=Path,
         required=True,
-        help="Path to the image on which to run inference.",
+        help="Path to the image on which to run prediction.",
     )
-    args = parser.parse_args()
-    infer_custom_sam3_lora_model_local_example(args)
+    parser.add_argument(
+        "--model-name",
+        help="Optional model name; the artifact extension selects the family when omitted.",
+    )
+    parser.add_argument(
+        "--class-names",
+        nargs="*",
+        help="Optional RFDETR class names or SAM3-LoRA prompt names.",
+    )
+    parser.add_argument(
+        "--prompts",
+        nargs="*",
+        help="Optional prompts for a SAM3-LoRA model.",
+    )
+    parser.add_argument(
+        "--confidence-threshold",
+        type=float,
+        help="Optional per-prediction confidence threshold.",
+    )
+    parser.add_argument(
+        "--max-detections",
+        type=int,
+        help="Maximum detections to return.",
+    )
+    parser.add_argument(
+        "--device",
+        help="PyTorch device for SAM3-LoRA, such as 'cuda' or 'cpu'.",
+    )
+    predict_model_example(parser.parse_args())
