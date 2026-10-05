@@ -14,11 +14,11 @@ from telekinesis.dataengine.data_loggers.detection.utils import merge_datasets
 
 
 INPUT_PATHS = [
-    Path("results/pipeline/yolo_converted"),
-    Path("results/pipeline/rfdetr_dataset"),
+    Path("C:\\Users\\AmruthaVenkatesan\\Documents\\Telekinesis\\Code\\telekinesis-iris\\dataset\\epson_dataset_real"),
+    Path("C:\\Users\\AmruthaVenkatesan\\Documents\\Telekinesis\\Code\\telekinesis-iris\\dataset\\epson_selected_coco"),
 ]
 
-OUTPUT_PATH = Path("results/merged_dataset")
+OUTPUT_PATH = Path("C:\\Users\\AmruthaVenkatesan\\Documents\\Telekinesis\\Code\\telekinesis-iris\\dataset\\epson_real_merged_dataset")
 OVERWRITE = True
 
 
