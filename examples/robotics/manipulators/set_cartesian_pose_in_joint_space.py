@@ -1,7 +1,7 @@
 """
 Move the TCP to a target pose along a joint-space-linear trajectory.
 
-Supports Universal Robots (UR), Epson, virtual, and Isaac Sim.
+Supports Universal Robots (UR), virtual, and Isaac Sim.
 
 Usage:
     python set_cartesian_pose_in_joint_space.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]

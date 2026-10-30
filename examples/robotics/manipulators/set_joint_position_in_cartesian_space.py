@@ -1,7 +1,7 @@
 """
 Move to a target joint configuration along a Cartesian motion trajectory.
 
-Supports Universal Robots (UR), Epson, virtual, and Isaac Sim.
+Supports Universal Robots (UR), virtual, and Isaac Sim.
 
 Usage:
     python set_joint_position_in_cartesian_space.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]

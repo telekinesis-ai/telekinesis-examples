@@ -1,7 +1,7 @@
 """
 Commands an asynchronous Cartesian move and interrupts it mid-trajectory with stop_cartesian_motion.
 
-Supports Universal Robots (UR), Epson, and Isaac Sim.
+Supports Universal Robots (UR), virtual, and Isaac Sim.
 
 Usage:
     python stop_cartesian_motion.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]
