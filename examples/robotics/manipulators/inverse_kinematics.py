@@ -22,7 +22,10 @@ def main():
     # Solve IK for a fixed target pose [x, y, z, rx, ry, rz] (m, deg)
     target_pose = [0.3, 0.3, 0.3, 180, 0, 0]
     try:
-        q = robot.inverse_kinematics(target_pose=target_pose)
+        q = robot.inverse_kinematics(target_poses=[target_pose])[0]
+        if q is None:
+            logger.error(f"No IK solution for {target_pose}")
+            return
         logger.success(f"IK solution: {q}")
 
         # ================ Visualization (Optional) ==============================

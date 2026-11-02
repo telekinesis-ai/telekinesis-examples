@@ -1,0 +1,228 @@
+# Bin picking: gearwheels placed on a grid inside plastic bins, with labeled
+# pipe distractors.
+#
+# Each top-level section is validated as a config from
+# telekinesis.illusion.config (named next to the section). Keys are the config
+# fields; unknown keys and invalid values are rejected with the key path of the
+# offending value. Omitted optional fields use the config defaults.
+#
+# Units: meters and radians, unless a comment says degrees.
+
+# DatasetConfig
+dataset:
+  name: bin_picking_example
+  num_images: 20
+  output_directory: output    # relative to the working directory
+  # ShardConfig
+  shard:
+    size: 10
+    name_template: "shard_{date}_{uuid}"
+  # WriterConfig
+  writer:
+    image_format: JPEG
+    jpg_quality: 90
+    max_size_gb: 50
+    dataset_format: coco           # coco, yolo, or null to only merge shards
+    split_ratios: [0.7, 0.2, 0.1]  # train, val, test
+    split_seed: 42
+    stratify: true
+    # CocoConfig
+    coco:
+      description: "Synthetic instance-segmentation dataset of gearwheels arranged in a grid inside industrial bins with labeled distractors."
+      url: "https://github.com/telekinesis-ai"
+      version: "1.0.0"
+      year: 2026
+      contributor: "Telekinesis AI"
+      licenses:
+        - id: 1
+          name: "Attribution-NonCommercial-ShareAlike 4.0 International"
+          url: "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+
+# RenderConfig
+renderer:
+  device: CUDA
+
+# CameraConfig
+camera:
+  field_of_view: 0.691111
+  clip_start: 0.1
+  clip_end: 1000.0
+  pixel_aspect_x: 1.0
+  pixel_aspect_y: 1.0
+  shift_x: 0.0
+  shift_y: 0.0
+  image_width: 820
+  image_height: 640
+
+# PhysicsConfig
+physics:
+  active: true
+  min_simulation_time_range: [0.1, 0.2]  # seconds
+  max_simulation_time_range: [0.3, 1.0]  # seconds
+  check_model_interval: 0.5
+  model_stopped_location_threshold: 0.01
+  model_stopped_rotation_threshold: 1.0
+  substeps_per_frame: 10
+  solver_iters: 10
+  verbose: false
+  use_volume_com: false
+
+# ModelConfig per entry. Every model has exactly one role group: part,
+# container or distractor. The role is the COCO supercategory. The category
+# name "distractor" leaves a model unlabeled. Keep category IDs consistent
+# across datasets.
+models:
+  - model_name: gearwheel_2
+    model_path: models/mechanical_parts/gearwheel_2.glb  # relative to asset_directory
+    groups: [part]
+    category_name: gear
+    category_id: 1
+    active_in_simulation: true
+    collision_shape: CONVEX_HULL
+    shading: AUTO_SMOOTH
+
+  - model_name: plastic_bin_2
+    model_path: models/bins/plastic_bin_2.glb
+    groups: [container]
+    category_name: distractor
+    collision_shape: MESH
+
+  - model_name: plastic_bin_3
+    model_path: models/bins/plastic_bin_3.glb
+    groups: [container]
+    category_name: distractor
+    collision_shape: MESH
+
+  - model_name: pipe_1
+    model_path: models/mechanical_parts/pipe_1.glb
+    groups: [distractor]
+    category_name: pipe
+    category_id: 2
+    active_in_simulation: true
+
+  - model_name: pipe_fixture_1
+    model_path: models/mechanical_parts/pipe_fixture_1.glb
+    groups: [distractor]
+    category_name: pipe_fixture
+    category_id: 3
+    active_in_simulation: true
+
+  - model_name: pipe_fixture_2
+    model_path: models/mechanical_parts/pipe_fixture_2.glb
+    groups: [distractor]
+    category_name: pipe_fixture
+    category_id: 3
+    active_in_simulation: true
+
+# LightConfig per entry. Their properties are sampled by randomizers.light.
+lights:
+  - light_name: bin_key
+    light_type: AREA
+  - light_name: bin_fill
+    light_type: SPOT
+
+# PoseSamplingConfig. Parts start at grid cells on the visible bin's top face
+# and settle with physics. Keep the visible parts within rows * cols * layers
+# (6 here), otherwise cells are reused and parts overlap.
+pose_sampling:
+  strategy: grid
+  min_height: 0.05
+  max_height: 0.08
+  face_sample_range: [0.1, 0.9]
+  grid:
+    rows: 3
+    cols: 2
+    layers: 1
+    layer_spacing: 0.03
+    xy_jitter: 0.1
+    z_rotation_range: [-180.0, 180.0]  # degrees
+    shuffle: true
+
+randomizers:
+  # InstanceRandomizerConfig per role: [min, max] visible instances per model
+  # and bounds on their total.
+  instance:
+    part:
+      counts: {gearwheel_2: [0, 6]}
+      min_num_total_models: 1
+      max_num_total_models: 5
+    container:
+      counts: {plastic_bin_2: [0, 1], plastic_bin_3: [0, 1]}
+      min_num_total_models: 1
+      max_num_total_models: 1
+    distractor:
+      counts: {pipe_1: [0, 2], pipe_fixture_1: [0, 2], pipe_fixture_2: [0, 2]}
+      min_num_total_models: 5
+      max_num_total_models: 10
+
+  # ModelPoseRandomizerConfig
+  model_pose:
+    max_tries: 10
+
+  # MaterialRandomizerConfig per rule. target_groups selects models by group;
+  # groups selects materials from the sub-directories of <assets>/materials.
+  material:
+    parts:
+      target_groups: [part]
+      groups: [metal]
+    containers:
+      target_groups: [container]
+      groups: [plastic]
+    distractors:
+      target_groups: [distractor]
+      groups: [metal]
+
+  # BackgroundRandomizerConfig. Groups are sub-directories of <assets>/hdris.
+  background:
+    groups: [indoor/industrial, outdoor/day]
+
+  # LightRandomizerConfig per light. {min, max} is sampled uniformly; a list
+  # of shapes is sampled as choices.
+  light:
+    bin_key:
+      properties:
+        power: {min: 40.0, max: 100.0}
+        color: {min: [0.85, 0.85, 0.85], max: [1.0, 1.0, 1.0]}
+        shape: [RECTANGLE, DISK]
+        size: {min: 0.3, max: 0.6}
+        size_y: {min: 0.2, max: 0.4}
+    bin_fill:
+      properties:
+        power: {min: 10.0, max: 30.0}
+        color: {min: [0.85, 0.85, 0.85], max: [1.0, 1.0, 1.0]}
+        radius: {min: 0.02, max: 0.05}
+        spot_size: {min: 0.785398, max: 1.308997}  # 45-75 degrees
+        spot_blend: {min: 0.3, max: 0.7}
+
+  # LightPoseRandomizerConfig per light, with ShellSamplerConfig params.
+  light_pose:
+    bin_key:
+      sampler: shell_sampler
+      min_distance: 0.3
+      max_tries: 100
+      params:
+        center: [plastic_bin_]  # model-name prefixes, or [x, y, z]
+        radius_min: 1.2
+        radius_max: 1.6
+        elevation_min: 50.0     # degrees
+        elevation_max: 80.0     # degrees
+    bin_fill:
+      sampler: shell_sampler
+      min_distance: 0.3
+      max_tries: 100
+      params:
+        center: [plastic_bin_]
+        radius_min: 1.2
+        radius_max: 1.6
+        elevation_min: 50.0
+        elevation_max: 80.0
+
+  # CameraPoseRandomizerConfig, with VolumeSamplerConfig params.
+  camera_pose:
+    sampler: volume_sampler
+    number_of_views: 2
+    params:
+      point_of_interst: [0.0, 0.0, 0.0]
+      distance_range: [0.2, 1.5]
+      inplane_rot_min: -30.0  # degrees
+      inplane_rot_max: 30.0   # degrees

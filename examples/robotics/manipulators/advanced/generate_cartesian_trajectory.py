@@ -98,13 +98,15 @@ def configure_actual_target(path: str, unit: str) -> None:
 def main():
     #===================== Create Trajectory Generator ===========================
     robot = UniversalRobotsUR10E(name='UR10e')
-    def ik_resolver(pose, seed): return robot.inverse_kinematics(pose, q_init=seed)
+    def ik_resolver(pose, seed): return robot.inverse_kinematics(target_poses=[pose], q_inits=[seed])[0]
 
     generator = LinearCartesianTrajectoryGenerator(
         ik_resolver=ik_resolver,
     )
 
-    seed = robot.inverse_kinematics(START_POSE, q_init=np.asarray(HOME_JOINTS, dtype=float))
+    seed = robot.inverse_kinematics(
+        target_poses=[START_POSE], q_inits=[np.asarray(HOME_JOINTS, dtype=float)]
+    )[0]
 
     # ==================== Run Skill ============================================
     states = generator.generate(
