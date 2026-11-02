@@ -105,7 +105,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=model_instance_randomizer,
         node_name="instance_randomizer_models",
     )
@@ -131,7 +131,7 @@ def main():
         target_models=["part_1", "part_2"],
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=model_pose_randomizer, node_name="pose_randomizer"
     )
 
@@ -142,7 +142,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=material_randomizer, node_name="material_randomizer"
     )
 
@@ -153,12 +153,12 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=background_randomizer, node_name="background_randomizer"
     )
 
     # Randomize point-light power/radius and sun strength/angular diameter.
-    randomizer.add_randomizer(
+    randomizer.add(
         LightRandomizer(
             config.LightRandomizerConfig(
                 properties={
@@ -171,7 +171,7 @@ def main():
         ),
         node_name="point_light_properties",
     )
-    randomizer.add_randomizer(
+    randomizer.add(
         LightRandomizer(
             config.LightRandomizerConfig(
                 properties={
@@ -184,7 +184,7 @@ def main():
         node_name="sun_properties",
     )
     # Sample overhead poses aimed at the parts, keeping the emitter clear.
-    randomizer.add_randomizer(
+    randomizer.add(
         LightPoseRandomizer(
             config.LightPoseRandomizerConfig(
                 sampler="shell_sampler",
@@ -210,7 +210,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=camera_pose_randomizer,
         node_name="camera_pose_randomizer",
     )

@@ -16,6 +16,7 @@ def main(argv: Sequence[str] = ()) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--config-file",
+        "--config_file",
         type=Path,
         default=(
             Path(__file__).resolve().parents[0]

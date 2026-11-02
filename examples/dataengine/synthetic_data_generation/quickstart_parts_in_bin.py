@@ -123,7 +123,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=model_instance_randomizer,
         node_name="instance_randomizer_models",
     )
@@ -137,7 +137,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=container_instance_randomizer,
         node_name="instance_randomizer_containers",
     )
@@ -163,7 +163,7 @@ def main():
         target_models=["part_1", "part_2"],
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=model_pose_randomizer, node_name="pose_randomizer"
     )
 
@@ -174,7 +174,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=material_randomizer,
         node_name="material_randomizer_parts",
     )
@@ -185,7 +185,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=material_randomizer,
         node_name="material_randomizer_crate",
     )
@@ -197,12 +197,12 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=background_randomizer, node_name="background_randomizer"
     )
 
     # Sample a softbox shape/size and a separate spotlight cone.
-    randomizer.add_randomizer(
+    randomizer.add(
         LightRandomizer(
             config.LightRandomizerConfig(
                 properties={
@@ -220,7 +220,7 @@ def main():
         ),
         node_name="area_light_properties",
     )
-    randomizer.add_randomizer(
+    randomizer.add(
         LightRandomizer(
             config.LightRandomizerConfig(
                 properties={
@@ -238,7 +238,7 @@ def main():
         node_name="spot_light_properties",
     )
     # Keep both emitters above and clear of the bin and parts.
-    randomizer.add_randomizer(
+    randomizer.add(
         LightPoseRandomizer(
             config.LightPoseRandomizerConfig(
                 sampler="shell_sampler",
@@ -263,7 +263,7 @@ def main():
         )
     )
 
-    randomizer.add_randomizer(
+    randomizer.add(
         randomizer_node=camera_pose_randomizer,
         node_name="camera_pose_randomizer",
     )
