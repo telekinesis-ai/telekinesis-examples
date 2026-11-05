@@ -79,6 +79,13 @@ python examples/sensors/webcam/capture_image_example.py                         
 
 
 
+### Dobot robot gallery
+
+View all 17 Dobot models with local URDF/SRDF descriptions in Rerun. See the
+[Dobot setup and gallery example](examples/robotics/manipulators/dobot/README.md)
+for installation and conversion steps. Supports offline kinematics and
+visualization; physical robot control is not implemented.
+
 ## Join The Telekinesis Community
 
 Telekinesis Agentic Skill Library is just the beginning. We're building a community of contributors who grow the Physical AI Skill ecosystem—researchers, hobbyists, and engineers alike. If you have a Skill, we want to see it. Release it, let others use and improve it, and watch it deploy in real-world systems.

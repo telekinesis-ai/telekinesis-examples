@@ -25,3 +25,7 @@ backup_assets/
 
 telekinesis-data/
 output/
+
+# Local Dobot checkout, generated descriptions, and Rerun recordings
+.cache/DOBOT_6Axis_ROS2_V4/
+.cache/dobot/
