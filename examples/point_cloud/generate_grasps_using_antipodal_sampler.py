@@ -23,14 +23,14 @@ def generate_grasps_using_antipodal_sampler_example():
 
     # The hosted mesh is already in metres. This example places its object
     # frame at the world origin, so returned poses stay in the mesh frame.
-    X_WO = np.eye(4, dtype=np.float32)
+    w_T_object = np.eye(4, dtype=np.float32)
 
     # ===================== Run Skill ==========================================
-    grasps, scores, antipodal_candidates = (
+    grasps, scores, antipodal_candidates, ray_backend = (
         vitreous.generate_grasps_using_antipodal_sampler(
             mesh=mesh,
             num_grasps=NUM_GRASPS,
-            X_WO=X_WO,
+            w_T_object=w_T_object,
             antipodal_thresh=-0.95,
             max_pt_dist=0.08,
             min_pt_dist=0.005,
@@ -42,6 +42,7 @@ def generate_grasps_using_antipodal_sampler_example():
     # ===================== Log ================================================
     logger.success(f"Generated {len(grasps.data)} antipodal grasps for {mesh}")
     logger.success(f"Grasps: {grasps}")
+    logger.info(f"Ray backend: {ray_backend}")
     logger.info(f"Scores (more negative is more antipodal): {scores.data}")
     logger.info(f"Contact pairs: {antipodal_candidates}")
     if len(grasps.data):
