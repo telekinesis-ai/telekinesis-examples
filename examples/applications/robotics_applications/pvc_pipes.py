@@ -94,7 +94,7 @@ try:
 
     # 2. Configure TCP offset (23 cm from flange)
     logger.info(f"Setting TCP offset: {TCP_OFFSET}")
-    robot.set_tcp(TCP_OFFSET)
+    robot.add_tcp("tool", TCP_OFFSET)
 
     # 3. Open gripper to start in known state
     logger.info(f"Opening gripper to {GRIPPER_OPEN_WIDTH_MM} mm.")
@@ -155,7 +155,7 @@ try:
             # 4g. Gentle descent into box using move_until_contact
             logger.info(f"[Pipe {pipe_index}] Descending into box with "
                         f"move_until_contact (gentle placement).")
-            # robot.move_until_contact(cartesian_speed=PLACE_CONTACT_SPEED,
+            # robot.move_until_contact(cartesian_velocity=PLACE_CONTACT_SPEED,
             #                          direction=PLACE_CONTACT_DIRECTION,
             #                          acceleration=PLACE_CONTACT_ACCEL)
             logger.info(f"[Pipe {pipe_index}] Contact detected; placement reached.")

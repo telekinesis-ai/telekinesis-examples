@@ -1,7 +1,8 @@
 """
 Demonstrates releasing an object held by a suction gripper.
 
-Supports Piab grippers.
+Supports Piab grippers, on real hardware or simulated in Isaac Sim. Also
+supported for the simulation-only isaacsim.SuctionGripper.
 
 Usage:
     python release.py --ip <ROBOT_IP>

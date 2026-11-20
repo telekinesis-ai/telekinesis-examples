@@ -26,8 +26,7 @@ import cv2
 import rerun as rr
 from rerun import blueprint as rrb
 
-from datatypes import io
-from telekinesis import cornea
+from telekinesis import cornea, datatypes
 
 ROOT_DIR = pathlib.Path(__file__).parent.parent.parent.resolve()
 DATA_DIR = ROOT_DIR / "telekinesis-data"
@@ -46,21 +45,24 @@ def conveyor_tracking_using_sam_example():
     """
     # Load image
     image_path = DATA_DIR / "images/conveyor_tracking.png"
-    image = io.load_image(image_path, keep_alpha=False)
+    image = datatypes.Image.from_path(image_path)
     logger.info(f"Loaded image shape: {image.to_numpy().shape}")
 
     # Define a bounding box: (x, y, width, height)
     height, width = image.to_numpy().shape[:2]
     x_min = width // 12
     y_min = height // 10
-    x_max = width // 1.5
-    y_max = height // 1.5
+    x_max = int(width // 1.5)
+    y_max = int(height // 1.5)
     bounding_box = [x_min, y_min, x_max, y_max]
 
     # Segment using SAM3
     result = cornea.segment_image_using_sam3(image=image,
                                            bboxes=[bounding_box])
-    annotations = result.to_list()
+    annotations = [
+        {"mask": a["segmentation"], "bbox": a["bbox"]}
+        for a in (r.as_mask() for r in result)
+    ]
 
     # Rerun visualization
     rr.init("conveyor_tracking_using_sam", spawn=False)
@@ -167,7 +169,7 @@ def depalletizing_using_sam_example():
     
     # Load image
     image_path = DATA_DIR / "images/depalletizing.png"
-    image = io.load_image(image_path)
+    image = datatypes.Image.from_path(image_path)
     logger.info(f"Loaded image shape: {image.to_numpy().shape}")
 
     # Define a bounding box: (x, y, width, height)
@@ -178,7 +180,10 @@ def depalletizing_using_sam_example():
         image=image,
         bboxes=[bounding_box],
     )
-    annotations = result.to_list()  
+    annotations = [
+        {"mask": a["segmentation"], "bbox": a["bbox"]}
+        for a in (r.as_mask() for r in result)
+    ]
 
     # Rerun visualization
     rr.init("depalletizing_using_sam", spawn=False)
@@ -285,7 +290,7 @@ def bin_picking_using_sam_example():
 
     # Load image
     image_path = DATA_DIR / "images/bin_picking_metal_2.jpg"
-    image = io.load_image(image_path)
+    image = datatypes.Image.from_path(image_path)
     logger.info(f"Loaded image shape: {image.to_numpy().shape}")
 
     # Define a bounding box: (x_min, y_min, x_max, y_max)
@@ -296,7 +301,10 @@ def bin_picking_using_sam_example():
         image=image,
         bboxes=[bounding_box],
     )
-    annotations = result.to_list()
+    annotations = [
+        {"mask": a["segmentation"], "bbox": a["bbox"]}
+        for a in (r.as_mask() for r in result)
+    ]
 
     # Rerun visualization
     rr.init("bin_picking_using_sam", spawn=False)
@@ -395,7 +403,7 @@ def ground_segmentation_using_sam_example():
     """
     # Load image
     image_path = DATA_DIR / "images/warehouse_ground.jpg"
-    image = io.load_image(image_path)
+    image = datatypes.Image.from_path(image_path)
     logger.info(f"Loaded image shape: {image.to_numpy().shape}")
 
     # Define a bounding box: (x_min, y_min, x_max, y_max)
@@ -406,7 +414,10 @@ def ground_segmentation_using_sam_example():
         image=image,
         bboxes=[bounding_box],
     )
-    annotations = result.to_list()
+    annotations = [
+        {"mask": a["segmentation"], "bbox": a["bbox"]}
+        for a in (r.as_mask() for r in result)
+    ]
 
     # Rerun visualization
     rr.init("ground_segmentation_using_sam", spawn=False)
@@ -505,7 +516,7 @@ def pedestrian_segmentation_using_sam_example():
     """
     # Load image
     image_path = DATA_DIR / "images/pedestrians.jpg"
-    image = io.load_image(image_path)
+    image = datatypes.Image.from_path(image_path)
     logger.info(f"Loaded image shape: {image.to_numpy().shape}")
 
     # Define a bounding box: (x_min, y_min, x_max, y_max)
@@ -516,7 +527,10 @@ def pedestrian_segmentation_using_sam_example():
         image=image,
         bboxes=[bounding_box],
     )
-    annotations = result.to_list()
+    annotations = [
+        {"mask": a["segmentation"], "bbox": a["bbox"]}
+        for a in (r.as_mask() for r in result)
+    ]
 
     # Rerun visualization
     rr.init("pedestrian_segmentation_using_sam", spawn=False)
@@ -615,7 +629,7 @@ def pcb_segmentation_using_sam_example():
     """
     # Load image
     image_path = DATA_DIR / "images/pcb.jpg"
-    image = io.load_image(image_path)
+    image = datatypes.Image.from_path(image_path)
     logger.info(f"Loaded image shape: {image.to_numpy().shape}")
 
     # Define a bounding box: (x_min, y_min, x_max, y_max)
@@ -626,7 +640,10 @@ def pcb_segmentation_using_sam_example():
         image=image,
         bboxes=[bounding_box],
     )
-    annotations = result.to_list()
+    annotations = [
+        {"mask": a["segmentation"], "bbox": a["bbox"]}
+        for a in (r.as_mask() for r in result)
+    ]
 
     # Rerun visualization
     rr.init("pcb_segmentation_using_sam", spawn=False)
@@ -725,7 +742,7 @@ def forklift_segmentation_using_sam_example():
     """
     # Load image
     image_path = DATA_DIR / "images/forklift.jpg"
-    image = io.load_image(image_path)
+    image = datatypes.Image.from_path(image_path)
     logger.info(f"Loaded image shape: {image.to_numpy().shape}")
 
     # Define a bounding box: (x_min, y_min, x_max, y_max)
@@ -736,7 +753,10 @@ def forklift_segmentation_using_sam_example():
         image=image,
         bboxes=[bounding_box],
     )
-    annotations = result.to_list()
+    annotations = [
+        {"mask": a["segmentation"], "bbox": a["bbox"]}
+        for a in (r.as_mask() for r in result)
+    ]
 
     # Rerun visualization
     rr.init("forklift_segmentation_using_sam", spawn=False)

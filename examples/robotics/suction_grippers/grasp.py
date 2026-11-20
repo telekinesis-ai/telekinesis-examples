@@ -1,7 +1,9 @@
 """
 Demonstrates grasping an object with a suction gripper.
 
-Supports Piab grippers.
+Supports Piab grippers, on real hardware or simulated in Isaac Sim. Also
+supported for the simulation-only isaacsim.SuctionGripper, whose grasp() takes
+no parameters - vacuum_level and unit do not apply to it.
 
 Usage:
     python grasp.py --ip <ROBOT_IP>

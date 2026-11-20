@@ -37,7 +37,6 @@ from telekinesis.medulla.cameras.realsense import RealSense
 from telekinesis import retina
 from telekinesis import cornea
 from telekinesis import pupil
-from datatypes import datatypes
 
 # ============================================================
 # HARDCODED / TUNABLE CONSTANTS
@@ -86,15 +85,15 @@ GRIPPER_OPEN_WIDTH_MM = 60  # near-fully open
 GRIPPER_CLOSE_FOR_GRASP = True  # use gripper.close
 
 # Vision
-DETECTION_PROMPT = "wrapped chocolate bars ."
-QWEN_PROMPT = "Can you find all chocolate bars in this image and return every of them ."
+DETECTION_OBJECTS = ["wrapped chocolate bars"]
+QWEN_OBJECTS = ["chocolate bars"]
 DETECTION_BOX_THRESHOLD = 0.30
 DETECTION_TEXT_THRESHOLD = 0.25
 SAM_THRESHOLD = 0.5
 PCA_AXIS_SAMPLE_PIXELS = 30  # pixel offset along principal axis for world-frame yaw
 
 # Bin ROI: first locate the blue bin, then ignore anything outside its bbox.
-BIN_DETECTION_PROMPT = "a blue bin ."
+BIN_DETECTION_OBJECTS = ["a blue bin"]
 BIN_BOX_THRESHOLD = 0.30
 BIN_TEXT_THRESHOLD = 0.25
 BIN_ROI_SHRINK_PX = 0  # erode bin bbox slightly to avoid grabbing the rim itself
@@ -207,13 +206,30 @@ def classify_color_from_mask(rgb_image: np.ndarray, mask: np.ndarray) -> str:
     return best
 
 
+def result_to_items(results):
+    """Convert a COCOObjectDetectionResults batch into a list of COCO-style dicts.
+
+    Each dict has "bbox" ([x, y, w, h] or None), "score", "category_id" and,
+    when the result carries a mask, "segmentation" (an (H, W) uint8 mask array).
+    """
+    items = []
+    for r in results:
+        item = {
+            "bbox": None if r.bbox is None else [float(v) for v in r.bbox],
+            "score": float(r.score),
+            "category_id": int(r.category_id),
+        }
+        if r.segmentation is not None:
+            item["segmentation"] = r.as_mask()["segmentation"]
+        items.append(item)
+    return items
+
+
 def get_camera_frame_context(camera, robot):
     """Fetch intrinsics + world_T_camera once per frame, reusable for many deprojections."""
-    fx, fy, h, w, ppx, ppy, model, coeffs = camera.get_intrinsics("color")
-    cam_intrinsics = np.array([[fx, 0.0, ppx],
-                               [0.0, fy, ppy],
-                               [0.0, 0.0, 1.0]], dtype=np.float32)
-    dist = np.array(coeffs, dtype=np.float64)
+    K, coeffs = camera.get_parameter("intrinsics", stream="color")
+    cam_intrinsics = np.asarray(K, dtype=np.float32)
+    dist = np.asarray(coeffs, dtype=np.float64)
 
     tcp_pose = robot.get_cartesian_pose()  # [x,y,z,rx,ry,rz] deg
     base_T_tcp = tfutils.pose_to_transformation_matrix(tcp_pose, rot_type='deg')
@@ -236,15 +252,15 @@ def deproject_pixel(pixel_xy, depth_image_m, cam_intrinsics, dist, world_T_camer
             return None, None
         depth_val = float(np.median(valid))
 
-    world_T_point_mat = pupil.project_pixel_to_world_point(
+    world_point = pupil.project_pixel_to_world_point(
         camera_intrinsics=cam_intrinsics,
         distortion_coefficients=dist,
         pixel=[float(px), float(py)],
         depth=depth_val,
         world_T_camera=world_T_camera,
     )
-    world_T_point = world_T_point_mat.to_numpy() if hasattr(
-        world_T_point_mat, "to_numpy") else np.asarray(world_T_point_mat)
+    world_T_point = np.eye(4)
+    world_T_point[:3, 3] = np.asarray(world_point.to_numpy(), dtype=float).reshape(3)
     return world_T_point, depth_val
 
 
@@ -295,7 +311,7 @@ def main():
 
     robot = UniversalRobotsUR10E()
     gripper = OnRobotRG2()
-    camera = RealSense(name=CAMERA_NAME)
+    camera = RealSense(name=CAMERA_NAME, warmup_frames=30)
 
     robot_connected = False
     gripper_connected = False
@@ -306,7 +322,7 @@ def main():
         logger.info(f"Connecting to UR10E at {ROBOT_IP}")
         robot.connect(ip=ROBOT_IP)
         robot_connected = True
-        robot.set_tcp(TCP_OFFSET)
+        robot.add_tcp("tool", TCP_OFFSET)
         logger.info("Robot connected and TCP set")
 
         logger.info(f"Connecting to OnRobot RG2 at {GRIPPER_IP}")
@@ -316,7 +332,7 @@ def main():
         logger.info("Gripper connected")
 
         logger.info("Connecting to RealSense camera")
-        camera.connect(warmup_frames=30)
+        camera.connect()
         camera_connected = True
         logger.info("Camera connected")
 
@@ -340,8 +356,8 @@ def main():
             time.sleep(SETTLE_AFTER_MOVE_S)
 
             # --- Capture RGB + Depth ---
-            rgb = camera.capture_color_image()
-            depth_m = camera.capture_depth_image()
+            rgb = camera.capture_image().to_numpy()
+            depth_m = camera.capture_depth().to_numpy()
             if rgb is None or depth_m is None:
                 logger.error("Failed to capture RGB or depth frame")
                 break
@@ -352,12 +368,12 @@ def main():
             # --- Locate the blue bin first: any detection outside this ROI is ignored ---
             rr.log("robot/state", rr.TextLog("locating bin", level=rr.TextLogLevel.INFO))
             logger.info(
-                f"Running Grounding DINO with prompt='{BIN_DETECTION_PROMPT}' to find blue bin")
+                f"Running Grounding DINO with objects={BIN_DETECTION_OBJECTS} to find blue bin")
             try:
 
                 bin_annotations, _ = retina.detect_objects_using_grounding_dino(
                     image=rgb,
-                    prompt=BIN_DETECTION_PROMPT,
+                    objects=BIN_DETECTION_OBJECTS,
                     box_threshold=BIN_BOX_THRESHOLD,
                     text_threshold=BIN_TEXT_THRESHOLD,
                 )
@@ -365,8 +381,7 @@ def main():
                 logger.exception(f"Bin detection failed: {e}")
                 break
 
-            bin_ann_list = bin_annotations.to_list() if hasattr(
-                bin_annotations, "to_list") else list(bin_annotations)
+            bin_ann_list = result_to_items(bin_annotations)
             if len(bin_ann_list) == 0:
                 logger.warning(
                     "Blue bin not detected; skipping this iteration (refuse to grasp outside bin)")
@@ -401,9 +416,9 @@ def main():
 
             # 1) QWEN
             # try:
-            #     logger.info(f"Running QWEN with prompt='{QWEN_PROMPT}'")
-            #     qwen_ann = retina.detect_objects_using_qwen(image=rgb, prompt=QWEN_PROMPT)
-            #     qwen_list = qwen_ann.to_list() if hasattr(qwen_ann, "to_list") else list(qwen_ann)
+            #     logger.info(f"Running QWEN with objects={QWEN_OBJECTS}")
+            #     qwen_ann, _cats = retina.detect_objects_using_qwen(image=rgb, objects=QWEN_OBJECTS)
+            #     qwen_list = result_to_items(qwen_ann)
             #     # Keep only items with a valid bbox
             #     qwen_list = [a for a in qwen_list if a.get("bbox") is not None]
             #     if len(qwen_list) > 0:
@@ -417,19 +432,18 @@ def main():
 
             # 2) Grounding DINO fallback
             if detector_used is None:
-                logger.info(f"Running Grounding DINO with prompt='{DETECTION_PROMPT}'")
+                logger.info(f"Running Grounding DINO with objects={DETECTION_OBJECTS}")
                 try:
                     det_annotations, det_categories = retina.detect_objects_using_grounding_dino(
                         image=rgb,
-                        prompt=DETECTION_PROMPT,
+                        objects=DETECTION_OBJECTS,
                         box_threshold=DETECTION_BOX_THRESHOLD,
                         text_threshold=DETECTION_TEXT_THRESHOLD,
                     )
                 except Exception as e:
                     logger.exception(f"Grounding DINO detection failed: {e}")
                     break
-                ann_list_all = det_annotations.to_list() if hasattr(
-                    det_annotations, "to_list") else list(det_annotations)
+                ann_list_all = result_to_items(det_annotations)
                 detector_used = "grounding_dino"
                 logger.info(f"Grounding DINO returned {len(ann_list_all)} chocolate detections")
 
@@ -501,8 +515,7 @@ def main():
                 logger.exception(f"SAM segmentation failed: {e}")
                 break
 
-            sam_list = sam_annotations.to_list() if hasattr(
-                sam_annotations, "to_list") else list(sam_annotations)
+            sam_list = result_to_items(sam_annotations)
             logger.info(f"SAM returned {len(sam_list)} masks")
             if len(sam_list) == 0:
                 logger.warning("SAM produced no masks; aborting iteration")
@@ -579,14 +592,14 @@ def main():
 
                 # --- PCA on the mask for grasp orientation + centroid ---
                 try:
-                    centroid_dt, eigenvectors_dt, eigenvalues_dt, principal_angle_dt = pupil.calculate_image_pca(
-                        image=mask)
+                    centroid_dt, eigenvectors_dt, eigenvalues_dt, principal_angle_dt = pupil.calculate_mask_pca(
+                        mask=mask)
                 except Exception as e:
                     logger.exception(f"Object {obj_idx}: PCA failed: {e}")
                     continue
 
                 # Extract numpy values (pixel-space centroid + principal eigenvector).
-                # `pupil.calculate_image_pca` returns eigenvectors as a 2x2 matrix where each
+                # `pupil.calculate_mask_pca` returns eigenvectors as a 2x2 matrix where each
                 # eigenvector is a COLUMN (np.linalg.eig convention), sorted so the principal
                 # axis is column 0. Earlier we flattened with reshape(-1) and took ev[:2],
                 # which mixes principal_x with secondary_x — that's why the overlay was off.
@@ -724,7 +737,7 @@ def main():
                 try:
                     logger.info("move_until_contact descending into bin (placing)")
                     robot.move_until_contact(
-                        cartesian_speed=[0.0, 0.0, -0.05, 0.0, 0.0, 0.0],
+                        cartesian_velocity=[0.0, 0.0, -0.05, 0.0, 0.0, 0.0],
                         direction=[0.0, 0.0, -1.0, 0.0, 0.0, 0.0],
                         acceleration=0.5,
                     )

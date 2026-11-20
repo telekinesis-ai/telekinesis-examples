@@ -1,7 +1,10 @@
 """
 Demonstrates setting the vacuum level of a suction gripper.
 
-Supports Piab grippers.
+Supports Piab grippers, on real hardware or simulated in Isaac Sim. Also
+supported for the simulation-only isaacsim.SuctionGripper, which takes the same
+vacuum_level/unit arguments but only stores the value for later readback -
+the simulation does not model vacuum level, so the grip is unaffected.
 
 Usage:
     python set_vacuum_level.py --ip <ROBOT_IP>

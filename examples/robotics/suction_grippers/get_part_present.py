@@ -1,7 +1,9 @@
 """
 Demonstrates reading whether a suction gripper currently holds an object.
 
-Supports Piab grippers on MODBUS_RTU protocol.
+Supports Piab grippers on all protocols (URCAP, MODBUS_RTU, ISAACSIM); this
+example uses MODBUS_RTU on real hardware, or Isaac Sim with --prim_path. Also
+supported for the simulation-only isaacsim.SuctionGripper.
 
 Usage:
     python get_part_present.py --serial-port COM3

@@ -47,7 +47,7 @@ TRAY_CONTACT_TRAVEL = 0.05  # max travel of move_until_contact past pre-pick [m]
 TRAY_RETREAT_DIST = 0.03   # retreat distance after grasp [m]
 
 # move_until_contact parameters: speed in TCP frame (linear m/s, angular deg/s).
-# Move down along tray-local -Z. We push 'cartesian_speed' as a base-frame TCP velocity
+# Move down along tray-local -Z. We push 'cartesian_velocity' as a base-frame TCP velocity
 # computed from the tray normal at runtime.
 CONTACT_SPEED_LINEAR = 0.02  # m/s
 CONTACT_ACC = 0.5            # m/s^2
@@ -174,7 +174,7 @@ def main() -> None:
 
         # Apply TCP offset (23 cm along flange Z)
         logger.info(f"Setting TCP offset {TCP_OFFSET} on the controller.")
-        robot.set_tcp(TCP_OFFSET)
+        robot.add_tcp("tool", TCP_OFFSET)
 
         # ---- Step 2: Connect to gripper ----
         logger.info(f"Connecting to OnRobot RG2 at {GRIPPER_IP} (protocol={GRIPPER_PROTOCOL}) ...")
@@ -231,7 +231,7 @@ def main() -> None:
                 #     f"(speed={contact_vel}, direction={contact_dir})."
                 # )
                 # robot.move_until_contact(
-                #     cartesian_speed=contact_vel,
+                #     cartesian_velocity=contact_vel,
                 #     direction=contact_dir,
                 #     acceleration=CONTACT_ACC,
                 # )

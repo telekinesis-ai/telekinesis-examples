@@ -25,7 +25,6 @@ from telekinesis.tf import tfutils
 
 # Skill libraries
 from telekinesis import retina, cornea, pupil
-from datatypes import datatypes
 
 # ============================================================================
 # Signal handling — reliable Ctrl+C even when robot SDK blocks in C extensions
@@ -117,7 +116,7 @@ CLASS_GRAY_SMALL = 2
 MAX_PICK_ITERATIONS = 100   # avoid infinite loops
 SCAN_SETTLE_S = 0.4
 GRIPPER_OPEN_MM = 70
-# Camera intrinsics will be populated at runtime via camera.get_intrinsics("color")
+# Camera intrinsics will be populated at runtime via camera.get_parameter("intrinsics", stream="color")
 # placeholders here; actual values filled at runtime.
 CAMERA_INTRINSICS_MAT = None  # 3x3
 CAMERA_DISTORTION = None      # list of coeffs
@@ -179,6 +178,25 @@ def _log_rr_text(entity: str, text: str):
         logger.warning(f"rerun log text failed for {entity}: {e}")
 
 
+def result_to_items(results):
+    """Convert a COCOObjectDetectionResults batch into a list of COCO-style dicts.
+
+    Each dict has "bbox" ([x, y, w, h] or None), "score", "category_id" and,
+    when the result carries a mask, "segmentation" (an (H, W) uint8 mask array).
+    """
+    items = []
+    for r in results:
+        item = {
+            "bbox": None if r.bbox is None else [float(v) for v in r.bbox],
+            "score": float(r.score),
+            "category_id": int(r.category_id),
+        }
+        if r.segmentation is not None:
+            item["segmentation"] = r.as_mask()["segmentation"]
+        items.append(item)
+    return items
+
+
 def detect_bin(rgb_image):
     """Detect the blue bin. Try Grounding DINO first, fallback to Qwen, then to HSV blue filter.
     Returns bbox in XYXY pixel coords (x0,y0,x1,y1) or None.
@@ -188,11 +206,11 @@ def detect_bin(rgb_image):
     try:
         anns, _cats = retina.detect_objects_using_grounding_dino(
             image=rgb_image,
-            prompt="a blue bin .",
+            objects=["a blue bin"],
             box_threshold=BIN_DETECTION_SCORE_THRESHOLD,
             text_threshold=BIN_DETECTION_SCORE_THRESHOLD,
         )
-        ann_list = anns.to_list()
+        ann_list = result_to_items(anns)
         if len(ann_list) > 0:
             # take highest-score (first) result
             best = max(ann_list, key=lambda a: a.get("score")
@@ -205,11 +223,11 @@ def detect_bin(rgb_image):
 
     # Fallback: Qwen
     try:
-        anns = retina.detect_objects_using_qwen(
+        anns, _cats = retina.detect_objects_using_qwen(
             image=rgb_image,
-            prompt="blue bin",
+            objects=["blue bin"],
         )
-        ann_list = anns.to_list()
+        ann_list = result_to_items(anns)
         if len(ann_list) > 0:
             best = ann_list[0]
             x, y, w, h = best["bbox"]
@@ -226,12 +244,7 @@ def detect_bin(rgb_image):
             lower_bound=(100, 80, 40),
             upper_bound=(135, 255, 255),
         )
-        ann_dict = ann.to_dict()
-        labeled_mask = ann_dict["labeled_mask"]
-        if hasattr(labeled_mask, "to_numpy"):
-            mask = labeled_mask.to_numpy()
-        else:
-            mask = np.array(labeled_mask)
+        mask = np.asarray(ann.data)
         mask_bin = (mask > 0).astype(np.uint8) * 255
         contours, _ = cv2.findContours(mask_bin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         if len(contours) == 0:
@@ -265,11 +278,11 @@ def detect_screws_in_bin(rgb_image, bin_bbox_xyxy):
     try:
         anns, _cats = retina.detect_objects_using_grounding_dino(
             image=patch,
-            prompt="screws .",
+            objects=["screws"],
             box_threshold=SCREW_DETECTION_SCORE_THRESHOLD,
             text_threshold=SCREW_DETECTION_TEXT_THRESHOLD,
         )
-        ann_list = anns.to_list()
+        ann_list = result_to_items(anns)
         logger.info(f"Grounding DINO found {len(ann_list)} screw candidates")
         for a in ann_list:
             bx, by, bw, bh = a["bbox"]
@@ -281,11 +294,11 @@ def detect_screws_in_bin(rgb_image, bin_bbox_xyxy):
     # If nothing found, fallback to Qwen
     if len(detections_xyxy_full) == 0:
         try:
-            anns = retina.detect_objects_using_qwen(
+            anns, _cats = retina.detect_objects_using_qwen(
                 image=patch,
-                prompt="Find all screws on gray tray .",
+                objects=["screws on gray tray"],
             )
-            ann_list = anns.to_list()
+            ann_list = result_to_items(anns)
             logger.info(f"Qwen found {len(ann_list)} screw candidates")
             for a in ann_list:
                 bx, by, bw, bh = a["bbox"]
@@ -316,7 +329,7 @@ def segment_screw(rgb_image, bbox_xyxy):
             bboxes=[bbox_xyxy],
             mask_threshold=0.5,
         )
-        ann_list = anns.to_list() if hasattr(anns, "to_list") else list(anns.to_list())
+        ann_list = result_to_items(anns)
         if len(ann_list) == 0:
             logger.warning("SAM returned no annotations, falling back to BiRefNet on cropped patch")
             return _segment_with_birefnet_crop(rgb_image, bbox_xyxy)
@@ -330,7 +343,9 @@ def segment_screw(rgb_image, bbox_xyxy):
         # the same size as the image using polygons or counts.
         H, W = rgb_image.shape[:2]
         mask = np.zeros((H, W), dtype=np.uint8)
-        if isinstance(seg, list) and len(seg) > 0 and isinstance(seg[0], (list, np.ndarray)):
+        if isinstance(seg, np.ndarray):
+            mask = (seg > 0).astype(np.uint8) * 255
+        elif isinstance(seg, list) and len(seg) > 0 and isinstance(seg[0], (list, np.ndarray)):
             # polygon list
             for poly in seg:
                 pts = np.array(poly, dtype=np.float32).reshape(-1, 2).astype(np.int32)
@@ -357,10 +372,8 @@ def _segment_with_birefnet_crop(rgb_image, bbox_xyxy):
     patch = rgb_image[y0:y1, x0:x1].copy()
     full_mask = np.zeros((H, W), dtype=np.uint8)
     try:
-        ann = cornea.segment_image_using_foreground_birefnet(image=patch, mask_threshold=0)
-        ann_dict = ann.to_dict()
-        lm = ann_dict["labeled_mask"]
-        local = lm.to_numpy() if hasattr(lm, "to_numpy") else np.array(lm)
+        ann = cornea.segment_image_foreground_using_birefnet(image=patch, mask_threshold=0)
+        local = np.asarray(ann.data)
         local_bin = (local > 0).astype(np.uint8) * 255
         full_mask[y0:y1, x0:x1] = local_bin
     except BaseException as e:
@@ -381,14 +394,14 @@ def classify_color_on_mask(rgb_image, mask):
 
 
 def compute_pca_on_mask(mask):
-    """Use pupil.calculate_image_pca. Returns (centroid_xy (np.array shape (2,)), principal_axis_xy (np.array shape (2,)), eigenvalues (np.array)).
+    """Use pupil.calculate_mask_pca. Returns (centroid_xy (np.array shape (2,)), principal_axis_xy (np.array shape (2,)), eigenvalues (np.array)).
 
-    Note: pupil.calculate_image_pca returns eigenvectors as a 2x2 matrix with eigenvectors as COLUMNS
+    Note: pupil.calculate_mask_pca returns eigenvectors as a 2x2 matrix with eigenvectors as COLUMNS
     (np.linalg.eig convention). The principal axis is eigvec_mat[:, 0].
     Centroid is already (x, y).
     """
     # mask should be binary uint8
-    centroid_dt, eigvec_dt, eigval_dt, principal_angle_dt = pupil.calculate_image_pca(mask)
+    centroid_dt, eigvec_dt, eigval_dt, principal_angle_dt = pupil.calculate_mask_pca(mask)
     # centroid is Position2D
     centroid = centroid_dt.to_numpy().reshape(-1)[:2]
     # eigvec is Mat2X2
@@ -430,7 +443,9 @@ def deproject_pixel_to_world(pixel_xy, depth_value_m, world_T_camera_mat):
         depth=float(depth_value_m),
         world_T_camera=world_T_camera_mat,
     )
-    return res.to_numpy()
+    world_T_point = np.eye(4)
+    world_T_point[:3, 3] = np.asarray(res.to_numpy(), dtype=float).reshape(3)
+    return world_T_point
 
 
 def get_world_T_camera(robot):
@@ -581,10 +596,10 @@ def place_at_box(robot, gripper, box_pose):
     # # Use move_until_contact for placing (per user preference)
     # try:
     #     logger.info("Place: moving until contact (downward)")
-    #     cartesian_speed = [0.0, 0.0, -0.05, 0.0, 0.0, 0.0]   # 5 cm/s downward
+    #     cartesian_velocity = [0.0, 0.0, -0.05, 0.0, 0.0, 0.0]   # 5 cm/s downward
     #     direction = [0.0, 0.0, -1.0, 0.0, 0.0, 0.0]
     #     robot.move_until_contact(
-    #         cartesian_speed=cartesian_speed,
+    #         cartesian_velocity=cartesian_velocity,
     #         direction=direction,
     #         acceleration=CART_ACC_M_S2,
     #     )
@@ -651,8 +666,8 @@ def scan_and_choose_screw(robot, camera, iteration_idx, bin_bbox):
     """
     logger.info(f"[iter {iteration_idx}] Capturing RGB and depth at scan pose")
     time.sleep(SCAN_SETTLE_S)
-    rgb = camera.capture_color_image()
-    depth = camera.capture_depth_image()
+    rgb = camera.capture_image().to_numpy()
+    depth = camera.capture_depth().to_numpy()
     if rgb is None or depth is None:
         logger.error("Failed to capture RGB or depth")
         return None
@@ -802,7 +817,7 @@ def main():
         robot = UniversalRobotsUR10E()
         robot.connect(ROBOT_IP)
         # Set TCP offset (rx=ry=rz=0, just a Z offset from flange)
-        robot.set_tcp([0.0, 0.0, TCP_OFFSET_M, 0.0, 0.0, 0.0])
+        robot.add_tcp("tool", [0.0, 0.0, TCP_OFFSET_M, 0.0, 0.0, 0.0])
         logger.success("Robot connected and TCP offset set")
 
         # Connect gripper
@@ -819,15 +834,12 @@ def main():
 
         # Read intrinsics
         global CAMERA_INTRINSICS_MAT, CAMERA_DISTORTION
-        fx, fy, h_im, w_im, ppx, ppy, model, coeffs = camera.get_intrinsics("color")
-        CAMERA_INTRINSICS_MAT = np.array(
-            [[fx, 0.0, ppx], [0.0, fy, ppy], [0.0, 0.0, 1.0]],
-            dtype=np.float32,
-        )
+        K, coeffs = camera.get_parameter("intrinsics", stream="color")
+        CAMERA_INTRINSICS_MAT = np.asarray(K, dtype=np.float32)
         CAMERA_DISTORTION = list(coeffs)
         logger.info(
-            f"Camera intrinsics: fx={fx} fy={fy} ppx={ppx} ppy={ppy} "
-            f"model={model} h={h_im} w={w_im} dist={coeffs}"
+            f"Camera intrinsics: fx={K[0][0]} fy={K[1][1]} ppx={K[0][2]} ppy={K[1][2]} "
+            f"dist={coeffs}"
         )
 
         # Move to HOME
@@ -855,7 +867,7 @@ def main():
             speed=CART_SPEED_M_S,
             acceleration=CART_ACC_M_S2,
         )
-        rgb = camera.capture_color_image()
+        rgb = camera.capture_image().to_numpy()
         bin_bbox = detect_bin(rgb)
         # Main loop: scan, pick, place, repeat
         for it in range(MAX_PICK_ITERATIONS):
