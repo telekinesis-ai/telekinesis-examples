@@ -2,7 +2,6 @@
 # Strategy: scan -> QWEN (fallback GDINO) -> SAM masks -> classify by area -> PCA grasp -> pick/place
 
 import signal
-import sys
 import time
 import numpy as np
 import cv2
@@ -14,7 +13,7 @@ from telekinesis import retina, cornea, pupil
 from telekinesis.medulla.cameras import RealSense
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
-from telekinesis.synapse import utils as tfutils
+from telekinesis.tf import tfutils
 
 # =========================================================================
 # HARDCODED / TUNABLE CONSTANTS

@@ -5,7 +5,6 @@
 
 import os
 import signal
-import sys
 import time
 import numpy as np
 import cv2
@@ -21,9 +20,8 @@ except ImportError:
 # Telekinesis SDK
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
-from telekinesis.synapse.tools.parallel_grippers import abstract_parallel_gripper
 from telekinesis.medulla.cameras.realsense import RealSense
-from telekinesis.synapse import utils as tfutils
+from telekinesis.tf import tfutils
 
 # Skill libraries
 from telekinesis import retina, cornea, pupil

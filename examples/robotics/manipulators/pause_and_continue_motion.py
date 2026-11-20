@@ -1,7 +1,7 @@
 """
 Start an asynchronous joint move, pause it mid-motion, then continue it.
 
-Supports Epson, virtual, and Isaac Sim.
+Supports Epson, Dobot, virtual, and Isaac Sim.
 
 Usage:
     python pause_and_continue_motion.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]

@@ -10,7 +10,7 @@ from loguru import logger
 import rerun as rr
 
 from datatypes import datatypes
-from telekinesis.synapse import utils as tfutils
+from telekinesis.tf import tfutils
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
 from telekinesis.medulla.cameras.realsense import RealSense
@@ -403,7 +403,7 @@ def main():
             # Depth lookup at centroid
             d = get_depth_at(depth, int(round(cx)), int(round(cy)))
             if d <= 0.05:
-                logger.warning(f"[TRANSFORM] invalid depth at centroid, skipping")
+                logger.warning("[TRANSFORM] invalid depth at centroid, skipping")
                 continue
             logger.info(f"[TRANSFORM] depth at centroid = {d:.3f} m")
 

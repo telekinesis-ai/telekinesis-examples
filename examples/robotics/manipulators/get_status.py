@@ -1,7 +1,7 @@
 """
 Logs a normalized Robot controller status snapshot.
 
-Supports Epson and Universal Robots (UR).
+Supports Epson, Universal Robots (UR), and Dobot.
 
 Usage:
     python get_status.py [--ip <ROBOT_IP>]

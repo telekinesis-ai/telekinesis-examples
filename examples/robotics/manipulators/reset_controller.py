@@ -1,7 +1,7 @@
 """
 Recovers a Robot controller after automatic motor-on was rejected.
 
-Supports Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and Dobot.
 
 Usage:
     python reset_controller.py [--ip <ROBOT_IP>]

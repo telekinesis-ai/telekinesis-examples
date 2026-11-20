@@ -11,7 +11,6 @@
 import numpy as np
 from loguru import logger
 
-from telekinesis.synapse import utils
 from telekinesis.synapse.robots.manipulators import universal_robots
 from telekinesis.synapse.tools.parallel_grippers import onrobot
 

@@ -7,7 +7,6 @@
 # Robust signal handling: SIGINT reset before teardown, each disconnect guarded.
 
 import signal
-import sys
 import time
 import math
 import numpy as np
@@ -16,7 +15,7 @@ from loguru import logger
 
 import rerun as rr
 
-from telekinesis.synapse import utils as tfutils
+from telekinesis.tf import tfutils
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
 from telekinesis.medulla.cameras.realsense import RealSense

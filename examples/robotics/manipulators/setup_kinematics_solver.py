@@ -33,9 +33,10 @@ def main():
     # Solve IK using the cached solver (no need to pass ``solver=`` again)
     target_pose = [0.5, 0.2, 0.3, 180.0, 0.0, 0.0]
     try:
+        # Returns one joint configuration per pose, or None for a pose with no solution
         q = robot.inverse_kinematics(target_poses=[target_pose])[0]
         if q is None:
-            logger.error(f"No IK solution for {target_pose}")
+            logger.error("No IK solution found for the target pose")
             return
         logger.success(f"IK solution: {q}")
 

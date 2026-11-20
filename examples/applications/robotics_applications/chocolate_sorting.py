@@ -29,7 +29,7 @@ import cv2
 import rerun as rr
 from loguru import logger
 
-from telekinesis.synapse import utils as tfutils
+from telekinesis.tf import tfutils
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
 from telekinesis.medulla.cameras.realsense import RealSense
@@ -680,10 +680,10 @@ def main():
                 # --- Pick (no move_until_contact for picking) ---
                 rr.log("robot/state", rr.TextLog(f"grasping object {obj_idx} ({color_label})",
                                                  level=rr.TextLogLevel.INFO))
-                logger.info(f"Opening gripper before pick")
+                logger.info("Opening gripper before pick")
                 gripper.open(force=GRIPPER_FORCE_N)
 
-                logger.info(f"Moving to pre-grasp")
+                logger.info("Moving to pre-grasp")
                 robot.set_cartesian_pose(pre_grasp_pose, speed=MOVE_SPEED, acceleration=MOVE_ACC)
                 time.sleep(SETTLE_AFTER_MOVE_S)
 
