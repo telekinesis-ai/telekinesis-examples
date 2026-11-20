@@ -12,16 +12,18 @@ from telekinesis import cornea, datatypes
 def filter_segments_by_mask_example():
     """Filters superpixels based on intersection with a mask."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_yellow_tote_white_cartons.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     superpixel_segmentation_image = cornea.segment_image_using_felzenszwalb(
-        image=image, scale=500, sigma=1, min_size=200
+        image=image, scale=6000, sigma=1, min_size=6000
     )
     h, w, _ = image.shape
     mask = np.zeros((h, w), dtype=np.uint8)
-    mask[:, : w // 3] = 255
+    # Region of interest: the pick zone at the left end of the tote
+    mask[:, : int(w * 0.35)] = 255
     mask = datatypes.SegmentationImage(mask)
     filtered_image = cornea.filter_segments_by_mask(
         image=image, 
