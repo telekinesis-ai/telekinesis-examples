@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def filter_image_using_sobel_example():
     """Applies filter_image_using_sobel operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_charger_board.jpg"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================

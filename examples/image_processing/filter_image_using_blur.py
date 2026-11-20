@@ -9,13 +9,14 @@ from telekinesis import pupil, datatypes
 def filter_image_using_blur_example():
     """Applies filter_image_using_blur operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered_noised.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_angle_brackets_bin_noisy.png"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_blur(
         image=image,
-        kernel_size=7,
+        kernel_size=9,
         border_type="default",
     )
 
