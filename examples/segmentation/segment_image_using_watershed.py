@@ -13,8 +13,9 @@ def segment_image_using_watershed_example() -> None:
     """Segment an image using marker-controlled watershed."""
 
     # ===================== Load Image ==========================================
+    # Example data: T-LESS (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     image_url = (
-        "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
+        "https://assets.telekinesis.ai/examples/v1/images/tless_lamp_socket_blocks_touching.jpg"
     )
     image = datatypes.Image.from_url(url=image_url)
     gray_image = image.to_grayscale()
@@ -23,10 +24,10 @@ def segment_image_using_watershed_example() -> None:
     markers = _build_watershed_markers(
         gray_image=gray_image,
         bright_objects=True,
-        kernel_size=3,
+        kernel_size=5,
         opening_iterations=2,
         dilate_iterations=3,
-        dist_fg_ratio=0.2,
+        dist_fg_ratio=0.4,
     )
 
     # ===================== Build Gradient =====================================
@@ -108,7 +109,7 @@ def _build_watershed_markers(
         foreground = 1 - foreground
     foreground = foreground * 255
 
-    # Fill holes (e.g. nut bores) so each part is one solid blob.
+    # Fill holes (e.g. socket bores) so each part is one solid blob.
     flood = foreground.copy()
     cv2.floodFill(flood, None, (0, 0), 255)
     thresholded = datatypes.Image(foreground | cv2.bitwise_not(flood))
