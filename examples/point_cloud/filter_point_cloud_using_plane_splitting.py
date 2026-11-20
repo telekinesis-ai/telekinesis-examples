@@ -16,16 +16,17 @@ def filter_point_cloud_using_plane_splitting_example():
     or negative side.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/mounts_3_raw.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_gears_bin_workcell_frame.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = vitreous.filter_point_cloud_using_plane_splitting(
-        keep_positive_side=False,
+        keep_positive_side=True,
         point_cloud=point_cloud,
-        plane_coefficients=[0, 0, 1, -547],
+        plane_coefficients=[0, 0, 1, -4],
     )
 
     # ===================== Log ================================================

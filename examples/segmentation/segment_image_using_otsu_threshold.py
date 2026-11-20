@@ -11,7 +11,8 @@ from telekinesis import cornea, datatypes
 def segment_image_using_otsu_threshold_example():
     """Applies Otsu's method to find a global threshold for the image."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/buttons_arranged.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bars_bin_gray.png"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================

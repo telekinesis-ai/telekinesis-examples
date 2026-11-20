@@ -16,18 +16,19 @@ def filter_point_cloud_using_plane_proximity_example():
     equation coefficients (ax + by + cz + d = 0).
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_3_downsampled.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_flat_bars_bin_downsampled.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = vitreous.filter_point_cloud_using_plane_proximity(
-        distance_threshold=4.0,
+        distance_threshold=2.5,
         point_cloud=point_cloud,
         plane_coefficients=[
-            0.028344755192329624,
-            -0.5747207168510667,
-            -0.8178585895344518,
-            555.4890362620131,
+            0.0546,
+            0.0038,
+            -0.9985,
+            835.63,
         ],
     )
 

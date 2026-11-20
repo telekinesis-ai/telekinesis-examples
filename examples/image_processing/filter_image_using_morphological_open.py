@@ -9,15 +9,16 @@ from telekinesis import pupil, datatypes
 def filter_image_using_morphological_open_example():
     """Applies open morphological operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/broken_cables.png"
+    # Example data: FabriD (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/fabrid_black_knit_lint_threshold_mask.png"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_open(
         image=image,
-        kernel_size=3,
+        kernel_size=7,
         kernel_shape="ellipse",
-        iterations=2,
+        iterations=1,
         border_type="constant",
         border_value=0,
     )

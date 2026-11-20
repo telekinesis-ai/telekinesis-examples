@@ -12,7 +12,7 @@ from telekinesis import cornea, datatypes
 def filter_segments_by_mask_example():
     """Filters superpixels based on intersection with a mask."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/eggs_carton.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================

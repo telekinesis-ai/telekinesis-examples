@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def enhance_image_using_auto_gamma_correction_example():
     """Applies enhance_image_using_auto_gamma_correction operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/screws_in_dark_lighting.jpg"
+    # Example data: LOCO (CC0 1.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/loco_dark_warehouse_racks.jpg"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================

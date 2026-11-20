@@ -11,7 +11,7 @@ from telekinesis import cornea, datatypes
 def filter_segments_by_area_example():
     """Filters superpixels based on area."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/eggs_carton.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
@@ -24,7 +24,7 @@ def filter_segments_by_area_example():
 
     filtered_image = cornea.filter_segments_by_area(
         image=image, labels=superpixel_segmentation_image,
-        min_area=10000, max_area=100000
+        min_area=8000, max_area=100000
     )
 
     # ===================== Log ================================================

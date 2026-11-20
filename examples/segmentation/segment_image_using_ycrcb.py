@@ -11,12 +11,15 @@ from telekinesis import cornea, datatypes
 def segment_image_using_ycrcb_example():
     """Segments an image using YCrCb color space range."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/David_Schwimmer.jpg"
+    # Example data: LOCO (CC0 1.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/loco_crossdock_workers.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
+    # Hi-vis orange PPE: high Cr, low Cb, any brightness (Y 0-255).
+    # Red jackets and red roll cages have Cb > 100 and are rejected.
     segmented_image = cornea.segment_image_using_ycrcb(
-        image=image, lower_bound=(0, 133, 77), upper_bound=(255, 173, 127)
+        image=image, lower_bound=(0, 170, 0), upper_bound=(255, 255, 100)
     )
 
     # ===================== Log ================================================

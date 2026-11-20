@@ -16,18 +16,19 @@ def cluster_point_cloud_based_on_density_jump_example():
     dramatically.
     """
     # ===================== Load Data ==========================================
+    # Example data: T-LESS (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/mug_preprocessed.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/tless_parts_on_table_scene11.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     clusters = vitreous.cluster_point_cloud_based_on_density_jump(
         point_cloud=point_cloud,
-        num_nearest_neighbors=5,
-        neighborhood_radius=0.05,
+        num_nearest_neighbors=12,
+        neighborhood_radius=5.0,
         is_point_cloud_linear=False,
-        projection_axis=[0.0, 0.0, 1.0],
+        projection_axis=[0.0068, -0.2877, -0.9577],
     )
 
     # ===================== Log ================================================

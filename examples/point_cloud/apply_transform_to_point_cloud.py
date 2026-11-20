@@ -15,8 +15,9 @@ def apply_transform_to_point_cloud_example():
     Transforms points using a 4x4 homogeneous transformation matrix.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/plastic_centered.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_gears_bin_camera_frame.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
@@ -24,9 +25,9 @@ def apply_transform_to_point_cloud_example():
     transformed_point_cloud = vitreous.apply_transform_to_point_cloud(
         point_cloud=point_cloud,
         transformation_matrix=[
-            [1, 0, 0, 15],
-            [0, 1, 0, 15],
-            [0, 0, 1, 5],
+            [0.9995, -0.0028, 0.0316, 4.6],
+            [0.0, -0.9962, -0.0870, 66.4],
+            [0.0317, 0.0870, -0.9957, 825.3],
             [0, 0, 0, 1],
         ]
     )

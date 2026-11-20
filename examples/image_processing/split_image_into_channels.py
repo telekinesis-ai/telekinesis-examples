@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def split_image_into_channels_example():
     """Splits an image into its color channels."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/vegetables.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_yellow_tote_carton_polybag.jpg"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================

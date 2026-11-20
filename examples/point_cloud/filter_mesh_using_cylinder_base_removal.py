@@ -16,14 +16,15 @@ def filter_mesh_using_cylinder_base_removal_example():
     leaving only the curved side surface.
     """
     # ===================== Load Data ==========================================
-    mesh_url = "https://assets.telekinesis.ai/examples/v1/meshes/beer_can.glb"
+    # Example data: T-LESS (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    mesh_url = "https://assets.telekinesis.ai/examples/v1/meshes/tless_lamp_socket_sleeve_obj14.glb"
     mesh = datatypes.Mesh3D.from_url(url=mesh_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     filtered_mesh = vitreous.filter_mesh_using_cylinder_base_removal(
         mesh=mesh,
         compute_vertex_normals=True,
-        distance_threshold=0.005,
+        distance_threshold=8.0,
     )
 
     # ===================== Log ================================================

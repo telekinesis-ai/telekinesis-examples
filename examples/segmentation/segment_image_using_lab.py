@@ -11,12 +11,13 @@ from telekinesis import cornea, datatypes
 def segment_image_using_lab_example():
     """Segments an image using LAB color space range."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/car_painting.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_tote_two_cartons.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_lab(
-        image=image, lower_bound=(120, 50, 50), upper_bound=(180, 255, 255)
+        image=image, lower_bound=(30, 0, 118), upper_bound=(255, 255, 255)
     )
 
     # ===================== Log ================================================

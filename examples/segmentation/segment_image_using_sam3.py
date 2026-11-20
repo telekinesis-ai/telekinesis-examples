@@ -11,11 +11,12 @@ from telekinesis import cornea, datatypes
 def segment_image_using_sam3_example():
     """Segments an image using the Segment Anything Model 3 (SAM3)."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/pedestrians.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flanges_bin_gray.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
-    objects = ["pedestrian"]
+    objects = ["metal flange"]
     segmentation_results = cornea.segment_image_using_sam3(
         image=image, objects=objects, threshold=0.5, mask_threshold=0.5
     )
@@ -28,7 +29,7 @@ def segment_image_using_sam3_example():
     # ===================== Visualization  (Optional) ======================
     # `category_id` is `0` for a box-only detection, or `i + 1` for a
     # detection matching `objects[i]` -- map it back to the matched
-    # concept's name so boxes/masks show e.g. "pedestrian" instead of the
+    # concept's name so boxes/masks show e.g. "metal flange" instead of the
     # raw numeric "category=1".
     labels = [
         objects[category_id - 1] if category_id > 0 else "box prompt"

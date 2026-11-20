@@ -12,15 +12,17 @@ from telekinesis import cornea, datatypes
 def segment_image_using_slic_superpixel_example():
     """Segments an image into compact superpixels using the SLIC algorithm."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_tote_two_cartons.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_slic_superpixel(
         image=image,
-        num_segments=2,
-        compactness=15.0,
+        num_segments=300,
+        compactness=20.0,
         max_iterations=20,
+        sigma=1.0,
         spacing=None,
         convert_to_lab=None,
         enforce_connectivity=True,

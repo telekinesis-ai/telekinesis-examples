@@ -9,25 +9,20 @@ from telekinesis import pupil, datatypes
 def overlay_images_using_weighted_overlay_example():
     """Blends two images using weighted overlay."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/rusted_metal_gear.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_gear_bin_photoneo.jpg"
     image_a = datatypes.Image.from_url(image_url)
-    image_a = pupil.resize_image_with_aspect_fit(
-        image=image_a,
-        resize_width=512,
-        resize_height=512,
-    )
 
-    # ===================== Create Second Image ==========================================
-    image_b = pupil.rotate_image(
-        image=image_a, angle_in_deg=60.0, keep_image_size=True
-    )
+    # ===================== Load Second Image (colorized instance mask) ==========================================
+    mask_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_gear_bin_instances.png"
+    image_b = datatypes.Image.from_url(mask_url)
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.overlay_images_using_weighted_overlay(
         image_a=image_a,
         image_b=image_b,
-        weight_a=0.5,
-        weight_b=0.5,
+        weight_a=0.6,
+        weight_b=0.4,
     )
 
     # ===================== Log ================================================

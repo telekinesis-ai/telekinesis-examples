@@ -12,14 +12,15 @@ from telekinesis import cornea, datatypes
 def segment_image_using_hsv_example():
     """Segments an image using HSV color space range."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/wires_rgb.png"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_blue_tote_kraft_parcels.jpg"
     image = datatypes.Image.from_url(url=image_url).to_rgb().to_bgr()
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_hsv(
         image=image, 
-        lower_bound=(0, 50, 50), 
-        upper_bound=(180, 255, 255)
+        lower_bound=(5, 50, 80), 
+        upper_bound=(25, 200, 255)
     )
 
     # ===================== Log ================================================

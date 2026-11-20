@@ -11,7 +11,8 @@ from telekinesis import cornea, datatypes
 def segment_image_using_yen_threshold_example():
     """Applies Yen's method to segment the image based on intensity histograms."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/bolts_and_%20nuts_white_bg.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_rods_bin_gray.png"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================

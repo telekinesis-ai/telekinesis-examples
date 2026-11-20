@@ -9,15 +9,16 @@ from telekinesis import pupil, datatypes
 def filter_image_using_sato_example():
     """Applies filter_image_using_sato operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/pcb_top_gray.png"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_rods_bin_s56_gray.png"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_sato(
         image=image,
-        scale_start=1,
-        scale_end=12,
-        scale_step=1,
+        scale_start=6,
+        scale_end=18,
+        scale_step=4,
         detect_black_ridges=False,
         border_type="reflect",
         border_value=0.0,

@@ -25,3 +25,6 @@ backup_assets/
 
 telekinesis-data/
 output/
+
+# Candidate replacement example data (upload to CDN, do not commit)
+new_data/

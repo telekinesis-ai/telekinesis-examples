@@ -11,7 +11,8 @@ from telekinesis import cornea, datatypes
 def segment_image_foreground_using_birefnet_example():
     """Segments the foreground from the background using BiRefNet."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/screws_standing.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bars_scene36_gray.jpg"
     image = datatypes.Image.from_url(url=image_url).to_rgb()
 
     # ===================== Run Skill ==========================================

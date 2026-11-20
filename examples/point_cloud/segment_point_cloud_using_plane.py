@@ -16,13 +16,14 @@ def segment_point_cloud_using_plane_example():
     Returns inlier points and plane equation.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_3_downsampled.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_flat_bars_bin_downsampled.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     segmented_point_cloud, plane_model = vitreous.segment_point_cloud_using_plane(
         point_cloud=point_cloud,
-        distance_threshold=1.0,
+        distance_threshold=2.5,
         num_initial_points=3,
         max_iterations=1000,
         keep_outliers=False,

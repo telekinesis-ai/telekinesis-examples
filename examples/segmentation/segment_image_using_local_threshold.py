@@ -11,11 +11,12 @@ from telekinesis import cornea, datatypes
 def segment_image_using_local_threshold_example():
     """Applies adaptive (local) thresholding to segment the image."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/car_number_plate.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_gripper_fiducial_markers.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
-    segmented_image = cornea.segment_image_using_local_threshold(image=image, block_size=23)
+    segmented_image = cornea.segment_image_using_local_threshold(image=image, block_size=151)
 
     # ===================== Log ================================================
     logger.success(f"Segmented {image} using local thresholding.")

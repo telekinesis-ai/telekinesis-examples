@@ -16,13 +16,14 @@ def filter_point_cloud_using_bounding_box_example():
     min/max coordinates along each axis.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/plastic_2_raw.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_gears_bin_workcell_frame.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
-    x_min, y_min, z_min, x_max, y_max, z_max = -163, -100, 470, 150, 100, 544
+    x_min, y_min, z_min, x_max, y_max, z_max = -215, -140, -5, 215, 140, 100
     bbox = datatypes.Box3D.from_xyzxyz([x_min, y_min, z_min, x_max, y_max, z_max])
     filtered_point_cloud = vitreous.filter_point_cloud_using_bounding_box(
         point_cloud=point_cloud, bbox=bbox

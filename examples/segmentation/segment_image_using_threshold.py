@@ -11,13 +11,14 @@ from telekinesis import cornea, datatypes
 def segment_image_using_threshold_example():
     """Applies a simple global threshold to segment the image."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_rods_bin_gray.png"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_threshold(
         image=image,
-        min_value=45,
+        min_value=75,
         max_value=255,
         threshold_type="binary"
     )

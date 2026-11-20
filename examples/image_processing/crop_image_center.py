@@ -9,14 +9,15 @@ from telekinesis import pupil, datatypes
 def crop_image_center_example():
     """Applies crop_image_center operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/rusted_metal_gear.jpg"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_ultrasonic_sensor.jpg"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.crop_image_center(
         image=image,
-        crop_width=300,
-        crop_height=300,
+        crop_width=1000,
+        crop_height=760,
         pad_color=(0, 0, 0),
     )
 

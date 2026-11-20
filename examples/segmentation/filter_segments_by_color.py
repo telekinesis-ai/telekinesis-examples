@@ -11,7 +11,7 @@ from telekinesis import cornea, datatypes
 def filter_segments_by_color_example():
     """Filters superpixels based on color criteria."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/eggs_carton.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
@@ -20,7 +20,7 @@ def filter_segments_by_color_example():
     )
     filtered_image = cornea.filter_segments_by_color(
         image=image, labels=superpixel_segmentation_image,
-        min_color=0, max_color=125.0
+        min_color=125.0, max_color=255.0
     )
 
     # ===================== Log ================================================
