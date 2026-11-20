@@ -11,15 +11,16 @@ from telekinesis import cornea, datatypes
 def segment_image_using_grab_cut_example():
     """Segments an image using the GrabCut algorithm."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/plastic_part.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_yellow_tote_carton_polybag.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
-    bbox = [220, 20, 930, 850]
+    bbox = [230, 150, 580, 810]
     segmented_image = cornea.segment_image_using_grab_cut(
         image=image, 
         bbox=bbox, 
-        num_iterations=2
+        num_iterations=5
     )
 
     # ===================== Log ================================================

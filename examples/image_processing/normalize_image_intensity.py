@@ -9,8 +9,11 @@ from telekinesis import pupil, datatypes
 def normalize_image_intensity_example():
     """Applies normalize_image_intensity operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/gauge_washed.png"
-    image = datatypes.Image.from_url(image_url)
+    # 16-bit bin-picking depth map (0.1 mm units); the parts span only ~4 cm.
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/depth_images/xyzibd_flat_bars_depth_16bit.png"
+    depth_image = datatypes.DepthImage.from_url(image_url, depth_scale=0.0001)
+    image = datatypes.Image(depth_image.to_numpy())
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.normalize_image_intensity(

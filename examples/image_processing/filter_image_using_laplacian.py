@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def filter_image_using_laplacian_example():
     """Applies filter_image_using_laplacian operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/flat_mechanical_component_denoised.png"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bars_denoised.png"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================

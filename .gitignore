@@ -29,3 +29,6 @@ output/
 # Local Dobot checkout, generated descriptions, and Rerun recordings
 .cache/DOBOT_6Axis_ROS2_V4/
 .cache/dobot/
+
+# Candidate replacement example data (upload to CDN, do not commit)
+new_data/

@@ -10,27 +10,28 @@ from telekinesis import pupil, datatypes
 def estimate_planar_poses_example():
     """Estimates 3D planar poses from a mask and depth image."""
     # ===================== Create Parameters ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     mask = datatypes.SegmentationImage.from_url(
-        "https://assets.telekinesis.ai/examples/v1/images/permanent_marker_pen.png"
+        "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bar_pose_mask.png"
     )
     # Depth image saved as mm
     depth_image_mm = datatypes.DepthImage.from_url(
-        "https://assets.telekinesis.ai/examples/v1/depth_images/permanent_marker_pen_depth.png"
+        "https://assets.telekinesis.ai/examples/v1/depth_images/xyzibd_flat_bar_pose_depth.png"
     )
     depth_image_m = depth_image_mm.depth.astype(np.float32) / 1000.0
 
     # Camera_intrinsics: [[fx, 0, cx], [0, fy, cy], [0, 0, 1]]
     camera_intrinsics = np.array(
         [
-            [435.46856689, 0.0, 420.72525024],
-            [0.0, 434.52377319, 244.55136108],
+            [2329.03738260, 0.0, 1056.72436003],
+            [0.0, 2329.79188963, 721.69460828],
             [0.0, 0.0, 1.0],
         ],
         dtype=np.float64,
     )
     # Distortion coefficients: [k1, k2, p1, p2, k3]
     distortion_parameters = np.array(
-        [-0.05338378, 0.0578178, 0.00045024, 0.00018894, -0.018924], dtype=np.float64
+        [0.0, 0.0, 0.0, 0.0, 0.0], dtype=np.float64
     )
     camera_calibration = datatypes.CameraCalibration(
         height=mask.height,

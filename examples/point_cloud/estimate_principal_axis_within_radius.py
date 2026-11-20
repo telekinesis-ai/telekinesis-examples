@@ -16,8 +16,9 @@ def estimate_principal_axis_within_radius_example():
     reference point.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/mug_preprocessed.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_rods_bin_downsampled.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
@@ -25,8 +26,8 @@ def estimate_principal_axis_within_radius_example():
     # `estimate_principal_axis_within_radius` returns a Vector3D datatype instance.
     local_principal_axis = vitreous.estimate_principal_axis_within_radius(
         point_cloud=point_cloud,
-        neighborhood_radius=0.25,
-        reference_point=[0.0, 0.0, -0.52],
+        neighborhood_radius=15.0,
+        reference_point=[-3.7, 16.9, 675.0],
     )
 
     # ===================== Log ================================================

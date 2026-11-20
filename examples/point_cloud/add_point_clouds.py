@@ -15,8 +15,9 @@ def add_point_clouds_example():
     Combines all points from both clouds into one unified point cloud.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url_1 = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_3_clustered.ply"
-    point_cloud_url_2 = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_3_segmented_plane.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url_1 = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_flat_bars_bin_without_floor.ply"
+    point_cloud_url_2 = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_flat_bars_bin_floor_plane.ply"
     point_cloud1 = datatypes.PointCloud.from_url(url=point_cloud_url_1, use_cache=True)
     point_cloud2 = datatypes.PointCloud.from_url(url=point_cloud_url_2, use_cache=True)
 

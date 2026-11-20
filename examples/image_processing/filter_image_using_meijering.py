@@ -9,16 +9,17 @@ from telekinesis import pupil, datatypes
 def filter_image_using_meijering_example():
     """Applies filter_image_using_meijering operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/sidewalk_cracked.jpg"
+    # Example data: FabriD (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/fabrid_black_knit_missing_yarn.jpg"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_meijering(
         image=image,
-        scale_start=1,
+        scale_start=6,
         scale_end=10,
         scale_step=2,
-        detect_black_ridges=True,
+        detect_black_ridges=False,
         border_type="reflect",
         border_value=0.0,
     )

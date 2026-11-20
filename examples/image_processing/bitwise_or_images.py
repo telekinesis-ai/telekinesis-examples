@@ -9,8 +9,9 @@ from telekinesis import pupil, datatypes
 def bitwise_or_images_example():
     """Performs bitwise OR between two images."""
     # ===================== Load Images ==========================================
-    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/can_vertical_6_mask.png"
-    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/rectangles_mask.png"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bar_mask_a.png"
+    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bar_mask_b.png"
     image_a = datatypes.Image.from_url(image_url_a).to_rgb()
     image_b = datatypes.Image.from_url(image_url_b).to_rgb()
 

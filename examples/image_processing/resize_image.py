@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def resize_image_example():
     """Applies resize_image operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/gearbox.png"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_ultrasonic_sensor.jpg"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================

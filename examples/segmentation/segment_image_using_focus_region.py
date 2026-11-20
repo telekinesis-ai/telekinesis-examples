@@ -11,12 +11,13 @@ from telekinesis import cornea, datatypes
 def segment_image_using_focus_region_example():
     """Segments the in-focus regions of an image."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/matt_leblanc.jpg"
+    # Example data: MATWI (CC BY-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/matwi_milling_insert_wear_macro.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_focus_region(
-        image=image, blur_kernel_size=151, threshold=5
+        image=image, blur_kernel_size=101, threshold=10
     )
 
     # ===================== Log ================================================

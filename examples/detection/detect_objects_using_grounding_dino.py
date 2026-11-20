@@ -16,15 +16,16 @@ def detect_objects_using_grounding_dino_example():
     returns object detections using datatype `COCOObjectDetectionDetectionResults` with `Categories`.
     """
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/palletizing.jpg"
+    # Example data: LOCO (CC0 1.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/loco_forklift_loading_dock.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     detection_results, categories = retina.detect_objects_using_grounding_dino(
         image=image,
-        objects=["carton"],
-        box_threshold=0.45,
-        text_threshold=0.5,
+        objects=["forklift", "pallet"],
+        box_threshold=0.3,
+        text_threshold=0.25,
     )
 
     # ===================== Log ================================================

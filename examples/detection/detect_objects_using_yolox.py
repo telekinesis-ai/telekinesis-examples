@@ -16,7 +16,8 @@ def detect_objects_using_yolox_example():
     `COCOObjectDetectionResults`
     """
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/warehouse_2.jpg"
+    # Example data: LOCO (CC0 1.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/loco_crossdock_workers.jpg"
     image = datatypes.Image.from_url(url=image_url)
     logger.info(f"Loaded {image} from the URL: {image_url}")
 

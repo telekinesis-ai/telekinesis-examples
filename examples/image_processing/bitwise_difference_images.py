@@ -9,8 +9,9 @@ from telekinesis import pupil, datatypes
 def bitwise_difference_images_example():
     """Performs bitwise difference between two images."""
     # ===================== Load Images ==========================================
-    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/driver_screw.png"
-    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/difference_image.png"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_ir_sensor_reference.png"
+    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_ir_sensor_missing_receiver.png"
     image_a = datatypes.Image.from_url(image_url_a)
     image_b = datatypes.Image.from_url(image_url_b)
 

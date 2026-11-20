@@ -21,7 +21,7 @@ def detect_contours_example():
     # ===================== Run Skill ==========================================
     contours = retina.detect_contours(
         image=image,
-        retrieval_mode="retrieve_list",
+        retrieval_mode="retrieve_external",
         approx_method="chain_approximate_simple",
         min_area=200,
         max_area=100000,

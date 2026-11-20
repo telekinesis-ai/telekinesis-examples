@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def bitwise_not_image_example():
     """Performs bitwise NOT (inversion) on an image."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/einstein.png"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_driver_board_reference_binary.png"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================

@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes, cornea
 def calculate_mask_centroid_example():
     """Computes the centroid of a binary mask."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/metal_part_mask.png"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_lever_mask.png"
     image = datatypes.Image.from_url(image_url)
     mask = cornea.segment_image_using_otsu_threshold(image=image)
 

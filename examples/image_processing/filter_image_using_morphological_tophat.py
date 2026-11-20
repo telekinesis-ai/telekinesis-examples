@@ -9,15 +9,16 @@ from telekinesis import pupil, datatypes
 def filter_image_using_morphological_tophat_example():
     """Applies filter_image_using_morphological_tophat operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/keyhole.jpg"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_sensor_board.jpg"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_morphological_tophat(
         image=image,
-        kernel_size=3,
+        kernel_size=15,
         kernel_shape="ellipse",
-        iterations=5,
+        iterations=2,
         border_type="default",
     )
 

@@ -15,7 +15,8 @@ def calculate_axis_aligned_bounding_box_example():
     Finds the smallest box aligned with coordinate axes that contains all points.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_1_raw_preprocessed.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_flat_bars_bin_downsampled.ply"
     # By default, the point cloud will be cached in the user cache directory for future runs.
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 

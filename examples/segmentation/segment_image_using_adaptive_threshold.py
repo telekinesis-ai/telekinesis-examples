@@ -11,13 +11,14 @@ from telekinesis import cornea, datatypes
 def segment_image_using_adaptive_threshold_example():
     """Applies adaptive thresholding to segment the image."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/car_number_plate.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_parcel_shipping_labels.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_adaptive_threshold(
         image=image, max_value=255, adaptive_method="gaussian constant",
-        threshold_type="binary", block_size=61, offset_constant=5
+        threshold_type="binary", block_size=31, offset_constant=10
     )
 
     # ===================== Log ================================================
