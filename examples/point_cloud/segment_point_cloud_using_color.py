@@ -16,21 +16,22 @@ def segment_point_cloud_using_color_example():
     RGB space) of a target color.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_0.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_gears_bin_realsense_rgb.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     segmented_point_cloud = vitreous.segment_point_cloud_using_color(
         point_cloud=point_cloud,
-        target_color=[50, 75, 200],
-        color_distance_threshold=60.0,
+        target_color=[110, 125, 150],
+        color_distance_threshold=50.0,
     )
 
     # ===================== Log ================================================
     logger.success(
-        f"Segmented {point_cloud} by color similarity to target color [50, 75, 200] with distance threshold 60.0"
+        f"Segmented {point_cloud} by color similarity to target color [110, 125, 150] with distance threshold 50.0"
     )
     logger.success(f"Results: {segmented_point_cloud}")
     logger.info(

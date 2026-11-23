@@ -16,8 +16,9 @@ def project_point_cloud_to_plane_example():
     the cloud onto a 2D surface in 3D space.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_0.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_gears_bin_workcell_frame.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 

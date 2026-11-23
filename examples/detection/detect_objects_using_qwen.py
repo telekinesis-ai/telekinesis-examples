@@ -16,13 +16,14 @@ def detect_objects_using_qwen_example():
     returns object detections using datatype `COCOObjectDetectionDetectionResults`.
     """
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/warehouse_1.jpg"
+    # Example data: LOCO (CC0 1.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/loco_pallet_truck_stillages_square.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     detection_results, categories = retina.detect_objects_using_qwen(
         image=image,
-        objects=["person"],
+        objects=["pallet truck", "wire mesh container"],
     )
 
     # ===================== Log ================================================

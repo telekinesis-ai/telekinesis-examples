@@ -9,26 +9,21 @@ from telekinesis import pupil, datatypes
 def crop_image_using_polygon_example():
     """Crops image using a polygon mask."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/pedestrians.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_brackets_yellow_bin_rgb.jpg"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================
     # Define polygon vertices in the format [[x1, y1], [x2, y2], ..., [xn, yn]]
     polygon_vertices = [
-        [37, 404],
-        [46, 373],
-        [74, 323],
-        [106, 258],
-        [125, 154],
-        [165, 106],
-        [200, 115],
-        [210, 173],
-        [206, 199],
-        [250, 208],
-        [193, 255],
-        [216, 331],
-        [240, 383],
-        [250, 411],
+        [250, 95],
+        [272, 72],
+        [775, 70],
+        [797, 92],
+        [797, 410],
+        [775, 432],
+        [272, 432],
+        [250, 410],
     ]
 
     filtered_image = pupil.crop_image_using_polygon(

@@ -9,8 +9,9 @@ from telekinesis import pupil, datatypes
 def bitwise_xor_images_example():
     """Performs bitwise XOR between two images."""
     # ===================== Load Images ==========================================
-    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/image_1.png"
-    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/image_2.png"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url_a = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_driver_board_reference_binary.png"
+    image_url_b = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_driver_board_missing_ics_binary.png"
     image_a = datatypes.Image.from_url(image_url_a)
     image_b = datatypes.Image.from_url(image_url_b)
 

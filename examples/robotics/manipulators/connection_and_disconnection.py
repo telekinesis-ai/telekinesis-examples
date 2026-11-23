@@ -1,7 +1,7 @@
 """
 Connects to a UR10e, waits briefly, then cleanly disconnects.
 
-Supports Universal Robots (UR), Epson, and Isaac Sim.
+Supports Universal Robots (UR), Epson, Dobot, and Isaac Sim.
 
 Usage:
     python connection_and_disconnection.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]

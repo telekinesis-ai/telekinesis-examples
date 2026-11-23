@@ -17,13 +17,14 @@ def filter_point_cloud_using_mask_example():
     where the corresponding pixel is True.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_6_raw.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_gears_bin_organized.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     mask_url = (
-        "https://assets.telekinesis.ai/examples/v1/images/can_vertical_6_mask.png"
+        "https://assets.telekinesis.ai/examples/v1/images/xyzibd_gears_bin_mask.png"
     )
     mask_image = datatypes.Image.from_url(url=mask_url)
     mask = cornea.segment_image_using_threshold(image=mask_image, min_value=127)

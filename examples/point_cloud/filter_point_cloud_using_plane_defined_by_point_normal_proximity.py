@@ -16,19 +16,20 @@ def filter_point_cloud_using_plane_defined_by_point_normal_proximity_example():
     on the plane and its normal vector.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_3_downsampled.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_flat_bars_bin_downsampled.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = (
         vitreous.filter_point_cloud_using_plane_defined_by_point_normal_proximity(
-            distance_threshold=4.0,
+            distance_threshold=5.0,
             point_cloud=point_cloud,
-            plane_point=[-15.74520074, 319.25105712, 454.3114797],
+            plane_point=[-249.05, 58.87, 705.9],
             plane_normal=[
-                0.028344755192329624,
-                -0.5747207168510667,
-                -0.8178585895344518,
+                0.0546,
+                0.0038,
+                -0.9985,
             ],
         )
     )

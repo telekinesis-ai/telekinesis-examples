@@ -16,14 +16,15 @@ def filter_point_cloud_using_statistical_outlier_removal_example():
     where the threshold is computed from mean distance and standard deviation.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_6_masked.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_brackets_bin_realsense.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = (
         vitreous.filter_point_cloud_using_statistical_outlier_removal(
-            num_neighbors=90,
-            standard_deviation_ratio=0.1,
+            num_neighbors=30,
+            standard_deviation_ratio=1.5,
             point_cloud=point_cloud,
         )
     )

@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def filter_image_using_morphological_blackhat_example():
     """Applies filter_image_using_morphological_blackhat operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/mechanical_parts_gray.png"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bars_gray.png"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================

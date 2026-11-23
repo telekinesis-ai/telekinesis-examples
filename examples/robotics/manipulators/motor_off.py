@@ -1,7 +1,7 @@
 """
 Turns off the physical robot motors.
 
-Supports Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and Dobot.
 
 Usage:
     python motor_off.py [--ip <ROBOT_IP>]

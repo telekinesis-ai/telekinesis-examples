@@ -21,7 +21,8 @@ def detect_objects_using_rfdetr_example():
     `COCOObjectDetectionResults`.
     """
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/warehouse_1.jpg"
+    # Example data: LOCO (CC0 1.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/loco_crossdock_workers.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================

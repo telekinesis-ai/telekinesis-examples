@@ -8,8 +8,7 @@ import numpy as np
 import rerun as rr
 from loguru import logger
 
-from datatypes import datatypes
-from telekinesis import cornea, pupil, retina
+from telekinesis import cornea
 
 # =====================================================================
 # Hardcoded constants / tunables
@@ -128,17 +127,11 @@ def main() -> None:
 
             mask_img_np = None
             try:
-                pano = cornea.segment_image_using_foreground_birefnet(
+                pano = cornea.segment_image_foreground_using_birefnet(
                     image=roi_rgb, mask_threshold=BIREFNET_MASK_THRESHOLD
                 )
-                # PanopticSegmentationAnnotation has labeled_mask (Image or ndarray)
-                lm = getattr(pano, "labeled_mask", None)
-                if isinstance(lm, datatypes.Image):
-                    mask_img_np = lm.to_numpy()
-                elif isinstance(lm, np.ndarray):
-                    mask_img_np = lm
-                else:
-                    logger.warning("Frame {}: BiRefNet returned unexpected mask type", frame_idx)
+                # SegmentationImage: .data is the (H, W) label map (0 = background)
+                mask_img_np = np.asarray(pano.data)
             except Exception as e:
                 logger.exception("Frame {}: BiRefNet failed: {}", frame_idx, e)
                 mask_img_np = None

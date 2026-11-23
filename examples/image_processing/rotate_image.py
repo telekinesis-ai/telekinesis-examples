@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def rotate_image_example():
     """Applies rotate_image operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/synthetic_data_bin.jpg"
+    # Example data: ARMBench (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/armbench_yellow_tote_carton_polybag.jpg"
     image = datatypes.Image.from_url(image_url)
 
     # ===================== Run Skill ==========================================

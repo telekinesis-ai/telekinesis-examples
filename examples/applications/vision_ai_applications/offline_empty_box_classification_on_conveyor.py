@@ -7,8 +7,7 @@ import numpy as np
 import rerun as rr
 from loguru import logger
 
-from datatypes import datatypes
-from telekinesis import cornea, retina, pupil
+from telekinesis import cornea, retina
 
 # ============================================================
 # Tunable constants
@@ -28,11 +27,11 @@ BIREFNET_MASK_THRESHOLD = 0
 # Contour detection
 CONTOUR_MIN_AREA = 10000
 CONTOUR_MAX_AREA = 10_000_000
-CONTOUR_RETRIEVAL_MODE = "external"
-CONTOUR_APPROX_METHOD = "simple"
+CONTOUR_RETRIEVAL_MODE = "retrieve_external"
+CONTOUR_APPROX_METHOD = "chain_approximate_simple"
 
 # Grounding DINO
-GDINO_PROMPT = "shipping label . barcode . address label . sticker ."
+GDINO_OBJECTS = ["shipping label", "barcode", "address label", "sticker"]
 GDINO_BOX_THRESHOLD = 0.25
 GDINO_TEXT_THRESHOLD = 0.25
 
@@ -55,7 +54,7 @@ RR_PATH_FINAL_BOX = "stage3_final/image/bbox"
 def get_largest_valid_contour_bbox(mask_np: np.ndarray):
     # Returns (x, y, w, h) in ROI-local coords or None
     try:
-        annotations = retina.detect_contours(
+        contours = retina.detect_contours(
             image=mask_np,
             retrieval_mode=CONTOUR_RETRIEVAL_MODE,
             approx_method=CONTOUR_APPROX_METHOD,
@@ -66,26 +65,15 @@ def get_largest_valid_contour_bbox(mask_np: np.ndarray):
         logger.warning(f"Contour detection failed: {e}")
         return None
 
-    if annotations is None:
-        return None
-
-    try:
-        ann_list = annotations.to_list()
-    except Exception as e:
-        logger.warning(f"Failed to read contour annotations: {e}")
-        return None
-
-    if not ann_list:
+    if contours is None or len(contours) == 0:
         return None
 
     # Pick contour with largest bbox area
     best = None
     best_area = -1.0
-    for ann in ann_list:
-        bbox = ann.get("bbox", None)
-        if bbox is None or len(bbox) != 4:
-            continue
-        x, y, w, h = bbox
+    for contour in contours:
+        pts = np.asarray(contour.points, dtype=np.int32).reshape(-1, 1, 2)
+        x, y, w, h = cv2.boundingRect(pts)
         area = float(w) * float(h)
         if area > best_area:
             best_area = area
@@ -99,7 +87,7 @@ def detect_labels_in_crop(crop_bgr: np.ndarray) -> bool:
         crop_rgb = cv2.cvtColor(crop_bgr, cv2.COLOR_BGR2RGB)
         annotations, _categories = retina.detect_objects_using_grounding_dino(
             image=crop_rgb,
-            prompt=GDINO_PROMPT,
+            objects=GDINO_OBJECTS,
             box_threshold=GDINO_BOX_THRESHOLD,
             text_threshold=GDINO_TEXT_THRESHOLD,
         )
@@ -110,13 +98,7 @@ def detect_labels_in_crop(crop_bgr: np.ndarray) -> bool:
     if annotations is None:
         return False
 
-    try:
-        ann_list = annotations.to_list()
-    except Exception as e:
-        logger.warning(f"Failed to read GDINO annotations: {e}")
-        return False
-
-    return len(ann_list) > 0
+    return len(annotations) > 0
 
 
 def main():
@@ -179,7 +161,7 @@ def main():
             # ---- Stage 1: BiRefNet ----
             logger.info(f"Frame {frame_idx}: Stage 1 - BiRefNet foreground segmentation")
             try:
-                pano_ann = cornea.segment_image_using_foreground_birefnet(
+                pano_ann = cornea.segment_image_foreground_using_birefnet(
                     image=roi_rgb,
                     mask_threshold=BIREFNET_MASK_THRESHOLD,
                 )
@@ -194,11 +176,7 @@ def main():
                 continue
 
             try:
-                labeled_mask = pano_ann.labeled_mask
-                if isinstance(labeled_mask, datatypes.Image):
-                    mask_np = labeled_mask.to_numpy()
-                else:
-                    mask_np = np.asarray(labeled_mask)
+                mask_np = np.asarray(pano_ann.data)
             except Exception as e:
                 logger.warning(f"Frame {frame_idx}: failed to extract BiRefNet mask: {e}")
                 frame_idx += 1

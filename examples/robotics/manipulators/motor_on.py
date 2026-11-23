@@ -1,7 +1,7 @@
 """
 Turns on robot motors after the controller reports a permitted safety state.
 
-Supports Universal Robots (UR) and Epson.
+Supports Universal Robots (UR), Epson, and Dobot.
 
 Usage:
     python motor_on.py [--ip <ROBOT_IP>]

@@ -9,19 +9,20 @@ from telekinesis import pupil, datatypes
 def filter_image_using_gabor_example():
     """Applies filter_image_using_gabor operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/finger_print.jpg"
+    # Example data: FabriD (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/fabrid_black_knit_missing_yarn.jpg"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_gabor(
         image=image,
-        kernel_size=5,
-        standard_deviation=5.0,
-        orientation=90.0,
-        wavelength=5.0,
-        aspect_ratio=0.5,
-        phase_offset=90.0,
-        output_format="8bit",
+        kernel_size=61,
+        standard_deviation=10.0,
+        orientation=93.4,
+        wavelength=40.0,
+        aspect_ratio=0.3,
+        phase_offset=0.0,
+        output_format="32bit",
     )
 
     # ===================== Log ================================================

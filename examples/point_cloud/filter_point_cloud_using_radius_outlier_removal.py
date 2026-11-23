@@ -16,12 +16,13 @@ def filter_point_cloud_using_radius_outlier_removal_example():
     a given radius.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/engine_parts_1_downsampled.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_brackets_bin_photoneo_downsampled.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = vitreous.filter_point_cloud_using_radius_outlier_removal(
-        num_points=75, neighborhood_radius=25, point_cloud=point_cloud
+        num_points=8, neighborhood_radius=6, point_cloud=point_cloud
     )
 
     # ===================== Log ================================================

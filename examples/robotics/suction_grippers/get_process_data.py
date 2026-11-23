@@ -1,7 +1,9 @@
 """
 Demonstrates reading the decoded process data of a suction gripper pump.
 
-Only supported real Supports Piab grippers on MODBUS_RTU protocol.
+Supports Piab grippers on MODBUS_RTU protocol only. Not supported for the
+simulation-only isaacsim.SuctionGripper - it has no get_process_data() method
+at all, since it models no pump.
 
 Usage:
     python get_process_data.py --serial-port COM3

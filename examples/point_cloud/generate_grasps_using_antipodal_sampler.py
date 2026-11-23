@@ -22,7 +22,7 @@ def generate_grasps_using_antipodal_sampler_example():
     mesh = datatypes.Mesh3D.from_url(url=mesh_url, use_cache=True)
 
     # The hosted mesh is already in metres. This example places its object
-    # frame at the world origin, so returned world-frame poses match the mesh frame.
+    # frame at the world origin, so returned poses stay in the mesh frame.
     w_T_object = np.eye(4, dtype=np.float32)
 
     # ===================== Run Skill ==========================================
@@ -36,20 +36,15 @@ def generate_grasps_using_antipodal_sampler_example():
             min_pt_dist=0.005,
             max_sample_retries=500,
             seed=42,
-            # Desired world-frame TCP +Z direction (approach from above).
-            # Omit to use the object-frame -Z default.
-            alignment_axis_W=[0.0, 0.0, -1.0],
-            alignment_cost_weight=20.0,
-            contact_cost_weight=1.0,
         )
     )
 
     # ===================== Log ================================================
     logger.success(f"Generated {len(grasps.data)} antipodal grasps for {mesh}")
     logger.success(f"Grasps: {grasps}")
-    logger.info(f"Ray backend: {ray_backend.data}")
-    logger.info(f"Scores (normalized cost in [0, 1], lower is better): {scores.data}")
-    logger.info(f"Contact pairs (point_1, point_2, normal_1, normal_2): {antipodal_candidates}")
+    logger.info(f"Ray backend: {ray_backend}")
+    logger.info(f"Scores (more negative is more antipodal): {scores.data}")
+    logger.info(f"Contact pairs: {antipodal_candidates}")
     if len(grasps.data):
         logger.info(f"Best returned grasp pose:\n{np.round(grasps.data[0], 4)}")
         logger.info(
@@ -82,7 +77,6 @@ def generate_grasps_using_antipodal_sampler_example():
             label=f"grasp {index}: {score:.3f}",
         )
 
-        # candidate has shape (4, 3): point_1, point_2, normal_1, normal_2.
         contact_points = candidate[:2]
         contact_normals = candidate[2:]
         rr.log(

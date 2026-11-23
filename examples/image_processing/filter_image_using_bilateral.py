@@ -15,9 +15,9 @@ def filter_image_using_bilateral_example():
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_bilateral(
         image=image,
-        neighborhood_diameter=5,
+        neighborhood_diameter=9,
         spatial_sigma=75.0,
-        color_intensity_sigma=100.0,
+        color_intensity_sigma=75.0,
         border_type="default",
     )
 

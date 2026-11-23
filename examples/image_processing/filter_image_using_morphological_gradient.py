@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes
 def filter_image_using_morphological_gradient_example():
     """Applies filter_image_using_morphological_gradient operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/cartons_arranged.png"
+    # Example data: VisA (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/visa_pcb_ultrasonic_board.png"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================

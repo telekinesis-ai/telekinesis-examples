@@ -1,7 +1,10 @@
 """
 Demonstrates connecting and disconnecting a suction gripper.
 
-Supports Piab grippers.
+Supports Piab grippers, on real hardware or simulated in Isaac Sim via
+`simulation_prim_path`. Also supported for the simulation-only
+isaacsim.SuctionGripper, which only accepts `simulation_prim_path` - it has
+no hardware transport.
 
 Usage:
     python connection_and_disconnection.py --ip <ROBOT_IP>

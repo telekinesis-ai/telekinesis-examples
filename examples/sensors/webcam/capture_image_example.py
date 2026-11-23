@@ -13,17 +13,14 @@ from telekinesis.medulla.cameras import webcam
 
 
 def main():
-    camera = webcam.Webcam(
-        name="my_webcam",
-        camera_id=0,
-    )
+    camera = webcam.Webcam(name="my_webcam")
     try:
         rr.init("IDS_Example", spawn=True)
-        camera.connect()
+        camera.connect(camera_id=0)
 
-        image = camera.capture_single_color_frame()
+        image = camera.capture_image()
 
-        rr.log("Single_Image_Capture", rr.Image(image))
+        rr.log("Single_Image_Capture", rr.Image(image.to_numpy()))
     except Exception as e:
         logger.error(
             f"Unable to capture image.Caught exception: {type(e).__name__}: {e}"

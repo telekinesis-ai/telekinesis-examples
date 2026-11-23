@@ -1,7 +1,7 @@
 """
 Restrict the TCP to an axis-aligned cuboid, then try moves inside and outside it.
 
-Supports Epson, virtual, and Isaac Sim.
+Supports Universal Robots (UR), Epson, virtual, and Isaac Sim.
 
 Usage:
     python add_safety_cuboid.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]

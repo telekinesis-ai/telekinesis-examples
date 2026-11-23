@@ -9,7 +9,8 @@ from telekinesis import pupil, datatypes, cornea
 def filter_image_using_morphological_erode_example():
     """Applies erosion to shrink bright regions and remove small noise."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/gear_with_texture.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bars_scene36_gray.jpg"
     image = datatypes.Image.from_url(image_url)
     segmentation_data = cornea.segment_image_using_otsu_threshold(image=image).data
     image = datatypes.Image(segmentation_data)
@@ -19,7 +20,7 @@ def filter_image_using_morphological_erode_example():
         image=image,
         kernel_size=5,
         kernel_shape="ellipse",
-        iterations=10,
+        iterations=6,
         border_type="default",
     )
 

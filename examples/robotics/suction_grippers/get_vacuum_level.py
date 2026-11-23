@@ -1,7 +1,11 @@
 """
 Demonstrates reading the last commanded vacuum level of a suction gripper.
 
-Supports Piab grippers.
+Supports Piab grippers, on real hardware or simulated in Isaac Sim. Also
+supported for the simulation-only isaacsim.SuctionGripper, which reports back
+whatever was last passed to set_vacuum_level() - the simulation does not
+model an actual vacuum level, and returns None until set_vacuum_level() has
+been called at least once.
 
 Usage:
     python get_vacuum_level.py --ip <ROBOT_IP>

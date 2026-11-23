@@ -16,19 +16,20 @@ def filter_point_cloud_using_pass_through_filter_example():
     min/max bounds.
     """
     # ===================== Load Data ==========================================
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     point_cloud_url = (
-        "https://assets.telekinesis.ai/examples/v1/point_clouds/mounts_3_raw.ply"
+        "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_gears_bin_workcell_frame.ply"
     )
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
     filtered_point_cloud = vitreous.filter_point_cloud_using_pass_through_filter(
-        x_min=-185.0,
-        x_max=230.0,
-        y_min=-164.0,
-        y_max=164.0,
-        z_min=450.0,
-        z_max=548.0,
+        x_min=-215.0,
+        x_max=215.0,
+        y_min=-140.0,
+        y_max=140.0,
+        z_min=4.0,
+        z_max=100.0,
         point_cloud=point_cloud,
     )
 

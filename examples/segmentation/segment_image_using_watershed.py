@@ -13,8 +13,9 @@ def segment_image_using_watershed_example() -> None:
     """Segment an image using marker-controlled watershed."""
 
     # ===================== Load Image ==========================================
+    # Example data: T-LESS (CC BY 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
     image_url = (
-        "https://assets.telekinesis.ai/examples/v1/images/water_coins.jpg"
+        "https://assets.telekinesis.ai/examples/v1/images/tless_lamp_socket_blocks_touching.jpg"
     )
     image = datatypes.Image.from_url(url=image_url)
     gray_image = image.to_grayscale()
@@ -22,10 +23,11 @@ def segment_image_using_watershed_example() -> None:
     # ===================== Build Markers =======================================
     markers = _build_watershed_markers(
         gray_image=gray_image,
-        kernel_size=3,
+        bright_objects=True,
+        kernel_size=5,
         opening_iterations=2,
         dilate_iterations=3,
-        dist_fg_ratio=0.7,
+        dist_fg_ratio=0.4,
     )
 
     # ===================== Build Gradient =====================================
@@ -88,6 +90,7 @@ def segment_image_using_watershed_example() -> None:
 def _build_watershed_markers(
     *,
     gray_image: datatypes.Image,
+    bright_objects: bool,
     kernel_size: int,
     opening_iterations: int,
     dilate_iterations: int,
@@ -100,10 +103,16 @@ def _build_watershed_markers(
         image=gray_image,
     )
 
-    # Coins are dark, so invert the Otsu result and convert to 0/255.
-    thresholded = datatypes.Image(
-        ((1 - otsu_mask.to_numpy()) * 255).astype(np.uint8)
-    )
+    # Keep bright objects on a dark background as-is; invert for dark objects.
+    foreground = otsu_mask.to_numpy().astype(np.uint8)
+    if not bright_objects:
+        foreground = 1 - foreground
+    foreground = foreground * 255
+
+    # Fill holes (e.g. socket bores) so each part is one solid blob.
+    flood = foreground.copy()
+    cv2.floodFill(flood, None, (0, 0), 255)
+    thresholded = datatypes.Image(foreground | cv2.bitwise_not(flood))
 
     # Equivalent to cv2.MORPH_OPEN with a square kernel.
     opening = pupil.filter_image_using_morphological_open(

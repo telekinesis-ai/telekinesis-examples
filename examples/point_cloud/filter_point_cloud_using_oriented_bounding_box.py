@@ -15,13 +15,14 @@ def filter_point_cloud_using_oriented_bounding_box_example():
     Keeps only points within a 3D box that can be rotated to any orientation.
     """
     # ===================== Load Data ==========================================
-    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/can_vertical_3_downsampled.ply"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    point_cloud_url = "https://assets.telekinesis.ai/examples/v1/point_clouds/xyzibd_flat_bars_scene_downsampled.ply"
     point_cloud = datatypes.PointCloud.from_url(url=point_cloud_url, use_cache=True)
 
     # ===================== Run Skill ==========================================
-    x_min, y_min, z_min = -205.65248652, -112.59310319, 554.42936219
-    x_max, y_max, z_max = 121.88022318, -17.60647882, 698.54912862
-    rot_x, rot_y, rot_z = -38.1245801, -7.89877607, -7.74440359
+    x_min, y_min, z_min = -263.49, -189.02, 708.12
+    x_max, y_max, z_max = 242.31, 139.08, 850.12
+    rot_x, rot_y, rot_z = 0.271, -3.1233, -0.9463
     bbox = [x_min, y_min, z_min, x_max, y_max, z_max, rot_x, rot_y, rot_z]
     oriented_bbox = datatypes.OrientedBox3D.from_xyzxyz(bbox)
 

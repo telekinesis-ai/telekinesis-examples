@@ -60,6 +60,9 @@ RUN_ORDER = [
     "get_and_set_power_mode",
     "get_publisher_names_and_types",
     "get_publisher_hz",
+    "robot_properties",
+    "robot_registry",
+    "subscribe_to_state_and_tf",
     "get_timestamp",
     "get_state",
     "get_cartesian_pose",
@@ -93,6 +96,9 @@ RUN_ORDER = [
     "set_joint_acceleration",
     "set_cartesian_speed",
     "set_cartesian_acceleration",
+    # pick and place need the pick-and-place scene and a Hand-E (see their docstrings)
+    "pick",
+    "place",
     "add_safety_cuboid",
     "pause_and_continue_motion",
     "servo_joint",
@@ -124,7 +130,7 @@ def parse_args():
     parser.add_argument("--ip", default=None, help="UR robot IP address for real hardware")
     parser.add_argument("--prim_path", default=None, help="Isaac Sim articulation prim path")
     parser.add_argument("--gripper_prim_path", default=None,
-                        help="Isaac Sim gripper prim path, for the attach/detach tool examples")
+                        help="Isaac Sim gripper prim path, for the attach/detach tool and pick/place examples")
     parser.add_argument(
         "--non-interactive",
         action="store_true",

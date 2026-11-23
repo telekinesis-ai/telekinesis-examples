@@ -9,15 +9,16 @@ from telekinesis import pupil, datatypes
 def filter_image_using_hessian_example():
     """Applies filter_image_using_hessian operation."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/wires.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_rods_bin_s56_gray.png"
     image = datatypes.Image.from_url(image_url).to_grayscale()
 
     # ===================== Run Skill ==========================================
     filtered_image = pupil.filter_image_using_hessian(
         image=image,
-        scale_start=1,
-        scale_end=6,
-        scale_step=1,
+        scale_start=6,
+        scale_end=18,
+        scale_step=4,
         alpha=0.5,
         beta=0.5,
         gamma=15,

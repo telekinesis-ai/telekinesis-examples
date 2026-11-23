@@ -11,7 +11,7 @@ from telekinesis import cornea, datatypes
 def segment_image_using_felzenszwalb_example():
     """Segments an image using the Felzenszwalb algorithm."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/eggs_carton.jpg"
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/nuts_scattered.jpg"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================

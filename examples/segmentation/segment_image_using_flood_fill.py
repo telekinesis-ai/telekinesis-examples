@@ -11,12 +11,13 @@ from telekinesis import cornea, datatypes
 def segment_image_using_flood_fill_example():
     """Segments an image using flood fill from a seed point."""
     # ===================== Load Image ==========================================
-    image_url = "https://assets.telekinesis.ai/examples/v1/images/erode.jpg"
+    # Example data: XYZ-IBD (CC BY-NC-SA 4.0), modified. Credits and licences: THIRD_PARTY_DATA.md
+    image_url = "https://assets.telekinesis.ai/examples/v1/images/xyzibd_flat_bars_bin_gray.png"
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
     segmented_image = cornea.segment_image_using_flood_fill(
-        image=image, seed_point=(0, 0), tolerance=10
+        image=image, seed_point=(40, 40), tolerance=5
     )
 
     # ===================== Log ================================================
