@@ -22,15 +22,16 @@ def crop_image_using_bounding_boxes_example():
         [892, 235, 135, 545],
     ]
 
-    cropped_images = pupil.crop_image_using_bounding_boxes(
+    # Returns the tight crops and each crop's top-left [x, y] in the source image
+    cropped_images, crop_origins = pupil.crop_image_using_bounding_boxes(
         image=image,
         bounding_boxes=bounding_boxes,
-        retain_coordinates=True,
     )
 
     # ===================== Log ================================================
     logger.success(f"Cropped {image} using bounding boxes")
     logger.success(f"Result: {cropped_images} into {len(cropped_images)} regions")
+    logger.info(f"Crop origins [x, y] in the source image: {crop_origins.to_numpy().tolist()}")
 
     # ===================== Visualization  (Optional) ======================
     rr.init("crop_image_using_bounding_boxes_example", spawn=True)

@@ -1,5 +1,6 @@
 """Demonstrates filter_image_using_morphological_hitmiss operation."""
 
+import numpy as np
 from loguru import logger
 import rerun as rr
 
@@ -18,15 +19,22 @@ def filter_image_using_morphological_hitmiss_example():
     segmented_image = cornea.segment_image_using_threshold(image=copper_image)
 
     # ===================== Run Skill ==========================================
-    # Fires only where a 21 px disc fits inside a feature: SMD pads and vias, not IC leads or text.
+    # Fires at the centre of isolated pads about as large as the 35 px kernel: here the four
+    # J1 connector pads. Larger blobs, IC leads and text are not matched.
     filtered_image = pupil.filter_image_using_morphological_hitmiss(
         image=segmented_image,
-        kernel_size=21,
+        kernel_size=35,
         kernel_shape="ellipse",
         iterations=1,
         border_type="constant",
         border_value=0,
     )
+
+    # Hit-miss marks only the centre pixel(s) of each match; dilate them so they are visible.
+    marked_image = pupil.filter_image_using_morphological_dilate(
+        image=filtered_image, kernel_size=41, kernel_shape="ellipse", iterations=1,
+    )
+    marked_image = datatypes.Image((np.asarray(marked_image.data) > 0).astype(np.uint8) * 255)
 
     # ===================== Log ================================================
     logger.success(f"Applied filter_image_using_morphological_hitmiss on {image}")
@@ -35,7 +43,7 @@ def filter_image_using_morphological_hitmiss_example():
     # ===================== Visualization  (Optional) ======================
     rr.init("filter_image_using_morphological_hitmiss_example", spawn=True)
     datatypes.visualize(image, entity_path="1-original")
-    datatypes.visualize(filtered_image, entity_path="2-filtered")
+    datatypes.visualize(marked_image, entity_path="2-filtered")
 
 if __name__ == "__main__":
     filter_image_using_morphological_hitmiss_example()
