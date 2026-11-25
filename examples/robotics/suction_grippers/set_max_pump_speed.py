@@ -1,7 +1,9 @@
 """
 Demonstrates setting the maximum vacuum-pump speed of a suction gripper.
 
-Supports real Piab grippers only on the URCAP protocol.
+Supports Piab grippers only on the URCAP protocol. Not supported for the
+simulation-only isaacsim.SuctionGripper - it has no set_max_pump_speed()
+method at all, since it models no pump.
 
 Usage:
     python set_max_pump_speed.py --ip <ROBOT_IP>

@@ -1,7 +1,7 @@
 """
 Move the robot to a target joint configuration defined relative to its current one.
 
-Supports Universal Robots (UR), Epson, virtual, and Isaac Sim.
+Supports Universal Robots (UR), Epson, Dobot, virtual, and Isaac Sim.
 
 Usage:
     python set_joint_positions.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]

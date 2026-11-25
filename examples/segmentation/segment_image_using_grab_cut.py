@@ -16,6 +16,7 @@ def segment_image_using_grab_cut_example():
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
+    # bbox is [x, y, width, height] (top-left corner + size), not [x1, y1, x2, y2]
     bbox = [815, 20, 615, 465]
     segmented_image = cornea.segment_image_using_grab_cut(
         image=image, 

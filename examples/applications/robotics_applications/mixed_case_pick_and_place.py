@@ -7,7 +7,6 @@
 # Robust signal handling: SIGINT reset before teardown, each disconnect guarded.
 
 import signal
-import sys
 import time
 import math
 import numpy as np
@@ -16,7 +15,7 @@ from loguru import logger
 
 import rerun as rr
 
-from telekinesis.synapse import utils as tfutils
+from telekinesis.tf import tfutils
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
 from telekinesis.medulla.cameras.realsense import RealSense
@@ -24,7 +23,6 @@ from telekinesis import cornea
 
 
 from telekinesis import retina, pupil
-from datatypes import datatypes
 
 # =====================================================================
 # Tunable constants
@@ -34,7 +32,6 @@ GRIPPER_IP = "192.168.1.1"
 CAMERA_NAME = "realsense_top"
 
 TCP_OFFSET = [0.0, 0.0, 0.23, 0.0, 0.0, 0.0]  # 23 cm tool offset
-PAYLOAD_MASS = 1.0
 
 # Hand-eye calibration
 CAMERA_IN_TCP = [
@@ -71,11 +68,8 @@ MOVE_SPEED = 0.4
 MOVE_ACC = 0.6
 
 # Detection
-QWEN_PROMPT = ("Detect different objects in the blue bin ."
-               )
-GROUNDING_DINO_PROMPT = (
-    "different objects in blue bin ."
-)
+QWEN_OBJECTS = ["different objects in the blue bin"]
+GROUNDING_DINO_OBJECTS = ["different objects in blue bin"]
 
 # SAM/PCA tuning
 SAM_AXIS_SAMPLE_PIXELS = 30  # pixel offset along principal axis for yaw computation
@@ -92,6 +86,35 @@ HOME_JOINT_POSITIONS = [120, -90, -90, -90, 90, -90]
 # =====================================================================
 # Helpers
 # =====================================================================
+
+
+def result_to_items(results):
+    """Convert a COCOObjectDetectionResults batch into a list of COCO-style dicts.
+
+    Each dict has "bbox" ([x, y, w, h] or None), "score", "category_id" and,
+    when the result carries a mask, "segmentation" (an (H, W) uint8 mask array).
+    """
+    items = []
+    for r in results:
+        item = {
+            "bbox": None if r.bbox is None else [float(v) for v in r.bbox],
+            "score": float(r.score),
+            "category_id": int(r.category_id),
+        }
+        if r.segmentation is not None:
+            item["segmentation"] = r.as_mask()["segmentation"]
+        items.append(item)
+    return items
+
+
+def contours_to_items(contours):
+    """Convert a Contours batch into COCO-style dicts with an XYWH "bbox"."""
+    items = []
+    for c in contours:
+        pts = np.asarray(c.points, dtype=np.int32).reshape(-1, 1, 2)
+        x, y, w, h = cv2.boundingRect(pts)
+        items.append({"bbox": [float(x), float(y), float(w), float(h)]})
+    return items
 
 
 def build_scan_poses(start, nx, ny, dx, dy):
@@ -128,13 +151,9 @@ def deproject_pixel_to_world(pixel_xy, depth, intrinsics, world_T_camera):
         return None
     z = float(np.median(valid))
 
-    fx, fy, _h, _w, ppx, ppy, _model, coeffs = intrinsics
+    cam_intrinsics, coeffs = intrinsics
     pixel = [float(cx), float(cy)]
     distortion = list(coeffs)
-
-    cam_intrinsics = np.array([[fx, 0.0, ppx],
-                               [0.0, fy, ppy],
-                               [0.0, 0.0, 1.0]])
 
     world_T_pt_mat = pupil.project_pixel_to_world_point(
         camera_intrinsics=cam_intrinsics,
@@ -143,8 +162,9 @@ def deproject_pixel_to_world(pixel_xy, depth, intrinsics, world_T_camera):
         depth=z,
         world_T_camera=world_T_camera,
     )
-    return np.array(world_T_pt_mat.to_numpy()) if hasattr(
-        world_T_pt_mat, "to_numpy") else np.array(world_T_pt_mat)
+    world_T_pt = np.eye(4)
+    world_T_pt[:3, 3] = np.asarray(world_T_pt_mat.to_numpy(), dtype=float).reshape(3)
+    return world_T_pt
 
 
 def deproject_bbox_center_to_world(bbox_xywh, depth, intrinsics, world_T_camera):
@@ -186,8 +206,8 @@ def detect_objects(rgb_image):
     # 1) QWEN
     try:
         logger.info("  trying QWEN detector...")
-        ann = retina.detect_objects_using_qwen(image=rgb_image, prompt=QWEN_PROMPT)
-        items = ann.to_list() if hasattr(ann, "to_list") else []
+        ann, _cats = retina.detect_objects_using_qwen(image=rgb_image, objects=QWEN_OBJECTS)
+        items = result_to_items(ann)
         boxes = [it.get("bbox", [0, 0, 0, 0]) for it in items]
         if boxes:
             logger.info(f"  QWEN found {len(boxes)} candidate(s)")
@@ -200,10 +220,10 @@ def detect_objects(rgb_image):
     try:
         logger.info("  trying Grounding DINO detector...")
         ann, _cats = retina.detect_objects_using_grounding_dino(
-            image=rgb_image, prompt=GROUNDING_DINO_PROMPT,
+            image=rgb_image, objects=GROUNDING_DINO_OBJECTS,
             box_threshold=0.25, text_threshold=0.25,
         )
-        items = ann.to_list() if hasattr(ann, "to_list") else []
+        items = result_to_items(ann)
         boxes = [it.get("bbox", [0, 0, 0, 0]) for it in items]
         if boxes:
             logger.info(f"  Grounding DINO found {len(boxes)} candidate(s)")
@@ -217,12 +237,12 @@ def detect_objects(rgb_image):
         logger.info("  trying classical contour detector...")
         seg_ann = retina.detect_contours(
             image=rgb_image,
-            retrieval_mode="external",
-            approx_method="simple",
+            retrieval_mode="retrieve_external",
+            approx_method="chain_approximate_simple",
             min_area=500,
             max_area=200000,
         )
-        items = seg_ann.to_list() if hasattr(seg_ann, "to_list") else []
+        items = contours_to_items(seg_ann)
         boxes = [it.get("bbox", [0, 0, 0, 0]) for it in items]
         logger.info(f"  classical contours found {len(boxes)} candidate(s)")
         return boxes, "classical"
@@ -245,7 +265,7 @@ def run_sam_on_bboxes(rgb_image, bboxes_xywh):
 
         sam_ann = cornea.segment_image_using_sam3(
             rgb_image, bboxes=bboxes_xyxy, mask_threshold=0.5)
-        items = sam_ann.to_list() if hasattr(sam_ann, "to_list") else []
+        items = result_to_items(sam_ann)
         logger.info(f"  SAM returned {len(items)} annotation items")
         masks = []
         H, W = rgb_image.shape[:2]
@@ -384,8 +404,8 @@ def main():
         logger.info("=== Phase 0: connecting hardware ===")
         robot = UniversalRobotsUR10E()
         robot.connect(ROBOT_IP)
-        robot.set_tcp(TCP_OFFSET)
-        robot.set_payload(PAYLOAD_MASS)
+        robot.add_tcp("tool", TCP_OFFSET)
+        # NOTE: the payload mass is no longer settable through the SDK; configure it on the robot controller.
         logger.info(f"robot connected, current pose: {robot.get_cartesian_pose()}")
 
         gripper = OnRobotRG2()
@@ -393,8 +413,8 @@ def main():
         logger.info("gripper connected, opening to home")
         gripper.open(force=40.0, asynchronous=False)
 
-        camera = RealSense(name=CAMERA_NAME)
-        camera.connect(warmup_frames=30)
+        camera = RealSense(name=CAMERA_NAME, warmup_frames=30)
+        camera.connect()
         logger.info("camera connected and warmed up")
 
         robot.set_joint_positions(
@@ -419,8 +439,8 @@ def main():
             robot.set_cartesian_pose(scan_pose, speed=MOVE_SPEED, acceleration=MOVE_ACC)
             time.sleep(0.3)  # settle
 
-            rgb = camera.capture_single_color_frame()
-            depth = camera.capture_single_depth_frame()
+            rgb = camera.capture_image().to_numpy()
+            depth = camera.capture_depth().to_numpy()
             if rgb is None or depth is None:
                 logger.warning(f"  scan {i}: failed to capture frames")
                 continue
@@ -435,7 +455,7 @@ def main():
 
             # Camera intrinsics for color stream
             try:
-                intrinsics = camera.get_intrinsics("color")
+                intrinsics = camera.get_parameter("intrinsics", stream="color")
             except Exception as e:
                 logger.error(f"  failed to read intrinsics: {e}")
                 continue

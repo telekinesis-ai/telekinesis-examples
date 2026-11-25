@@ -13,8 +13,8 @@ from telekinesis.medulla.cameras import webcam
 def main():
     camera = None
     try:
-        camera = webcam.Webcam(name="my_webcam", camera_id=0)
-        camera.connect()
+        camera = webcam.Webcam(name="my_webcam")
+        camera.connect(camera_id=0)
         logger.info("Camera Server is running... Press Ctrl+C to stop.")
         while True:
             time.sleep(1)
@@ -25,7 +25,7 @@ def main():
         if camera is not None:
             camera.disconnect()
             node.SessionManager.delete()
-        logger.info("Completed clenup.")
+        logger.info("Completed cleanup.")
 
 
 if __name__ == "__main__":

@@ -16,9 +16,9 @@ def segment_image_using_rgb_example():
     image = datatypes.Image.from_url(url=image_url)
 
     # ===================== Run Skill ==========================================
-    # Note: bounds are applied in (B, G, R) channel order due to a known SDK issue
+    # Bounds are in (R, G, B) order
     segmented_image = cornea.segment_image_using_rgb(
-        image=image, lower_bound=(40, 80, 120), upper_bound=(180, 220, 255)
+        image=image, lower_bound=(120, 80, 40), upper_bound=(255, 220, 180)
     )
 
     # ===================== Log ================================================

@@ -14,16 +14,16 @@ import time
 
 from loguru import logger
 import rerun as rr
-import numpy as np
 
 from babyros import node
+from telekinesis import datatypes
 
 
-def log_video(image: np.ndarray) -> None:
+def log_video(image: datatypes.Image) -> None:
     """
     Log video frames to the rerun viewer.
     """
-    rr.log("Contionous_Image_Capture", rr.Image(image))
+    rr.log("Contionous_Image_Capture", rr.Image(image.to_numpy()))
 
 
 def main():
@@ -31,18 +31,18 @@ def main():
 
     name = "my_webcam"
 
-    base_topic = f"medulla/v1/camera/webcam/{name}"
+    base_topic = f"medulla/camera/Webcam/{name}"
 
     start_video_stream_publisher = node.Publisher(
-        topic=f"{base_topic}/start_video_stream"
+        topic=f"{base_topic}/start_stream"
     )
 
     stop_video_stream_publisher = node.Publisher(
-        topic=f"{base_topic}/stop_video_stream"
+        topic=f"{base_topic}/stop_stream"
     )
 
     video_subscriber = node.Subscriber(
-        topic=f"{base_topic}/video",
+        topic=f"{base_topic}/stream",
         callback=log_video,
     )
 

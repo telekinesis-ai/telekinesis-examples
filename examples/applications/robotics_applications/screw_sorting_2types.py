@@ -2,19 +2,17 @@
 # Strategy: scan -> QWEN (fallback GDINO) -> SAM masks -> classify by area -> PCA grasp -> pick/place
 
 import signal
-import sys
 import time
 import numpy as np
 import cv2
 import rerun as rr
 from loguru import logger
 
-from datatypes import datatypes
 from telekinesis import retina, cornea, pupil
 from telekinesis.medulla.cameras import RealSense
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
-from telekinesis.synapse import utils as tfutils
+from telekinesis.tf import tfutils
 
 # =========================================================================
 # HARDCODED / TUNABLE CONSTANTS
@@ -53,8 +51,8 @@ GRIPPER_FORCE_N = 40.0  # RG2 max
 GRIPPER_OPEN_WIDTH_MM = 100.0  # for RG2 max ~110
 
 # Vision
-QWEN_PROMPT = "Different screws on a gray tray . "
-GDINO_PROMPT = "screws ."
+QWEN_OBJECTS = ["different screws on a gray tray"]
+GDINO_OBJECTS = ["screws"]
 SCORE_THRESHOLD = 0.25
 SAM_MASK_THRESHOLD = 0.5
 
@@ -123,13 +121,32 @@ def get_depth_at(depth_img: np.ndarray, u: int, v: int, win: int = 5) -> float:
     return float(np.median(valid))
 
 
+def result_to_items(results):
+    """Convert a COCOObjectDetectionResults batch into a list of COCO-style dicts.
+
+    Each dict has "bbox" ([x, y, w, h] or None), "score", "category_id" and,
+    when the result carries a mask, "segmentation" (an (H, W) uint8 mask array).
+    """
+    items = []
+    for r in results:
+        item = {
+            "bbox": None if r.bbox is None else [float(v) for v in r.bbox],
+            "score": float(r.score),
+            "category_id": int(r.category_id),
+        }
+        if r.segmentation is not None:
+            item["segmentation"] = r.as_mask()["segmentation"]
+        items.append(item)
+    return items
+
+
 def detect_screws(color_img: np.ndarray):
     """Try QWEN first, then GDINO. Returns ObjectDetectionAnnotations."""
     # try:
     #     logger.info("Running QWEN detection...")
-    #     anns = retina.detect_objects_using_qwen(color_img, QWEN_PROMPT)
-    #     if anns is not None and len(anns.to_list()) > 0:
-    #         logger.info(f"QWEN found {len(anns.to_list())} detections")
+    #     anns, _cats = retina.detect_objects_using_qwen(image=color_img, objects=QWEN_OBJECTS)
+    #     if anns is not None and len(anns) > 0:
+    #         logger.info(f"QWEN found {len(anns)} detections")
     #         return anns
     #     logger.warning("QWEN returned no detections, falling back to GDINO")
     # except BaseException as e:
@@ -138,10 +155,10 @@ def detect_screws(color_img: np.ndarray):
     try:
         logger.info("Running Grounding DINO detection...")
         anns, _cats = retina.detect_objects_using_grounding_dino(
-            color_img, GDINO_PROMPT, box_threshold=SCORE_THRESHOLD, text_threshold=SCORE_THRESHOLD
+            image=color_img, objects=GDINO_OBJECTS, box_threshold=SCORE_THRESHOLD, text_threshold=SCORE_THRESHOLD
         )
-        if anns is not None and len(anns.to_list()) > 0:
-            logger.info(f"GDINO found {len(anns.to_list())} detections")
+        if anns is not None and len(anns) > 0:
+            logger.info(f"GDINO found {len(anns)} detections")
             return anns
         logger.warning("GDINO also returned no detections")
     except BaseException as e:
@@ -152,7 +169,7 @@ def detect_screws(color_img: np.ndarray):
 def anns_to_xyxy_boxes(anns) -> list[list[int]]:
     """Convert ObjectDetectionAnnotations (COCO bbox xywh) to XYXY list."""
     out = []
-    for a in anns.to_list():
+    for a in result_to_items(anns):
         x, y, w, h = a["bbox"]
         out.append([int(x), int(y), int(x + w), int(y + h)])
     return out
@@ -163,10 +180,10 @@ def run_sam(color_img: np.ndarray, xyxy_boxes: list[list[int]]):
     if not xyxy_boxes:
         return []
     logger.info(f"Running SAM on {len(xyxy_boxes)} boxes")
-    sam_anns = cornea.segment_image_using_sam3(color_img, xyxy_boxes, mask_threshold=SAM_MASK_THRESHOLD)
+    sam_anns = cornea.segment_image_using_sam3(image=color_img, bboxes=xyxy_boxes, mask_threshold=SAM_MASK_THRESHOLD)
     masks = []
     h, w = color_img.shape[:2]
-    for a in sam_anns.to_list():
+    for a in result_to_items(sam_anns):
         seg = a.get("segmentation", None)
         if seg is None:
             masks.append(np.zeros((h, w), dtype=bool))
@@ -174,7 +191,9 @@ def run_sam(color_img: np.ndarray, xyxy_boxes: list[list[int]]):
         # Try to convert polygon-or-rle into binary mask via decoding logic.
         # Easiest: rasterize from bbox-cropped polygon if list, else fallback.
         m = np.zeros((h, w), dtype=np.uint8)
-        if isinstance(seg, list) and len(seg) > 0 and isinstance(seg[0], (list, np.ndarray)):
+        if isinstance(seg, np.ndarray):
+            m = (seg > 0).astype(np.uint8)
+        elif isinstance(seg, list) and len(seg) > 0 and isinstance(seg[0], (list, np.ndarray)):
             for poly in seg:
                 pts = np.array(poly, dtype=np.float32).reshape(-1, 2).astype(np.int32)
                 cv2.fillPoly(m, [pts], 1)
@@ -203,7 +222,7 @@ def main():
 
     robot = UniversalRobotsUR10E()
     gripper = OnRobotRG2()
-    camera = RealSense(name="cam0")
+    camera = RealSense(name="cam0", warmup_frames=30)
 
     interrupted = {"flag": False}
 
@@ -217,13 +236,14 @@ def main():
         # ----- Connect -----
         logger.info("Connecting hardware...")
         robot.connect(ROBOT_IP)
-        robot.set_tcp(TCP_OFFSET)
+        robot.add_tcp("tool", TCP_OFFSET)
         gripper.connect(GRIPPER_IP)
-        camera.connect(warmup_frames=30)
+        camera.connect()
 
         # Camera intrinsics
-        fx, fy, h_img, w_img, ppx, ppy, _model, dist = camera.get_intrinsics("color")
-        K = np.array([[fx, 0, ppx], [0, fy, ppy], [0, 0, 1]], dtype=np.float64)
+        K, dist = camera.get_parameter("intrinsics", stream="color")
+        K = np.asarray(K, dtype=np.float64)
+        fx, fy, ppx, ppy = K[0, 0], K[1, 1], K[0, 2], K[1, 2]
         logger.info(f"Camera intrinsics: fx={fx}, fy={fy}, ppx={ppx}, ppy={ppy}")
 
         TCP_T_CAMERA = tfutils.pose_to_transformation_matrix(CAMERA_IN_TCP, rot_type='deg')
@@ -239,8 +259,8 @@ def main():
         time.sleep(0.5)
 
         # Capture
-        color = camera.capture_color_image()
-        depth = camera.capture_depth_image()
+        color = camera.capture_image().to_numpy()
+        depth = camera.capture_depth().to_numpy()
         if color is None or depth is None:
             logger.error("Capture failed, aborting")
             return
@@ -250,7 +270,7 @@ def main():
 
         # Detect
         anns = detect_screws(color)
-        if anns is None or len(anns.to_list()) == 0:
+        if anns is None or len(anns) == 0:
             logger.warning("No screws detected, aborting")
             return
 

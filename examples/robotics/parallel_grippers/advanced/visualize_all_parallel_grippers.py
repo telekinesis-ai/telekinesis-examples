@@ -66,7 +66,7 @@ def main():
 
         # A gripper whose URDF bundle could not be fetched has no model, so
         # there is nothing to visualize — skip it rather than raise.
-        if gripper.urdf_path is None:
+        if gripper.urdf_path is None or gripper._model is None:
             logger.error(f"Skipping {gripper_cls.__name__}: no URDF model available.")
             continue
 

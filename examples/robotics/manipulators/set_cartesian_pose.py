@@ -1,7 +1,7 @@
 """
 Move the TCP to a target Cartesian pose relative to its current pose.
 
-Supports Universal Robots (UR), Epson, virtual, and Isaac Sim.
+Supports Universal Robots (UR), Epson, Dobot, virtual, and Isaac Sim.
 
 Usage:
     python set_cartesian_pose.py [--ip <ROBOT_IP>] [--prim_path <PRIM_PATH>]

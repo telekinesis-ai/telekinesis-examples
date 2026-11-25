@@ -10,7 +10,7 @@ Usage:
 from loguru import logger
 
 from telekinesis.synapse.robots.manipulators import universal_robots
-from telekinesis.synapse import utils
+from telekinesis.tf import tfutils
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
 
     # Convert each 4x4 transformation matrix to a pose [x, y, z, rx, ry, rz] (m, deg)
     for name, T in transforms.items():
-        pose = utils.transformation_matrix_to_pose(T, rot_type="deg")
+        pose = tfutils.transformation_matrix_to_pose(T, rot_type="deg")
         logger.success(f"{name}: pose [m, deg] = {pose}")
 
 

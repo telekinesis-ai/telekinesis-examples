@@ -13,7 +13,7 @@ import rerun as rr
 from loguru import logger
 
 from telekinesis.synapse.tools.parallel_grippers import onrobot
-from telekinesis.synapse import utils
+from telekinesis.tf import tfutils
 
 
 def main() -> None:
@@ -31,7 +31,7 @@ def main() -> None:
     gripper.visualize_rerun(recording_stream=rr.get_global_data_recording())
 
     for name, transform in transforms.items():
-        pose = utils.transformation_matrix_to_pose(transform, rot_type="deg")
+        pose = tfutils.transformation_matrix_to_pose(transform, rot_type="deg")
         logger.success(f"{name}: pose [m, deg] = {pose}")
 
         origin = transform[:3, 3]

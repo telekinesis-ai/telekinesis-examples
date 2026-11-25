@@ -14,18 +14,15 @@ from telekinesis.medulla.cameras import webcam
 
 
 def main():
-    camera = webcam.Webcam(
-        name="my_webcam",
-        camera_id=0,
-    )
+    camera = webcam.Webcam(name="my_webcam")
     try:
         rr.init("IDS_Example", spawn=True)
-        camera.connect()
+        camera.connect(camera_id=0)
 
         end_time = time.time() + 10
         while time.time() < end_time:
-            image = camera.capture_video_color_frame()
-            rr.log("Contionous_Image_Capture", rr.Image(image))
+            image = camera.capture_image()
+            rr.log("Contionous_Image_Capture", rr.Image(image.to_numpy()))
     except Exception as e:
         logger.error(
             f"Unable to stream video.Caught exception: {type(e).__name__}: {e}"

@@ -9,8 +9,8 @@ import cv2
 from loguru import logger
 import rerun as rr
 
-from datatypes import datatypes
-from telekinesis.synapse import utils as tfutils
+from telekinesis import datatypes
+from telekinesis.tf import tfutils
 from telekinesis.synapse.robots.manipulators.universal_robots import UniversalRobotsUR10E
 from telekinesis.synapse.tools.parallel_grippers.onrobot import OnRobotRG2
 from telekinesis.medulla.cameras.realsense import RealSense
@@ -68,8 +68,8 @@ CONTACT_ACCEL = 0.3
 CONTACT_DIRECTION = [0, 0, -1, 0, 0, 0]  # detect contact in -Z (base frame)
 
 # --- Vision ---
-QWEN_PROMPT = "white styrofoam rectangular boxes on a gray tray"
-DINO_PROMPT = "individual white styrofoam rectangular boxes ."
+QWEN_OBJECTS = ["white styrofoam rectangular boxes on a gray tray"]
+DINO_OBJECTS = ["individual white styrofoam rectangular boxes"]
 QWEN_MODEL = "Qwen/Qwen3-VL-4B-Instruct"
 SAM_THRESHOLD = 0.5
 DINO_BOX_THRESHOLD = 0.30
@@ -88,6 +88,35 @@ TCP_T_CAMERA = tfutils.pose_to_transformation_matrix(CAMERA_IN_TCP, rot_type='de
 # Helpers
 # =============================================================================
 
+def result_to_items(results):
+    """Convert a COCOObjectDetectionResults batch into a list of COCO-style dicts.
+
+    Each dict has "bbox" ([x, y, w, h] or None), "score", "category_id" and,
+    when the result carries a mask, "segmentation" (an (H, W) uint8 mask array).
+    """
+    items = []
+    for r in results:
+        item = {
+            "bbox": None if r.bbox is None else [float(v) for v in r.bbox],
+            "score": float(r.score),
+            "category_id": int(r.category_id),
+        }
+        if r.segmentation is not None:
+            item["segmentation"] = r.as_mask()["segmentation"]
+        items.append(item)
+    return items
+
+
+def contours_to_items(contours):
+    """Convert a Contours batch into COCO-style dicts with an XYWH "bbox"."""
+    items = []
+    for c in contours:
+        pts = np.asarray(c.points, dtype=np.int32).reshape(-1, 1, 2)
+        x, y, w, h = cv2.boundingRect(pts)
+        items.append({"bbox": [float(x), float(y), float(w), float(h)]})
+    return items
+
+
 def build_place_grid():
     """Generate place poses in a row-major grid starting from FIRST_PLACE_POSE."""
     poses = []
@@ -105,11 +134,11 @@ def detect_boxes(image_np):
     # 1) QWEN
     try:
         logger.info("[DETECT] Trying QWEN...")
-        ann = retina.detect_objects_using_qwen(
+        ann, _cats = retina.detect_objects_using_qwen(
             image=image_np,
-            prompt =QWEN_PROMPT,
+            objects=QWEN_OBJECTS,
         )
-        ann_list = ann.to_list() if hasattr(ann, "to_list") else []
+        ann_list = result_to_items(ann)
         bboxes_xywh = [a["bbox"] for a in ann_list if a.get("bbox") is not None]
         if len(bboxes_xywh) > 0:
             bboxes_xyxy = [[b[0], b[1], b[0] + b[2], b[1] + b[3]] for b in bboxes_xywh]
@@ -124,11 +153,11 @@ def detect_boxes(image_np):
         logger.info("[DETECT] Trying Grounding DINO...")
         ann, _cats = retina.detect_objects_using_grounding_dino(
             image=image_np,
-            prompt=DINO_PROMPT,
+            objects=DINO_OBJECTS,
             box_threshold=DINO_BOX_THRESHOLD,
             text_threshold=DINO_TEXT_THRESHOLD,
         )
-        ann_list = ann.to_list() if hasattr(ann, "to_list") else []
+        ann_list = result_to_items(ann)
         bboxes_xywh = [a["bbox"] for a in ann_list if a.get("bbox") is not None]
         if len(bboxes_xywh) > 0:
             bboxes_xyxy = [[b[0], b[1], b[0] + b[2], b[1] + b[3]] for b in bboxes_xywh]
@@ -142,15 +171,15 @@ def detect_boxes(image_np):
     try:
         logger.info("[DETECT] Trying classical contour detection...")
         gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY) if image_np.ndim == 3 else image_np
-        gray_img = datatypes.Image(image=gray)
+        gray_img = datatypes.Image(gray)
         ann_geom = retina.detect_contours(
             image=gray_img,
-            retrieval_mode="external",
-            approx_method="simple",
+            retrieval_mode="retrieve_external",
+            approx_method="chain_approximate_simple",
             min_area=1500,
             max_area=200000,
         )
-        ann_list = ann_geom.to_list() if hasattr(ann_geom, "to_list") else []
+        ann_list = contours_to_items(ann_geom)
         bboxes_xywh = [a["bbox"] for a in ann_list if a.get("bbox") is not None]
         bboxes_xyxy = [[b[0], b[1], b[0] + b[2], b[1] + b[3]] for b in bboxes_xywh]
         logger.success(f"[DETECT] Classical found {len(bboxes_xyxy)} detections")
@@ -162,16 +191,16 @@ def detect_boxes(image_np):
 
 def get_mask_for_bbox(image_np, bbox_xyxy):
     """Run SAM on a single bbox and return a binary uint8 mask (H,W)."""
-    boxes2d = datatypes.Boxes2D(arrays=[bbox_xyxy], array_format="XYXY")
+    boxes_xyxy = [[int(v) for v in bbox_xyxy]]
     sam_ann = cornea.segment_image_using_sam3(
         image=image_np,
-        bboxes=boxes2d,
+        bboxes=boxes_xyxy,
         mask_threshold=SAM_THRESHOLD,
     )
     # SAM returns ObjectDetectionAnnotations whose 'segmentation' fields contain mask info.
     # We'll instead reconstruct the mask by re-running cornea on each bbox is expensive;
     # use the polygon/segmentation from annotation if available, else fallback to bbox-filled.
-    ann_list = sam_ann.to_list() if hasattr(sam_ann, "to_list") else []
+    ann_list = result_to_items(sam_ann)
     h, w = image_np.shape[:2]
     mask = np.zeros((h, w), dtype=np.uint8)
     if len(ann_list) == 0:
@@ -189,7 +218,9 @@ def get_mask_for_bbox(image_np, bbox_xyxy):
 
     # segmentation may be list of polygons (flat [x1,y1,x2,y2,...]) per COCO convention
     try:
-        if isinstance(seg, list) and len(seg) > 0 and isinstance(seg[0], (list, np.ndarray)):
+        if isinstance(seg, np.ndarray):
+            mask = (seg > 0).astype(np.uint8) * 255
+        elif isinstance(seg, list) and len(seg) > 0 and isinstance(seg[0], (list, np.ndarray)):
             # list of polygons
             for poly in seg:
                 pts = np.array(poly, dtype=np.float32).reshape(-1, 2).astype(np.int32)
@@ -226,15 +257,15 @@ def compute_pca_on_mask(mask_uint8):
 def pixel_to_base(camera_intrinsics_3x3, dist_coeffs, pixel_xy, depth_m, base_T_tcp):
     """Project pixel + depth to 3D point in base frame."""
     base_T_cam = base_T_tcp @ TCP_T_CAMERA
-    cam_T_point = pupil.project_pixel_to_camera_point(
+    cam_point = pupil.project_pixel_to_camera_point(
         camera_intrinsics=camera_intrinsics_3x3,
         distortion_coefficients=dist_coeffs,
         pixel=list(pixel_xy),
         depth=float(depth_m),
     )
-    cam_T_point_np = cam_T_point.to_numpy() if hasattr(cam_T_point, "to_numpy") else np.array(cam_T_point)
-    base_T_point = base_T_cam @ cam_T_point_np
-    return base_T_point[:3, 3]  # XYZ in base
+    cam_xyz = np.asarray(cam_point.to_numpy(), dtype=float).reshape(3)
+    base_xyz = base_T_cam @ np.append(cam_xyz, 1.0)
+    return base_xyz[:3]  # XYZ in base
 
 
 def get_depth_at(depth_img: np.ndarray, u: int, v: int, win: int = 5) -> float:
@@ -299,7 +330,7 @@ def main():
         robot = UniversalRobotsUR10E()
         robot.connect(ROBOT_IP)
         # Set TCP offset (23cm along Z from flange)
-        robot.set_tcp([0.0, 0.0, TCP_OFFSET_M, 0.0, 0.0, 0.0])
+        robot.add_tcp("tool", [0.0, 0.0, TCP_OFFSET_M, 0.0, 0.0, 0.0])
         logger.success("[INIT] Robot connected and TCP set")
 
         logger.info("[INIT] Connecting OnRobot RG2 gripper...")
@@ -327,10 +358,11 @@ def main():
 
         # ----- Capture -----
         logger.info("[SCAN] Capturing color, depth, and intrinsics")
-        color = camera.capture_color_image()
-        depth = camera.capture_depth_image()
-        fx, fy, h_img, w_img, ppx, ppy, model, coeffs = camera.get_intrinsics("color")
-        K = np.array([[fx, 0.0, ppx], [0.0, fy, ppy], [0.0, 0.0, 1.0]], dtype=np.float32)
+        color = camera.capture_image().to_numpy()
+        depth = camera.capture_depth().to_numpy()
+        K, coeffs = camera.get_parameter("intrinsics", stream="color")
+        K = np.asarray(K, dtype=np.float32)
+        fx, fy = float(K[0, 0]), float(K[1, 1])
         dist_coeffs = list(coeffs)
 
         if color is None or depth is None:
@@ -403,7 +435,7 @@ def main():
             # Depth lookup at centroid
             d = get_depth_at(depth, int(round(cx)), int(round(cy)))
             if d <= 0.05:
-                logger.warning(f"[TRANSFORM] invalid depth at centroid, skipping")
+                logger.warning("[TRANSFORM] invalid depth at centroid, skipping")
                 continue
             logger.info(f"[TRANSFORM] depth at centroid = {d:.3f} m")
 
@@ -491,7 +523,7 @@ def main():
                 # Use move_until_contact for the placing descent (per user pref)
                 logger.info(f"[PLACE {i}] move_until_contact descending")
                 robot.move_until_contact(
-                    cartesian_speed=[0.0, 0.0, -CONTACT_SPEED_MS, 0.0, 0.0, 0.0],
+                    cartesian_velocity=[0.0, 0.0, -CONTACT_SPEED_MS, 0.0, 0.0, 0.0],
                     direction=CONTACT_DIRECTION,
                     acceleration=CONTACT_ACCEL,
                 )

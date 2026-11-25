@@ -1,7 +1,7 @@
 """
 Logs whether the robot is currently in an emergency stop state.
 
-Supports Universal Robots (UR).
+Supports Universal Robots (UR), Epson, and Dobot.
 
 Usage:
     python is_emergency_stopped.py [--ip <ROBOT_IP>]

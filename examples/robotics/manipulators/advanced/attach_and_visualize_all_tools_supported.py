@@ -51,6 +51,11 @@ def main():
     for name, gripper_cls in _GRIPPERS.items():
         gripper = gripper_cls()
 
+        # A tool whose URDF failed to load has no model, so it cannot be visualized.
+        if gripper._model is None:
+            print(f"Skipping {name}: no URDF model available.")
+            continue
+
         robot.detach_tool()
         robot.attach_tool(gripper)
 

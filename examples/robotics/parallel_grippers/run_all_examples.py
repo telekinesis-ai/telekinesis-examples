@@ -48,6 +48,7 @@ RUN_ORDER = [
     "get_visual_meshes_data",
     "get_link_transforms",
     "get_visual_mesh_transforms",
+    "get_visual_meshes",
     "visualize_rerun",
     "connection_and_disconnection",
     "activate",
