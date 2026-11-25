@@ -139,20 +139,6 @@ CAMERA_POSE_TOP_ROWS = np.array(
 )
 
 
-def depth_to_world_points(depth, camera_to_world):
-    """World-frame points of every valid pixel of a depth image."""
-    rows, columns = np.nonzero(depth > 0)
-    z = depth[rows, columns]
-    camera_points = np.column_stack(
-        [
-            (columns - INTRINSIC_MATRIX[0, 2]) * z / INTRINSIC_MATRIX[0, 0],
-            (rows - INTRINSIC_MATRIX[1, 2]) * z / INTRINSIC_MATRIX[1, 1],
-            z,
-        ]
-    )
-    return camera_points @ camera_to_world[:3, :3].T + camera_to_world[:3, 3]
-
-
 def reconstruct_mesh_using_tsdf_example():
     """
     Reconstructs the mesh of a metal bin from 22 depth images taken by a
@@ -166,9 +152,7 @@ def reconstruct_mesh_using_tsdf_example():
     # ===================== Load Data ==========================================
     # Depth in tenths of a millimetre; 0 marks pixels without a measurement.
     depth_images = [
-        datatypes.DepthImage.from_url(
-            DEPTH_IMAGE_URL.format(index), depth_scale=0.0001
-        )
+        datatypes.DepthImage.from_url(DEPTH_IMAGE_URL.format(index), depth_scale=0.0001)
         for index in range(len(CAMERA_POSE_TOP_ROWS))
     ]
     camera_poses = np.tile(np.eye(4), (len(CAMERA_POSE_TOP_ROWS), 1, 1))
@@ -220,9 +204,7 @@ def reconstruct_mesh_using_tsdf_example():
         f"and {len(reconstructed_mesh.triangle_indices)} triangles"
     )
     # How far the refinement moved each camera.
-    for index, (initial, refined) in enumerate(
-        zip(camera_poses, refined_poses.data)
-    ):
+    for index, (initial, refined) in enumerate(zip(camera_poses, refined_poses.data)):
         logger.info(
             f"Camera {index}: refinement moved it "
             f"{np.linalg.norm(refined[:3, 3] - initial[:3, 3]) * 1000:.2f} mm"
@@ -230,13 +212,20 @@ def reconstruct_mesh_using_tsdf_example():
 
     # ===================== Visualization  (Optional) ===========================
     rr.init("reconstruct_mesh_using_tsdf_example", spawn=True)
-    for index, depth_image in enumerate(depth_images):
+    # Back-project every measured pixel and place it with its initial pose.
+    for index, (depth_image, camera_pose) in enumerate(zip(depth_images, camera_poses)):
+        rows, columns = np.nonzero(depth_image.depth > 0)
+        z = depth_image.depth[rows, columns]
+        camera_points = np.column_stack(
+            [
+                (columns - INTRINSIC_MATRIX[0, 2]) * z / INTRINSIC_MATRIX[0, 0],
+                (rows - INTRINSIC_MATRIX[1, 2]) * z / INTRINSIC_MATRIX[1, 1],
+                z,
+            ]
+        )
+        world_points = camera_points @ camera_pose[:3, :3].T + camera_pose[:3, 3]
         datatypes.visualize(
-            datatypes.PointCloud(
-                positions=depth_to_world_points(
-                    depth_image.depth, camera_poses[index]
-                )
-            ),
+            datatypes.PointCloud(positions=world_points),
             entity_path=f"/1-input_depth_with_initial_poses/camera_{index}",
         )
     datatypes.visualize(reconstructed_mesh, entity_path="/2-tsdf_mesh")
