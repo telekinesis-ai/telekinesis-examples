@@ -5,8 +5,8 @@ trajectory in Rerun.
 Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
-    python plan_cartesian_pose_in_joint_space.py
-    python plan_cartesian_pose_in_joint_space.py --save-rrd plan_cartesian_pose_in_joint_space.rrd
+    python plan_cartesian_trajectory_in_joint_space.py
+    python plan_cartesian_trajectory_in_joint_space.py --save-rrd recording.rrd
 """
 
 import argparse
@@ -15,11 +15,18 @@ import numpy as np
 import rerun as rr
 import rerun.blueprint as rrb
 from loguru import logger
+from scipy.spatial.transform import Rotation
 
 from telekinesis.synapse.robots.manipulators import universal_robots
 
 # Width of the plotted lines, in UI points; wider lines are easier to read.
 LINE_WIDTH = 3.0
+
+# TCP frames drawn along the path: one every this many seconds of motion, with axes this long,
+# in meters, and the axis length of the frame that travels along the path.
+FRAME_SPACING_S = 0.1
+FRAME_AXIS_LENGTH = 0.05
+MOVING_FRAME_AXIS_LENGTH = 0.15
 
 
 def shared_axis_range(data: np.ndarray) -> tuple[float, float]:
@@ -74,6 +81,69 @@ def init_rerun(app_id: str, save_rrd: str | None) -> "rr.RecordingStream":
     return recording
 
 
+def orientations_from_poses(poses: np.ndarray) -> Rotation:
+    """Convert the Euler-XYZ orientation columns of a pose array to rotations."""
+    return Rotation.from_euler("xyz", poses[:, 3:], degrees=True)
+
+
+def log_tcp_path(tcp_poses: np.ndarray, times: np.ndarray, goal: np.ndarray) -> None:
+    """Log the planned TCP path to the 3D view.
+
+    Logs the path line with its start and goal, a TCP frame every ``FRAME_SPACING_S`` seconds
+    of motion and at the end, and a larger frame that travels along the path over time. The
+    red, green and blue arrows of a frame are the TCP's X, Y and Z axes.
+
+    Args:
+        tcp_poses (np.ndarray): Planned TCP poses ``[x, y, z, rx, ry, rz]`` of shape ``(N, 6)``,
+            in meters and Euler-XYZ degrees.
+        times (np.ndarray): Sample times of shape ``(N,)``, in seconds.
+        goal (np.ndarray): Target TCP pose ``[x, y, z, rx, ry, rz]``.
+    """
+    axis_colors = [[255, 0, 0], [0, 255, 0], [0, 0, 255]]
+    # Row k of each matrix is the TCP's k-th axis in the base frame.
+    tcp_axes = orientations_from_poses(tcp_poses).as_matrix().transpose(0, 2, 1)
+    rr.log(
+        "world/tcp_path",
+        rr.LineStrips3D([tcp_poses[:, :3]], colors=[[31, 119, 180]], radii=0.004),
+        static=True,
+    )
+    rr.log(
+        "world/tcp_path/endpoints",
+        rr.Points3D(
+            [tcp_poses[0, :3], goal[:3]],
+            colors=[[44, 160, 44], [214, 39, 40]],
+            radii=0.012,
+            labels=["start", "goal"],
+        ),
+        static=True,
+    )
+    # The first sample at or after every FRAME_SPACING_S seconds of motion, and the last one.
+    frame_indices = np.unique(
+        np.append(
+            np.searchsorted(times, np.arange(0.0, times[-1], FRAME_SPACING_S)), len(times) - 1
+        )
+    )
+    rr.log(
+        "world/tcp_path/frames",
+        rr.Arrows3D(
+            origins=np.repeat(tcp_poses[frame_indices, :3], 3, axis=0),
+            vectors=tcp_axes[frame_indices].reshape(-1, 3) * FRAME_AXIS_LENGTH,
+            colors=axis_colors * len(frame_indices),
+        ),
+        static=True,
+    )
+    for i, t in enumerate(times):
+        rr.set_time("time", duration=float(t))
+        rr.log(
+            "world/tcp_frame",
+            rr.Arrows3D(
+                origins=[tcp_poses[i, :3]] * 3,
+                vectors=tcp_axes[i] * MOVING_FRAME_AXIS_LENGTH,
+                colors=axis_colors,
+            ),
+        )
+
+
 def visualize_trajectory(
     trajectory: list[tuple[np.ndarray, float]],
     target_joint_positions: np.ndarray,
@@ -81,6 +151,9 @@ def visualize_trajectory(
     save_rrd: str | None,
 ) -> None:
     """Plot the position, velocity, acceleration and error to the target of every joint.
+
+    The layout also holds a 3D view of the TCP path on the left, which :func:`log_tcp_path`
+    fills.
 
     Args:
         trajectory (list[tuple[np.ndarray, float]]): Planned ``(joint_positions, time)``
@@ -126,7 +199,17 @@ def visualize_trajectory(
 
     init_rerun(app_id, save_rrd)
     # Force our layout even if the viewer already has a saved blueprint for this recording.
-    rr.send_blueprint(rrb.Blueprint(rrb.Vertical(*rows)), make_active=True, make_default=True)
+    rr.send_blueprint(
+        rrb.Blueprint(
+            rrb.Horizontal(
+                rrb.Spatial3DView(origin="world", name="TCP path and frames"),
+                rrb.Vertical(*rows),
+                column_shares=[1, 2],
+            )
+        ),
+        make_active=True,
+        make_default=True,
+    )
 
     for j in range(num_joints):
         # Position carries two lines: the planned trajectory and the constant target.
@@ -169,7 +252,7 @@ def main(save_rrd: str | None = None) -> None:
         target_cartesian_pose[2] += 0.1
 
         # ==================== Run Skill ============================================
-        trajectory = robot.plan_cartesian_pose_in_joint_space(
+        trajectory = robot.plan_cartesian_trajectory_in_joint_space(
             cartesian_pose=target_cartesian_pose,
             q_start=q_start,
             speed=60,
@@ -181,8 +264,14 @@ def main(save_rrd: str | None = None) -> None:
         visualize_trajectory(
             trajectory,
             trajectory[-1][0],
-            "telekinesis_synapse_plan_cartesian_pose_in_joint_space",
+            "telekinesis_synapse_plan_cartesian_trajectory_in_joint_space",
             save_rrd,
+        )
+        # The TCP poses the planned joints reach, from forward kinematics.
+        log_tcp_path(
+            np.array([robot.forward_kinematics(q) for q, _ in trajectory]),
+            np.array([time for _, time in trajectory]),
+            target_cartesian_pose,
         )
     finally:
         robot.shutdown()
@@ -190,7 +279,7 @@ def main(save_rrd: str | None = None) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Plan Cartesian pose in joint space Synapse example"
+        description="Plan Cartesian trajectory in joint space Synapse example"
     )
     parser.add_argument(
         "--save-rrd",

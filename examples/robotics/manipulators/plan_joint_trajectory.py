@@ -4,8 +4,8 @@ Plan a joint motion without moving the robot and visualize the planned trajector
 Supports Universal Robots (UR), Epson, and virtual.
 
 Usage:
-    python plan_joint_positions.py
-    python plan_joint_positions.py --save-rrd plan_joint_positions.rrd
+    python plan_joint_trajectory.py
+    python plan_joint_trajectory.py --save-rrd plan_joint_trajectory.rrd
 """
 
 import argparse
@@ -169,7 +169,7 @@ def main(save_rrd: str | None = None) -> None:
         target_joint_positions[1] -= 15
 
         # ==================== Run Skill ============================================
-        trajectory = robot.plan_joint_positions(
+        trajectory = robot.plan_joint_trajectory(
             joint_positions=target_joint_positions,
             q_start=q_start,
             speed=60,
@@ -180,7 +180,7 @@ def main(save_rrd: str | None = None) -> None:
         visualize_trajectory(
             trajectory,
             target_joint_positions,
-            "telekinesis_synapse_plan_joint_positions",
+            "telekinesis_synapse_plan_joint_trajectory",
             save_rrd,
         )
     finally:
@@ -188,7 +188,7 @@ def main(save_rrd: str | None = None) -> None:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Plan joint positions Synapse example")
+    parser = argparse.ArgumentParser(description="Plan joint trajectory Synapse example")
     parser.add_argument(
         "--save-rrd",
         type=str,
